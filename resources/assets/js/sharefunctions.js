@@ -9,7 +9,7 @@ function booleanFormatter( cellvalue, options, cell ) {
 function imageLinkFormatter (cellvalue, options, rowObjcet) {
     //return '<img src="'+cellvalue+'" alt="" height="42" width="42">';
     if(cellvalue != null) {
-        var url = window.location.origin + '/laravel-nissan' + cellvalue;
+        var url = window.location.origin + cellvalue;
         return '<a href = "' + url + '" data-lightbox="' + cellvalue + '">View photo</a>';
     }
     else
