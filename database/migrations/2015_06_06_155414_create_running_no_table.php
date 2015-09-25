@@ -14,7 +14,8 @@ class CreateRunningNoTable extends Migration {
 	{
 		Schema::create('running_no', function(Blueprint $table)
 		{
-            $table->string('prefix',10)->unique()->primary();
+            $table->string('prefix',10)->primary();
+            $table->unique('prefix');
             $table->integer('no');
             $table->integer('subno');
 

@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ipaddress;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\Registrar;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -46,6 +47,11 @@ class AuthController extends Controller {
         $host = gethostbyaddr($ip);
 
         $ipAddress = 'Address : '.$ip.' Host : '.$host;
+
+        $count = Ipaddress::where('ip', $ip)->count();
+
+        if($count == 0)
+            return view('errors.permissiondenied',['ipAddress' => $ipAddress]);
 
         return view('auth.login',['ipAddress' => $ipAddress]);
     }
