@@ -167,6 +167,7 @@
                     closeAfterEdit: true,
                     width: 500,
                     recreateForm: true,
+                    viewPagerButtons : false,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
                         form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
