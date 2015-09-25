@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\Registrar;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller {
 
@@ -48,11 +49,6 @@ class AuthController extends Controller {
 
         $ipAddress = 'Address : '.$ip.' Host : '.$host;
 
-        $count = Ipaddress::where('ip', $ip)->count();
-
-        if($count == 0)
-            return view('errors.permissiondenied',['ipAddress' => $ipAddress]);
-
         return view('auth.login',['ipAddress' => $ipAddress]);
     }
 
@@ -66,6 +62,22 @@ class AuthController extends Controller {
 
         if ($this->auth->attempt($credentials, $request->has('remember')))
         {
+            if(Auth::user()->isadmin == false){
+                if (getenv('HTTP_X_FORWARDED_FOR'))
+                    $ip=getenv('HTTP_X_FORWARDED_FOR');
+                else
+                    $ip=getenv('REMOTE_ADDR');
+
+                $host = gethostbyaddr($ip);
+
+                $ipAddress = 'Address : '.$ip.' Host : '.$host;
+
+                $count = Ipaddress::where('ip', $ip)->count();
+
+                if($count == 0)
+                    return view('errors.permissiondenied',['ipAddress' => $ipAddress]);
+            }
+
             return redirect()->intended($this->redirectPath());
         }
 
