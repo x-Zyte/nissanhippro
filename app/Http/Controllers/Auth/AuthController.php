@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Employee;
 use App\Models\Ipaddress;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\Registrar;
@@ -60,9 +61,10 @@ class AuthController extends Controller {
 
         $credentials = $request->only('username', 'password', 'active');
 
-        if ($this->auth->attempt($credentials, $request->has('remember')))
-        {
-            if(Auth::user()->isadmin == false){
+        $employee = Employee::where('username', $credentials['username'])->where('active', true)->first();
+
+        if($employee != null && password_verify($credentials['password'], $employee->password)){
+            if(!$employee->isadmin){
                 if (getenv('HTTP_X_FORWARDED_FOR'))
                     $ip=getenv('HTTP_X_FORWARDED_FOR');
                 else
@@ -78,14 +80,18 @@ class AuthController extends Controller {
                     return view('errors.permissiondenied',['ipAddress' => $ipAddress]);
             }
 
-            return redirect()->intended($this->redirectPath());
+            if ($this->auth->attempt($credentials, $request->has('remember')))
+            {
+                return redirect()->intended($this->redirectPath());
+            }
         }
-
-        return redirect($this->loginPath())
-            ->withInput($request->only('username', 'remember'))
-            ->withErrors([
-                'username' => $this->getFailedLoginMessage(),
-            ]);
+        else{
+            return redirect($this->loginPath())
+                ->withInput($request->only('username', 'remember'))
+                ->withErrors([
+                    'username' => $this->getFailedLoginMessage(),
+                ]);
+        }
     }
 
     public function getLogout()

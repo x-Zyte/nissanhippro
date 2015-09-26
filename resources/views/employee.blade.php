@@ -110,7 +110,9 @@
                         datatype: "json",
                         colNames:['เมนูที่สามารถเข้าถึง'],
                         colModel:[
-                            {name:'menu',index:'menu', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value: "รถ:รถ;ลูกค้า:ลูกค้า;พนักงาน:พนักงาน;การตั้งค่า:การตั้งค่า"},align:'left'}
+                            {name:'menu',index:'menu', width:150, editable: true,edittype:"select",formatter:'select',
+                                editoptions:{value: "รถ:รถ;ลูกค้า:ลูกค้า;พนักงาน:พนักงาน;การตั้งค่าส่วนกลาง:การตั้งค่าส่วนกลาง;การตั้งค่ารถ:การตั้งค่ารถ"}
+                                ,align:'left'}
                         ],
                         viewrecords : true,
                         rowNum:10,

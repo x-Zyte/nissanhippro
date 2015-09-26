@@ -243,7 +243,7 @@
                 <b class="arrow"></b>
             </li>
 
-            <li class="@yield('menu-settings-class')" @if(!Auth::user()->isadmin && !in_array("การตั้งค่า", $employeeMenus)) style="display: none" @endif>
+            <li class="@yield('menu-settings-class')" @if(!Auth::user()->isadmin && !in_array("การตั้งค่าส่วนกลาง", $employeeMenus) && !in_array("การตั้งค่ารถ", $employeeMenus)) style="display: none" @endif>
                 <a href="javascript:void(0)" class="dropdown-toggle">
                     <i class="menu-icon fa fa-cogs"></i>
                     <span class="menu-text"> การตั้งค่า </span>
@@ -254,10 +254,10 @@
                 <b class="arrow"></b>
 
                 <ul class="submenu">
-                    <li class="@yield('menu-settingcore-class')">
+                    <li class="@yield('menu-settingcore-class')" @if(!Auth::user()->isadmin && !in_array("การตั้งค่าส่วนกลาง", $employeeMenus)) style="display: none" @endif>
                         <a href="javascript:void(0)" class="dropdown-toggle">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            <span class="menu-text"> ข้อมูลหลัก/ส่วนกลาง </span>
+                            <span class="menu-text"> ส่วนกลาง </span>
 
                             <b class="arrow fa fa-angle-down"></b>
                         </a>
@@ -292,6 +292,37 @@
                                 <b class="arrow"></b>
                             </li>
 
+                            <li class="@yield('menu-settingbank-class')">
+                                <a href="{{ url('/bank') }}">
+                                    <i class="menu-icon fa fa-minus"></i>
+                                    ธนาคาร-บัญชี
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+
+                            <li class="@yield('menu-settinginsurancecompany-class')">
+                                <a href="{{ url('/insurancecompany') }}">
+                                    <i class="menu-icon fa fa-minus"></i>
+                                    บริษัทประกัน
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="@yield('menu-settingcar-class')" @if(!Auth::user()->isadmin && !in_array("การตั้งค่ารถ", $employeeMenus)) style="display: none" @endif>
+                        <a href="javascript:void(0)" class="dropdown-toggle">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            <span class="menu-text"> รถ </span>
+
+                            <b class="arrow fa fa-angle-down"></b>
+                        </a>
+
+                        <b class="arrow"></b>
+
+                        <ul class="submenu @yield('menu-subsettingcar-class')" style="@yield('menu-subsettingcar-style')">
                             <li class="@yield('menu-settingcartype-class')">
                                 <a href="{{ url('/cartype') }}">
                                     <i class="menu-icon fa fa-minus"></i>
@@ -319,37 +350,6 @@
                                 <b class="arrow"></b>
                             </li>
 
-                            <li class="@yield('menu-settingbank-class')">
-                                <a href="{{ url('/bank') }}">
-                                    <i class="menu-icon fa fa-minus"></i>
-                                    ธนาคาร-บัญชี
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-
-                            <li class="@yield('menu-settinginsurancecompany-class')">
-                                <a href="{{ url('/insurancecompany') }}">
-                                    <i class="menu-icon fa fa-minus"></i>
-                                    บริษัทประกัน
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="@yield('menu-settingcar-class')">
-                        <a href="javascript:void(0)" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            <span class="menu-text"> รถ </span>
-
-                            <b class="arrow fa fa-angle-down"></b>
-                        </a>
-
-                        <b class="arrow"></b>
-
-                        <ul class="submenu @yield('menu-subsettingcar-class')" style="@yield('menu-subsettingcar-style')">
                             <li class="@yield('menu-settingpricelist-class')">
                                 <a href="{{ url('/pricelist') }}">
                                     <i class="menu-icon fa fa-minus"></i>

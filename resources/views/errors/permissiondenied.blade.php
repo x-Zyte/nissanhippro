@@ -37,8 +37,5 @@
 				<div class="title">คุณไม่ได้รับอนุญาตให้เข้าใช้งานระบบ</div>
 			</div>
 		</div>
-        <div style="bottom: 0;right: 0;position: fixed; padding-right: 5px;">
-            {{$ipAddress}}
-        </div>
 	</body>
 </html>

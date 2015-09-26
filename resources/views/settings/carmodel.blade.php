@@ -1,9 +1,9 @@
 @extends('app')
 
 @section('menu-settings-class','active hsub open')
-@section('menu-settingcore-class','active hsub open')
-@section('menu-subsettingcore-class','nav-show')
-@section('menu-subsettingcore-style','display: block;')
+@section('menu-settingcar-class','active hsub open')
+@section('menu-subsettingcar-class','nav-show')
+@section('menu-subsettingcar-style','display: block;')
 @section('menu-settingcarmodel-class','active')
 
 @section('content')
