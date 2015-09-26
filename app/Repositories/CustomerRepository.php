@@ -16,8 +16,8 @@ class CustomerRepository extends EloquentRepositoryAbstract
     {
         $this->Database = new Customer;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id', 'title', 'firstname', 'lastname','phone1','phone2','occupationid', 'address', 'districtid', 'amphurid', 'addprovinceid',
-            'zipcode', 'email', 'provinceid');
+        $this->crudFields = array('oper', 'id', 'title', 'firstname', 'lastname','phone1','phone2','occupationid', 'birthdate', 'address', 'districtid', 'amphurid', 'addprovinceid',
+            'zipcode', 'provinceid');
         $this->uniqueKeySingles = array();
         $this->uniqueKeyMultiples = array(array('field'=>'firstname','showInMsg'=>true,'label'=>'ชื่อจริง'),
             array('field'=>'lastname','showInMsg'=>true,'label'=>'นามสกุล'),

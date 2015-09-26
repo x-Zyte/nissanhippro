@@ -226,12 +226,34 @@
             </li>
 
             <li class="@yield('menu-customer-class')" @if(!Auth::user()->isadmin && !in_array("ลูกค้า", $employeeMenus)) style="display: none" @endif>
-                <a href="{{ url('/customer') }}">
+                <a href="javascript:void(0)" class="dropdown-toggle">
                     <i class="menu-icon fa fa-users"></i>
                     <span class="menu-text"> ลูกค้า </span>
+
+                    <b class="arrow fa fa-angle-down"></b>
                 </a>
 
                 <b class="arrow"></b>
+
+                <ul class="submenu">
+                    <li class="@yield('menu-customerexpect-class')">
+                        <a href="{{ url('/customerexpect') }}">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            <span class="menu-text"> ลูกค้ามุ่งหวัง </span>
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="@yield('menu-customerreal-class')">
+                        <a href="{{ url('/customerreal') }}">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            <span class="menu-text"> ลูกค้าจริง </span>
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
             </li>
 
             <li class="@yield('menu-employee-class')" @if(!Auth::user()->isadmin && !in_array("พนักงาน", $employeeMenus)) style="display: none" @endif>
@@ -350,14 +372,14 @@
                                 <b class="arrow"></b>
                             </li>
 
-                            <li class="@yield('menu-settingpricelist-class')">
+                            {{--<li class="@yield('menu-settingpricelist-class')">
                                 <a href="{{ url('/pricelist') }}">
                                     <i class="menu-icon fa fa-minus"></i>
                                     ราคา
                                 </a>
 
                                 <b class="arrow"></b>
-                            </li>
+                            </li>--}}
                         </ul>
                     </li>
                 </ul>

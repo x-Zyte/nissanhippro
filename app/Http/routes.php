@@ -95,11 +95,17 @@ Route::get('insurancecompany', 'Settings\InsuranceCompanyController@index');
 Route::get('insurancecompany/read', 'Settings\InsuranceCompanyController@read');
 Route::post('insurancecompany/update', 'Settings\InsuranceCompanyController@update');
 
-//Customer
-Route::get('customer', 'CustomerController@index');
-Route::get('customer/read', 'CustomerController@read');
-Route::post('customer/update', 'CustomerController@update');
-Route::get('customer/readSelectlistForDisplayInGrid', 'CustomerController@readSelectlistForDisplayInGrid');
+//CustomerExpect
+Route::get('customerexpect', 'CustomerExpectController@index');
+Route::get('customerexpect/read', 'CustomerExpectController@read');
+Route::post('customerexpect/update', 'CustomerExpectController@update');
+Route::get('customerexpect/readSelectlistForDisplayInGrid', 'CustomerExpectController@readSelectlistForDisplayInGrid');
+
+//CustomerReal
+Route::get('customerreal', 'CustomerRealController@index');
+Route::get('customerreal/read', 'CustomerRealController@read');
+Route::post('customerreal/update', 'CustomerRealController@update');
+Route::get('customerreal/readSelectlistForDisplayInGrid', 'CustomerRealController@readSelectlistForDisplayInGrid');
 
 //CustomerExpectation
 Route::get('customerexpectation/read', 'CustomerExpectationController@read');

@@ -24,6 +24,7 @@ class CreateCustomersTable extends Migration {
             $table->string('phone2',20)->nullable();
             $table->integer('occupationid')->unsigned()->nullable();
             $table->foreign('occupationid')->references('id')->on('occupations');
+            $table->dateTime('birthdate')->nullable();
             $table->text('address')->nullable();
             $table->integer('districtid')->unsigned()->nullable();
             $table->foreign('districtid')->references('id')->on('districts');
@@ -32,9 +33,6 @@ class CreateCustomersTable extends Migration {
             $table->integer('addprovinceid')->unsigned()->nullable();
             $table->foreign('addprovinceid')->references('id')->on('provinces');
             $table->string('zipcode',5)->nullable();
-            $table->string('email',100)->nullable();
-
-
 
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');

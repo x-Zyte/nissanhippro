@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Branch;
 use App\Models\CarModel;
 use App\Facades\GridEncoder;
 use App\Models\Customer;
@@ -25,10 +26,13 @@ use Illuminate\Support\Facades\Input;
 
 class CustomerController extends Controller {
 
+    protected $viewname;
+
     public function __construct()
     {
         $this->middleware('auth');
     }
+
 
     public function index()
     {
@@ -39,7 +43,8 @@ class CustomerController extends Controller {
             array_push($branchselectlist,$item->id.':'.$item->name);
         }*/
 
-        $provinces = Province::orderBy('name', 'asc')->get(['id', 'name']);
+        $provinceids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
+        $provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
         $provinceselectlist = array();
         array_push($provinceselectlist,':เลือกจังหวัด');
         foreach($provinces as $item){
@@ -69,7 +74,15 @@ class CustomerController extends Controller {
             array_push($districtselectlist,$item->id.':'.$item->name);
         }
 
-        $employees = Employee::all(['id','firstname','lastname']);
+        if(Auth::user()->isadmin)
+            $employees = Employee::all(['id','firstname','lastname']);
+        else{
+            $provinceid = Auth::user()->branch->provinceid;
+            $employees = Employee::whereHas('branch', function($q) use($provinceid)
+            {
+                $q->where('provinceid', $provinceid);
+            })->get(['id','firstname','lastname']);
+        }
         $employeeselectlist = array();
         array_push($employeeselectlist,':เลือกพนักงาน');
         foreach($employees as $emp){
@@ -85,10 +98,10 @@ class CustomerController extends Controller {
 
         $defaultProvince = '';
         if(Auth::user()->isadmin == false){
-            $defaultProvince = (Auth::user()->branchid == null ? '' : Auth::user()->branch->provinceid);
+            $defaultProvince = Auth::user()->branch->provinceid;
         }
 
-        return view('customer',
+        return view($this->viewname,
             [/*'branchselectlist' => implode(";",$branchselectlist),*/
                 'provinceselectlist' => implode(";",$provinceselectlist),
                 'amphurselectlist' => implode(";",$amphurselectlist),

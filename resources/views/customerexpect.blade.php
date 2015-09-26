@@ -1,10 +1,11 @@
 @extends('app')
 
-@section('menu-customer-class','active')
+@section('menu-customer-class','active hsub open')
+@section('menu-customerexpect-class','active')
 
 @section('content')
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-users"></i> ลูกค้า</h3>
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-users"></i> ลูกค้ามุ่งหวัง</h3>
 
     <table id="grid-table"></table>
 
@@ -40,18 +41,18 @@
             }
 
             $(grid_selector).jqGrid({
-                url:'{{ url('/customer/read') }}',
+                url:'{{ url('/customerexpect/read') }}',
                 datatype: "json",
-                colNames:['จังหวัด', 'คำนำหน้า', 'ชื่อจริง', 'นามสกุล', 'เบอร์โทร1', 'เบอร์โทร2', 'อีเมล์', 'อาชีพ', 'ที่อยู่', 'จังหวัด', 'เขต/อำเภอ', 'แขวง/ตำบล', 'รหัสไปรษณีย์'],
+                colNames:['จังหวัด', 'คำนำหน้า', 'ชื่อจริง', 'นามสกุล', 'เบอร์โทร1', 'เบอร์โทร2', 'อาชีพ', 'วันเกิด', 'ที่อยู่', 'จังหวัด', 'เขต/อำเภอ', 'แขวง/ตำบล', 'รหัสไปรษณีย์'],
                 colModel:[
                     {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince},
                     {name:'title',index:'title', width:70, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว"},align:'left'},
                     {name:'firstname',index:'firstname', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'lastname',index:'lastname', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'lastname',index:'lastname', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},align:'left'},
                     {name:'phone1',index:'phone1', width:100,editable: true,editrules:{required:true},editoptions:{size:"20",maxlength:"20"},align:'left'},
                     {name:'phone2',index:'phone2', width:100,editable: true,editoptions:{size:"20",maxlength:"20"},align:'left'},
-                    {name:'email',index:'email', width:200,editable: true,editoptions:{size:"40",maxlength:"50"},align:'left'},
                     {name:'occupationid',index:'occupationid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$occupationselectlist}}"}},
+                    {name:'birthdate',index:'birthdate',width:100, editable:true, sorttype:"date", formatter: "date", unformat: pickDate, editoptions:{dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'},
                     {name:'address',index:'address', width:150,editable: true,editoptions:{size:"50",maxlength:"200"},align:'left'},
                     {name:'addprovinceid',index:'addprovinceid', width:100, editable: true,edittype:"select",formatter:'select',align:'left',
                         editoptions:{value: "{{$provinceselectlist}}",
@@ -119,7 +120,7 @@
                     }, 0);
                 },
 
-                editurl: "customer/update",
+                editurl: "customerexpect/update",
                 caption: "",
                 height:'100%',
                 subGrid: true,
@@ -149,14 +150,35 @@
                     jQuery("#"+subgrid_table_id).jqGrid({
                         url:'customerexpectation/read?customerid='+row_id,
                         datatype: "json",
-                        colNames:['พนักงานที่ติดตาม','วันที่','แบบที่สนใจ1','แบบที่สนใจ2','แบบที่สนใจ3', 'รายละเอียด'],
+                        colNames:['พนักงานที่ติดตาม','วันที่','แบบที่สนใจ1','แบบที่สนใจ2','แบบที่สนใจ3', 'สีที่สนใจ1', 'สีที่สนใจ2', 'สีที่สนใจ3',
+                            'แนวโน้มการซื้อ','สิ่งที่ต้องการจากรถใหม่','ยี่ห้ออื่นที่พิจารณา','ข้อกำหนดในรถเก่า','งบประมาณ/เดือน','เงื่อนไขที่เสนอไป',
+                            'เงื่อนไขไฟแนนซ์: ดาวน์','เงื่อนไขไฟแนนซ์: ดอกเบี้ย(%)','เงื่อนไขไฟแนนซ์: จำนวนงวด','นัดหมายครั้งถัดไป','หมายเหตุ'],
                         colModel:[
                             {name:'employeeid',index:'employeeid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value:"{{$employeeselectlist}}"},align:'left'},
-                            {name:'date',index:'date',width:100, editable:true, sorttype:"date", formatter: "date", unformat: pickDate, editoptions:{dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'},
+                            {name:'date',index:'date',width:100, editable:true, sorttype:"date", formatter: "date", unformat: pickDate,
+                                editoptions:{dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'},
                             {name:'carmodelid1',index:'carmodelid1', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
                             {name:'carmodelid2',index:'carmodelid2', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
                             {name:'carmodelid3',index:'carmodelid3', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
-                            {name:'details',index:'details', width:500,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{required:true},align:'left'}
+                            {name:'colorid1',index:'colorid1', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
+                            {name:'colorid2',index:'colorid2', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
+                            {name:'colorid3',index:'colorid3', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
+                            {name:'buyingtrends',index:'buyingtrends', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:A-HOT(7 วัน);1:B-HOT(15 วัน);2:C-HOT(30 วัน);3:เกิน 1 เดือน"},align:'left'},
+                            {name:'newcarthingsrequired',index:'newcarthingsrequired', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
+                            {name:'otherconsideration',index:'otherconsideration', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
+                            {name:'oldcarspecifications',index:'oldcarspecifications', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
+                            {name:'budgetpermonth',index:'budgetpermonth', width:100,editable: true,editrules:{number:true},align:'right',formatter:'number',editoptions:{size:"10"},
+                                formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, defaultValue: '0.00'},hidden: true,editrules:{edithidden:true}},
+                            {name:'conditionproposed',index:'conditionproposed', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},align:'left',hidden: true,editrules:{edithidden:true}},
+                            {name:'conditionfinancedown',index:'conditionfinancedown', width:100,editable: true,editrules:{number:true},align:'right',formatter:'number',editoptions:{size:"10"},
+                                formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, defaultValue: '0.00'},hidden: true,editrules:{edithidden:true}},
+                            {name:'conditionfinanceinterest',index:'conditionfinanceinterest', width:100,editable: true,editrules:{number:true},align:'right',formatter:'number',editoptions:{size:"10"},
+                                formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, defaultValue: '0.00'},hidden: true,editrules:{edithidden:true}},
+                            {name:'conditionfinanceperiod',index:'conditionfinanceperiod', width:50,editable: true,editoptions:{size:"2",maxlength:"2"},
+                                editrules:{number:true},align:'center',hidden: true,editrules:{edithidden:true}},
+                            {name:'nextappointmentdate',index:'nextappointmentdate',width:100, editable:true, sorttype:"date", formatter: "date", unformat: pickDate,
+                                editoptions:{dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}},align:'center',hidden: true,editrules:{edithidden:true}},
+                            {name:'remarks',index:'remarks', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}}
                         ],
                         viewrecords : true,
                         rowNum:10,
@@ -419,7 +441,7 @@
                     afterSubmit : function(response, postdata)
                     {
                         if(response.responseText == "ok"){
-                            $.get('customer/readSelectlistForDisplayInGrid', function(data){
+                            $.get('customerexpect/readSelectlistForDisplayInGrid', function(data){
                                 $(grid_selector).setColProp('amphurid', { editoptions: { value: data.amphurselectlist } });
                                 $(grid_selector).setColProp('districtid', { editoptions: { value: data.districtselectlist } });
                             });

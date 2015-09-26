@@ -77,6 +77,11 @@ class Branch extends Model {
         });
     }
 
+    public function province()
+    {
+        return $this->belongsTo('App\Models\SystemDatas\Province', 'provinceid', 'id');
+    }
+
     public function employees()
     {
         return $this->hasMany('App\Models\Employee', 'branchid', 'id');

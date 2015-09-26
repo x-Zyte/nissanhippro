@@ -12,7 +12,10 @@ class CustomerExpectation extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['customerid','employeeid', 'date','carmodelid1','carmodelid2','carmodelid3', 'details',
+    protected $fillable = ['customerid','employeeid', 'date','carmodelid1','carmodelid2','carmodelid3',
+        'colorid1','colorid2','colorid3','buyingtrends','newcarthingsrequired','otherconsideration','oldcarspecifications',
+        'budgetpermonth','conditionproposed','conditionfinancedown','conditionfinanceinterest','conditionfinanceperiod',
+        'nextappointmentdate','remarks',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()
@@ -24,6 +27,13 @@ class CustomerExpectation extends Model {
             if($model->carmodelid1 == '') $model->carmodelid1 = null;
             if($model->carmodelid2 == '') $model->carmodelid2 = null;
             if($model->carmodelid3 == '') $model->carmodelid3 = null;
+
+            if($model->colorid1 == '') $model->colorid1 = null;
+            if($model->colorid2 == '') $model->colorid2 = null;
+            if($model->colorid3 == '') $model->colorid3 = null;
+
+            if($model->nextappointmentdate != null && $model->nextappointmentdate != '')
+                $model->nextappointmentdate = date('Y-m-d', strtotime($model->nextappointmentdate));
 
             $model->date = date('Y-m-d', strtotime($model->date));
             $model->createdby = Auth::user()->id;

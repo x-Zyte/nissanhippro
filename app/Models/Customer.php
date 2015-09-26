@@ -11,8 +11,8 @@ class Customer extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['title', 'firstname', 'lastname', 'phone1', 'phone2','occupationid', 'address', 'districtid', 'amphurid', 'addprovinceid', 'zipcode',
-        'email', 'provinceid',
+    protected $fillable = ['title', 'firstname', 'lastname', 'phone1', 'phone2','occupationid','birthdate', 'address',
+        'districtid', 'amphurid', 'addprovinceid', 'zipcode', 'provinceid',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()
@@ -25,6 +25,8 @@ class Customer extends Model {
             if($model->districtid == '') $model->districtid = null;
             if($model->amphurid == '') $model->amphurid = null;
             if($model->addprovinceid == '') $model->addprovinceid = null;
+            if($model->birthdate != null && $model->birthdate != '')
+                $model->birthdate = date('Y-m-d', strtotime($model->birthdate));
 
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");

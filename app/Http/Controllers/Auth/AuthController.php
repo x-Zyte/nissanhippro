@@ -78,6 +78,14 @@ class AuthController extends Controller {
 
                 if($count == 0)
                     return view('errors.permissiondenied',['ipAddress' => $ipAddress]);
+
+                if($employee->branchid == null){
+                    return redirect($this->loginPath())
+                        ->withInput($request->only('username', 'remember'))
+                        ->withErrors([
+                            'username' => 'บัญชีเข้าใช้งานของคุณยังไม่ได้ผูกกับสาขา โปรดติดต่อหัวหน้า หรือผู้ดูแล',
+                        ]);
+                }
             }
 
             if ($this->auth->attempt($credentials, $request->has('remember')))
