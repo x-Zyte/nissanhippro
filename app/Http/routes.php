@@ -118,6 +118,11 @@ Route::post('car/update', 'CarController@update');
 Route::post('car/upload', 'CarController@upload');
 Route::get('car/readSelectlistForDisplayInGrid', 'CarController@readSelectlistForDisplayInGrid');
 
+//Pricelist
+Route::get('pricelist', 'Settings\PricelistController@index');
+Route::get('pricelist/read', 'Settings\PricelistController@read');
+Route::post('pricelist/update', 'Settings\PricelistController@update');
+
 Route::get('/', 'HomeController@index');
 
 Route::get('home', 'HomeController@index');

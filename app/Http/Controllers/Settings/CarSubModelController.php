@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Settings;
 
-use App\Models\CarModel;
 use App\Facades\GridEncoder;
 use App\Http\Controllers\Controller;
 use App\Models\CarSubModel;
@@ -16,18 +15,6 @@ class CarSubModelController extends Controller {
     {
         $this->middleware('auth');
     }
-
-    /*public function index()
-    {
-        $carmodels = CarModel::all(['id','name']);
-        $carmodelselectlist = array();
-        array_push($carmodelselectlist,':เลือกแบบรถ');
-        foreach($carmodels as $cm){
-            array_push($carmodelselectlist,$cm->id.':'.$cm->name);
-        }
-
-        return view('settings.carsubmodel', ['carmodelselectlist' => implode(";",$carmodelselectlist)]);
-    }*/
 
     public function readSelectlist($carmodelid)
     {

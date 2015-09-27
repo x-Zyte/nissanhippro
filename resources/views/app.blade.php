@@ -372,14 +372,14 @@
                                 <b class="arrow"></b>
                             </li>
 
-                            {{--<li class="@yield('menu-settingpricelist-class')">
+                            <li class="@yield('menu-settingpricelist-class')">
                                 <a href="{{ url('/pricelist') }}">
                                     <i class="menu-icon fa fa-minus"></i>
                                     ราคา
                                 </a>
 
                                 <b class="arrow"></b>
-                            </li>--}}
+                            </li>
                         </ul>
                     </li>
                 </ul>
