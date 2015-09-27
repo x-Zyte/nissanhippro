@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Input;
 
 class CarModelColorController extends Controller {
 
+    protected $menuPermissionName = "การตั้งค่ารถ";
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -19,6 +21,8 @@ class CarModelColorController extends Controller {
 
     public function read()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         $input = Input::all();
         if(in_array("filters", $input)){
             $input = Input::all();
@@ -34,11 +38,15 @@ class CarModelColorController extends Controller {
 
     public function update(Request $request)
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new CarModelColorRepository(), $request);
     }
 
     public function readSelectlist($carmodelid)
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         $colorids = CarModelColor::where('carmodelid',$carmodelid)->lists('colorid');
         $colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
         return $colors;

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Input;
 
 class CarSubModelController extends Controller {
 
+    protected $menuPermissionName = "การตั้งค่ารถ";
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -18,12 +20,16 @@ class CarSubModelController extends Controller {
 
     public function readSelectlist($carmodelid)
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         $carsubmodels = CarSubModel::where('carmodelid',$carmodelid)->orderBy('name', 'asc')->get(['id', 'name']);
         return $carsubmodels;
     }
 
     public function read()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         $input = Input::all();
         if(in_array("filters", $input)){
             $input = Input::all();
@@ -39,6 +45,8 @@ class CarSubModelController extends Controller {
 
     public function update(Request $request)
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new CarSubModelRepository(), $request);
     }
 }

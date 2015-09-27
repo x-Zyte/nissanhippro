@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Input;
 
 class CustomerExpectationController extends Controller {
 
+    protected $menuPermissionName = "ลูกค้า";
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -24,6 +26,8 @@ class CustomerExpectationController extends Controller {
 
     public function read()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         $input = Input::all();
         if(in_array("filters", $input)){
             $input = Input::all();
@@ -39,6 +43,8 @@ class CustomerExpectationController extends Controller {
 
     public function update(Request $request)
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new CustomerExpectationRepository(), $request);
     }
 }

@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Input;
 
 class CarController extends Controller {
 
+    protected $menuPermissionName = "รถ";
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -30,6 +32,8 @@ class CarController extends Controller {
 
     public function index()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         $provinceids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
         $provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
         $provinceselectlist = array();
@@ -76,18 +80,22 @@ class CarController extends Controller {
 
     public function read()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new CarRepository(), Input::all());
     }
 
     public function update(Request $request)
     {
-        //$input = $request->only('receivecarfilepath','deliverycarfilepath');
-        //return $input;
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new CarRepository(), $request);
     }
 
     public function upload()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         $error = false;
         $uploaddir = base_path().'/uploads/images/';
         $engineno = Input::get('engineno');
@@ -121,6 +129,8 @@ class CarController extends Controller {
 
     public function readSelectlistForDisplayInGrid()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         $carsubmodelids = Car::distinct()->lists('carsubmodelid');
         $carsubmodels = CarSubModel::whereIn('id', $carsubmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
         $carsubmodelselectlist = array();

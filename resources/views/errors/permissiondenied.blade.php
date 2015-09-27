@@ -34,7 +34,8 @@
 	<body>
 		<div class="container">
 			<div class="content">
-				<div class="title">คุณไม่ได้รับอนุญาตให้เข้าใช้งานระบบ</div>
+                <div class="title">Permission Denied</div>
+				<div class="title">การอนุญาตถูกปฏิเสธ</div>
 			</div>
 		</div>
 	</body>

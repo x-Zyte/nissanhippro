@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Input;
 
 class EmployeeController extends Controller {
 
+    protected $menuPermissionName = "พนักงาน";
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -25,6 +27,8 @@ class EmployeeController extends Controller {
 
     public function index()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         $branchs = Branch::all(['id','name']);
         $branchselectlist = array();
         array_push($branchselectlist,':เลือกสาขา');
@@ -54,33 +58,15 @@ class EmployeeController extends Controller {
 
     public function read()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new EmployeeRepository(), Input::all());
     }
 
     public function update(Request $request)
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new EmployeeRepository(), $request);
     }
-
-    /*public function check_username(Request $request)
-    {
-        $input = $request->only('id','username');
-
-        $count = Employee::where('id','!=', $input['id'])
-            ->where('username', $input['username'])->count();
-        if($count > 0){
-            return "true";
-        }
-    }
-
-    public function check_email(Request $request)
-    {
-        $input = $request->only('id','email');
-
-        $count = Employee::where('id','!=', $input['id'])
-            ->where('email', $input['email'])->count();
-        if($count > 0){
-            return "true";
-        }
-    }*/
 }

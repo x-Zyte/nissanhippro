@@ -27,21 +27,16 @@ use Illuminate\Support\Facades\Input;
 class CustomerController extends Controller {
 
     protected $viewname;
+    protected $menuPermissionName = "ลูกค้า";
 
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-
     public function index()
     {
-        /*$branchs = Branch::orderBy('name', 'asc')->get(['id', 'name']);
-        $branchselectlist = array();
-        array_push($branchselectlist,':เลือกสาขา');
-        foreach($branchs as $item){
-            array_push($branchselectlist,$item->id.':'.$item->name);
-        }*/
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
         $provinceids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
         $provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
@@ -114,16 +109,22 @@ class CustomerController extends Controller {
 
     public function read()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new CustomerRepository(), Input::all());
     }
 
     public function update(Request $request)
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new CustomerRepository(), $request);
     }
 
     public function readSelectlistForDisplayInGrid()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         $amphurids = Customer::distinct()->lists('amphurid');
         $amphurs = Amphur::whereIn('id', $amphurids)->orderBy('name', 'asc')->get(['id', 'name']);
         $amphurselectlist = array();

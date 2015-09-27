@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Input;
 
 class EmployeePermissionController extends Controller {
 
+    protected $menuPermissionName = "พนักงาน";
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -23,6 +25,8 @@ class EmployeePermissionController extends Controller {
 
     public function read()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         $input = Input::all();
         if(in_array("filters", $input)){
             $input = Input::all();
@@ -38,6 +42,8 @@ class EmployeePermissionController extends Controller {
 
     public function update(Request $request)
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new EmployeePermissionRepository(), $request);
     }
 }

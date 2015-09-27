@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Input;
 
 class PricelistController extends Controller {
 
+    protected $menuPermissionName = "การตั้งค่ารถ";
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -18,16 +20,22 @@ class PricelistController extends Controller {
 
     public function index()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         return view('settings.pricelist');
     }
 
     public function read()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new PricelistRepository(), Input::all());
     }
 
     public function update(Request $request)
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new PricelistRepository(), $request);
     }
 }

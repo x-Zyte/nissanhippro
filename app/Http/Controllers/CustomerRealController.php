@@ -23,6 +23,8 @@ class CustomerRealController extends CustomerController {
 
     public function read()
     {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
         GridEncoder::encodeRequestedData(new CustomerRealRepository(), Input::all());
     }
 }
