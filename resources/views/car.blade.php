@@ -165,7 +165,7 @@
                 {
                     //edit record form
                     closeAfterEdit: true,
-                    width: 500,
+                    width: 600,
                     recreateForm: true,
                     viewPagerButtons : false,
                     beforeShowForm : function(e) {
@@ -213,7 +213,7 @@
                 },
                 {
                     //new record form
-                    width: 500,
+                    width: 600,
                     closeAfterAdd: true,
                     recreateForm: true,
                     viewPagerButtons: false,

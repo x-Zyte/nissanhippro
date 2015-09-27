@@ -44,6 +44,15 @@ class Pricelist extends Model {
 
         static::updating(function($model)
         {
+            if($model->effectiveto != null && $model->effectiveto != '')
+                $model->effectiveto = date('Y-m-d', strtotime($model->effectiveto));
+            $model->effectivefrom = date('Y-m-d', strtotime($model->effectivefrom));
+            $model->sellingpricewithaccessories = $model->sellingprice + $model->accessoriesprice;
+            $model->execusivetotalcampaing = $model->execusiveinternal + $model->execusivecampaing;
+            $model->execusivetotalmargincampaing = $model->margin + $model->execusivetotalcampaing;
+            $model->totalcampaing = $model->internal + $model->campaing;
+            $model->totalmargincampaing = $model->margin + $model->totalcampaing;
+
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");
         });

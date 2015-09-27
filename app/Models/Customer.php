@@ -45,6 +45,8 @@ class Customer extends Model {
             if($model->districtid == '') $model->districtid = null;
             if($model->amphurid == '') $model->amphurid = null;
             if($model->addprovinceid == '') $model->addprovinceid = null;
+            if($model->birthdate != null && $model->birthdate != '')
+                $model->birthdate = date('Y-m-d', strtotime($model->birthdate));
 
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");

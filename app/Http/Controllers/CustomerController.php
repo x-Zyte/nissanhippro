@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 use App\Models\Branch;
 use App\Models\CarModel;
 use App\Facades\GridEncoder;
+use App\Models\Color;
 use App\Models\Customer;
 use App\Models\Employee;
 use App\Models\SystemDatas\Amphur;
@@ -91,13 +92,20 @@ class CustomerController extends Controller {
             array_push($carmodelselectlist,$cm->id.':'.$cm->name);
         }
 
+        $colors = Color::all(['id', 'code', 'name']);
+        $colorselectlist = array();
+        array_push($colorselectlist,':เลือกสี');
+        foreach($colors as $item){
+            array_push($colorselectlist,$item->id.':'.$item->code.' - '.$item->name);
+        }
+
         $defaultProvince = '';
         if(Auth::user()->isadmin == false){
             $defaultProvince = Auth::user()->branch->provinceid;
         }
 
         return view($this->viewname,
-            [/*'branchselectlist' => implode(";",$branchselectlist),*/
+            ['colorselectlist' => implode(";",$colorselectlist),
                 'provinceselectlist' => implode(";",$provinceselectlist),
                 'amphurselectlist' => implode(";",$amphurselectlist),
                 'districtselectlist' => implode(";",$districtselectlist),

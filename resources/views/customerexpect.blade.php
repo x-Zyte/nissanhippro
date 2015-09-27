@@ -157,13 +157,13 @@
                             {name:'employeeid',index:'employeeid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value:"{{$employeeselectlist}}"},align:'left'},
                             {name:'date',index:'date',width:100, editable:true, sorttype:"date", formatter: "date", unformat: pickDate,
                                 editoptions:{dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'},
-                            {name:'carmodelid1',index:'carmodelid1', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
+                            {name:'carmodelid1',index:'carmodelid1', width:100, editable: true,edittype:"select",formatter:'select', editrules:{required:true},editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
                             {name:'carmodelid2',index:'carmodelid2', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
                             {name:'carmodelid3',index:'carmodelid3', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
-                            {name:'colorid1',index:'colorid1', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
-                            {name:'colorid2',index:'colorid2', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
-                            {name:'colorid3',index:'colorid3', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
-                            {name:'buyingtrends',index:'buyingtrends', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:A-HOT(7 วัน);1:B-HOT(15 วัน);2:C-HOT(30 วัน);3:เกิน 1 เดือน"},align:'left'},
+                            {name:'colorid1',index:'colorid1', width:150, editable: true,edittype:"select",formatter:'select', editrules:{required:true},editoptions:{value:"{{$colorselectlist}}"},align:'left'},
+                            {name:'colorid2',index:'colorid2', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$colorselectlist}}"},align:'left'},
+                            {name:'colorid3',index:'colorid3', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$colorselectlist}}"},align:'left'},
+                            {name:'buyingtrends',index:'buyingtrends', width:100, editable: true,edittype:"select",formatter:'select', editrules:{required:true},editoptions:{value: ":เลือกแนวโน้มการซื้อ;0:A-HOT(7 วัน);1:B-HOT(15 วัน);2:C-HOT(30 วัน);3:เกิน 1 เดือน"},align:'left'},
                             {name:'newcarthingsrequired',index:'newcarthingsrequired', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
                             {name:'otherconsideration',index:'otherconsideration', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
                             {name:'oldcarspecifications',index:'oldcarspecifications', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
@@ -218,13 +218,13 @@
                                 searchicon : 'ace-icon fa fa-search orange',
                                 refresh: true,
                                 refreshicon : 'ace-icon fa fa-refresh green',
-                                view: false,
+                                view: true,
                                 viewicon : 'ace-icon fa fa-search-plus grey'
                             },
                             {
                                 //edit record form
                                 closeAfterEdit: true,
-                                width: 500,
+                                width: 600,
                                 recreateForm: true,
                                 viewPagerButtons : false,
                                 beforeShowForm : function(e) {
@@ -251,7 +251,7 @@
                             },
                             {
                                 //new record form
-                                width: 500,
+                                width: 600,
                                 closeAfterAdd: true,
                                 recreateForm: true,
                                 viewPagerButtons: false,
@@ -336,6 +336,7 @@
                             },
                             {
                                 //view record form
+                                width: 600,
                                 recreateForm: true,
                                 beforeShowForm: function(e){
                                     var form = $(e[0]);
@@ -367,13 +368,13 @@
                     searchicon : 'ace-icon fa fa-search orange',
                     refresh: true,
                     refreshicon : 'ace-icon fa fa-refresh green',
-                    view: true,
+                    view: false,
                     viewicon : 'ace-icon fa fa-search-plus grey'
                 },
                 {
                     //edit record form
                     closeAfterEdit: true,
-                    width: 500,
+                    width: 600,
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
@@ -418,7 +419,7 @@
                 },
                 {
                     //new record form
-                    width: 500,
+                    width: 600,
                     closeAfterAdd: true,
                     recreateForm: true,
                     viewPagerButtons: false,

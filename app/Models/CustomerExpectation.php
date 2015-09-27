@@ -53,6 +53,13 @@ class CustomerExpectation extends Model {
             if($model->carmodelid2 == '') $model->carmodelid2 = null;
             if($model->carmodelid3 == '') $model->carmodelid3 = null;
 
+            if($model->colorid1 == '') $model->colorid1 = null;
+            if($model->colorid2 == '') $model->colorid2 = null;
+            if($model->colorid3 == '') $model->colorid3 = null;
+
+            if($model->nextappointmentdate != null && $model->nextappointmentdate != '')
+                $model->nextappointmentdate = date('Y-m-d', strtotime($model->nextappointmentdate));
+
             $model->date = date('Y-m-d', strtotime($model->date));
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");
