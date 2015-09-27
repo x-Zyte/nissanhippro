@@ -10672,7 +10672,7 @@ th .lbl:only-child, td .lbl:only-child {
 }
 .ui-jqgrid .ui-jqgrid-labels th {
     border-right: 1px solid #E1E1E1 !important;
-    text-align: left !important;
+    text-align: center !important;
 }
 .ui-jqgrid-labels th[id*="_cb"]:first-child>div {
     padding-top: 0;

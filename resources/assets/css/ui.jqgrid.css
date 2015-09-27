@@ -14,7 +14,20 @@
 .ui-jqgrid .ui-jqgrid-htable {table-layout:fixed;margin:0;}
 .ui-jqgrid .ui-jqgrid-htable th {height:22px;padding: 0 2px 0 2px;}
 .ui-jqgrid .ui-jqgrid-htable th div {overflow: hidden; position:relative; height:17px;}
-.ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {overflow: hidden;white-space: nowrap;text-align:center !important;border-top : 0 none;border-bottom : 0 none;}
+.ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {overflow: hidden;white-space: nowrap; text-align:center !important;border-top : 0 none;border-bottom : 0 none;}
+th.ui-th-column div {
+    /*white-space: normal !important;
+    height: auto !important;*/
+    padding: 2px;
+    word-wrap: break-word; /* IE 5.5+ and CSS3 */
+    white-space: pre-wrap; /* CSS3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    overflow: hidden;
+    height: auto !important;
+    vertical-align: middle;
+}
 .ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr {border-left : 0 none;}
 .ui-th-rtl, .ui-jqgrid .ui-jqgrid-htable th.ui-th-rtl {border-right : 0 none;}
 .ui-first-th-ltr {border-right: 1px solid; }

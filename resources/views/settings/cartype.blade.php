@@ -42,7 +42,7 @@
                 colNames:['ชื่อประเภท','ค่า พ.ร.บ.', 'รายละเอียด'],
                 colModel:[
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'actcost',index:'actcost', width:100,editable: true,editoptions:{},editrules:{required:true, number:true},align:'right',formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, defaultValue: '0.00'}},
+                    {name:'actcost',index:'actcost', width:100,editable: true,editoptions:{defaultValue: '0.00'},editrules:{required:true, number:true},align:'right',formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                 ],
                 viewrecords : true,

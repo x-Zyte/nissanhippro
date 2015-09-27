@@ -43,8 +43,8 @@
                 colModel:[
                     {name:'cartypeid',index:'cartypeid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$cartypeselectlist}}"},editrules:{required:true},align:'left'},
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'registercost',index:'registercost', width:100,editable: true,editoptions:{},editrules:{required:true, number:true},align:'right',formatter:'number',
-                        formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2, defaultValue: '0.00'}},
+                    {name:'registercost',index:'registercost', width:100,editable: true,editoptions:{defaultValue:'0.00'},editrules:{required:true, number:true},align:'right',formatter:'number',
+                        formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                 ],
                 viewrecords : true,
