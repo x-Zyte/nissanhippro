@@ -31,7 +31,6 @@ class CreatePricelistsTable extends Migration {
             $table->decimal('execusivetotalmargincampaing', 10, 2)->comment('margin + execusivetotalcampaing');
             $table->decimal('internal', 10, 2)->default(0);
             $table->decimal('campaing', 10, 2)->default(0);
-            $table->decimal('totalcampaing', 10, 2)->comment('internal + campaing');
             $table->decimal('totalmargincampaing', 10, 2)->comment('margin + totalcampaing');
             $table->string('promotion',100);
             $table->boolean('active')->default(true);

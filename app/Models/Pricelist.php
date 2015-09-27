@@ -13,7 +13,7 @@ class Pricelist extends Model {
 
     protected $fillable = ['carmodelid', 'carsubmodelid', 'effectivefrom','effectiveto','sellingprice',
         'accessoriesprice','sellingpricewithaccessories','margin','execusiveinternal','execusivecampaing', 'execusivetotalcampaing',
-        'execusivetotalmargincampaing','internal','campaing','totalcampaing','totalmargincampaing','promotion',
+        'execusivetotalmargincampaing','internal','campaing','totalmargincampaing','promotion',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()
@@ -28,8 +28,7 @@ class Pricelist extends Model {
             $model->sellingpricewithaccessories = $model->sellingprice + $model->accessoriesprice;
             $model->execusivetotalcampaing = $model->execusiveinternal + $model->execusivecampaing;
             $model->execusivetotalmargincampaing = $model->margin + $model->execusivetotalcampaing;
-            $model->totalcampaing = $model->internal + $model->campaing;
-            $model->totalmargincampaing = $model->margin + $model->totalcampaing;
+            $model->totalmargincampaing = $model->margin + $model->internal + $model->campaing;
 
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
@@ -50,8 +49,7 @@ class Pricelist extends Model {
             $model->sellingpricewithaccessories = $model->sellingprice + $model->accessoriesprice;
             $model->execusivetotalcampaing = $model->execusiveinternal + $model->execusivecampaing;
             $model->execusivetotalmargincampaing = $model->margin + $model->execusivetotalcampaing;
-            $model->totalcampaing = $model->internal + $model->campaing;
-            $model->totalmargincampaing = $model->margin + $model->totalcampaing;
+            $model->totalmargincampaing = $model->margin + $model->internal + $model->campaing;
 
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");

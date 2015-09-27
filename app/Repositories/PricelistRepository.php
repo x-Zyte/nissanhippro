@@ -18,7 +18,7 @@ class PricelistRepository extends EloquentRepositoryAbstract
         $this->orderBy = array(array('id', 'asc'));
         $this->crudFields = array('oper', 'id', 'carmodelid', 'carsubmodelid', 'effectivefrom','effectiveto','sellingprice',
             'accessoriesprice','sellingpricewithaccessories','margin','execusiveinternal','execusivecampaing', 'execusivetotalcampaing',
-            'execusivetotalmargincampaing','internal','campaing','totalcampaing','totalmargincampaing','promotion');
+            'execusivetotalmargincampaing','internal','campaing','totalmargincampaing','promotion');
         $this->uniqueKeySingles = array();
         $this->uniqueKeyMultiples = array();
         $this->hasBranch = false;

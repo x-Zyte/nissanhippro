@@ -375,7 +375,7 @@
                             <li class="@yield('menu-settingpricelist-class')">
                                 <a href="{{ url('/pricelist') }}">
                                     <i class="menu-icon fa fa-minus"></i>
-                                    ราคา
+                                    รายการราคา
                                 </a>
 
                                 <b class="arrow"></b>

@@ -122,6 +122,7 @@ Route::get('car/readSelectlistForDisplayInGrid', 'CarController@readSelectlistFo
 Route::get('pricelist', 'Settings\PricelistController@index');
 Route::get('pricelist/read', 'Settings\PricelistController@read');
 Route::post('pricelist/update', 'Settings\PricelistController@update');
+Route::get('pricelist/readSelectlistForDisplayInGrid', 'Settings\PricelistController@readSelectlistForDisplayInGrid');
 
 Route::get('/', 'HomeController@index');
 
