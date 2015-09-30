@@ -11,7 +11,7 @@ class Branch extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['name', 'address', 'districtid', 'amphurid', 'provinceid', 'zipcode','isheadquarter','keyslot', 'active',
+    protected $fillable = ['name','taxinvoicename','taxpayerno', 'address', 'districtid', 'amphurid', 'provinceid', 'zipcode','isheadquarter','keyslot', 'active',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

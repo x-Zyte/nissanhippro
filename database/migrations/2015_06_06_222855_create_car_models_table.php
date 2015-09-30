@@ -17,6 +17,7 @@ class CreateCarModelsTable extends Migration {
             $table->increments('id');
             $table->integer('cartypeid')->unsigned();
             $table->foreign('cartypeid')->references('id')->on('car_types');
+            $table->string('brand',50);
             $table->string('name',50);
             $table->decimal('registercost', 10, 2);
             $table->text('detail')->nullable();

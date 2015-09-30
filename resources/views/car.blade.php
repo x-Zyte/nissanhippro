@@ -42,7 +42,7 @@
             $(grid_selector).jqGrid({
                 url:'car/read',
                 datatype: "json",
-                colNames:['จังหวัด','แบบ','รุ่น','ซื้อจาก','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'กุญแจ', 'สี', 'รถสำหรับ','ใบรับรถเข้า', 'ใบส่งรถให้ลูกค้า'],
+                colNames:['จังหวัด','แบบ','รุ่น','ซื้อจาก','ชื่อดีลเลอร์อื่น','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'กุญแจ', 'สี', 'รถสำหรับ','ใบรับรถเข้า', 'ใบส่งรถให้ลูกค้า'],
                 colModel:[
                     {name:'provinceid',index:'provinceid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince},
                     {name:'carmodelid',index:'carmodelid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
@@ -66,7 +66,8 @@
                         }
                     },
                     {name:'carsubmodelid',index:'carsubmodelid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$carsubmodelselectlist}}"}},
-                    {name:'receivetype',index:'receivetype', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:ศูนย์ใหญ่;1:ดีลเลอร์อื่น"},align:'center'},
+                    {name:'receivetype',index:'receivetype', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:NMT;1:ดีลเลอร์อื่น"},align:'center'},
+                    {name:'dealername',index:'dealername', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},align:'left'},
                     {name:'no',index:'no', width:50,editable: true,editoptions:{size:"5"},align:'center'},
                     {name:'dodate',index:'dodate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'},
                     {name:'receiveddate',index:'receiveddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'},
@@ -193,6 +194,7 @@
                             $('#colorid').val(colorid);
                         });
 
+                        $('#tr_receivetype', form).hide();
                         $('#tr_no', form).hide();
                         $('#tr_keyno', form).hide();
 
@@ -205,6 +207,10 @@
                     afterSubmit : function(response, postdata)
                     {
                         if(response.responseText == "ok"){
+                            $.get('car/readSelectlistForDisplayInGrid', function(data){
+                                $(grid_selector).setColProp('carsubmodelid', { editoptions: { value: data.carsubmodelselectlist } });
+                                $(grid_selector).setColProp('colorid', { editoptions: { value: data.colorselectlist } });
+                            });
                             return uploadfiles();
                         }else{
                             return [false,response.responseText];

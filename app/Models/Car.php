@@ -12,7 +12,7 @@ class Car extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['provinceid', 'carmodelid', 'carsubmodelid', 'no', 'dodate', 'receiveddate', 'engineno', 'chassisno', 'keyno',
+    protected $fillable = ['provinceid', 'carmodelid', 'carsubmodelid', 'no', 'dodate', 'receiveddate','dealername', 'engineno', 'chassisno', 'keyno',
         'colorid', 'objective', 'receivetype', 'receivecarfilepath', 'deliverycarfilepath', 'issold', 'isregistered', 'isdelivered',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
@@ -25,6 +25,8 @@ class Car extends Model {
             $model->issold = false;
             $model->isregistered = false;
             $model->isdelivered = false;
+
+            if($model->receivetype == 0) $model->dealername = null;
 
             $model->dodate = date('Y-m-d', strtotime($model->dodate));
             $model->receiveddate = date('Y-m-d', strtotime($model->receiveddate));
@@ -55,6 +57,8 @@ class Car extends Model {
 
         static::updating(function($model)
         {
+            if($model->receivetype == 0) $model->dealername = null;
+
             $model->dodate = date('Y-m-d', strtotime($model->dodate));
             $model->receiveddate = date('Y-m-d', strtotime($model->receiveddate));
             $model->modifiedby = Auth::user()->id;

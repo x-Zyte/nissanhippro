@@ -348,7 +348,7 @@
                             <li class="@yield('menu-settingcartype-class')">
                                 <a href="{{ url('/cartype') }}">
                                     <i class="menu-icon fa fa-minus"></i>
-                                    ประเภทรถ
+                                    ประเภทรถ/พ.ร.บ.
                                 </a>
 
                                 <b class="arrow"></b>
@@ -372,14 +372,14 @@
                                 <b class="arrow"></b>
                             </li>
 
-                            <li class="@yield('menu-settingpricelist-class')">
+                            {{--<li class="@yield('menu-settingpricelist-class')">
                                 <a href="{{ url('/pricelist') }}">
                                     <i class="menu-icon fa fa-minus"></i>
                                     รายการราคา
                                 </a>
 
                                 <b class="arrow"></b>
-                            </li>
+                            </li>--}}
                         </ul>
                     </li>
                 </ul>

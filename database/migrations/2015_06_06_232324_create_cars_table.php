@@ -22,7 +22,8 @@ class CreateCarsTable extends Migration {
             $table->foreign('carmodelid')->references('id')->on('car_models');
             $table->integer('carsubmodelid')->unsigned();
             $table->foreign('carsubmodelid')->references('id')->on('car_submodels');
-            $table->integer('receivetype')->comment('0:ศูนย์ใหญ่, 1:ดีลเลอร์อื่น');
+            $table->integer('receivetype')->comment('0:NMT, 1:ดีลเลอร์อื่น');
+            $table->string('dealername',100)->nullable();
             $table->string('no',10);
             $table->dateTime('dodate');
             $table->dateTime('receiveddate');

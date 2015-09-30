@@ -10,8 +10,9 @@ class Employee extends User {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['title', 'firstname', 'lastname','code', 'username', 'password', 'email', 'phone', 'isadmin', 'branchid',
-        'departmentid', 'teamid', 'active', 'remember_token',
+    protected $fillable = ['title', 'firstname', 'lastname','code','workingstartdate','workingenddate', 'username',
+        'password', 'email','loginstartdate','loginenddate', 'phone', 'isadmin', 'branchid',
+        'departmentid', 'teamid', 'remarks', 'active', 'remember_token',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     protected $hidden = ['password', 'remember_token'];
@@ -32,7 +33,27 @@ class Employee extends User {
                 if($model->departmentid == '') $model->departmentid = null;
                 if($model->teamid == '') $model->teamid = null;
             }
-            $model->password = bcrypt("nissanhippro");
+
+            if($model->workingstartdate != null && $model->workingstartdate != '')
+                $model->workingstartdate = date('Y-m-d', strtotime($model->workingstartdate));
+            else
+                $model->workingstartdate = null;
+            if($model->workingenddate != null && $model->workingenddate != '')
+                $model->workingenddate = date('Y-m-d', strtotime($model->workingenddate));
+            else
+                $model->workingenddate = null;
+            if($model->loginstartdate != null && $model->loginstartdate != '')
+                $model->loginstartdate = date('Y-m-d', strtotime($model->loginstartdate));
+            else
+                $model->loginstartdate = null;
+            if($model->loginenddate != null && $model->loginenddate != '')
+                $model->loginenddate = date('Y-m-d', strtotime($model->loginenddate));
+            else
+                $model->loginenddate = null;
+
+            if($model->username != null && $model->username != '')
+                $model->password = bcrypt("nissanhippro");
+
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
             $model->modifiedby = Auth::user()->id;
@@ -56,6 +77,27 @@ class Employee extends User {
                 if($model->departmentid == '') $model->departmentid = null;
                 if($model->teamid == '') $model->teamid = null;
             }
+
+            if($model->workingstartdate != null && $model->workingstartdate != '')
+                $model->workingstartdate = date('Y-m-d', strtotime($model->workingstartdate));
+            else
+                $model->workingstartdate = null;
+            if($model->workingenddate != null && $model->workingenddate != '')
+                $model->workingenddate = date('Y-m-d', strtotime($model->workingenddate));
+            else
+                $model->workingenddate = null;
+            if($model->loginstartdate != null && $model->loginstartdate != '')
+                $model->loginstartdate = date('Y-m-d', strtotime($model->loginstartdate));
+            else
+                $model->loginstartdate = null;
+            if($model->loginenddate != null && $model->loginenddate != '')
+                $model->loginenddate = date('Y-m-d', strtotime($model->loginenddate));
+            else
+                $model->loginenddate = null;
+
+            if($model->username != null && $model->username != '' && ($model->password == null || $model->password == ''))
+                $model->password = bcrypt("nissanhippro");
+
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");
         });

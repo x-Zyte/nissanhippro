@@ -39,9 +39,11 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('/branch/read') }}',
                 datatype: "json",
-                colNames:['ชื่อสาขา', 'ที่อยู่', 'จังหวัด', 'เขต/อำเภอ', 'แขวง/ตำบล', 'รหัสไปรษณีย์','สำนักงานใหญ่','ช่องกุญแจ'],
+                colNames:['ชื่อสาขา','ชื่อสำหรับออกใบกำกับภาษี','เลขประจำตัวผู้เสียภาษี', 'ที่อยู่', 'จังหวัด', 'เขต/อำเภอ', 'แขวง/ตำบล', 'รหัสไปรษณีย์','สำนักงานใหญ่','ช่องกุญแจ'],
                 colModel:[
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'taxinvoicename',index:'taxinvoicename', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'taxpayerno',index:'taxpayerno', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'address',index:'address', width:200,editable: true,editoptions:{size:"50",maxlength:"200"},editrules:{required:true},align:'left'},
                     {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$provinceselectlist}}",
@@ -210,6 +212,10 @@
                     afterSubmit : function(response, postdata)
                     {
                         if(response.responseText == "ok"){
+                            $.get('branch/readSelectlistForDisplayInGrid', function(data){
+                                $(grid_selector).setColProp('amphurid', { editoptions: { value: data.amphurselectlist } });
+                                $(grid_selector).setColProp('districtid', { editoptions: { value: data.districtselectlist } });
+                            });
                             alert("ดำเนินการสำเร็จ")
                             return [true,""];
                         }else{

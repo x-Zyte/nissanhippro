@@ -159,7 +159,7 @@
                             {name:'carmodelid1',index:'carmodelid1', width:100, editable: true,edittype:"select",formatter:'select', editrules:{required:true},editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
                             {name:'carmodelid2',index:'carmodelid2', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
                             {name:'carmodelid3',index:'carmodelid3', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
-                            {name:'colorid1',index:'colorid1', width:150, editable: true,edittype:"select",formatter:'select', editrules:{required:true},editoptions:{value:"{{$colorselectlist}}"},align:'left'},
+                            {name:'colorid1',index:'colorid1', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$colorselectlist}}"},align:'left'},
                             {name:'colorid2',index:'colorid2', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$colorselectlist}}"},align:'left'},
                             {name:'colorid3',index:'colorid3', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$colorselectlist}}"},align:'left'},
                             {name:'buyingtrends',index:'buyingtrends', width:100, editable: true,edittype:"select",formatter:'select', editrules:{required:true},editoptions:{value: ":เลือกแนวโน้มการซื้อ;0:A-HOT(7 วัน);1:B-HOT(15 วัน);2:C-HOT(30 วัน);3:เกิน 1 เดือน"},align:'left'},
@@ -408,7 +408,11 @@
                     afterSubmit : function(response, postdata)
                     {
                         if(response.responseText == "ok"){
-                            alert("ดำเนินการสำเร็จ")
+                            $.get('customerreal/readSelectlistForDisplayInGrid', function(data){
+                                $(grid_selector).setColProp('amphurid', { editoptions: { value: data.amphurselectlist } });
+                                $(grid_selector).setColProp('districtid', { editoptions: { value: data.districtselectlist } });
+                            });
+                            alert("ดำเนินการสำเร็จ");
                             return [true,""];
                         }else{
                             return [false,response.responseText];

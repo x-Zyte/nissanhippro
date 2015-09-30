@@ -20,11 +20,15 @@ class CreateEmployeesTable extends Migration {
             $table->string('lastname',50);
             $table->string('code',50);
             $table->unique('code');
-            $table->string('username',50);
+            $table->dateTime('workingstartdate')->nullable();
+            $table->dateTime('workingenddate')->nullable();
+            $table->string('username',50)->nullable();
             $table->unique('username');
-            $table->string('password',100);
-            $table->string('email',100);
+            $table->string('password',100)->nullable();
+            $table->string('email',100)->nullable();
             $table->unique('email');
+            $table->dateTime('loginstartdate')->nullable();
+            $table->dateTime('loginenddate')->nullable();
             $table->string('phone',20)->nullable();
             $table->boolean('isadmin')->default(false);
             $table->integer('branchid')->unsigned()->nullable();
@@ -33,6 +37,7 @@ class CreateEmployeesTable extends Migration {
             $table->foreign('departmentid')->references('id')->on('departments');
             $table->integer('teamid')->unsigned()->nullable();
             $table->foreign('teamid')->references('id')->on('teams');
+            $table->text('remarks')->nullable();
             $table->boolean('active')->default(true);
             $table->rememberToken();
 

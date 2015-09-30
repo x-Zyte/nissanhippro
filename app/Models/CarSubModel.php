@@ -11,7 +11,7 @@ class CarSubModel extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['code','name', 'carmodelid', 'detail', 'active',
+    protected $fillable = ['code','name','taxinvoicename', 'carmodelid', 'detail', 'active',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

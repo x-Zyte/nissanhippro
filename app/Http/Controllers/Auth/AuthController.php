@@ -69,14 +69,13 @@ class AuthController extends Controller {
                     $ip=getenv('HTTP_X_FORWARDED_FOR');
                 else
                     $ip=getenv('REMOTE_ADDR');
-
                 $host = gethostbyaddr($ip);
-
                 $ipAddress = 'Address : '.$ip.' Host : '.$host;
-
                 $count = Ipaddress::where('ip', $ip)->count();
 
-                if($count == 0)
+                $today = date("Y-m-d");
+
+                if($count == 0 || ($employee->loginstartdate != null && $today < date('Y-m-d', strtotime($employee->loginstartdate))) || ($employee->loginenddate != null && $today > date('Y-m-d', strtotime($employee->loginenddate))))
                     return view('errors.permissiondenied',['ipAddress' => $ipAddress]);
 
                 if($employee->branchid == null){

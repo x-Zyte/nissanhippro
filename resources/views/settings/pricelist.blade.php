@@ -180,6 +180,9 @@
                     afterSubmit : function(response, postdata)
                     {
                         if(response.responseText == "ok"){
+                            $.get('pricelist/readSelectlistForDisplayInGrid', function(data){
+                                $(grid_selector).setColProp('carsubmodelid', { editoptions: { value: data.carsubmodelselectlist } });
+                            });
                             alert("ดำเนินการสำเร็จ")
                             return [true,""];
                         }else{

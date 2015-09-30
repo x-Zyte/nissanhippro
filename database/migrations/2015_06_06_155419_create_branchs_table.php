@@ -15,7 +15,9 @@ class CreateBranchsTable extends Migration {
 		Schema::create('branchs', function(Blueprint $table)
 		{
             $table->increments('id');
-            $table->string('name',50);
+            $table->string('name',100);
+            $table->string('taxinvoicename',100);
+            $table->string('taxpayerno',50);
             $table->text('address');
             $table->integer('districtid')->unsigned();
             $table->foreign('districtid')->references('id')->on('districts');

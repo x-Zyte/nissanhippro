@@ -16,7 +16,7 @@ class CarSubModelRepository extends EloquentRepositoryAbstract
     {
         $this->Database = new CarSubModel;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id', 'carmodelid','code', 'name', 'detail');
+        $this->crudFields = array('oper', 'id', 'carmodelid','code', 'name','taxinvoicename', 'detail');
         $this->uniqueKeySingles = array();
         $this->uniqueKeyMultiples = array(array('field'=>'carmodelid','showInMsg'=>false,'label'=>'แบบรถ'),
             array('field'=>'code','showInMsg'=>true,'label'=>'แบบรถนี้ รหัสรุ่น'));
