@@ -345,6 +345,15 @@
                         <b class="arrow"></b>
 
                         <ul class="submenu @yield('menu-subsettingcar-class')" style="@yield('menu-subsettingcar-style')">
+                            <li class="@yield('menu-settingcarbrand-class')">
+                                <a href="{{ url('/carbrand') }}">
+                                    <i class="menu-icon fa fa-minus"></i>
+                                    ยี่ห้อรถ
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+
                             <li class="@yield('menu-settingcartype-class')">
                                 <a href="{{ url('/cartype') }}">
                                     <i class="menu-icon fa fa-minus"></i>

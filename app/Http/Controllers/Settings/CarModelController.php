@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Models\CarBrand;
 use App\Models\CarType;
 use App\Facades\GridEncoder;
 use App\Http\Controllers\Controller;
@@ -30,6 +31,13 @@ class CarModelController extends Controller {
             array_push($cartypeselectlist,$ct->id.':'.$ct->name);
         }
 
+        $carbrands = CarBrand::all(['id','name']);
+        $carbrandselectlist = array();
+        array_push($carbrandselectlist,':เลือกยี่ห้อรถ');
+        foreach($carbrands as $item){
+            array_push($carbrandselectlist,$item->id.':'.$item->name);
+        }
+
         $colors = Color::all(['id','code','name']);
         $colorselectlist = array();
         array_push($colorselectlist,':เลือกสี');
@@ -39,6 +47,7 @@ class CarModelController extends Controller {
 
         return view('settings.carmodel',
             ['cartypeselectlist' => implode(";",$cartypeselectlist),
+                'carbrandselectlist' => implode(";",$carbrandselectlist),
                 'colorselectlist' => implode(";",$colorselectlist)]);
     }
 

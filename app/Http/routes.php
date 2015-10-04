@@ -60,6 +60,11 @@ Route::get('team', 'Settings\TeamController@index');
 Route::get('team/read', 'Settings\TeamController@read');
 Route::post('team/update', 'Settings\TeamController@update');
 
+//CarBrand
+Route::get('carbrand', 'Settings\CarBrandController@index');
+Route::get('carbrand/read', 'Settings\CarBrandController@read');
+Route::post('carbrand/update', 'Settings\CarBrandController@update');
+
 //Cartype
 Route::get('cartype', 'Settings\CarTypeController@index');
 Route::get('cartype/read', 'Settings\CarTypeController@read');

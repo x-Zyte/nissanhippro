@@ -59,7 +59,7 @@
                                     });
                                 });
                             }}]
-                        }
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }
                     },
                     {name:'amphurid',index:'amphurid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$amphurselectlist}}",
@@ -74,7 +74,7 @@
                                     });
                                 });
                             }}]
-                        }
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$amphurselectlist}}" }
                     },
                     {name:'districtid',index:'districtid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$districtselectlist}}",
@@ -88,11 +88,12 @@
                                     //});
                                 });
                             }}]
-                        }
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$districtselectlist}}" }
                     },
                     {name:'zipcode',index:'zipcode', width:100,editable: true,editoptions:{size:"5",maxlength:"5"},editrules:{required:true, number:true},align:'left'},
                     {name:'isheadquarter',index:'isheadquarter', width:80, editable: true,edittype:"checkbox",editoptions: {value:"1:0"},
-                        editrules:{custom: true, custom_func: check_headquarter},formatter: booleanFormatter,unformat: aceSwitch,align:'center'},
+                        editrules:{custom: true, custom_func: check_headquarter},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
                     {name:'keyslot',index:'keyslot', width:50,editable: true,editoptions:{size:"3"},
                         editrules:{number:true,custom: true, custom_func: check_keyslot},align:'center'}
                 ],
@@ -305,6 +306,7 @@
                     }
                     ,
                     multipleSearch: true,
+                    sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le', 'bw', 'bn', 'ew', 'en', 'cn', 'nc'],
                     editData: {
                         _token: "{{ csrf_token() }}"
                     }

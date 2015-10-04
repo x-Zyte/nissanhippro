@@ -10911,12 +10911,12 @@ th[aria-selected=true] .ui-jqgrid-sortable {
     height: 26px;
     line-height: 26px;
     width: auto;
-    max-width: 95%;
-    margin-bottom: 0;
+    max-width: 100%;
+    margin-right: 5px;
 }
-.ui-jqdialog-content .searchFilter .input-elm {
+.ui-jqdialog-content .searchFilter .input-elm[role='textbox']{
     margin-bottom: 0;
-    height: 18px;
+    height: 15px;
     line-height: 18px;
     width: 95% !important;
     padding-left: 1px;

@@ -47,21 +47,39 @@
                     },*/
                     //{hidden: true},
                     {name:'code',index:'code', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'title',index:'title', width:60, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว"},align:'left'},
+                    {name:'title',index:'title', width:60, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว"},align:'left'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว" }},
                     {name:'firstname',index:'firstname', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'lastname',index:'lastname', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'workingstartdate',index:'workingstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'},
-                    {name:'workingenddate',index:'workingenddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'},
+                    {name:'workingstartdate',index:'workingstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
+                        ,searchrules:{required:true}
+                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
+                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
+                    {name:'workingenddate',index:'workingenddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
+                        ,searchrules:{required:true}
+                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
+                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
                     {name:'username',index:'username', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},align:'left'},
-                    {name:'loginstartdate',index:'loginstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'},
-                    {name:'loginenddate',index:'loginenddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'},
+                    {name:'loginstartdate',index:'loginstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
+                        ,searchrules:{required:true}
+                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
+                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
+                    {name:'loginenddate',index:'loginenddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
+                        ,searchrules:{required:true}
+                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
+                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
                     {name:'email',index:'email', width:120,editable: true,editoptions:{size:"30",maxlength:"50"},align:'left'},
                     {name:'phone',index:'phone', width:100,editable: true,editoptions:{size:"20",maxlength:"20"},editrules:{},align:'left'},
-                    {name:'isadmin',index:'isadmin', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'},
-                    {name:'branchid',index:'branchid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$branchselectlist}}"},formoptions:{elmsuffix:'(เป็นผู้ดูแลไม่ต้องเลือก)'}},
-                    {name:'departmentid',index:'departmentid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$departmentselectlist}}"},formoptions:{elmsuffix:'(เป็นผู้ดูแลไม่ต้องเลือก)'}},
-                    {name:'teamid',index:'teamid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$teamselectlist}}"},formoptions:{elmsuffix:'(เป็นผู้ดูแลไม่ต้องเลือก)'}},
-                    {name:'active',index:'active', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"1"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'},
+                    {name:'isadmin',index:'isadmin', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
+                    {name:'branchid',index:'branchid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$branchselectlist}}"},formoptions:{elmsuffix:'(เป็นผู้ดูแลไม่ต้องเลือก)'}
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$branchselectlist}}" }},
+                    {name:'departmentid',index:'departmentid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$departmentselectlist}}"},formoptions:{elmsuffix:'(เป็นผู้ดูแลไม่ต้องเลือก)'}
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$departmentselectlist}}" }},
+                    {name:'teamid',index:'teamid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$teamselectlist}}"},formoptions:{elmsuffix:'(เป็นผู้ดูแลไม่ต้องเลือก)'}
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$teamselectlist}}" }},
+                    {name:'active',index:'active', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"1"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
                     {name:'remarks',index:'remarks', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},align:'left'}
                 ],
                 viewrecords : true,
@@ -117,7 +135,7 @@
                         colModel:[
                             {name:'menu',index:'menu', width:150, editable: true,edittype:"select",formatter:'select',
                                 editoptions:{value: "รถ:รถ;ลูกค้า:ลูกค้า;พนักงาน:พนักงาน;การตั้งค่าส่วนกลาง:การตั้งค่าส่วนกลาง;การตั้งค่ารถ:การตั้งค่ารถ"}
-                                ,align:'left'}
+                                ,align:'left',stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "รถ:รถ;ลูกค้า:ลูกค้า;พนักงาน:พนักงาน;การตั้งค่าส่วนกลาง:การตั้งค่าส่วนกลาง;การตั้งค่ารถ:การตั้งค่ารถ" }}
                         ],
                         viewrecords : true,
                         rowNum:10,
@@ -266,6 +284,7 @@
                                 }
                                 ,
                                 multipleSearch: true,
+                                sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le', 'bw', 'bn', 'ew', 'en', 'cn', 'nc'],
                                 editData: {
                                     _token: "{{ csrf_token() }}"
                                 }
@@ -412,6 +431,7 @@
                     }
                     ,
                     multipleSearch: true,
+                    sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le', 'bw', 'bn', 'ew', 'en', 'cn', 'nc'],
                     editData: {
                         _token: "{{ csrf_token() }}"
                     }

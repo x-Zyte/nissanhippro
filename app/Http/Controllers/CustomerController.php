@@ -85,7 +85,11 @@ class CustomerController extends Controller {
             array_push($employeeselectlist,$emp->id.':'.$emp->firstname.' '.$emp->lastname);
         }
 
-        $carmodels = CarModel::all(['id','name']);
+        $carmodels = CarModel::whereHas("carbrand", function($q)
+        {
+            $q->where('ismain',true);
+
+        })->orderBy('name', 'asc')->get(['id', 'name']);
         $carmodelselectlist = array();
         array_push($carmodelselectlist,':เลือกแบบ');
         foreach($carmodels as $cm){

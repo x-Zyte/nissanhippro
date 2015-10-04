@@ -83,6 +83,9 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
                     continue;
                 }
 
+                if (strpos($filter['field'],'date') !== false)
+                    $filter['data'] = date('Y-m-d', strtotime($filter['data']));
+
                 $query->where($filter['field'], $filter['op'], $filter['data']);
             }
         })
@@ -194,6 +197,9 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
                     $query->whereNotIn($filter['field'], explode(',',$filter['data']));
                     continue;
                 }
+
+                if (strpos($filter['field'],'date') !== false)
+                    $filter['data'] = date('Y-m-d', strtotime($filter['data']));
 
                 $query->where($filter['field'], $filter['op'], $filter['data']);
             }

@@ -43,6 +43,7 @@ class CreateCustomerExpectationsTable extends Migration {
             $table->integer('conditionfinanceperiod')->nullable();
             $table->dateTime('nextappointmentdate')->nullable();
             $table->string('remarks',200)->nullable();
+            $table->boolean('active')->default(true);
 
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');

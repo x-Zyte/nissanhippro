@@ -24,7 +24,11 @@ class PricelistController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $carmodels = CarModel::orderBy('name', 'asc')->get(['id', 'name']);
+        $carmodels = CarModel::whereHas("carbrand", function($q)
+        {
+            $q->where('ismain',true);
+
+        })->orderBy('name', 'asc')->get(['id', 'name']);
         $carmodelselectlist = array();
         array_push($carmodelselectlist,':เลือกแบบ');
         foreach($carmodels as $item){

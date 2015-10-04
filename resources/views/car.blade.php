@@ -44,7 +44,8 @@
                 datatype: "json",
                 colNames:['จังหวัด','แบบ','รุ่น','ซื้อจาก','ชื่อดีลเลอร์อื่น','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'กุญแจ', 'สี', 'รถสำหรับ','ใบรับรถเข้า', 'ใบส่งรถให้ลูกค้า'],
                 colModel:[
-                    {name:'provinceid',index:'provinceid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince},
+                    {name:'provinceid',index:'provinceid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
                     {name:'carmodelid',index:'carmodelid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$carmodelselectlist}}",
                             dataEvents :[{type: 'change', fn: function(e){
@@ -63,22 +64,35 @@
                                     });
                                 });
                             }}]
-                        }
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carmodelselectlist}}" }
                     },
-                    {name:'carsubmodelid',index:'carsubmodelid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$carsubmodelselectlist}}"}},
-                    {name:'receivetype',index:'receivetype', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:NMT;1:ดีลเลอร์อื่น"},align:'center'},
+                    {name:'carsubmodelid',index:'carsubmodelid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$carsubmodelselectlist}}"}
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carsubmodelselectlist}}" }},
+                    {name:'receivetype',index:'receivetype', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:NMT;1:ดีลเลอร์อื่น"},align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:NMT;1:ดีลเลอร์อื่น" }},
                     {name:'dealername',index:'dealername', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},align:'left'},
                     {name:'no',index:'no', width:50,editable: true,editoptions:{size:"5"},align:'center'},
-                    {name:'dodate',index:'dodate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'},
-                    {name:'receiveddate',index:'receiveddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'},
+                    {name:'dodate',index:'dodate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'
+                        ,searchrules:{required:true}
+                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
+                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
+                    {name:'receiveddate',index:'receiveddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'
+                        ,searchrules:{required:true}
+                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
+                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
                     {name:'engineno',index:'engineno', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'chassisno',index:'chassisno', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'keyno',index:'keyno', width:50,editable: true,editoptions:{size:"5"},editrules:{number:true},align:'center'},
-                    {name:'colorid',index:'colorid', width:180, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$colorselectlist}}"}},
-                    {name:'objective',index:'objective', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:ขาย;1:ใช้งาน;2:ทดสอบ"},align:'center'},
-                    /*{name:'issold',index:'issold', width:100, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'},
-                    {name:'isregistered',index:'isregistered', width:100, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'},
-                    {name:'isdelivered',index:'isdelivered', width:100, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'},*/
+                    {name:'colorid',index:'colorid', width:180, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$colorselectlist}}"}
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }},
+                    {name:'objective',index:'objective', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:ขาย;1:ใช้งาน;2:ทดสอบ"},align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:ขาย;1:ใช้งาน;2:ทดสอบ" }},
+                    /*{name:'issold',index:'issold', width:100, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
+                     ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
+                    {name:'isregistered',index:'isregistered', width:100, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
+                     ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
+                    {name:'isdelivered',index:'isdelivered', width:100, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
+                     ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},*/
                     {name:'receivecarfilepath',index:'receivecarfilepath',width:100,editable: true,edittype:'file',editoptions:{enctype:"multipart/form-data"},formatter:imageLinkFormatter,search:false,align:'center'},
                     {name:'deliverycarfilepath',index:'deliverycarfilepath',width:100,editable: true,edittype:'file',editoptions:{enctype:"multipart/form-data"},formatter:imageLinkFormatter,search:false,align:'center'}
                 ],
@@ -302,6 +316,7 @@
                     }
                     ,
                     multipleSearch: true,
+                    sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le', 'bw', 'bn', 'ew', 'en', 'cn', 'nc'],
                     editData: {
                         _token: "{{ csrf_token() }}"
                     }

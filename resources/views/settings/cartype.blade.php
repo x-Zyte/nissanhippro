@@ -189,6 +189,7 @@
                     }
                     ,
                     multipleSearch: true,
+                    sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le', 'bw', 'bn', 'ew', 'en', 'cn', 'nc'],
                     editData: {
                         _token: "{{ csrf_token() }}"
                     }

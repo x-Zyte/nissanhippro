@@ -41,8 +41,10 @@
                 datatype: "json",
                 colNames:['ประเภทรถ', 'ยี่ห้อ', 'ชื่อแบบ','ค่าทะเบียน', 'รายละเอียด'],
                 colModel:[
-                    {name:'cartypeid',index:'cartypeid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$cartypeselectlist}}"},editrules:{required:true},align:'left'},
-                    {name:'brand',index:'brand', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'cartypeid',index:'cartypeid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$cartypeselectlist}}"},editrules:{required:true},align:'left',
+                        stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$cartypeselectlist}}" }},
+                    {name:'carbrandid',index:'carbrandid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carbrandselectlist}}"},editrules:{required:true},align:'left',
+                        stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carbrandselectlist}}" }},
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'registercost',index:'registercost', width:100,editable: true,editoptions:{defaultValue:'0.00'},editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
@@ -99,7 +101,8 @@
                         datatype: "json",
                         colNames:['สี'],
                         colModel:[
-                            {name:'colorid',index:'colorid', width:600, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value:'{{$colorselectlist}}'},align:'left'}
+                            {name:'colorid',index:'colorid', width:600, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value:'{{$colorselectlist}}'},align:'left'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }}
                         ],
                         viewrecords : true,
                         rowNum:10,
@@ -248,6 +251,7 @@
                                 }
                                 ,
                                 multipleSearch: true,
+                                sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le', 'bw', 'bn', 'ew', 'en', 'cn', 'nc'],
                                 editData: {
                                     _token: "{{ csrf_token() }}"
                                 }
@@ -444,6 +448,7 @@
                                 }
                                 ,
                                 multipleSearch: true,
+                                sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le', 'bw', 'bn', 'ew', 'en', 'cn', 'nc'],
                                 editData: {
                                     _token: "{{ csrf_token() }}"
                                 }
@@ -589,6 +594,7 @@
                     }
                     ,
                     multipleSearch: true,
+                    sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le', 'bw', 'bn', 'ew', 'en', 'cn', 'nc'],
                     editData: {
                         _token: "{{ csrf_token() }}"
                     }

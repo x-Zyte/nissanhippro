@@ -15,7 +15,7 @@ class CustomerExpectation extends Model {
     protected $fillable = ['customerid','employeeid', 'date','carmodelid1','carmodelid2','carmodelid3',
         'colorid1','colorid2','colorid3','buyingtrends','newcarthingsrequired','otherconsideration','oldcarspecifications',
         'budgetpermonth','conditionproposed','conditionfinancedown','conditionfinanceinterest','conditionfinanceperiod',
-        'nextappointmentdate','remarks',
+        'nextappointmentdate','remarks','active',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

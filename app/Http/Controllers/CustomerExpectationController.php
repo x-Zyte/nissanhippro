@@ -32,11 +32,14 @@ class CustomerExpectationController extends Controller {
         if(in_array("filters", $input)){
             $input = Input::all();
             $filters = json_decode(str_replace('\'','"',$input['filters']), true);
-            array_push($filters['rules'],array("field"=>"customerid","op"=>"eq","data"=>$input['customerid']));
+            array_push($filters['rules'],array("field"=>"customerid","op"=>"eq","data"=>$input['customerid']),
+                array("field"=>"active","op"=>"eq","data"=>true));
             $input['filters'] = json_encode($filters);
         }
         else{
-            $input = array_add($input,'filters',json_encode(array("groupOp"=>"AND","rules"=>array(array("field"=>"customerid","op"=>"eq","data"=>$input['customerid'])))));
+            $input = array_add($input,'filters',json_encode(array("groupOp"=>"AND",
+                "rules"=>array(array("field"=>"customerid","op"=>"eq","data"=>$input['customerid']),
+                    array("field"=>"active","op"=>"eq","data"=>true)))));
         }
         GridEncoder::encodeRequestedData(new CustomerExpectationRepository(), $input);
     }

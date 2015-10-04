@@ -45,14 +45,20 @@
                 datatype: "json",
                 colNames:['จังหวัด', 'คำนำหน้า', 'ชื่อจริง', 'นามสกุล', 'เบอร์โทร1', 'เบอร์โทร2', 'อาชีพ', 'วันเกิด', 'ที่อยู่', 'จังหวัด', 'เขต/อำเภอ', 'แขวง/ตำบล', 'รหัสไปรษณีย์'],
                 colModel:[
-                    {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince},
-                    {name:'title',index:'title', width:70, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว"},align:'left'},
+                    {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
+                    {name:'title',index:'title', width:70, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว"},align:'left'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว" }},
                     {name:'firstname',index:'firstname', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'lastname',index:'lastname', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},align:'left'},
                     {name:'phone1',index:'phone1', width:100,editable: true,editrules:{required:true},editoptions:{size:"20",maxlength:"20"},align:'left'},
                     {name:'phone2',index:'phone2', width:100,editable: true,editoptions:{size:"20",maxlength:"20"},align:'left'},
-                    {name:'occupationid',index:'occupationid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$occupationselectlist}}"}},
-                    {name:'birthdate',index:'birthdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'},
+                    {name:'occupationid',index:'occupationid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$occupationselectlist}}"}
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$occupationselectlist}}" }},
+                    {name:'birthdate',index:'birthdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
+                        ,searchrules:{required:true}
+                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
+                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
                     {name:'address',index:'address', width:150,editable: true,editoptions:{size:"50",maxlength:"200"},align:'left'},
                     {name:'addprovinceid',index:'addprovinceid', width:100, editable: true,edittype:"select",formatter:'select',align:'left',
                         editoptions:{value: "{{$provinceselectlist}}",
@@ -68,7 +74,7 @@
                                     });
                                 });
                             }}]
-                        }
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }
                     },
                     {name:'amphurid',index:'amphurid', width:100, editable: true,edittype:"select",formatter:'select',align:'left',
                         editoptions:{value: "{{$amphurselectlist}}",
@@ -83,7 +89,7 @@
                                     });
                                 });
                             }}]
-                        }
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$amphurselectlist}}" }
                     },
                     {name:'districtid',index:'districtid', width:100, editable: true,edittype:"select",formatter:'select',align:'left',
                         editoptions:{value: "{{$districtselectlist}}",
@@ -97,7 +103,7 @@
                                     //});
                                 });
                             }}]
-                        }
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$districtselectlist}}" }
                     },
                     {name:'zipcode',index:'zipcode', width:100,editable: true,editoptions:{size:"5",maxlength:"5"},align:'left'}
                 ],
@@ -154,15 +160,26 @@
                             'แนวโน้มการซื้อ','สิ่งที่ต้องการจากรถใหม่','ยี่ห้ออื่นที่พิจารณา','ข้อกำหนดในรถเก่า','งบประมาณ/เดือน','เงื่อนไขที่เสนอไป',
                             'เงื่อนไขไฟแนนซ์: ดาวน์','เงื่อนไขไฟแนนซ์: ดอกเบี้ย(%)','เงื่อนไขไฟแนนซ์: จำนวนงวด','นัดหมายครั้งถัดไป','หมายเหตุ'],
                         colModel:[
-                            {name:'employeeid',index:'employeeid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value:"{{$employeeselectlist}}"},align:'left'},
-                            {name:'date',index:'date',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'},
-                            {name:'carmodelid1',index:'carmodelid1', width:100, editable: true,edittype:"select",formatter:'select', editrules:{required:true},editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
-                            {name:'carmodelid2',index:'carmodelid2', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
-                            {name:'carmodelid3',index:'carmodelid3', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'},
-                            {name:'colorid1',index:'colorid1', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$colorselectlist}}"},align:'left'},
-                            {name:'colorid2',index:'colorid2', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$colorselectlist}}"},align:'left'},
-                            {name:'colorid3',index:'colorid3', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$colorselectlist}}"},align:'left'},
-                            {name:'buyingtrends',index:'buyingtrends', width:100, editable: true,edittype:"select",formatter:'select', editrules:{required:true},editoptions:{value: ":เลือกแนวโน้มการซื้อ;0:A-HOT(7 วัน);1:B-HOT(15 วัน);2:C-HOT(30 วัน);3:เกิน 1 เดือน"},align:'left'},
+                            {name:'employeeid',index:'employeeid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value:"{{$employeeselectlist}}"},align:'left'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$employeeselectlist}}" }},
+                            {name:'date',index:'date',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'
+                                ,searchrules:{required:true}
+                                ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
+                                ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
+                            {name:'carmodelid1',index:'carmodelid1', width:100, editable: true,edittype:"select",formatter:'select', editrules:{required:true},editoptions:{value:"{{$carmodelselectlist}}"},align:'left'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carmodelselectlist}}" }},
+                            {name:'carmodelid2',index:'carmodelid2', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carmodelselectlist}}" }},
+                            {name:'carmodelid3',index:'carmodelid3', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carmodelselectlist}}"},align:'left'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carmodelselectlist}}" }},
+                            {name:'colorid1',index:'colorid1', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$colorselectlist}}"},align:'left'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }},
+                            {name:'colorid2',index:'colorid2', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$colorselectlist}}"},align:'left'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }},
+                            {name:'colorid3',index:'colorid3', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$colorselectlist}}"},align:'left'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }},
+                            {name:'buyingtrends',index:'buyingtrends', width:100, editable: true,edittype:"select",formatter:'select', editrules:{required:true},editoptions:{value: ":เลือกแนวโน้มการซื้อ;0:A-HOT(7 วัน);1:B-HOT(15 วัน);2:C-HOT(30 วัน);3:เกิน 1 เดือน"},align:'left'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: ":เลือกแนวโน้มการซื้อ;0:A-HOT(7 วัน);1:B-HOT(15 วัน);2:C-HOT(30 วัน);3:เกิน 1 เดือน" }},
                             {name:'newcarthingsrequired',index:'newcarthingsrequired', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
                             {name:'otherconsideration',index:'otherconsideration', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
                             {name:'oldcarspecifications',index:'oldcarspecifications', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
@@ -175,7 +192,10 @@
                                 editoptions:{size:"10",defaultValue:'0.00'}, formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2},hidden: true},
                             {name:'conditionfinanceperiod',index:'conditionfinanceperiod', width:50,editable: true,editoptions:{size:"2",maxlength:"2"},
                                 editrules:{number:true,edithidden:true},align:'center',hidden: true},
-                            {name:'nextappointmentdate',index:'nextappointmentdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'},
+                            {name:'nextappointmentdate',index:'nextappointmentdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
+                                ,searchrules:{required:true}
+                                ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
+                                ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
                             {name:'remarks',index:'remarks', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}}
                         ],
                         viewrecords : true,
@@ -324,6 +344,7 @@
                                 }
                                 ,
                                 multipleSearch: true,
+                                sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le', 'bw', 'bn', 'ew', 'en', 'cn', 'nc'],
                                 editData: {
                                     _token: "{{ csrf_token() }}"
                                 }
@@ -502,6 +523,7 @@
                     }
                     ,
                     multipleSearch: true,
+                    sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le', 'bw', 'bn', 'ew', 'en', 'cn', 'nc'],
                     editData: {
                         _token: "{{ csrf_token() }}"
                     }

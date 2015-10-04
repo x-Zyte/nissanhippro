@@ -1,14 +1,14 @@
 @extends('app')
 
 @section('menu-settings-class','active hsub open')
-@section('menu-settingcore-class','active hsub open')
-@section('menu-subsettingcore-class','nav-show')
-@section('menu-subsettingcore-style','display: block;')
-@section('menu-settingteam-class','active')
+@section('menu-settingcar-class','active hsub open')
+@section('menu-subsettingcar-class','nav-show')
+@section('menu-subsettingcar-style','display: block;')
+@section('menu-settingcarbrand-class','active')
 
 @section('content')
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-users"></i> ทีมการขาย</h3>
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-car"></i> ยี่ห้อรถ</h3>
 
     <table id="grid-table"></table>
 
@@ -37,12 +37,15 @@
             })
 
             $(grid_selector).jqGrid({
-                url:'{{ url('/team/read') }}',
+                url:'{{ url('/carbrand/read') }}',
                 datatype: "json",
-                colNames:['ชื่อทีม', 'รายละเอียด'],
+                colNames:['ชื่อยี่ห้อ', 'รายละเอียด', 'ยี่ห้อหลัก'],
                 colModel:[
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
+                    {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'},
+                    {name:'ismain',index:'ismain', width:80, editable: true,edittype:"checkbox",editoptions: {value:"1:0"},
+                        formatter: booleanFormatter,unformat: aceSwitch,align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }}
                 ],
                 viewrecords : true,
                 rowNum:10,
@@ -63,7 +66,7 @@
                     }, 0);
                 },
 
-                editurl: "team/update",
+                editurl: "carbrand/update",
                 caption: "",
                 height:'100%'
             });
