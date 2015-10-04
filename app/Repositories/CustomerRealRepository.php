@@ -16,6 +16,8 @@ class CustomerRealRepository extends CustomerRepository
     public function __construct()
     {
         parent::__construct();
-        $this->Database = Customer::has('customerExpectations','<',0);
+        //$this->Database = Customer::has('customerExpectations','<',0);
+        //where ที่ มีใบชำระเงินมากกว่า 0
+        $this->Database = Customer::where('zipcode','11111');
     }
 }

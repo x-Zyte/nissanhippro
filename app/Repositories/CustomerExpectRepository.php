@@ -16,6 +16,7 @@ class CustomerExpectRepository extends CustomerRepository
     public function __construct()
     {
         parent::__construct();
-        $this->Database = Customer::has('customerExpectations','>=',0);
+        //where ที่ มีใบชำระเงินน้อยกว่า 1
+        $this->Database = Customer::has('customerExpectations','>',0)->orwhere('zipcode','<>','11111');
     }
 }

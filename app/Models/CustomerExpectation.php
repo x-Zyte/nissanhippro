@@ -35,6 +35,7 @@ class CustomerExpectation extends Model {
             if($model->nextappointmentdate != null && $model->nextappointmentdate != '')
                 $model->nextappointmentdate = date('Y-m-d', strtotime($model->nextappointmentdate));
 
+            $model->active = true;
             $model->date = date('Y-m-d', strtotime($model->date));
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
