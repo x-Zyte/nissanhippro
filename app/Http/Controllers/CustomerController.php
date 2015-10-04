@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Input;
 
 class CustomerController extends Controller {
 
-    protected $viewname;
+    protected $viewname = 'customer';
     protected $menuPermissionName = "ลูกค้า";
 
     public function __construct()

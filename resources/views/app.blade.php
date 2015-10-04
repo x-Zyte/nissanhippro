@@ -236,6 +236,15 @@
                 <b class="arrow"></b>
 
                 <ul class="submenu">
+                    <li class="@yield('menu-customerall-class')">
+                        <a href="{{ url('/customer') }}">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            <span class="menu-text"> ลูกค้าทั้งหมด </span>
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
                     <li class="@yield('menu-customerexpect-class')">
                         <a href="{{ url('/customerexpect') }}">
                             <i class="menu-icon fa fa-caret-right"></i>

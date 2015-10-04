@@ -100,6 +100,12 @@ Route::get('insurancecompany', 'Settings\InsuranceCompanyController@index');
 Route::get('insurancecompany/read', 'Settings\InsuranceCompanyController@read');
 Route::post('insurancecompany/update', 'Settings\InsuranceCompanyController@update');
 
+//Customer
+Route::get('customer', 'CustomerController@index');
+Route::get('customer/read', 'CustomerController@read');
+Route::post('customer/update', 'CustomerController@update');
+Route::get('customer/readSelectlistForDisplayInGrid', 'CustomerController@readSelectlistForDisplayInGrid');
+
 //CustomerExpect
 Route::get('customerexpect', 'CustomerExpectController@index');
 Route::get('customerexpect/read', 'CustomerExpectController@read');
