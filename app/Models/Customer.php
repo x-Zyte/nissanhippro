@@ -11,7 +11,7 @@ class Customer extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['title', 'firstname', 'lastname', 'phone1', 'phone2','occupationid','birthdate', 'address',
+    protected $fillable = ['isreal','statusexpect','title', 'firstname', 'lastname', 'phone1', 'phone2','occupationid','birthdate', 'address',
         'districtid', 'amphurid', 'addprovinceid', 'zipcode', 'provinceid',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
@@ -27,6 +27,11 @@ class Customer extends Model {
             if($model->addprovinceid == '') $model->addprovinceid = null;
             if($model->birthdate != null && $model->birthdate != '')
                 $model->birthdate = date('Y-m-d', strtotime($model->birthdate));
+            else
+                $model->birthdate = null;
+
+            $model->isreal = false;
+            $model->statusexpect = 0;
 
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
@@ -47,6 +52,8 @@ class Customer extends Model {
             if($model->addprovinceid == '') $model->addprovinceid = null;
             if($model->birthdate != null && $model->birthdate != '')
                 $model->birthdate = date('Y-m-d', strtotime($model->birthdate));
+            else
+                $model->birthdate = null;
 
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");

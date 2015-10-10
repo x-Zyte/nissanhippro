@@ -46,6 +46,9 @@ class CustomerExpectation extends Model {
         static::created(function($model)
         {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Add','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
+            $customer = Customer::find($model->customerid);
+            $customer->statusexpect = 1;
+            $customer->save();
         });
 
         static::updating(function($model)

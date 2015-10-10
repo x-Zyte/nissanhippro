@@ -226,43 +226,21 @@
             </li>
 
             <li class="@yield('menu-customer-class')" @if(!Auth::user()->isadmin && !in_array("ลูกค้า", $employeeMenus)) style="display: none" @endif>
-                <a href="javascript:void(0)" class="dropdown-toggle">
+                <a href="{{ url('/customer') }}">
                     <i class="menu-icon fa fa-users"></i>
                     <span class="menu-text"> ลูกค้า </span>
-
-                    <b class="arrow fa fa-angle-down"></b>
                 </a>
 
                 <b class="arrow"></b>
+            </li>
 
-                <ul class="submenu">
-                    <li class="@yield('menu-customerall-class')">
-                        <a href="{{ url('/customer') }}">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            <span class="menu-text"> ลูกค้าทั้งหมด </span>
-                        </a>
+            <li class="@yield('menu-preemption-class')" @if(!Auth::user()->isadmin && !in_array("ใบจอง", $employeeMenus)) style="display: none" @endif>
+                <a href="{{ url('/carpreemption') }}">
+                    <i class="menu-icon fa fa-file-text-o"></i>
+                    <span class="menu-text"> ใบจอง </span>
+                </a>
 
-                        <b class="arrow"></b>
-                    </li>
-
-                    <li class="@yield('menu-customerexpect-class')">
-                        <a href="{{ url('/customerexpect') }}">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            <span class="menu-text"> ลูกค้ามุ่งหวัง </span>
-                        </a>
-
-                        <b class="arrow"></b>
-                    </li>
-
-                    <li class="@yield('menu-customerreal-class')">
-                        <a href="{{ url('/customerreal') }}">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            <span class="menu-text"> ลูกค้าจริง </span>
-                        </a>
-
-                        <b class="arrow"></b>
-                    </li>
-                </ul>
+                <b class="arrow"></b>
             </li>
 
             <li class="@yield('menu-employee-class')" @if(!Auth::user()->isadmin && !in_array("พนักงาน", $employeeMenus)) style="display: none" @endif>
@@ -390,14 +368,23 @@
                                 <b class="arrow"></b>
                             </li>
 
-                            {{--<li class="@yield('menu-settingpricelist-class')">
+                            <li class="@yield('menu-settingpricelist-class')">
                                 <a href="{{ url('/pricelist') }}">
                                     <i class="menu-icon fa fa-minus"></i>
                                     รายการราคา
                                 </a>
 
                                 <b class="arrow"></b>
-                            </li>--}}
+                            </li>
+
+                            <li class="@yield('menu-settinggiveaway-class')">
+                                <a href="{{ url('/giveaway') }}">
+                                    <i class="menu-icon fa fa-minus"></i>
+                                    ของแถม
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
                         </ul>
                     </li>
                 </ul>

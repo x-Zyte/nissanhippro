@@ -5,7 +5,7 @@
 
 @section('content')
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-users"></i> ลูกค้าทั้งหมด</h3>
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-users"></i> ลูกค้า</h3>
 
     <table id="grid-table"></table>
 
@@ -43,10 +43,14 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('/customer/read') }}',
                 datatype: "json",
-                colNames:['จังหวัด', 'คำนำหน้า', 'ชื่อจริง', 'นามสกุล', 'เบอร์โทร1', 'เบอร์โทร2', 'อาชีพ', 'วันเกิด', 'ที่อยู่', 'จังหวัด', 'เขต/อำเภอ', 'แขวง/ตำบล', 'รหัสไปรษณีย์'],
+                colNames:['จังหวัด', 'ลูกค้าจริง', 'สถานะมุ่งหวัง', 'คำนำหน้า', 'ชื่อจริง', 'นามสกุล', 'เบอร์โทร1', 'เบอร์โทร2', 'อาชีพ', 'วันเกิด', 'ที่อยู่', 'จังหวัด', 'เขต/อำเภอ', 'แขวง/ตำบล', 'รหัสไปรษณีย์'],
                 colModel:[
                     {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
+                    {name:'isreal',index:'isreal', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
+                    {name:'statusexpect',index:'statusexpect', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:ไม่มีการติดตาม;1:กำลังติดตามอยู่;2:ยกเลิก - ไปซื้อดีลเลอร์อื่น;3:ยกเลิก - ไปซื้อยี่ห้ออื่น;4:ยกเลิก - เปลี่ยนใจไม่ซื้อแล้ว;5:ยกเลิก - ติดต่อไม่ได้"},align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:ไม่มีการติดตาม;1:กำลังติดตามอยู่;2:ยกเลิก - ไปซื้อดีลเลอร์อื่น;3:ยกเลิก - ไปซื้อยี่ห้ออื่น;4:ยกเลิก - เปลี่ยนใจไม่ซื้อแล้ว;5:ยกเลิก - ติดต่อไม่ได้" }},
                     {name:'title',index:'title', width:70, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว"},align:'left'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว" }},
                     {name:'firstname',index:'firstname', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
@@ -158,7 +162,7 @@
                         datatype: "json",
                         colNames:['พนักงานที่ติดตาม','วันที่','แบบที่สนใจ1','แบบที่สนใจ2','แบบที่สนใจ3', 'สีที่สนใจ1', 'สีที่สนใจ2', 'สีที่สนใจ3',
                             'แนวโน้มการซื้อ','สิ่งที่ต้องการจากรถใหม่','ยี่ห้ออื่นที่พิจารณา','ข้อกำหนดในรถเก่า','งบประมาณ/เดือน','เงื่อนไขที่เสนอไป',
-                            'เงื่อนไขไฟแนนซ์: ดาวน์','เงื่อนไขไฟแนนซ์: ดอกเบี้ย(%)','เงื่อนไขไฟแนนซ์: จำนวนงวด','นัดหมายครั้งถัดไป','หมายเหตุ'],
+                            'เงื่อนไขไฟแนนซ์: ดาวน์','เงื่อนไขไฟแนนซ์: ดอกเบี้ย(%)','เงื่อนไขไฟแนนซ์: จำนวนงวด','นัดหมายครั้งถัดไป','หมายเหตุ','active'],
                         colModel:[
                             {name:'employeeid',index:'employeeid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value:"{{$employeeselectlist}}"},align:'left'
                                 ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$employeeselectlist}}" }},
@@ -196,7 +200,9 @@
                                 ,searchrules:{required:true}
                                 ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
                                 ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
-                            {name:'remarks',index:'remarks', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}}
+                            {name:'remarks',index:'remarks', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
+                            {name:'active',index:'active', width:60, editable: true,edittype:"checkbox",hidden: true,editoptions: {value:"1:0", defaultValue:"1"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }}
                         ],
                         viewrecords : true,
                         rowNum:10,
@@ -290,7 +296,8 @@
                                 afterSubmit : function(response, postdata)
                                 {
                                     if(response.responseText == "ok"){
-                                        alert("ดำเนินการสำเร็จ")
+                                        alert("ดำเนินการสำเร็จ");
+                                        jQuery(grid_selector).trigger('reloadGrid');
                                         return [true,""];
                                     }else{
                                         return [false,response.responseText];
@@ -400,7 +407,7 @@
                         form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
                         style_edit_form(form);
 
-                        var provinceid = $('#provinceid').val();
+                        var provinceid = $('#addprovinceid').val();
                         var amphurid = $('#amphurid').val();
                         var districtid = $('#districtid').val();
 
@@ -419,6 +426,8 @@
                             });
                             $('#districtid').val(districtid);
                         });
+
+                        $('#tr_isreal', form).hide();
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
@@ -455,6 +464,9 @@
 
                         $('#amphurid').children('option:not(:first)').remove();
                         $('#districtid').children('option:not(:first)').remove();
+
+                        $('#tr_isreal', form).hide();
+                        $('#tr_statusexpect', form).hide();
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);

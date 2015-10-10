@@ -29,16 +29,22 @@ class CustomerExpectationController extends Controller {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
         $input = Input::all();
-        if(in_array("filters", $input)){
-            $input = Input::all();
-            $filters = json_decode(str_replace('\'','"',$input['filters']), true);
-            array_push($filters['rules'],array("field"=>"customerid","op"=>"eq","data"=>$input['customerid']),
-                array("field"=>"active","op"=>"eq","data"=>true));
-            $input['filters'] = json_encode($filters);
+        if(array_key_exists("filters", $input)){
+            if($input['filters'] == null){
+                $input['filters'] = json_encode(array("groupOp"=>"AND",
+                    "rules"=>array(array("field"=>"customerid","op"=>"eq","data"=>$input["customerid"]),
+                        array("field"=>"active","op"=>"eq","data"=>true))));
+            }
+            else {
+                $filters = json_decode(str_replace('\'','"',$input['filters']), true);
+                array_push($filters['rules'], array("field" => "customerid", "op" => "eq", "data" => $input["customerid"]),
+                    array("field" => "active", "op" => "eq", "data" => true));
+                $input["filters"] = json_encode($filters);
+            }
         }
         else{
-            $input = array_add($input,'filters',json_encode(array("groupOp"=>"AND",
-                "rules"=>array(array("field"=>"customerid","op"=>"eq","data"=>$input['customerid']),
+            $input = array_add($input,"filters",json_encode(array("groupOp"=>"AND",
+                "rules"=>array(array("field"=>"customerid","op"=>"eq","data"=>$input["customerid"]),
                     array("field"=>"active","op"=>"eq","data"=>true)))));
         }
         GridEncoder::encodeRequestedData(new CustomerExpectationRepository(), $input);

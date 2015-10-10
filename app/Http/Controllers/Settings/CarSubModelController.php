@@ -32,10 +32,16 @@ class CarSubModelController extends Controller {
 
         $input = Input::all();
         if(in_array("filters", $input)){
-            $input = Input::all();
-            $filters = json_decode(str_replace('\'','"',$input['filters']), true);
-            array_push($filters['rules'],array("field"=>"carmodelid","op"=>"eq","data"=>$input['carmodelid']));
-            $input['filters'] = json_encode($filters);
+            if($input['filters'] == null){
+                $input['filters'] = json_encode(array("groupOp"=>"AND",
+                    "rules"=>array(array("field"=>"carmodelid","op"=>"eq","data"=>$input["carmodelid"]),
+                        array("field"=>"active","op"=>"eq","data"=>true))));
+            }
+            else {
+                $filters = json_decode(str_replace('\'', '"', $input['filters']), true);
+                array_push($filters['rules'], array("field" => "carmodelid", "op" => "eq", "data" => $input['carmodelid']));
+                $input['filters'] = json_encode($filters);
+            }
         }
         else{
             $input = array_add($input,'filters',json_encode(array("groupOp"=>"AND","rules"=>array(array("field"=>"carmodelid","op"=>"eq","data"=>$input['carmodelid'])))));

@@ -146,6 +146,7 @@
                         contentType: false, // Set content type to false as jQuery will tell the server its a query string request
                         success: function(data, textStatus, jqXHR){
                             alert("ดำเนินการสำเร็จ");
+                            jQuery(grid_selector).trigger('reloadGrid');
                             return [true,""];
                         },
                         error: function(jqXHR, textStatus, errorThrown)
@@ -157,6 +158,7 @@
                 }
                 else{
                     alert("ดำเนินการสำเร็จ");
+                    jQuery(grid_selector).trigger('reloadGrid');
                     return [true,""];
                 }
             }
