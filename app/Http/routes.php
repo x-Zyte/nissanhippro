@@ -135,6 +135,17 @@ Route::get('pricelist/read', 'Settings\PricelistController@read');
 Route::post('pricelist/update', 'Settings\PricelistController@update');
 Route::get('pricelist/readSelectlistForDisplayInGrid', 'Settings\PricelistController@readSelectlistForDisplayInGrid');
 
+//Giveaway
+Route::get('giveaway', 'Settings\GiveawayController@index');
+Route::get('giveaway/read', 'Settings\GiveawayController@read');
+Route::post('giveaway/update', 'Settings\GiveawayController@update');
+
+//CarPreemption
+Route::get('carpreemption', 'CarPreemptionController@index');
+Route::get('carpreemption/read', 'CarPreemptionController@read');
+Route::post('carpreemption/update', 'CarPreemptionController@update');
+
+
 Route::get('/', 'HomeController@index');
 
 Route::get('home', 'HomeController@index');

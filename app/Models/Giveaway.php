@@ -11,7 +11,7 @@ class Giveaway extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['name','price', 'active',
+    protected $fillable = ['name','price', 'active','detail',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

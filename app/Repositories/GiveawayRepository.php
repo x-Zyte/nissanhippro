@@ -16,7 +16,7 @@ class GiveawayRepository extends EloquentRepositoryAbstract
     {
         $this->Database = new Giveaway;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id', 'name','price');
+        $this->crudFields = array('oper', 'id', 'name','price','detail');
         $this->uniqueKeySingles = array(array('field'=>'name','label'=>'ชื่อของแถม'));
         $this->uniqueKeyMultiples = array();
         $this->hasBranch = false;
