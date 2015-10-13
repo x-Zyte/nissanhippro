@@ -58,9 +58,9 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
      * @return integer
      *  Total number of rows
      */
-    public function getTotalNumberOfRows(array $filters = array())
+    public function getTotalNumberOfRows(array $filters = array(), $groupOp = 'AND')
     {
-        return  intval($this->Database->whereNested(function($query) use ($filters)
+        return  intval($this->Database->whereNested(function($query) use ($filters,$groupOp)
         {
             if($this->hasBranch && !Auth::user()->isadmin){
                 $query->where('branchid', Auth::user()->branchid);
@@ -71,22 +71,38 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
 
             foreach ($filters as $filter)
             {
-                if($filter['op'] == 'is in')
-                {
-                    $query->whereIn($filter['field'], explode(',',$filter['data']));
-                    continue;
+                if($groupOp == 'AND') {
+                    if ($filter['op'] == 'is in') {
+                        $query->whereIn($filter['field'], explode(',', $filter['data']));
+                        continue;
+                    }
+
+                    if ($filter['op'] == 'is not in') {
+                        $query->whereNotIn($filter['field'], explode(',', $filter['data']));
+                        continue;
+                    }
+
+                    if (strpos($filter['field'], 'date') !== false)
+                        $filter['data'] = date('Y-m-d', strtotime($filter['data']));
+
+                    $query->where($filter['field'], $filter['op'], $filter['data']);
                 }
+                else{
+                    if ($filter['op'] == 'is in') {
+                        $query->orWhereIn($filter['field'], explode(',', $filter['data']));
+                        continue;
+                    }
 
-                if($filter['op'] == 'is not in')
-                {
-                    $query->whereNotIn($filter['field'], explode(',',$filter['data']));
-                    continue;
+                    if ($filter['op'] == 'is not in') {
+                        $query->orWhereNotIn($filter['field'], explode(',', $filter['data']));
+                        continue;
+                    }
+
+                    if (strpos($filter['field'], 'date') !== false)
+                        $filter['data'] = date('Y-m-d', strtotime($filter['data']));
+
+                    $query->orWhere($filter['field'], $filter['op'], $filter['data']);
                 }
-
-                if (strpos($filter['field'],'date') !== false)
-                    $filter['data'] = date('Y-m-d', strtotime($filter['data']));
-
-                $query->where($filter['field'], $filter['op'], $filter['data']);
             }
         })
             ->count());
@@ -114,7 +130,7 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
      *  An array of array, each array will have the data of a row.
      *  Example: array(array("column1" => "1-1", "column2" => "1-2"), array("column1" => "2-1", "column2" => "2-2"))
      */
-    public function getRows($limit, $offset, $orderBy = null, $sord = null, array $filters = array())
+    public function getRows($limit, $offset, $orderBy = null, $sord = null, array $filters = array(), $groupOp = 'AND')
     {
         $orderByRaw = null;
 
@@ -175,7 +191,7 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
             $orderByRaw = implode(',',$orderByRaw);
         }
 
-        $rows = $this->Database->whereNested(function($query) use ($filters)
+        $rows = $this->Database->whereNested(function($query) use ($filters,$groupOp)
         {
             if($this->hasBranch && !Auth::user()->isadmin){
                 $query->where('branchid', Auth::user()->branchid);
@@ -186,22 +202,38 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
 
             foreach ($filters as $filter)
             {
-                if($filter['op'] == 'is in')
-                {
-                    $query->whereIn($filter['field'], explode(',',$filter['data']));
-                    continue;
+                if($groupOp == 'AND') {
+                    if ($filter['op'] == 'is in') {
+                        $query->whereIn($filter['field'], explode(',', $filter['data']));
+                        continue;
+                    }
+
+                    if ($filter['op'] == 'is not in') {
+                        $query->whereNotIn($filter['field'], explode(',', $filter['data']));
+                        continue;
+                    }
+
+                    if (strpos($filter['field'], 'date') !== false)
+                        $filter['data'] = date('Y-m-d', strtotime($filter['data']));
+
+                    $query->where($filter['field'], $filter['op'], $filter['data']);
                 }
+                else{
+                    if ($filter['op'] == 'is in') {
+                        $query->orWhereIn($filter['field'], explode(',', $filter['data']));
+                        continue;
+                    }
 
-                if($filter['op'] == 'is not in')
-                {
-                    $query->whereNotIn($filter['field'], explode(',',$filter['data']));
-                    continue;
+                    if ($filter['op'] == 'is not in') {
+                        $query->orWhereNotIn($filter['field'], explode(',', $filter['data']));
+                        continue;
+                    }
+
+                    if (strpos($filter['field'], 'date') !== false)
+                        $filter['data'] = date('Y-m-d', strtotime($filter['data']));
+
+                    $query->orWhere($filter['field'], $filter['op'], $filter['data']);
                 }
-
-                if (strpos($filter['field'],'date') !== false)
-                    $filter['data'] = date('Y-m-d', strtotime($filter['data']));
-
-                $query->where($filter['field'], $filter['op'], $filter['data']);
             }
         })
             ->take($limit)

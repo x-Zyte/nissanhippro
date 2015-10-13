@@ -159,9 +159,10 @@ class JqGridJsonEncoder implements RequestedDataInterface {
             else
             {
                 $filters['rules'] = array();
+                $filters['groupOp'] = 'AND';
             }
 
-            $count = $Repository->getTotalNumberOfRows($filters['rules']);
+            $count = $Repository->getTotalNumberOfRows($filters['rules'],$filters['groupOp']);
 
             if(empty($limit))
             {
@@ -203,7 +204,7 @@ class JqGridJsonEncoder implements RequestedDataInterface {
 
             if(empty($postedData['pivotRows']))
             {
-                $rows = $Repository->getRows($limit, $start, $sidx, $sord, $filters['rules']);
+                $rows = $Repository->getRows($limit, $start, $sidx, $sord, $filters['rules'],$filters['groupOp']);
             }
             else
             {
