@@ -31,7 +31,7 @@ class CarSubModelController extends Controller {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
         $input = Input::all();
-        if(in_array("filters", $input)){
+        if(array_key_exists("filters", $input)){
             if($input['filters'] == null){
                 $input['filters'] = json_encode(array("groupOp"=>"AND",
                     "rules"=>array(array("field"=>"carmodelid","op"=>"eq","data"=>$input["carmodelid"]),
