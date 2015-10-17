@@ -42,7 +42,7 @@
                 colNames:['ชื่อประเภท','ค่า พ.ร.บ.', 'รายละเอียด'],
                 colModel:[
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'actcost',index:'actcost', width:100,editable: true,editoptions:{defaultValue: '0.00'},editrules:{required:true, number:true},align:'right',formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
+                    {name:'actcost',index:'actcost', width:100,editable: true,editrules:{required:true, number:true},align:'right',formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                 ],
                 viewrecords : true,
@@ -144,18 +144,23 @@
                 },
                 {
                     //delete record form
+                    width: 400,
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
-                        if(form.data('styled')) return false;
+                        if(!form.data('styled')){
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            style_delete_form(form);
 
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-                        style_delete_form(form);
+                            form.data('styled', true);
 
-                        form.data('styled', true);
+                            var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
+                            centerGridForm(dlgDiv);
+                        }
 
-                        var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
-                        centerGridForm(dlgDiv);
+                        var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
+                        var totalRowsCount = totalRows.length;
+                        $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
                     },
                     onClick : function(e) {
                         alert(1);

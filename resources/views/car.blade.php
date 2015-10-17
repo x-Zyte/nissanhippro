@@ -42,7 +42,7 @@
             $(grid_selector).jqGrid({
                 url:'car/read',
                 datatype: "json",
-                colNames:['จังหวัด','แบบ','รุ่น','ซื้อจาก','ชื่อดีลเลอร์อื่น','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'กุญแจ', 'สี', 'รถสำหรับ','ใบรับรถเข้า', 'ใบส่งรถให้ลูกค้า'],
+                colNames:['จังหวัด','แบบ','รุ่น','ซื้อจาก','ชื่อดีลเลอร์','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'กุญแจ', 'สี', 'รถสำหรับ','ใบรับรถเข้า', 'ใบส่งรถให้ลูกค้า'],
                 colModel:[
                     {name:'provinceid',index:'provinceid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
@@ -68,20 +68,38 @@
                     },
                     {name:'carsubmodelid',index:'carsubmodelid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$carsubmodelselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carsubmodelselectlist}}" }},
-                    {name:'receivetype',index:'receivetype', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:NMT;1:ดีลเลอร์อื่น"},align:'center'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:NMT;1:ดีลเลอร์อื่น" }},
-                    {name:'dealername',index:'dealername', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},align:'left'},
+                    {name:'receivetype',index:'receivetype', width:100, editable: true,edittype:"select",formatter:'select',align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:NMT;1:ดีลเลอร์อื่น" },
+                        editoptions:{value: "0:NMT;1:ดีลเลอร์อื่น",
+                            dataEvents :[{type: 'change', fn: function(e){
+                                var thisval = $(e.target).val();
+                                if(thisval == 0){
+                                    $('#tr_dealername').hide();
+                                    $('#dealername').val('');
+                                }
+                                else{
+                                    $('#tr_dealername').show();
+                                }
+                            }}]
+                        }
+                    },
+                    {name:'dealername',index:'dealername', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},align:'left',
+                        editrules:{custom: true, custom_func: check_dealername}},
                     {name:'no',index:'no', width:50,editable: true,editoptions:{size:"5"},align:'center'},
-                    {name:'dodate',index:'dodate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'
+                    {name:'dodate',index:'dodate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
-                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
-                    {name:'receiveddate',index:'receiveddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'
+                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}
+                        ,editrules:{required:true, custom: false, custom_func: check_dodate}},
+                    {name:'receiveddate',index:'receiveddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
-                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
-                    {name:'engineno',index:'engineno', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'chassisno',index:'chassisno', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
+                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}
+                        ,editrules:{required:true, custom: true, custom_func: check_receiveddate}},
+                    {name:'engineno',index:'engineno', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},
+                        editrules:{required:true,custom: true, custom_func: check_AZ09},align:'left'},
+                    {name:'chassisno',index:'chassisno', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},
+                        editrules:{required:true,custom: true, custom_func: check_AZ09},align:'left'},
                     {name:'keyno',index:'keyno', width:50,editable: true,editoptions:{size:"5"},editrules:{number:true},align:'center'},
                     {name:'colorid',index:'colorid', width:180, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$colorselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }},
@@ -121,6 +139,33 @@
             });
 
             $(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+
+            function check_dealername(value, colname) {
+                var receivetype = $('#receivetype').val();
+                if(receivetype == 0) return [true, ""];
+                if(value == null || value == '') return [false,"กรุณาใส่ชื่อดีลเลอร์"];
+                else return [true, ""];
+            }
+
+            function check_dodate(value, colname) {
+                var receiveddate = $('#receiveddate').val();
+                var a = new Date(value);
+                var b = new Date(receiveddate);
+                if(a.getTime() < b.getTime()) return [true, ""];
+                else{
+                    return [false,"วันที่ออก Do ต้องน้อยกว่า วันที่รับรถเข้า"];
+                }
+            }
+
+            function check_receiveddate(value, colname) {
+                var dodate = $('#dodate').val();
+                var a = new Date(dodate);
+                var b = new Date(value);
+                if(a.getTime() < b.getTime()) return [true, ""];
+                else{
+                    return [false,"วันที่ออก Do ต้องน้อยกว่า วันที่รับรถเข้า"];
+                }
+            }
 
             function uploadfiles(){
                 var receivecarfilepath = $("#receivecarfilepath");
@@ -193,6 +238,11 @@
                         var carmodelid = $('#carmodelid').val();
                         var carsubmodelid = $('#carsubmodelid').val();
                         var colorid = $('#colorid').val();
+                        var receivetype = $('#receivetype').val();
+
+                        if(receivetype == 0){
+                            $('#tr_dealername').hide();
+                        }
 
                         $.get('carsubmodel/readSelectlist/'+carmodelid, function(data){
                             $('#carsubmodelid').children('option:not(:first)').remove();
@@ -249,6 +299,7 @@
                         $('#carsubmodelid').children('option:not(:first)').remove();
                         $('#colorid').children('option:not(:first)').remove();
 
+                        $('#tr_dealername').hide();
                         $('#tr_no', form).hide();
                         $('#tr_keyno', form).hide();
 
@@ -273,6 +324,7 @@
                 },
                 {
                     //delete record form
+                    width: 400,
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
@@ -285,6 +337,10 @@
 
                         var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
+
+                        var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
+                        var totalRowsCount = totalRows.length;
+                        $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
                     },
                     onClick : function(e) {
                         alert(1);
@@ -336,6 +392,12 @@
 
                         var dlgDiv = $("#viewmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
+
+                        var receivetype = $('#receivetype').val();
+
+                        if(receivetype == 0){
+                            $('#tr_dealername').hide();
+                        }
                     },
                     editData: {
                         _token: "{{ csrf_token() }}"

@@ -41,7 +41,8 @@
                 datatype: "json",
                 colNames:['รหัส', 'ชื่อสี'],
                 colModel:[
-                    {name:'code',index:'code', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'code',index:'code', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},align:'left',
+                        editrules:{required:true,custom: true, custom_func: check_AZ09}},
                     {name:'name',index:'name', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'}
                 ],
                 viewrecords : true,
@@ -143,6 +144,7 @@
                 },
                 {
                     //delete record form
+                    width: 400,
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
@@ -155,6 +157,10 @@
 
                         var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
+
+                        var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
+                        var totalRowsCount = totalRows.length;
+                        $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
                     },
                     onClick : function(e) {
                         alert(1);

@@ -362,7 +362,7 @@
                             <li class="@yield('menu-settingcarmodel-class')">
                                 <a href="{{ url('/carmodel') }}">
                                     <i class="menu-icon fa fa-minus"></i>
-                                    แบบรถ/สีและรุ่น
+                                    แบบรถ/สี/รุ่น/ทะเบียน
                                 </a>
 
                                 <b class="arrow"></b>

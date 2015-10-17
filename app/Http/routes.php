@@ -106,18 +106,6 @@ Route::get('customer/read', 'CustomerController@read');
 Route::post('customer/update', 'CustomerController@update');
 Route::get('customer/readSelectlistForDisplayInGrid', 'CustomerController@readSelectlistForDisplayInGrid');
 
-//CustomerExpect
-Route::get('customerexpect', 'CustomerExpectController@index');
-Route::get('customerexpect/read', 'CustomerExpectController@read');
-Route::post('customerexpect/update', 'CustomerExpectController@update');
-Route::get('customerexpect/readSelectlistForDisplayInGrid', 'CustomerExpectController@readSelectlistForDisplayInGrid');
-
-//CustomerReal
-Route::get('customerreal', 'CustomerRealController@index');
-Route::get('customerreal/read', 'CustomerRealController@read');
-Route::post('customerreal/update', 'CustomerRealController@update');
-Route::get('customerreal/readSelectlistForDisplayInGrid', 'CustomerRealController@readSelectlistForDisplayInGrid');
-
 //CustomerExpectation
 Route::get('customerexpectation/read', 'CustomerExpectationController@read');
 Route::post('customerexpectation/update', 'CustomerExpectationController@update');

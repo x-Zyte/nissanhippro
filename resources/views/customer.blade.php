@@ -188,12 +188,12 @@
                             {name:'otherconsideration',index:'otherconsideration', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
                             {name:'oldcarspecifications',index:'oldcarspecifications', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
                             {name:'budgetpermonth',index:'budgetpermonth', width:100,editable: true,editrules:{number:true,edithidden:true},align:'right',formatter:'number',
-                                editoptions:{size:"10",defaultValue:'0.00'}, formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2},hidden: true},
+                                editoptions:{size:"10"}, formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2},hidden: true},
                             {name:'conditionproposed',index:'conditionproposed', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},align:'left',hidden: true,editrules:{edithidden:true}},
                             {name:'conditionfinancedown',index:'conditionfinancedown', width:100,editable: true,editrules:{number:true,edithidden:true},align:'right',formatter:'number',
-                                editoptions:{size:"10",defaultValue:'0.00'}, formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2},hidden: true},
+                                editoptions:{size:"10"}, formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2},hidden: true},
                             {name:'conditionfinanceinterest',index:'conditionfinanceinterest', width:100,editable: true,editrules:{number:true,edithidden:true},align:'right',formatter:'number',
-                                editoptions:{size:"10",defaultValue:'0.00'}, formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2},hidden: true},
+                                editoptions:{size:"10"}, formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2},hidden: true},
                             {name:'conditionfinanceperiod',index:'conditionfinanceperiod', width:50,editable: true,editoptions:{size:"2",maxlength:"2"},
                                 editrules:{number:true,edithidden:true},align:'center',hidden: true},
                             {name:'nextappointmentdate',index:'nextappointmentdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
@@ -306,6 +306,7 @@
                             },
                             {
                                 //delete record form
+                                width: 400,
                                 recreateForm: true,
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
@@ -318,6 +319,10 @@
 
                                     var dlgDiv = $("#delmod" + jQuery("#"+subgrid_table_id)[0].id);
                                     centerGridForm(dlgDiv);
+
+                                    var totalRows = $("#"+subgrid_table_id).jqGrid('getGridParam', 'selarrrow');
+                                    var totalRowsCount = totalRows.length;
+                                    $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
                                 },
                                 onClick : function(e) {
                                     alert(1);
@@ -490,6 +495,7 @@
                 },
                 {
                     //delete record form
+                    width: 400,
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
@@ -502,6 +508,10 @@
 
                         var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
+
+                        var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
+                        var totalRowsCount = totalRows.length;
+                        $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
                     },
                     onClick : function(e) {
                         alert(1);

@@ -261,6 +261,7 @@
                 },
                 {
                     //delete record form
+                    width: 400,
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
@@ -273,6 +274,10 @@
 
                         var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
+
+                        var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
+                        var totalRowsCount = totalRows.length;
+                        $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
                     },
                     onClick : function(e) {
                         alert(1);

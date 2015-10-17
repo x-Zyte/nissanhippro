@@ -46,7 +46,7 @@
                     {name:'carbrandid',index:'carbrandid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carbrandselectlist}}"},editrules:{required:true},align:'left',
                         stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carbrandselectlist}}" }},
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'registercost',index:'registercost', width:100,editable: true,editoptions:{defaultValue:'0.00'},editrules:{required:true, number:true},align:'right',formatter:'number',
+                    {name:'registercost',index:'registercost', width:100,editable: true,editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                 ],
@@ -206,6 +206,7 @@
                             },
                             {
                                 //delete record form
+                                width: 400,
                                 recreateForm: true,
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
@@ -218,6 +219,10 @@
 
                                     var dlgDiv = $("#delmod" + jQuery("#"+subgrid_table_id)[0].id);
                                     centerGridForm(dlgDiv);
+
+                                    var totalRows = $("#"+subgrid_table_id).jqGrid('getGridParam', 'selarrrow');
+                                    var totalRowsCount = totalRows.length;
+                                    $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
                                 },
                                 onClick : function(e) {
                                     alert(1);
@@ -403,6 +408,7 @@
                             },
                             {
                                 //delete record form
+                                width: 400,
                                 recreateForm: true,
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
@@ -415,6 +421,10 @@
 
                                     var dlgDiv = $("#delmod" + jQuery("#"+subgrid_table_id2)[0].id);
                                     centerGridForm(dlgDiv);
+
+                                    var totalRows = $("#"+subgrid_table_id).jqGrid('getGridParam', 'selarrrow');
+                                    var totalRowsCount = totalRows.length;
+                                    $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
                                 },
                                 onClick : function(e) {
                                     alert(1);
@@ -549,6 +559,7 @@
                 },
                 {
                     //delete record form
+                    width: 400,
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
@@ -561,6 +572,10 @@
 
                         var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
+
+                        var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
+                        var totalRowsCount = totalRows.length;
+                        $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
                     },
                     onClick : function(e) {
                         alert(1);

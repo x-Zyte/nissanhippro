@@ -67,37 +67,37 @@
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
-                    {name:'sellingprice',index:'sellingprice', width:100,editable: true,editoptions:{defaultValue:'0.00'},
+                    {name:'sellingprice',index:'sellingprice', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'accessoriesprice',index:'accessoriesprice', width:100,editable: true,editoptions:{defaultValue:'0.00'},
+                    {name:'accessoriesprice',index:'accessoriesprice', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'sellingpricewithaccessories',index:'sellingpricewithaccessories', width:100,editable: true,editoptions:{defaultValue:'0.00'},
+                    {name:'sellingpricewithaccessories',index:'sellingpricewithaccessories', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'margin',index:'margin', width:100,editable: true,editoptions:{defaultValue:'0.00'},
+                    {name:'margin',index:'margin', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'execusiveinternal',index:'execusiveinternal', width:100,editable: true,editoptions:{defaultValue:'0.00'},
+                    {name:'execusiveinternal',index:'execusiveinternal', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',formoptions:{label:'ส่งเสริมการขาย/Internal (Execusive)'},
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'execusivecampaing',index:'execusivecampaing', width:100,editable: true,editoptions:{defaultValue:'0.00'},
+                    {name:'execusivecampaing',index:'execusivecampaing', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',formoptions:{label:'คูปองน้ำมัน/Campaign (Execusive)'},
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'execusivetotalcampaing',index:'execusivetotalcampaing', width:100,editable: true,editoptions:{defaultValue:'0.00'},
+                    {name:'execusivetotalcampaing',index:'execusivetotalcampaing', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'execusivetotalmargincampaing',index:'execusivetotalmargincampaing', width:100,editable: true,editoptions:{defaultValue:'0.00'},
+                    {name:'execusivetotalmargincampaing',index:'execusivetotalmargincampaing', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'internal',index:'internal', width:100,editable: true,editoptions:{defaultValue:'0.00'},
+                    {name:'internal',index:'internal', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',formoptions:{label:'ส่งเสริมการขาย/Internal'},
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'campaing',index:'campaing', width:100,editable: true,editoptions:{defaultValue:'0.00'},
+                    {name:'campaing',index:'campaing', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',formoptions:{label:'คูปอง../Extra Campaign'},
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'totalmargincampaing',index:'totalmargincampaing', width:100,editable: true,editoptions:{defaultValue:'0.00'},
+                    {name:'totalmargincampaing',index:'totalmargincampaing', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'promotion',index:'promotion', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},align:'left'}
@@ -238,6 +238,7 @@
                 },
                 {
                     //delete record form
+                    width: 400,
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
@@ -250,6 +251,10 @@
 
                         var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
+
+                        var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
+                        var totalRowsCount = totalRows.length;
+                        $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
                     },
                     onClick : function(e) {
                         alert(1);

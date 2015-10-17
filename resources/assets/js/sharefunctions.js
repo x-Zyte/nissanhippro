@@ -38,6 +38,11 @@ function pickDate( cellvalue, options, cell ) {
     }, 0);
 }
 
+function check_AZ09(value, colname) {
+    var re = new RegExp("^[A-Z0-9]+$");
+    return [re.test(value), value + " ต้องเป็นภาษาอังกฤษตัวพิมพ์ใหญ่ และตัวเลขเท่านั้น"];
+}
+
 function style_edit_form(form) {
     //enable datepicker on "sdate" field and switches for "stock" field
     //form.find('input[name=isadmin],input[name=active],input[type=checkbox]')
@@ -58,6 +63,14 @@ function style_edit_form(form) {
     buttons.eq(1).append('<i class="ace-icon fa fa-chevron-right"></i>');
 
     form.css("max-height",($(window).height() - 250)+"px");
+
+    $('input',form).keypress(function(e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if(code == 13) {
+            $("#sData", form.next()).trigger("click");
+            return false;
+        }
+    });
 }
 
 function style_delete_form(form) {
