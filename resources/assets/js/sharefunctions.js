@@ -190,7 +190,6 @@ function centerGridForm(dlgDiv) {
 function resizeGrid(){
     if($('#grid-table').width() < $(".page-content").width()){
         $('#grid-table').jqGrid( 'setGridWidth', $(".page-content").width());
-        $('.ui-jqgrid' + " .ui-jqgrid-pager" + " #grid-pager_left").css("padding-right",($(".page-content").width()*0.275)+"px");
     }
     else{
         $('.ui-jqgrid' + ' .ui-jqgrid-view').css('overflow','auto');
