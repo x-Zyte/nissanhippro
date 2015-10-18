@@ -32,6 +32,11 @@
                 }
             });
 
+            var candeletedata = false;
+            if('{{Auth::user()->isadmin}}' == '1' || '{{Auth::user()->candeletedata}}' == '1'){
+                candeletedata = true;
+            }
+
             var defaultProvince = '';
             var hiddenProvince = false;
             if('{{Auth::user()->isadmin}}' == '0'){
@@ -42,7 +47,7 @@
             $(grid_selector).jqGrid({
                 url:'car/read',
                 datatype: "json",
-                colNames:['จังหวัด','แบบ','รุ่น','ซื้อจาก','ชื่อดีลเลอร์','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'กุญแจ', 'สี', 'รถสำหรับ','ใบรับรถเข้า', 'ใบส่งรถให้ลูกค้า'],
+                colNames:['จังหวัด','แบบ','รุ่น','ซื้อจาก','ชื่อดีลเลอร์','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'กุญแจ', 'สี', 'รถสำหรับ','ใบรับรถเข้า'], //'ใบส่งรถให้ลูกค้า'],
                 colModel:[
                     {name:'provinceid',index:'provinceid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
@@ -111,8 +116,8 @@
                      ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
                     {name:'isdelivered',index:'isdelivered', width:100, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
                      ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},*/
-                    {name:'receivecarfilepath',index:'receivecarfilepath',width:100,editable: true,edittype:'file',editoptions:{enctype:"multipart/form-data"},formatter:imageLinkFormatter,search:false,align:'center'},
-                    {name:'deliverycarfilepath',index:'deliverycarfilepath',width:100,editable: true,edittype:'file',editoptions:{enctype:"multipart/form-data"},formatter:imageLinkFormatter,search:false,align:'center'}
+                    {name:'receivecarfilepath',index:'receivecarfilepath',width:100,editable: true,edittype:'file',editoptions:{enctype:"multipart/form-data"},formatter:imageLinkFormatter,search:false,align:'center'}
+                    //{name:'deliverycarfilepath',index:'deliverycarfilepath',width:100,editable: true,edittype:'file',editoptions:{enctype:"multipart/form-data"},formatter:imageLinkFormatter,search:false,align:'center'}
                 ],
                 viewrecords : true,
                 rowNum:10,
@@ -170,14 +175,14 @@
             function uploadfiles(){
                 var receivecarfilepath = $("#receivecarfilepath");
                 var deliverycarfilepath = $("#deliverycarfilepath");
-                if(receivecarfilepath.val() != '' || deliverycarfilepath.val() != ''){
+                if((receivecarfilepath.val() != '' && receivecarfilepath.val() != null) || (deliverycarfilepath.val() != '' && deliverycarfilepath.val() != null)){
                     var data = new FormData();
                     data.append('_token','{{ csrf_token() }}');
                     data.append('engineno',$('#engineno').val());
-                    if(receivecarfilepath.val() != ''){
+                    if(receivecarfilepath.val() != '' && receivecarfilepath.val() != null){
                         data.append('receivecarfile', receivecarfilepath.prop('files')[0]);
                     }
-                    if(deliverycarfilepath.val() != ''){
+                    if(deliverycarfilepath.val() != '' && deliverycarfilepath.val() != null){
                         data.append('deliverycarfile', deliverycarfilepath.prop('files')[0]);
                     }
 
@@ -215,7 +220,7 @@
                     editicon : 'ace-icon fa fa-pencil blue',
                     add: true,
                     addicon : 'ace-icon fa fa-plus-circle purple',
-                    del: true,
+                    del: candeletedata,
                     delicon : 'ace-icon fa fa-trash-o red',
                     search: true,
                     searchicon : 'ace-icon fa fa-search orange',

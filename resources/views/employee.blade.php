@@ -32,10 +32,17 @@
                 }
             })
 
+            var candeletedata = false;
+            if('{{Auth::user()->isadmin}}' == '1' || '{{Auth::user()->candeletedata}}' == '1'){
+                candeletedata = true;
+            }
+
             $(grid_selector).jqGrid({
                 url:'employee/read',
                 datatype: "json",
-                colNames:['รหัส','คำนำหน้า', 'ชื่อจริง', 'นามสกุล','วันที่เริ่มการเป็นพนักงาน','วันที่สิ้นสุดการเป็นพนักงาน', 'ชื่อเข้าใช้ระบบ','วันที่เริ่มให้เข้าใช้ระบบ','วันที่สิ้นสุดให้เข้าใช้ระบบ', 'อีเมล์', 'โทรศัพท์', 'เป็นผู้ดูแล', 'สาขา', 'แผนก','ทีม', 'เปิดใช้งาน','บันทึกเพิ่มเติม'],
+                colNames:['รหัส','คำนำหน้า', 'ชื่อจริง', 'นามสกุล','วันที่เริ่มการเป็นพนักงาน','วันที่สิ้นสุดการเป็นพนักงาน',
+                    'ชื่อเข้าใช้ระบบ','วันที่เริ่มให้เข้าใช้ระบบ','วันที่สิ้นสุดให้เข้าใช้ระบบ', 'อีเมล์', 'โทรศัพท์', 'เป็น Admin',
+                    'สาขา', 'แผนก','ทีม', 'สามารถลบข้อมูลได้', 'เปิดใช้งาน','บันทึกเพิ่มเติม'],
                 colModel:[
                     /*{name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
                         formatter:'actions',
@@ -51,33 +58,64 @@
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว" }},
                     {name:'firstname',index:'firstname', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'lastname',index:'lastname', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'workingstartdate',index:'workingstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
+                    {name:'workingstartdate',index:'workingstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' },
+                        editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center',editrules:{required:true}
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
-                    {name:'workingenddate',index:'workingenddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
+                    {name:'workingenddate',index:'workingenddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' },
+                        editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
                     {name:'username',index:'username', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},align:'left'},
-                    {name:'loginstartdate',index:'loginstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
+                    {name:'loginstartdate',index:'loginstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' },
+                        editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
-                    {name:'loginenddate',index:'loginenddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
+                    {name:'loginenddate',index:'loginenddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' },
+                        editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
                     {name:'email',index:'email', width:120,editable: true,editoptions:{size:"30",maxlength:"50"},align:'left'},
                     {name:'phone',index:'phone', width:100,editable: true,editoptions:{size:"20",maxlength:"20"},editrules:{},align:'left'},
-                    {name:'isadmin',index:'isadmin', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
-                    {name:'branchid',index:'branchid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$branchselectlist}}"},formoptions:{elmsuffix:'(เป็นผู้ดูแลไม่ต้องเลือก)'}
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$branchselectlist}}" }},
-                    {name:'departmentid',index:'departmentid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$departmentselectlist}}"},formoptions:{elmsuffix:'(เป็นผู้ดูแลไม่ต้องเลือก)'}
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$departmentselectlist}}" }},
-                    {name:'teamid',index:'teamid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$teamselectlist}}"},formoptions:{elmsuffix:'(เป็นผู้ดูแลไม่ต้องเลือก)'}
+                    {name:'isadmin',index:'isadmin', width:60, editable: true,edittype:"checkbox",formatter: booleanFormatter,unformat: aceSwitch,align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }
+                        ,editoptions: {value:"1:0",
+                            dataEvents :[{type: 'change', fn: function(e){
+                                var checked = $(e.target).is(':checked');
+                                if(checked){
+                                    $('#tr_branchid').hide();
+                                    $('#tr_departmentid').hide();
+                                    $('#tr_teamid').hide();
+                                    $('#tr_candeletedata').hide();
+
+                                    $('#branchid').val(null);
+                                    $('#departmentid').val(null);
+                                    $('#teamid').val(null);
+                                    $('#candeletedata').prop("checked", false);
+                                }
+                                else{
+                                    $('#tr_branchid').show();
+                                    $('#tr_departmentid').show();
+                                    $('#tr_teamid').show();
+                                    $('#tr_candeletedata').show();
+                                }
+                            }}]
+                        }
+                    },
+                    {name:'branchid',index:'branchid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$branchselectlist}}"}
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$branchselectlist}}" }
+                        ,editrules:{custom: true, custom_func: check_branch}},
+                    {name:'departmentid',index:'departmentid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$departmentselectlist}}"}
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$departmentselectlist}}" }
+                        ,editrules:{custom: true, custom_func: check_department}},
+                    {name:'teamid',index:'teamid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$teamselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$teamselectlist}}" }},
+                    {name:'candeletedata',index:'candeletedata', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
                     {name:'active',index:'active', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"1"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
                     {name:'remarks',index:'remarks', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},align:'left'}
@@ -170,7 +208,7 @@
                                 editicon : 'ace-icon fa fa-pencil blue',
                                 add: true,
                                 addicon : 'ace-icon fa fa-plus-circle purple',
-                                del: true,
+                                del: candeletedata,
                                 delicon : 'ace-icon fa fa-trash-o red',
                                 search: true,
                                 searchicon : 'ace-icon fa fa-search orange',
@@ -318,6 +356,24 @@
 
             $(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
 
+            function check_branch(value, colname) {
+                var checked = $('#isadmin').is(':checked');
+                if(checked) return [true, ""];
+                else{
+                    if(value != '' && value != null) return [true, ""];
+                    else return [false,"กรุณาเลือกสาขา"];
+                }
+            }
+
+            function check_department(value, colname) {
+                var checked = $('#isadmin').is(':checked');
+                if(checked) return [true, ""];
+                else{
+                    if(value != '' && value != null) return [true, ""];
+                    else return [false,"กรุณาเลือกแผนก"];
+                }
+            }
+
             //navButtons
             jQuery(grid_selector).jqGrid('navGrid',pager_selector,
                 { 	//navbar options
@@ -325,7 +381,7 @@
                     editicon : 'ace-icon fa fa-pencil blue',
                     add: true,
                     addicon : 'ace-icon fa fa-plus-circle purple',
-                    del: true,
+                    del: candeletedata,
                     delicon : 'ace-icon fa fa-trash-o red',
                     search: true,
                     searchicon : 'ace-icon fa fa-search orange',
@@ -343,6 +399,14 @@
                         var form = $(e[0]);
                         form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
                         style_edit_form(form);
+
+                        var checked = $('#isadmin').is(':checked');
+                        if(checked){
+                            $('#tr_branchid').hide();
+                            $('#tr_departmentid').hide();
+                            $('#tr_teamid').hide();
+                            $('#tr_candeletedata').hide();
+                        }
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);

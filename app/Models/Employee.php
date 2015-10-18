@@ -12,7 +12,7 @@ class Employee extends User {
 
     protected $fillable = ['title', 'firstname', 'lastname','code','workingstartdate','workingenddate', 'username',
         'password', 'email','loginstartdate','loginenddate', 'phone', 'isadmin', 'branchid',
-        'departmentid', 'teamid', 'remarks', 'active', 'remember_token',
+        'departmentid', 'teamid', 'candeletedata', 'remarks', 'active', 'remember_token',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     protected $hidden = ['password', 'remember_token'];
@@ -27,6 +27,7 @@ class Employee extends User {
                 $model->branchid = null;
                 $model->departmentid = null;
                 $model->teamid = null;
+                $model->candeletedata = true;
             }
             else{
                 if($model->branchid == '') $model->branchid = null;
@@ -71,6 +72,7 @@ class Employee extends User {
                 $model->branchid = null;
                 $model->departmentid = null;
                 $model->teamid = null;
+                $model->candeletedata = true;
             }
             else{
                 if($model->branchid == '') $model->branchid = null;

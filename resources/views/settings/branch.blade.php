@@ -36,6 +36,11 @@
                 }
             })
 
+            var candeletedata = false;
+            if('{{Auth::user()->isadmin}}' == '1' || '{{Auth::user()->candeletedata}}' == '1'){
+                candeletedata = true;
+            }
+
             $(grid_selector).jqGrid({
                 url:'{{ url('/branch/read') }}',
                 datatype: "json",
@@ -91,9 +96,22 @@
                         },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$districtselectlist}}" }
                     },
                     {name:'zipcode',index:'zipcode', width:100,editable: true,editoptions:{size:"5",maxlength:"5"},editrules:{required:true, number:true},align:'left'},
-                    {name:'isheadquarter',index:'isheadquarter', width:80, editable: true,edittype:"checkbox",editoptions: {value:"1:0"},
+                    {name:'isheadquarter',index:'isheadquarter', width:80, editable: true,edittype:"checkbox",
                         editrules:{custom: true, custom_func: check_headquarter},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }
+                        ,editoptions: {value:"1:0",
+                            dataEvents :[{type: 'change', fn: function(e){
+                                var checked = $(e.target).is(':checked');
+                                if(!checked){
+                                    $('#tr_keyslot').hide();
+                                    $('#keyslot').val(0);
+                                }
+                                else{
+                                    $('#tr_keyslot').show();
+                                }
+                            }}]
+                        }
+                    },
                     {name:'keyslot',index:'keyslot', width:50,editable: true,editoptions:{size:"3"},
                         editrules:{number:true,custom: true, custom_func: check_keyslot},align:'center'}
                 ],
@@ -164,7 +182,7 @@
                     editicon : 'ace-icon fa fa-pencil blue',
                     add: true,
                     addicon : 'ace-icon fa fa-plus-circle purple',
-                    del: true,
+                    del: candeletedata,
                     delicon : 'ace-icon fa fa-trash-o red',
                     search: true,
                     searchicon : 'ace-icon fa fa-search orange',
@@ -204,6 +222,11 @@
                             $('#districtid').val(districtid);
                         });
 
+                        var checked = $('#isheadquarter').is(':checked');
+                        if(!checked){
+                            $('#tr_keyslot').hide();
+                        }
+
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
                     },
@@ -238,6 +261,9 @@
 
                         $('#amphurid').children('option:not(:first)').remove();
                         $('#districtid').children('option:not(:first)').remove();
+
+                        $('#tr_keyslot').hide();
+                        $('#keyslot').val(0);
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);

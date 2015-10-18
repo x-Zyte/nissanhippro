@@ -36,6 +36,11 @@
                 }
             })
 
+            var candeletedata = false;
+            if('{{Auth::user()->isadmin}}' == '1' || '{{Auth::user()->candeletedata}}' == '1'){
+                candeletedata = true;
+            }
+
             $(grid_selector).jqGrid({
                 url:'{{ url('/carmodel/read') }}',
                 datatype: "json",
@@ -137,7 +142,7 @@
                                 editicon : 'ace-icon fa fa-pencil blue',
                                 add: true,
                                 addicon : 'ace-icon fa fa-plus-circle purple',
-                                del: true,
+                                del: candeletedata,
                                 delicon : 'ace-icon fa fa-trash-o red',
                                 search: true,
                                 searchicon : 'ace-icon fa fa-search orange',
@@ -340,7 +345,7 @@
                                 editicon : 'ace-icon fa fa-pencil blue',
                                 add: true,
                                 addicon : 'ace-icon fa fa-plus-circle purple',
-                                del: true,
+                                del: candeletedata,
                                 delicon : 'ace-icon fa fa-trash-o red',
                                 search: true,
                                 searchicon : 'ace-icon fa fa-search orange',
@@ -494,7 +499,7 @@
                     editicon : 'ace-icon fa fa-pencil blue',
                     add: true,
                     addicon : 'ace-icon fa fa-plus-circle purple',
-                    del: true,
+                    del: candeletedata,
                     delicon : 'ace-icon fa fa-trash-o red',
                     search: true,
                     searchicon : 'ace-icon fa fa-search orange',

@@ -37,6 +37,7 @@ class CreateEmployeesTable extends Migration {
             $table->foreign('departmentid')->references('id')->on('departments');
             $table->integer('teamid')->unsigned()->nullable();
             $table->foreign('teamid')->references('id')->on('teams');
+            $table->boolean('candeletedata')->default(false);
             $table->text('remarks')->nullable();
             $table->boolean('active')->default(true);
             $table->rememberToken();

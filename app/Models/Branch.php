@@ -20,6 +20,8 @@ class Branch extends Model {
 
         static::creating(function($model)
         {
+            if(!$model->isheadquarter) $model->keyslot = 0;
+
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
             $model->modifiedby = Auth::user()->id;
@@ -42,6 +44,8 @@ class Branch extends Model {
 
         static::updating(function($model)
         {
+            if(!$model->isheadquarter) $model->keyslot = 0;
+
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");
         });
