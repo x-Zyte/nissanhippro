@@ -64,9 +64,10 @@
                     {name:'phone2',index:'phone2', width:100,editable: true,editoptions:{size:"20",maxlength:"20"},align:'left'},
                     {name:'occupationid',index:'occupationid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$occupationselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$occupationselectlist}}" }},
-                    {name:'birthdate',index:'birthdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
+                    {name:'birthdate',index:'birthdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
+                        ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
                         ,searchrules:{required:true}
-                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
+                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
                     {name:'address',index:'address', width:150,editable: true,editoptions:{size:"50",maxlength:"200"},align:'left'},
                     {name:'addprovinceid',index:'addprovinceid', width:100, editable: true,edittype:"select",formatter:'select',align:'left',
@@ -171,9 +172,10 @@
                         colModel:[
                             {name:'employeeid',index:'employeeid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value:"{{$employeeselectlist}}"},align:'left'
                                 ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$employeeselectlist}}" }},
-                            {name:'date',index:'date',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, editrules:{required:true}, align:'center'
+                            {name:'date',index:'date',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
+                                ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, editrules:{required:true}, align:'center'
                                 ,searchrules:{required:true}
-                                ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
+                                ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
                                 ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
                             {name:'carmodelid1',index:'carmodelid1', width:100, editable: true,edittype:"select",formatter:'select', editrules:{required:true},editoptions:{value:"{{$carmodelselectlist}}"},align:'left'
                                 ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carmodelselectlist}}" }},
@@ -201,9 +203,10 @@
                                 editoptions:{size:"10"}, formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2},hidden: true},
                             {name:'conditionfinanceperiod',index:'conditionfinanceperiod', width:50,editable: true,editoptions:{size:"2",maxlength:"2"},
                                 editrules:{number:true,edithidden:true},align:'center',hidden: true},
-                            {name:'nextappointmentdate',index:'nextappointmentdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }, editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}}, align:'center'
+                            {name:'nextappointmentdate',index:'nextappointmentdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
+                                ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
                                 ,searchrules:{required:true}
-                                ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true});}
+                                ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
                                 ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
                             {name:'remarks',index:'remarks', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
                             {name:'active',index:'active', width:60, editable: true,edittype:"checkbox",hidden: true,editoptions: {value:"1:0", defaultValue:"1"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
