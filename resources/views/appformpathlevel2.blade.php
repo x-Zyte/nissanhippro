@@ -9,78 +9,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
     <!-- bootstrap & fontawesome -->
-    <link rel="stylesheet" href="resources/assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="resources/assets/font-awesome/4.0.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="../resources/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../resources/assets/font-awesome/4.0.3/css/font-awesome.min.css" />
+
+    <!-- Form  plugin styles -->
+    <link rel="stylesheet" href="../resources/assets/css/jquery-ui.custom.min.css" />
+    <link rel="stylesheet" href="../resources/assets/css/chosen.css" />
+    <link rel="stylesheet" href="../resources/assets/css/datepicker.css" />
+    <link rel="stylesheet" href="../resources/assets/css/bootstrap-timepicker.css" />
+    <link rel="stylesheet" href="../resources/assets/css/daterangepicker.css" />
+    <link rel="stylesheet" href="../resources/assets/css/bootstrap-datetimepicker.css" />
+    <link rel="stylesheet" href="../resources/assets/css/colorpicker.css" />
 
     <!-- page specific plugin styles -->
-    <link rel="stylesheet" href="resources/assets/css/jquery-ui.min.css" />
-    <link rel="stylesheet" href="resources/assets/css/datepicker.css" />
-    <link rel="stylesheet" href="resources/assets/css/ui.jqgrid.css" />
+    <link rel="stylesheet" href="../resources/assets/css/jquery-ui.min.css" />
+    <link rel="stylesheet" href="../resources/assets/css/datepicker.css" />
+    <link rel="stylesheet" href="../resources/assets/css/ui.jqgrid.css" />
 
     <!-- text fonts -->
-    <link rel="stylesheet" href="resources/assets/fonts/fonts.googleapis.com.css" />
+    <link rel="stylesheet" href="../resources/assets/fonts/fonts.googleapis.com.css" />
 
     <!-- ace styles -->
-    <link rel="stylesheet" href="resources/assets/css/ace.min.css" />
+    <link rel="stylesheet" href="../resources/assets/css/ace.min.css" />
 
     <!--[if lte IE 9]>
-    <link rel="stylesheet" href="resources/assets/css/ace-part2.min.css" />
+    <link rel="stylesheet" href="../resources/assets/css/ace-part2.min.css" />
     <![endif]-->
-    <link rel="stylesheet" href="resources/assets/css/ace-skins.min.css" />
-    <link rel="stylesheet" href="resources/assets/css/ace-rtl.min.css" />
+    <link rel="stylesheet" href="../resources/assets/css/ace-skins.min.css" />
+    <link rel="stylesheet" href="../resources/assets/css/ace-rtl.min.css" />
 
     <!--[if lte IE 9]>
-    <link rel="stylesheet" href="resources/assets/css/ace-ie.min.css" />
+    <link rel="stylesheet" href="../resources/assets/css/ace-ie.min.css" />
     <![endif]-->
 
     <!-- inline styles related to this page -->
 
     <!-- ace settings handler -->
-    <script src="resources/assets/js/ace-extra.min.js"></script>
+    <script src="../resources/assets/js/ace-extra.min.js"></script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
     <!--[if lt IE 9]>
-    <script src="resources/assets/js/html5shiv.js"></script>
-    <script src="resources/assets/js/respond.min.js"></script>
+    <script src="../resources/assets/js/html5shiv.js"></script>
+    <script src="../resources/assets/js/respond.min.js"></script>
     <![endif]-->
 
     <!-- basic scripts -->
 
     <!--[if !IE]> -->
-    <script src="resources/assets/js/jquery.min.js"></script>
+    <script src="../resources/assets/js/jquery.min.js"></script>
 
     <!-- <![endif]-->
 
     <!--[if IE]>
-    <script src="resources/assets/js/jquery-1.11.0.min.js"></script>
+    <script src="../resources/assets/js/jquery-1.11.0.min.js"></script>
     <![endif]-->
 
     <!--[if !IE]> -->
     <script type="text/javascript">
-        window.jQuery || document.write("<script src='resources/assets/js/jquery.min.js'>"+"<"+"/script>");
+        window.jQuery || document.write("<script src='../resources/assets/js/jquery.min.js'>"+"<"+"/script>");
     </script>
 
     <!-- <![endif]-->
 
     <!--[if IE]>
     <script type="text/javascript">
-        window.jQuery || document.write("<script src='resources/assets/js/jquery1x.min.js'>"+"<"+"/script>");
+        window.jQuery || document.write("<script src='../resources/assets/js/jquery1x.min.js'>"+"<"+"/script>");
     </script>
     <![endif]-->
     <script type="text/javascript">
-        if('ontouchstart' in document.documentElement) document.write("<script src='resources/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+        if('ontouchstart' in document.documentElement) document.write("<script src='../resources/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
     </script>
 
-    <link rel="stylesheet" href="resources/assets/css/lightbox.css">
-    <link rel="shortcut icon" href="resources/assets/img/favicon.ico">
+    <link rel="stylesheet" href="../resources/assets/css/lightbox.css">
+    <link rel="shortcut icon" href="../resources/assets/img/favicon.ico">
 </head>
 <body class="skin-2">
 
 @if ($employeeMenus = Auth::user()->employeePermissions()->lists('menu')) @endif
 
 <div id="modal">
-<img src="resources/assets/img/ajax-loader.gif" id="loading-indicator"/>
+<img src="../resources/assets/img/ajax-loader.gif" id="loading-indicator"/>
 </div>
 <style type="text/css">
     #loading-indicator {
@@ -532,19 +541,72 @@
     </a>
 </div><!-- /.main-container -->
 
-<script src="resources/assets/js/bootstrap.min.js"></script>
+<script src="../resources/assets/js/bootstrap.min.js"></script>
 
 <!-- page specific plugin scripts -->
-<script src="resources/assets/js/date-time/bootstrap-datepicker.min.js"></script>
-<script src="resources/assets/js/jqGrid/jquery.jqGrid.min.js"></script>
-<script src="resources/assets/js/jqGrid/i18n/grid.locale-th.js"></script>
+<script src="../resources/assets/js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="../resources/assets/js/jqGrid/jquery.jqGrid.min.js"></script>
+<script src="../resources/assets/js/jqGrid/i18n/grid.locale-th.js"></script>
+
+<!--[if lte IE 8]>
+<script src="../resources/assets/js/excanvas.min.js"></script>
+<![endif]-->
+
+<script src="../resources/assets/js/jquery-ui.custom.min.js"></script>
+<script src="../resources/assets/js/jquery.ui.touch-punch.min.js"></script>
+<script src="../resources/assets/js/chosen.jquery.min.js"></script>
+<script src="../resources/assets/js/fuelux/fuelux.spinner.min.js"></script>
+<script src="../resources/assets/js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="../resources/assets/js/date-time/bootstrap-timepicker.min.js"></script>
+<script src="../resources/assets/js/date-time/moment.min.js"></script>
+<script src="../resources/assets/js/date-time/daterangepicker.min.js"></script>
+<script src="../resources/assets/js/date-time/bootstrap-datetimepicker.min.js"></script>
+<script src="../resources/assets/js/bootstrap-colorpicker.min.js"></script>
+<script src="../resources/assets/js/jquery.knob.min.js"></script>
+<script src="../resources/assets/js/jquery.autosize.min.js"></script>
+<script src="../resources/assets/js/jquery.inputlimiter.1.3.1.min.js"></script>
+<script src="../resources/assets/js/jquery.maskedinput.min.js"></script>
+<script src="../resources/assets/js/bootstrap-tag.min.js"></script>
 
 <!-- ace scripts -->
-<script src="resources/assets/js/ace-elements.min.js"></script>
-<script src="resources/assets/js/ace.min.js"></script>
+<script src="../resources/assets/js/ace-elements.min.js"></script>
+<script src="../resources/assets/js/ace.min.js"></script>
 
-<script src="resources/assets/js/sharefunctions.js"></script>
-<script src="resources/assets/js/lightbox.min.js"></script>
+<script src="../resources/assets/js/sharefunctions.js"></script>
+<script src="../resources/assets/js/lightbox.min.js"></script>
+
+<!-- Form scripts related to this page -->
+<script type="text/javascript">
+    jQuery(function($) {
+        //textarea
+        $('textarea[class*=autosize]').autosize({append: "\n"});
+        $('textarea.limited').inputlimiter({
+            remText: '%n character%s remaining',
+            limitText: 'max allowed : %n.'
+        });
+
+        // pattern validate
+        $('.input-mask-phone').mask('(999) 999-9999');
+
+        //datepicker plugin
+        $('.date-picker').datepicker({
+            autoclose: true,
+            todayHighlight: true
+        })
+            //show datepicker when clicking on the icon
+                .next().on(ace.click_event, function(){
+                    $(this).prev().focus();
+                });
+
+        $('.chosen-select').chosen({allow_single_deselect:true});
+        //resize the chosen on window resize
+        $(window).on('resize.chosen', function() {
+            var w = $('.chosen-select').parent().width();
+            $('.chosen-select').next().css({'width':w});
+        }).trigger('resize.chosen');
+
+    });
+</script>
 
 </body>
 </html>

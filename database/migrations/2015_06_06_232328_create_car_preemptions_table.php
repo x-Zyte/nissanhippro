@@ -64,6 +64,8 @@ class CreateCarPreemptionsTable extends Migration {
             $table->foreign('buyercustomerid')->references('id')->on('customers');
             $table->integer('salesmanemployeeid')->unsigned();
             $table->foreign('salesmanemployeeid')->references('id')->on('employees');
+            $table->integer('salesmanteamid')->unsigned()->nullable()->comment('ทีมที่อยู่ ณ ช่วงเวลานั้น');
+            $table->foreign('salesmanteamid')->references('id')->on('teams');
             $table->integer('salesmanageremployeeid')->unsigned();
             $table->foreign('salesmanageremployeeid')->references('id')->on('employees');
             $table->integer('approversemployeeid')->unsigned();

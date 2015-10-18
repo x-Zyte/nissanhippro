@@ -26,7 +26,7 @@ class CarPreemptionRepository extends EloquentRepositoryAbstract
             'registrationtype', 'registrationfee', 'insurancefee', 'compulsorymotorinsurancefee', 'accessoriesfee', 'otherfee',
             'datewantgetcar',
 
-            'buyercustomerid', 'salesmanemployeeid', 'salesmanageremployeeid', 'approversemployeeid', 'approvaldate',
+            'buyercustomerid', 'salesmanemployeeid', 'salesmanteamid', 'salesmanageremployeeid', 'approversemployeeid', 'approvaldate',
 
             'place', 'showroom', 'booth', 'leaflet', 'businesscard', 'invitationcard', 'phone', 'signshowroom', 'spotradiowalkin',
             'recommendedby', 'recommendedbyname', 'recommendedbytype', 'customertype', 'remark');

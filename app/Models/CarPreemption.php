@@ -22,7 +22,7 @@ class CarPreemption extends Model {
         'registrationtype', 'registrationfee', 'insurancefee', 'compulsorymotorinsurancefee', 'accessoriesfee', 'otherfee',
         'datewantgetcar',
 
-        'buyercustomerid', 'salesmanemployeeid', 'salesmanageremployeeid', 'approversemployeeid', 'approvaldate',
+        'buyercustomerid', 'salesmanemployeeid', 'salesmanteamid', 'salesmanageremployeeid', 'approversemployeeid', 'approvaldate',
 
         'place', 'showroom', 'booth', 'leaflet', 'businesscard', 'invitationcard', 'phone', 'signshowroom', 'spotradiowalkin',
         'recommendedby', 'recommendedbyname', 'recommendedbytype', 'customertype', 'remark',
@@ -51,6 +51,7 @@ class CarPreemption extends Model {
 
             $model->date = date('Y-m-d', strtotime($model->date));
             $model->approvaldate = date('Y-m-d', strtotime($model->approvaldate));
+            $model->salesmanteamid = Auth::user()->teamid;
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
             $model->modifiedby = Auth::user()->id;
@@ -133,6 +134,11 @@ class CarPreemption extends Model {
     public function salesmanEmployee()
     {
         return $this->belongsTo('App\Models\Employee', 'salesmanemployeeid', 'id');
+    }
+
+    public function salesmanTeam()
+    {
+        return $this->belongsTo('App\Models\Team', 'salesmanteamid', 'id');
     }
 
     public function salesmanagerEmployee()
