@@ -59,7 +59,7 @@
                     {name:'firstname',index:'firstname', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'lastname',index:'lastname', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'workingstartdate',index:'workingstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
-                        ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
+                        ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center',editrules:{required:true}
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},

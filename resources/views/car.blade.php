@@ -168,7 +168,9 @@
                 var dodate = $('#dodate').val();
                 var a = new Date(dodate);
                 var b = new Date(value);
-                if(a.getTime() < b.getTime()) return [true, ""];
+                if(a.getTime() < b.getTime()){
+                    return [true, ""];
+                }
                 else{
                     return [false,"วันที่ออก Do ต้องน้อยกว่า วันที่รับรถเข้า"];
                 }

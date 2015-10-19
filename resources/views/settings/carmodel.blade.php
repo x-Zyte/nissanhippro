@@ -307,7 +307,8 @@
                         datatype: "json",
                         colNames:['รหัส', 'ชื่อรุ่น','ชื่อรุ่น(ออกใบกำกับภาษี)', 'รายละเอียด'],
                         colModel:[
-                            {name:'code',index:'code', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                            {name:'code',index:'code', width:150,editable: true,editoptions:{size:"30",maxlength:"50"}
+                                ,editrules:{required:true,custom: true, custom_func: check_AZ09Hyphen},align:'left'},
                             {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                             {name:'taxinvoicename',index:'taxinvoicename', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                             {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
