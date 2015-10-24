@@ -225,10 +225,10 @@
                 <b class="arrow"></b>
             </li>
 
-            <li class="@yield('menu-customer-class')" @if(!Auth::user()->isadmin && !in_array("ลูกค้า", $employeeMenus)) style="display: none" @endif>
+            <li class="@yield('menu-customer-class')" @if(!Auth::user()->isadmin && !in_array("ลูกค้ามุ่งหวัง", $employeeMenus)) style="display: none" @endif>
                 <a href="{{ url('/customer') }}">
                     <i class="menu-icon fa fa-users"></i>
-                    <span class="menu-text"> ลูกค้า </span>
+                    <span class="menu-text"> ลูกค้ามุ่งหวัง </span>
                 </a>
 
                 <b class="arrow"></b>

@@ -16,8 +16,8 @@ class BankRepository extends EloquentRepositoryAbstract
     {
         $this->Database = new Bank;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id', 'name', 'detail');
-        $this->uniqueKeySingles = array(array('field'=>'name','label'=>'ชื่อธนาคาร-บัญชี'));
+        $this->crudFields = array('oper', 'id', 'name', 'accountno', 'accounttype', 'accountname');
+        $this->uniqueKeySingles = array(array('field'=>'accountno','label'=>'เลขที่บัญชี'));
         $this->uniqueKeyMultiples = array();
         $this->hasBranch = false;
         $this->hasProvince = false;

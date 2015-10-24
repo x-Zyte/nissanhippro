@@ -1,5 +1,5 @@
 @extends('app')
-
+@section('title','ธนาคาร-บัญชี')
 @section('menu-settings-class','active hsub open')
 @section('menu-settingcore-class','active hsub open')
 @section('menu-subsettingcore-class','nav-show')
@@ -44,10 +44,13 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('/bank/read') }}',
                 datatype: "json",
-                colNames:['ชื่อธนาคาร-บัญชี', 'รายละเอียด'],
+                colNames:['ชื่อธนาคาร', 'เลขที่บัญชี','ประเภทบัญชี', 'ชื่อบัญชี'],
                 colModel:[
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
+                    {name:'accountno',index:'accountno', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'accounttype',index:'accounttype', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:S/A;1:F/A;2:C/A"},align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:S/A;1:F/A;2:C/A" }},
+                    {name:'accountname',index:'accountname', width:150,editable: true,editoptions:{size:"30",maxlength:"100"},editrules:{required:true},align:'left'}
                 ],
                 viewrecords : true,
                 rowNum:10,
@@ -152,15 +155,15 @@
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
-                        if(form.data('styled')) return false;
+                        if(!form.data('styled')) {
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            style_delete_form(form);
 
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-                        style_delete_form(form);
+                            form.data('styled', true);
 
-                        form.data('styled', true);
-
-                        var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
-                        centerGridForm(dlgDiv);
+                            var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
+                            centerGridForm(dlgDiv);
+                        }
 
                         var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
                         var totalRowsCount = totalRows.length;

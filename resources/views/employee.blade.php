@@ -1,5 +1,5 @@
 @extends('app')
-
+@section('title','พนักงาน')
 @section('menu-employee-class','active')
 
 @section('content')
@@ -54,7 +54,7 @@
                     },*/
                     //{hidden: true},
                     {name:'code',index:'code', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'title',index:'title', width:60, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว"},align:'left'
+                    {name:'title',index:'title', width:60, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว" },align:'left'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว" }},
                     {name:'firstname',index:'firstname', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'lastname',index:'lastname', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
@@ -67,7 +67,8 @@
                         ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
-                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
+                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}
+                        ,editrules:{custom: true, custom_func: check_workingenddate}},
                     {name:'username',index:'username', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},align:'left'},
                     {name:'loginstartdate',index:'loginstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
                         ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
@@ -100,7 +101,6 @@
                                 else{
                                     $('#tr_branchid').show();
                                     $('#tr_departmentid').show();
-                                    $('#tr_teamid').show();
                                     $('#tr_candeletedata').show();
                                 }
                             }}]
@@ -109,9 +109,22 @@
                     {name:'branchid',index:'branchid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$branchselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$branchselectlist}}" }
                         ,editrules:{custom: true, custom_func: check_branch}},
-                    {name:'departmentid',index:'departmentid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$departmentselectlist}}"}
+                    {name:'departmentid',index:'departmentid', width:100, editable: true,edittype:"select",formatter:'select'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$departmentselectlist}}" }
-                        ,editrules:{custom: true, custom_func: check_department}},
+                        ,editrules:{custom: true, custom_func: check_department}
+                        ,editoptions:{value: "{{$departmentselectlist}}",
+                            dataEvents :[{type: 'change', fn: function(e){
+                                var thisval = $(e.target).val();
+                                if(thisval == 6){
+                                    $('#tr_teamid').show();
+                                }
+                                else{
+                                    $('#tr_teamid').hide();
+                                    $('#teamid').val(null);
+                                }
+                            }}]
+                        }
+                    },
                     {name:'teamid',index:'teamid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$teamselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$teamselectlist}}" }},
                     {name:'candeletedata',index:'candeletedata', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
@@ -172,8 +185,8 @@
                         colNames:['เมนูที่สามารถเข้าถึง'],
                         colModel:[
                             {name:'menu',index:'menu', width:150, editable: true,edittype:"select",formatter:'select',
-                                editoptions:{value: "รถ:รถ;ลูกค้า:ลูกค้า;พนักงาน:พนักงาน;การตั้งค่าส่วนกลาง:การตั้งค่าส่วนกลาง;การตั้งค่ารถ:การตั้งค่ารถ"}
-                                ,align:'left',stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "รถ:รถ;ลูกค้า:ลูกค้า;พนักงาน:พนักงาน;การตั้งค่าส่วนกลาง:การตั้งค่าส่วนกลาง;การตั้งค่ารถ:การตั้งค่ารถ" }}
+                                editoptions:{value: "รถ:รถ;ลูกค้ามุ่งหวัง:ลูกค้ามุ่งหวัง;พนักงาน:พนักงาน;การตั้งค่าส่วนกลาง:การตั้งค่าส่วนกลาง;การตั้งค่ารถ:การตั้งค่ารถ"}
+                                ,align:'left',stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "รถ:รถ;ลูกค้ามุ่งหวัง:ลูกค้ามุ่งหวัง;พนักงาน:พนักงาน;การตั้งค่าส่วนกลาง:การตั้งค่าส่วนกลาง;การตั้งค่ารถ:การตั้งค่ารถ" }}
                         ],
                         viewrecords : true,
                         rowNum:10,
@@ -281,15 +294,15 @@
                                 recreateForm: true,
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
-                                    if(form.data('styled')) return false;
+                                    if(!form.data('styled')) {
+                                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                        style_delete_form(form);
 
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-                                    style_delete_form(form);
+                                        form.data('styled', true);
 
-                                    form.data('styled', true);
-
-                                    var dlgDiv = $("#delmod" + jQuery("#"+subgrid_table_id)[0].id);
-                                    centerGridForm(dlgDiv);
+                                        var dlgDiv = $("#delmod" + jQuery("#" + subgrid_table_id)[0].id);
+                                        centerGridForm(dlgDiv);
+                                    }
 
                                     var totalRows = $("#"+subgrid_table_id).jqGrid('getGridParam', 'selarrrow');
                                     var totalRowsCount = totalRows.length;
@@ -374,6 +387,25 @@
                 }
             }
 
+            function check_workingenddate(value, colname) {
+                if(value == null || value == '') return [true, ""];
+
+                var workingstartdate = $('#workingstartdate').val();
+
+                var workingstartdateArr = workingstartdate.split("-");
+                var workingenddateArr = value.split("-");
+
+                var newworkingstartdate = new Date(workingstartdateArr[1]+'-'+workingstartdateArr[0]+'-'+workingstartdateArr[2]);
+                var newworkingenddate = new Date(workingenddateArr[1]+'-'+workingenddateArr[0]+'-'+workingenddateArr[2]);
+
+                if(newworkingstartdate.getTime() < newworkingenddate.getTime()){
+                    return [true, ""];
+                }
+                else{
+                    return [false,"วันที่เริ่มการเป็นพนักงาน ต้องน้อยกว่า วันที่สิ้นสุดการเป็นพนักงาน"];
+                }
+            }
+
             //navButtons
             jQuery(grid_selector).jqGrid('navGrid',pager_selector,
                 { 	//navbar options
@@ -392,7 +424,6 @@
                 },
                 {
                     //edit record form
-                    closeAfterEdit: true,
                     width: 600,
                     recreateForm: true,
                     beforeShowForm : function(e) {
@@ -406,6 +437,12 @@
                             $('#tr_departmentid').hide();
                             $('#tr_teamid').hide();
                             $('#tr_candeletedata').hide();
+                        }
+                        else{
+                            var departmentid = $('#departmentid').val();
+                            if(departmentid != 6){
+                                $('#tr_teamid').hide();
+                            }
                         }
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
@@ -437,6 +474,8 @@
                                 .wrapInner('<div class="widget-header" />')
                         style_edit_form(form);
 
+                        $('#tr_teamid').hide();
+
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
                     },
@@ -459,15 +498,15 @@
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
-                        if(form.data('styled')) return false;
+                        if(!form.data('styled')) {
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            style_delete_form(form);
 
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-                        style_delete_form(form);
+                            form.data('styled', true);
 
-                        form.data('styled', true);
-
-                        var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
-                        centerGridForm(dlgDiv);
+                            var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
+                            centerGridForm(dlgDiv);
+                        }
 
                         var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
                         var totalRowsCount = totalRows.length;

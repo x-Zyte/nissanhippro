@@ -54,6 +54,13 @@ class CustomerController extends Controller {
             array_push($occupationselectlist,$item->id.':'.$item->name);
         }
 
+        $addprovinces = Province::orderBy('name', 'asc')->get(['id', 'name']);
+        $addprovinceselectlist = array();
+        array_push($addprovinceselectlist,':เลือกจังหวัด');
+        foreach($addprovinces as $item){
+            array_push($addprovinceselectlist,$item->id.':'.$item->name);
+        }
+
         $amphurids = Customer::distinct()->lists('amphurid');
         $amphurs = Amphur::whereIn('id', $amphurids)->orderBy('name', 'asc')->get(['id', 'name']);
         $amphurselectlist = array();
@@ -111,6 +118,7 @@ class CustomerController extends Controller {
         return view($this->viewname,
             ['colorselectlist' => implode(";",$colorselectlist),
                 'provinceselectlist' => implode(";",$provinceselectlist),
+                'addprovinceselectlist' => implode(";",$addprovinceselectlist),
                 'amphurselectlist' => implode(";",$amphurselectlist),
                 'districtselectlist' => implode(";",$districtselectlist),
                 'carmodelselectlist' => implode(";",$carmodelselectlist),

@@ -1,5 +1,5 @@
 @extends('app')
-
+@section('title','รถ')
 @section('menu-car-class','active')
 
 @section('content')
@@ -166,9 +166,14 @@
 
             function check_receiveddate(value, colname) {
                 var dodate = $('#dodate').val();
-                var a = new Date(dodate);
-                var b = new Date(value);
-                if(a.getTime() < b.getTime()){
+				
+				var dodateArr = dodate.split("-");
+				var receiveddateArr = value.split("-");
+				
+				var newDodate = new Date(dodateArr[1]+'-'+dodateArr[0]+'-'+dodateArr[2]);
+				var newReceiveddate = new Date(receiveddateArr[1]+'-'+receiveddateArr[0]+'-'+receiveddateArr[2]);
+
+                if(newDodate.getTime() < newReceiveddate.getTime()){
                     return [true, ""];
                 }
                 else{
@@ -337,15 +342,15 @@
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
-                        if(form.data('styled')) return false;
+                        if(!form.data('styled')) {
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            style_delete_form(form);
 
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-                        style_delete_form(form);
+                            form.data('styled', true);
 
-                        form.data('styled', true);
-
-                        var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
-                        centerGridForm(dlgDiv);
+                            var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
+                            centerGridForm(dlgDiv);
+                        }
 
                         var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
                         var totalRowsCount = totalRows.length;

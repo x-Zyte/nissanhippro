@@ -16,7 +16,9 @@ class CreateBanksTable extends Migration {
 		{
             $table->increments('id');
             $table->string('name',50);
-            $table->text('detail')->nullable();
+            $table->string('accountno',50);
+            $table->integer('accounttype')->comment('0:S/A, 1:F/A, 2:C/A');
+            $table->string('accountname',100);
             $table->boolean('active')->default(true);
 
             $table->integer('createdby')->unsigned();

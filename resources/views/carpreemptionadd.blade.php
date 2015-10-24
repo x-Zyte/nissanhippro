@@ -1,5 +1,5 @@
 @extends('appformpathlevel2')
-
+@section('title','เพิ่มใบจองใหม่')
 @section('menu-carpreemption-class','active')
 
 @section('content')

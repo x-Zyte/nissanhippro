@@ -57,4 +57,18 @@ class CarModelColorController extends Controller {
         $colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
         return $colors;
     }
+
+    public function check_color(Request $request)
+    {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $input = $request->only('id','carmodelid','colorid');
+        $carmodelcolor = CarModelColor::where('id','!=', $input['id'])
+            ->where('carmodelid', $input['carmodelid'])
+            ->where('colorid', $input['colorid'])->first();
+
+        if($carmodelcolor != null){
+            return $carmodelcolor->color->code;
+        }
+    }
 }

@@ -1,5 +1,5 @@
 @extends('app')
-
+@section('title','ประเภทรถ')
 @section('menu-settings-class','active hsub open')
 @section('menu-settingcar-class','active hsub open')
 @section('menu-subsettingcar-class','nav-show')

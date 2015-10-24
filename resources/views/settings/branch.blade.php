@@ -1,5 +1,5 @@
 @extends('app')
-
+@section('title','สาขาโชว์รูม')
 @section('menu-settings-class','active hsub open')
 @section('menu-settingcore-class','active hsub open')
 @section('menu-subsettingcore-class','nav-show')
@@ -44,27 +44,26 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('/branch/read') }}',
                 datatype: "json",
-                colNames:['ชื่อสาขา','ชื่อสำหรับออกใบกำกับภาษี','เลขประจำตัวผู้เสียภาษี', 'ที่อยู่', 'จังหวัด', 'เขต/อำเภอ', 'แขวง/ตำบล', 'รหัสไปรษณีย์','สำนักงานใหญ่','ช่องกุญแจ'],
+                colNames:['ชื่อสาขา','ชื่อสำหรับออกใบกำกับภาษี','เลขประจำตัวผู้เสียภาษี', 'ที่อยู่', 'แขวง/ตำบล', 'เขต/อำเภอ', 'จังหวัด', 'รหัสไปรษณีย์','สำนักงานใหญ่','ช่องกุญแจ'],
                 colModel:[
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'taxinvoicename',index:'taxinvoicename', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'taxpayerno',index:'taxpayerno', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'address',index:'address', width:200,editable: true,editoptions:{size:"50",maxlength:"200"},editrules:{required:true},align:'left'},
-                    {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
-                        editoptions:{value: "{{$provinceselectlist}}",
+                    {name:'districtid',index:'districtid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
+                        editoptions:{value: "{{$districtselectlist}}",
                             dataEvents :[{type: 'change', fn: function(e){
                                 var thisval = $(e.target).val();
-                                $.get('amphur/read/'+thisval, function(data){
-                                    $('#amphurid').children('option:not(:first)').remove();
-                                    $('#districtid').children('option:not(:first)').remove();
+                                $.get('zipcode/read/'+thisval, function(data){
+                                    $('#zipcode').val(data.code);
                                     //$('#zipcodeid').children('option:not(:first)').remove();
-                                    $('#zipcode').val('');
-                                    $.each(data, function(i, option) {
-                                        $('#amphurid').append($('<option/>').attr("value", option.id).text(option.name));
-                                    });
+                                    //$.each(data, function(i, option) {
+                                    //$('#zipcodeid').append($('<option/>').attr("value", option.id).text(option.code));
+                                    //});
                                 });
                             }}]
-                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$districtselectlist}}" }
+                        ,formoptions:{rowpos:7}
                     },
                     {name:'amphurid',index:'amphurid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$amphurselectlist}}",
@@ -80,20 +79,24 @@
                                 });
                             }}]
                         },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$amphurselectlist}}" }
+                        ,formoptions:{rowpos:6}
                     },
-                    {name:'districtid',index:'districtid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
-                        editoptions:{value: "{{$districtselectlist}}",
+                    {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
+                        editoptions:{value: "{{$provinceselectlist}}",
                             dataEvents :[{type: 'change', fn: function(e){
                                 var thisval = $(e.target).val();
-                                $.get('zipcode/read/'+thisval, function(data){
-                                    $('#zipcode').val(data.code);
+                                $.get('amphur/read/'+thisval, function(data){
+                                    $('#amphurid').children('option:not(:first)').remove();
+                                    $('#districtid').children('option:not(:first)').remove();
                                     //$('#zipcodeid').children('option:not(:first)').remove();
-                                    //$.each(data, function(i, option) {
-                                        //$('#zipcodeid').append($('<option/>').attr("value", option.id).text(option.code));
-                                    //});
+                                    $('#zipcode').val('');
+                                    $.each(data, function(i, option) {
+                                        $('#amphurid').append($('<option/>').attr("value", option.id).text(option.name));
+                                    });
                                 });
                             }}]
-                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$districtselectlist}}" }
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }
+                        ,formoptions:{rowpos:5}
                     },
                     {name:'zipcode',index:'zipcode', width:100,editable: true,editoptions:{size:"5",maxlength:"5"},editrules:{required:true, number:true},align:'left'},
                     {name:'isheadquarter',index:'isheadquarter', width:80, editable: true,edittype:"checkbox",
@@ -160,18 +163,25 @@
             }
 
             function check_keyslot(value, colname) {
-                var provinceid = $('#provinceid').val();
-                $.ajax({
-                    url: 'branch/check_keyslot',
-                    data: { provinceid:provinceid,keyslot:value, _token: "{{ csrf_token() }}" },
-                    type: 'POST',
-                    async: false,
-                    datatype: 'text',
-                    success: function (data) {
-                        if (!data) result = [true, ""];
-                        else result = [false,"จำนวนช่องกุญแจ ต้องไม่น้อยกว่าหมายเลขกุญแจที่มากที่สุด ที่รถใน stock ใช้งานอยู่"];
-                    }
-                })
+
+                var isheadquarterchecked = $('#isheadquarter').is(':checked');
+                if(isheadquarterchecked) {
+                    var provinceid = $('#provinceid').val();
+                    var isheadquarter = $('#isheadquarter').val();
+                    $.ajax({
+                        url: 'branch/check_keyslot',
+                        data: {provinceid: provinceid, keyslot: value, _token: "{{ csrf_token() }}"},
+                        type: 'POST',
+                        async: false,
+                        datatype: 'text',
+                        success: function (data) {
+                            if (!data) result = [true, ""];
+                            else result = [false, "จำนวนช่องกุญแจ ต้องไม่น้อยกว่าหมายเลขกุญแจที่มากที่สุด ที่รถใน stock ใช้งานอยู่"];
+                        }
+                    })
+                }
+                else result = [true, ""];
+
                 return result;
             }
 
@@ -291,15 +301,15 @@
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
-                        if(form.data('styled')) return false;
+                        if(!form.data('styled')) {
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            style_delete_form(form);
 
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-                        style_delete_form(form);
+                            form.data('styled', true);
 
-                        form.data('styled', true);
-
-                        var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
-                        centerGridForm(dlgDiv);
+                            var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
+                            centerGridForm(dlgDiv);
+                        }
 
                         var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
                         var totalRowsCount = totalRows.length;

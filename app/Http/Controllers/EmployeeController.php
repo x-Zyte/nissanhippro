@@ -40,8 +40,17 @@ class EmployeeController extends Controller {
         $departmentselectlist = array();
         array_push($departmentselectlist,':เลือกแผนก');
         foreach($departments as $item){
-            array_push($departmentselectlist,$item->id.':'.$item->name);
+            array_push($departmentselectlist,$item->id.':'.str_replace('&','\u0026',$item->name));
         }
+
+        $departmentselectlist2 = array();
+        array_push($departmentselectlist2,':เลือกแผนก');
+        foreach($departments as $item){
+            array_push($departmentselectlist2,$item->id.':'."'".$item->name."'");
+        }
+
+        //return $departments;
+
 
         $teams = Team::all(['id','name']);
         $teamselectlist = array();
@@ -53,6 +62,7 @@ class EmployeeController extends Controller {
         return view('employee',
             ['branchselectlist' => implode(";",$branchselectlist),
             'departmentselectlist' => implode(";",$departmentselectlist),
+            'departmentselectlist2' => '{'.implode(",",$departmentselectlist2).'}',
             'teamselectlist' => implode(";",$teamselectlist)]);
     }
 

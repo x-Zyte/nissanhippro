@@ -32,12 +32,29 @@ class Branch extends Model {
         {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Add','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
             if($model->isheadquarter) {
-                for ($i = 1; $i <= $model->keyslot; $i++) {
-                    $m = new KeySlot;
-                    $m->provinceid = $model->provinceid;
-                    $m->no = $i;
-                    $m->active = true;
-                    $m->save();
+                $max = KeySlot::where('provinceid', $model->provinceid)->max('no');
+                if($max == null){
+                    for ($i = 1; $i <= $model->keyslot; $i++) {
+                        $m = new KeySlot;
+                        $m->provinceid = $model->provinceid;
+                        $m->no = $i;
+                        $m->active = true;
+                        $m->save();
+                    }
+                }
+                else{
+                    if($model->keyslot > $max){
+                        for ($i = $max+1; $i <= $model->keyslot; $i++) {
+                            $m = new KeySlot;
+                            $m->provinceid = $model->provinceid;
+                            $m->no = $i;
+                            $m->active = true;
+                            $m->save();
+                        }
+                    }
+                    elseif($model->keyslot < $max){
+                        KeySlot::where('provinceid', $model->provinceid)->where('no','>',$model->keyslot)->delete();
+                    }
                 }
             }
         });

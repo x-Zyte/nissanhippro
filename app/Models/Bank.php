@@ -11,7 +11,7 @@ class Bank extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['name', 'detail', 'active',
+    protected $fillable = ['name', 'accountno', 'accounttype', 'accountname', 'active',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

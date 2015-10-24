@@ -45,10 +45,17 @@ class CarModelController extends Controller {
             array_push($colorselectlist,$item->id.':'.$item->code.' - '.$item->name);
         }
 
+        $defaultCarBrand = '';
+        $carBrand = CarBrand::where('name',"NISSAN")->first();
+        if($carBrand != null){
+            $defaultCarBrand =  $carBrand->id;
+        }
+
         return view('settings.carmodel',
             ['cartypeselectlist' => implode(";",$cartypeselectlist),
                 'carbrandselectlist' => implode(";",$carbrandselectlist),
-                'colorselectlist' => implode(";",$colorselectlist)]);
+                'colorselectlist' => implode(";",$colorselectlist),
+                'defaultCarBrand' => $defaultCarBrand]);
     }
 
     public function read()

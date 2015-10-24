@@ -89,6 +89,7 @@ Route::post('color/update', 'Settings\ColorController@update');
 Route::get('carmodelcolor/read', 'Settings\CarModelColorController@read');
 Route::post('carmodelcolor/update', 'Settings\CarModelColorController@update');
 Route::get('carmodelcolor/readSelectlist/{carmodelid}', 'Settings\CarModelColorController@readSelectlist');
+Route::post('carmodelcolor/check_color', 'Settings\CarModelColorController@check_color');
 
 //Bank
 Route::get('bank', 'Settings\BankController@index');

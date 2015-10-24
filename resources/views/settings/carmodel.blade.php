@@ -1,5 +1,5 @@
 @extends('app')
-
+@section('title','แบบรถ/สีและรุ่น')
 @section('menu-settings-class','active hsub open')
 @section('menu-settingcar-class','active hsub open')
 @section('menu-subsettingcar-class','nav-show')
@@ -41,6 +41,8 @@
                 candeletedata = true;
             }
 
+            var defaultCarBrand = '{{$defaultCarBrand}}';
+
             $(grid_selector).jqGrid({
                 url:'{{ url('/carmodel/read') }}',
                 datatype: "json",
@@ -48,7 +50,7 @@
                 colModel:[
                     {name:'cartypeid',index:'cartypeid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$cartypeselectlist}}"},editrules:{required:true},align:'left',
                         stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$cartypeselectlist}}" }},
-                    {name:'carbrandid',index:'carbrandid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carbrandselectlist}}"},editrules:{required:true},align:'left',
+                    {name:'carbrandid',index:'carbrandid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carbrandselectlist}}", defaultValue:defaultCarBrand},editrules:{required:true},align:'left',
                         stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carbrandselectlist}}" }},
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'registercost',index:'registercost', width:100,editable: true,editrules:{required:true, number:true},align:'right',formatter:'number',
@@ -106,8 +108,9 @@
                         datatype: "json",
                         colNames:['สี'],
                         colModel:[
-                            {name:'colorid',index:'colorid', width:600, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value:'{{$colorselectlist}}'},align:'left'
-                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }}
+                            {name:'colorid',index:'colorid', width:600, editable: true,edittype:"select",formatter:'select',editoptions:{value:'{{$colorselectlist}}'},align:'left'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }
+                                ,editrules:{required:true,custom: true, custom_func: check_color}}
                         ],
                         viewrecords : true,
                         rowNum:10,
@@ -135,6 +138,24 @@
                     });
 
                     $(window).triggerHandler('resize.jqGridSubGrid');
+
+                    function check_color(value, colname) {
+                        var selRowId = $("#"+subgrid_table_id).jqGrid ('getGridParam', 'selrow');
+                        var carmodelid = row_id;
+                        if(selRowId == null) selRowId = 0;
+                        $.ajax({
+                            url: 'carmodelcolor/check_color',
+                            data: { id:selRowId,carmodelid:carmodelid,colorid:value, _token: "{{ csrf_token() }}" },
+                            type: 'POST',
+                            async: false,
+                            datatype: 'text',
+                            success: function (data) {
+                                if (!data) result = [true, ""];
+                                else result = [false,"แบบรถนี้ รหัสสี "+data+" มีอยู่แล้ว"];
+                            }
+                        })
+                        return result;
+                    }
 
                     jQuery("#"+subgrid_table_id).jqGrid('navGrid',"#"+pager_id,
                             { 	//navbar options
@@ -215,15 +236,15 @@
                                 recreateForm: true,
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
-                                    if(form.data('styled')) return false;
+                                    if(!form.data('styled')) {
+                                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                        style_delete_form(form);
 
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-                                    style_delete_form(form);
+                                        form.data('styled', true);
 
-                                    form.data('styled', true);
-
-                                    var dlgDiv = $("#delmod" + jQuery("#"+subgrid_table_id)[0].id);
-                                    centerGridForm(dlgDiv);
+                                        var dlgDiv = $("#delmod" + jQuery("#" + subgrid_table_id)[0].id);
+                                        centerGridForm(dlgDiv);
+                                    }
 
                                     var totalRows = $("#"+subgrid_table_id).jqGrid('getGridParam', 'selarrrow');
                                     var totalRowsCount = totalRows.length;
@@ -418,17 +439,17 @@
                                 recreateForm: true,
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
-                                    if(form.data('styled')) return false;
+                                    if(!form.data('styled')) {
+                                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                        style_delete_form(form);
 
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-                                    style_delete_form(form);
+                                        form.data('styled', true);
 
-                                    form.data('styled', true);
+                                        var dlgDiv = $("#delmod" + jQuery("#" + subgrid_table_id2)[0].id);
+                                        centerGridForm(dlgDiv);
+                                    }
 
-                                    var dlgDiv = $("#delmod" + jQuery("#"+subgrid_table_id2)[0].id);
-                                    centerGridForm(dlgDiv);
-
-                                    var totalRows = $("#"+subgrid_table_id).jqGrid('getGridParam', 'selarrrow');
+                                    var totalRows = $("#"+subgrid_table_id2).jqGrid('getGridParam', 'selarrrow');
                                     var totalRowsCount = totalRows.length;
                                     $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
                                 },
@@ -569,16 +590,15 @@
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
-                        if(form.data('styled')) return false;
+                        if(!form.data('styled')) {
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            style_delete_form(form);
 
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-                        style_delete_form(form);
+                            form.data('styled', true);
 
-                        form.data('styled', true);
-
-                        var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
-                        centerGridForm(dlgDiv);
-
+                            var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
+                            centerGridForm(dlgDiv);
+                        }
                         var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
                         var totalRowsCount = totalRows.length;
                         $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");

@@ -1,11 +1,11 @@
 @extends('app')
-
+@section('title','ลูกค้ามุ่งหวัง')
 @section('menu-customer-class','active hsub open')
 @section('menu-customerall-class','active')
 
 @section('content')
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-users"></i> ลูกค้า</h3>
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-users"></i> ลูกค้ามุ่งหวัง</h3>
 
     <table id="grid-table"></table>
 
@@ -48,7 +48,7 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('/customer/read') }}',
                 datatype: "json",
-                colNames:['จังหวัด', 'ลูกค้าจริง', 'สถานะมุ่งหวัง', 'คำนำหน้า', 'ชื่อจริง', 'นามสกุล', 'เบอร์โทร1', 'เบอร์โทร2', 'อาชีพ', 'วันเกิด', 'ที่อยู่', 'จังหวัด', 'เขต/อำเภอ', 'แขวง/ตำบล', 'รหัสไปรษณีย์'],
+                colNames:['จังหวัด', 'ลูกค้าจริง', 'สถานะมุ่งหวัง', 'คำนำหน้า', 'ชื่อจริง', 'นามสกุล', 'เบอร์โทร1', 'เบอร์โทร2', 'อาชีพ', 'วันเกิด', 'ที่อยู่', 'แขวง/ตำบล', 'เขต/อำเภอ', 'จังหวัด', 'รหัสไปรษณีย์'],
                 colModel:[
                     {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
@@ -70,21 +70,20 @@
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
                     {name:'address',index:'address', width:150,editable: true,editoptions:{size:"50",maxlength:"200"},align:'left'},
-                    {name:'addprovinceid',index:'addprovinceid', width:100, editable: true,edittype:"select",formatter:'select',align:'left',
-                        editoptions:{value: "{{$provinceselectlist}}",
+                    {name:'districtid',index:'districtid', width:100, editable: true,edittype:"select",formatter:'select',align:'left',
+                        editoptions:{value: "{{$districtselectlist}}",
                             dataEvents :[{type: 'change', fn: function(e){
                                 var thisval = $(e.target).val();
-                                $.get('amphur/read/'+thisval, function(data){
-                                    $('#amphurid').children('option:not(:first)').remove();
-                                    $('#districtid').children('option:not(:first)').remove();
+                                $.get('zipcode/read/'+thisval, function(data){
+                                    $('#zipcode').val(data.code);
                                     //$('#zipcodeid').children('option:not(:first)').remove();
-                                    $('#zipcode').val('');
-                                    $.each(data, function(i, option) {
-                                        $('#amphurid').append($('<option/>').attr("value", option.id).text(option.name));
-                                    });
+                                    //$.each(data, function(i, option) {
+                                    //$('#zipcodeid').append($('<option/>').attr("value", option.id).text(option.code));
+                                    //});
                                 });
                             }}]
-                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$districtselectlist}}" }
+                        ,formoptions:{rowpos:14}
                     },
                     {name:'amphurid',index:'amphurid', width:100, editable: true,edittype:"select",formatter:'select',align:'left',
                         editoptions:{value: "{{$amphurselectlist}}",
@@ -100,20 +99,24 @@
                                 });
                             }}]
                         },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$amphurselectlist}}" }
+                        ,formoptions:{rowpos:13}
                     },
-                    {name:'districtid',index:'districtid', width:100, editable: true,edittype:"select",formatter:'select',align:'left',
-                        editoptions:{value: "{{$districtselectlist}}",
+                    {name:'addprovinceid',index:'addprovinceid', width:100, editable: true,edittype:"select",formatter:'select',align:'left',
+                        editoptions:{value: "{{$addprovinceselectlist}}",
                             dataEvents :[{type: 'change', fn: function(e){
                                 var thisval = $(e.target).val();
-                                $.get('zipcode/read/'+thisval, function(data){
-                                    $('#zipcode').val(data.code);
+                                $.get('amphur/read/'+thisval, function(data){
+                                    $('#amphurid').children('option:not(:first)').remove();
+                                    $('#districtid').children('option:not(:first)').remove();
                                     //$('#zipcodeid').children('option:not(:first)').remove();
-                                    //$.each(data, function(i, option) {
-                                    //$('#zipcodeid').append($('<option/>').attr("value", option.id).text(option.code));
-                                    //});
+                                    $('#zipcode').val('');
+                                    $.each(data, function(i, option) {
+                                        $('#amphurid').append($('<option/>').attr("value", option.id).text(option.name));
+                                    });
                                 });
                             }}]
-                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$districtselectlist}}" }
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }
+                        ,formoptions:{rowpos:12}
                     },
                     {name:'zipcode',index:'zipcode', width:100,editable: true,editoptions:{size:"5",maxlength:"5"},align:'left'}
                 ],
@@ -318,15 +321,15 @@
                                 recreateForm: true,
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
-                                    if(form.data('styled')) return false;
+                                    if(!form.data('styled')) {
+                                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                        style_delete_form(form);
 
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-                                    style_delete_form(form);
+                                        form.data('styled', true);
 
-                                    form.data('styled', true);
-
-                                    var dlgDiv = $("#delmod" + jQuery("#"+subgrid_table_id)[0].id);
-                                    centerGridForm(dlgDiv);
+                                        var dlgDiv = $("#delmod" + jQuery("#" + subgrid_table_id)[0].id);
+                                        centerGridForm(dlgDiv);
+                                    }
 
                                     var totalRows = $("#"+subgrid_table_id).jqGrid('getGridParam', 'selarrrow');
                                     var totalRowsCount = totalRows.length;
@@ -507,16 +510,15 @@
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
-                        if(form.data('styled')) return false;
+                        if(!form.data('styled')) {
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            style_delete_form(form);
 
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-                        style_delete_form(form);
+                            form.data('styled', true);
 
-                        form.data('styled', true);
-
-                        var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
-                        centerGridForm(dlgDiv);
-
+                            var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
+                            centerGridForm(dlgDiv);
+                        }
                         var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
                         var totalRowsCount = totalRows.length;
                         $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
