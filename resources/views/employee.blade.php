@@ -125,8 +125,8 @@
                             }}]
                         }
                     },
-                    {name:'teamid',index:'teamid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$teamselectlist}}"}
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$teamselectlist}}" }},
+                    {name:'teamid',index:'teamid', width:70, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$teamselectlist}}"}
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$teamselectlist}}" },align:'center'},
                     {name:'candeletedata',index:'candeletedata', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
                     {name:'active',index:'active', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"1"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'

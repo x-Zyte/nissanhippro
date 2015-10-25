@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CarBrand;
 use App\Models\CarPreemption;
 use App\Models\Color;
 use App\Models\CarModel;
@@ -15,6 +16,8 @@ use App\Models\CarSubModel;
 use App\Facades\GridEncoder;
 use App\Models\Customer;
 use App\Models\Employee;
+use App\Models\SystemDatas\Occupation;
+use App\Models\SystemDatas\Province;
 use App\Repositories\CarPreemptionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -122,7 +125,65 @@ class CarPreemptionController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        return view('carpreemptionadd');
+        $customers = Customer::orderBy('firstname', 'asc')
+            ->orderBy('lastname', 'asc')
+            ->get(['id','title','firstname','lastname']);
+        $customerselectlist = array();
+        $customerselectlist[null] = 'เลือกชื่อลูกค้า';
+        foreach($customers as $item){
+            $customerselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
+        }
+
+        $provinces = Province::orderBy('name', 'asc')->get(['id', 'name']);
+        $provinceselectlist = array();
+        $provinceselectlist[null] = 'เลือกจังหวัด';
+        foreach($provinces as $item){
+            $provinceselectlist[$item->id] = $item->name;
+        }
+
+        $occupations = Occupation::orderBy('name', 'asc')->get(['id', 'name']);
+        $occupationselectlist = array();
+        $occupationselectlist[null] = 'เลือกอาชีพ';
+        foreach($occupations as $item){
+            $occupationselectlist[$item->id] = $item->name;
+        }
+
+        $carmodels = CarModel::whereHas("carbrand", function($q)
+        {
+            $q->where('ismain',true);
+
+        })->orderBy('name', 'asc')->get(['id', 'name']);
+        $carmodelselectlist = array();
+        $carmodelselectlist[null] = 'เลือกแบบ';
+        foreach($carmodels as $item){
+            $carmodelselectlist[$item->id] = $item->name;
+        }
+
+
+        $oldcarbrands = CarBrand::where('ismain', false)->orderBy('name', 'asc')->get(['id','name']);
+        $oldcarbrandselectlist = array();
+        $oldcarbrandselectlist[null] = 'เลือกยี่ห้อรถ';
+        foreach($oldcarbrands as $item){
+            $oldcarbrandselectlist[$item->id] = $item->name;
+        }
+
+        $saleemployees = Employee::where('departmentid', 6)
+            ->orderBy('firstname', 'asc')
+            ->orderBy('lastname', 'asc')
+            ->get(['id','title','firstname','lastname']);
+        $saleemployeeselectlist = array();
+        $saleemployeeselectlist[null] = 'เลือกพนักงาน';
+        foreach($saleemployees as $item){
+            $saleemployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
+        }
+
+        return view('carpreemptionadd',
+            ['customerselectlist' => $customerselectlist,
+                'provinceselectlist' => $provinceselectlist,
+                'occupationselectlist' => $occupationselectlist,
+                'carmodelselectlist' => $carmodelselectlist,
+                'oldcarbrandselectlist' => $oldcarbrandselectlist,
+                'saleemployeeselectlist' => $saleemployeeselectlist]);
     }
 
     public function edit()

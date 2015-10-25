@@ -64,6 +64,7 @@ Route::post('team/update', 'Settings\TeamController@update');
 Route::get('carbrand', 'Settings\CarBrandController@index');
 Route::get('carbrand/read', 'Settings\CarBrandController@read');
 Route::post('carbrand/update', 'Settings\CarBrandController@update');
+Route::get('carbrand/getmodelbyid/{id}', 'Settings\CarBrandController@getmodelbyid');
 
 //Cartype
 Route::get('cartype', 'Settings\CarTypeController@index');
@@ -74,6 +75,7 @@ Route::post('cartype/update', 'Settings\CarTypeController@update');
 Route::get('carmodel', 'Settings\CarModelController@index');
 Route::get('carmodel/read', 'Settings\CarModelController@read');
 Route::post('carmodel/update', 'Settings\CarModelController@update');
+Route::get('carmodel/getsubmodelandcolorbyid/{id}', 'Settings\CarModelController@getsubmodelandcolorbyid');
 
 //Carsubmodel
 Route::get('carsubmodel/read', 'Settings\CarSubModelController@read');
@@ -106,6 +108,7 @@ Route::get('customer', 'CustomerController@index');
 Route::get('customer/read', 'CustomerController@read');
 Route::post('customer/update', 'CustomerController@update');
 Route::get('customer/readSelectlistForDisplayInGrid', 'CustomerController@readSelectlistForDisplayInGrid');
+Route::get('customer/getbyid/{id}', 'CustomerController@getbyid');
 
 //CustomerExpectation
 Route::get('customerexpectation/read', 'CustomerExpectationController@read');

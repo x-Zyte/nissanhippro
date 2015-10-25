@@ -163,4 +163,21 @@ class CustomerController extends Controller {
 
         return ['amphurselectlist'=>implode(";",$amphurselectlist),'districtselectlist'=>implode(";",$districtselectlist)];
     }
+
+    public function getbyid($id)
+    {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $cust = Customer::find($id);
+        if($cust->birthdate != null)
+            $cust->birthdate = date('d-m-Y', strtotime($cust->birthdate));
+
+        $amphurs = Amphur::where('provinceid',$cust->addprovinceid)->orderBy('name', 'asc')->get(['id', 'name']);
+        $cust->amphurs = $amphurs;
+
+        $districts = District::where('amphurid',$cust->amphurid)->orderBy('name', 'asc')->get(['id', 'name']);
+        $cust->districts = $districts;
+
+        return $cust;
+    }
 }

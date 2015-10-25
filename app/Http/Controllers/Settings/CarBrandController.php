@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Facades\GridEncoder;
 use App\Http\Controllers\Controller;
+use App\Models\CarModel;
 use App\Repositories\CarBrandRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -36,5 +37,13 @@ class CarBrandController extends Controller {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
         GridEncoder::encodeRequestedData(new CarBrandRepository(), $request);
+    }
+
+    public function getmodelbyid($id){
+
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $carmodels = CarModel::where('carbrandid',$id)->orderBy('name', 'asc')->get(['id', 'name']);
+        return $carmodels;
     }
 }

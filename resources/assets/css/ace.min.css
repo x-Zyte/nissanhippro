@@ -16057,3 +16057,6 @@ img.editable-click:hover {
     display: none !important;
 }
 }
+.input-readonly {
+    background-color:#FAFAFA;
+}
