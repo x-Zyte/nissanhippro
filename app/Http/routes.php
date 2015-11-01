@@ -135,10 +135,12 @@ Route::post('giveaway/update', 'Settings\GiveawayController@update');
 //CarPreemption
 Route::get('carpreemption', 'CarPreemptionController@index');
 Route::get('carpreemption/read', 'CarPreemptionController@read');
-Route::post('carpreemption/update', 'CarPreemptionController@update');
-Route::get('carpreemption/add', 'CarPreemptionController@add');
+
+Route::get('carpreemption/newcarpreemption', 'CarPreemptionController@newcarpreemption');
 Route::get('carpreemption/edit', 'CarPreemptionController@edit');
 Route::get('carpreemption/view', 'CarPreemptionController@view');
+Route::post('carpreemption/add', 'CarPreemptionController@add');
+Route::post('carpreemption/update', 'CarPreemptionController@update');
 
 Route::get('/', 'HomeController@index');
 

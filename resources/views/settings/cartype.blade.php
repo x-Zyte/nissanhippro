@@ -1,5 +1,5 @@
 @extends('app')
-@section('title','ประเภทรถ')
+@section('title','ประเภทรถ/พ.ร.บ.')
 @section('menu-settings-class','active hsub open')
 @section('menu-settingcar-class','active hsub open')
 @section('menu-subsettingcar-class','nav-show')
@@ -8,7 +8,7 @@
 
 @section('content')
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-car"></i> ประเภทรถ</h3>
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-car"></i> ประเภทรถ/พ.ร.บ.</h3>
 
     <table id="grid-table"></table>
 
@@ -44,10 +44,13 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('/cartype/read') }}',
                 datatype: "json",
-                colNames:['ชื่อประเภท','ค่า พ.ร.บ.', 'รายละเอียด'],
+                colNames:['ชื่อประเภท','ค่า พ.ร.บ. (เก็บลูกค้า)','ค่า พ.ร.บ. (จ่าย)', 'รายละเอียด'],
                 colModel:[
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'actcost',index:'actcost', width:100,editable: true,editrules:{required:true, number:true},align:'right',formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
+                    {name:'actcharged',index:'actcharged', width:100,editable: true,editrules:{required:true, number:true},align:'right'
+                        ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
+                    {name:'actpaid',index:'actpaid', width:100,editable: true,editrules:{required:true, number:true},align:'right'
+                        ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                 ],
                 viewrecords : true,
@@ -117,7 +120,9 @@
                         }else{
                             return [false,response.responseText];
                         }
-                    }
+                    },
+                    savekey: [true, 13],
+                    modal:true
                 },
                 {
                     //new record form
@@ -145,7 +150,9 @@
                         }else{
                             return [false,response.responseText];
                         }
-                    }
+                    },
+                    savekey: [true, 13],
+                    modal:true
                 },
                 {
                     //delete record form

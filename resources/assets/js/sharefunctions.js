@@ -219,3 +219,14 @@ function resizeSubGrid(subgrid_table_id){
         $('.ui-subgrid' + ' .ui-jqgrid-view').css('overflow-x','hidden');
     }
 }
+
+function resizeGridInForm(){
+    if($('#grid-table').width() < $(".page-content").width()){
+        $('#grid-table').jqGrid( 'setGridWidth', $(".page-content").width() - 25);
+    }
+    else{
+        $('.ui-jqgrid' + ' .ui-jqgrid-view').css('overflow','auto');
+        $('.ui-jqgrid' + " .ui-jqgrid-view").css("max-width",($(".page-content").width() - 25)+"px");
+        $('.ui-jqgrid' + " .ui-jqgrid-pager").css("max-width",($(".page-content").width() - 25)+"px");
+    }
+}

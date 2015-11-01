@@ -119,11 +119,13 @@
                         }else{
                             return [false,response.responseText];
                         }
-                    }
+                    },
+                    savekey: [true, 13],
+                    modal:true
                 },
                 {
                     //new record form
-                    width: 600,
+                    width: 800,
                     closeAfterAdd: true,
                     recreateForm: true,
                     viewPagerButtons: false,
@@ -147,7 +149,9 @@
                         }else{
                             return [false,response.responseText];
                         }
-                    }
+                    },
+                    savekey: [true, 13],
+                    modal: true
                 },
                 {
                     //delete record form

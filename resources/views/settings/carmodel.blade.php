@@ -1,5 +1,5 @@
 @extends('app')
-@section('title','แบบรถ/สีและรุ่น')
+@section('title','แบบรถ/สี/รุ่น/ทะเบียน')
 @section('menu-settings-class','active hsub open')
 @section('menu-settingcar-class','active hsub open')
 @section('menu-subsettingcar-class','nav-show')
@@ -8,7 +8,7 @@
 
 @section('content')
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-car"></i> แบบรถ/สีและรุ่น</h3>
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-car"></i> แบบรถ/สี/รุ่น/ทะเบียน</h3>
 
     <table id="grid-table"></table>
 
@@ -46,14 +46,20 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('/carmodel/read') }}',
                 datatype: "json",
-                colNames:['ประเภทรถ', 'ยี่ห้อ', 'ชื่อแบบ','ค่าทะเบียน', 'รายละเอียด'],
+                colNames:['ประเภทรถ', 'ยี่ห้อ', 'ชื่อแบบ','ค่าทะเบียน(บุคคล)','ค่าดำเนินการ(บุคคล)','ค่าทะเบียน(บริษัท)','ค่าดำเนินการ(บริษัท)', 'รายละเอียด'],
                 colModel:[
                     {name:'cartypeid',index:'cartypeid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$cartypeselectlist}}"},editrules:{required:true},align:'left',
                         stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$cartypeselectlist}}" }},
                     {name:'carbrandid',index:'carbrandid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carbrandselectlist}}", defaultValue:defaultCarBrand},editrules:{required:true},align:'left',
                         stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carbrandselectlist}}" }},
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'registercost',index:'registercost', width:100,editable: true,editrules:{required:true, number:true},align:'right',formatter:'number',
+                    {name:'individualregistercost',index:'individualregistercost', width:100,editable: true,editrules:{required:true, number:true},align:'right',formatter:'number',
+                        formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
+                    {name:'implementingindividualregistercost',index:'implementingindividualregistercost', width:100,editable: true,editrules:{required:true, number:true},align:'right',formatter:'number',
+                        formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
+                    {name:'companyregistercost',index:'companyregistercost', width:100,editable: true,editrules:{required:true, number:true},align:'right',formatter:'number',
+                        formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
+                    {name:'implementingcompanyregistercost',index:'implementingcompanyregistercost', width:100,editable: true,editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                 ],
@@ -104,13 +110,15 @@
 
                     $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table><div id='"+pager_id+"' class='scroll'></div>");
                     jQuery("#"+subgrid_table_id).jqGrid({
-                        url:'carmodelcolor/read?carmodelid='+row_id,
+                        url:'carsubmodel/read?carmodelid='+row_id,
                         datatype: "json",
-                        colNames:['สี'],
+                        colNames:['รหัส', 'ชื่อรุ่น','ชื่อรุ่น(ออกใบกำกับภาษี)', 'รายละเอียด'],
                         colModel:[
-                            {name:'colorid',index:'colorid', width:600, editable: true,edittype:"select",formatter:'select',editoptions:{value:'{{$colorselectlist}}'},align:'left'
-                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }
-                                ,editrules:{required:true,custom: true, custom_func: check_color}}
+                            {name:'code',index:'code', width:150,editable: true,editoptions:{size:"30",maxlength:"50"}
+                                ,editrules:{required:true,custom: true, custom_func: check_AZ09Hyphen},align:'left'},
+                            {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                            {name:'taxinvoicename',index:'taxinvoicename', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                            {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                         ],
                         viewrecords : true,
                         rowNum:10,
@@ -131,31 +139,12 @@
                             }, 0);
                         },
 
-                        editurl: "carmodelcolor/update",
-                        caption: "สีของแบบรถ",
+                        editurl: "carsubmodel/update",
+                        caption: "รุ่นของแบบรถ",
                         height:'100%'
-                        //width:desired_width
                     });
 
                     $(window).triggerHandler('resize.jqGridSubGrid');
-
-                    function check_color(value, colname) {
-                        var selRowId = $("#"+subgrid_table_id).jqGrid ('getGridParam', 'selrow');
-                        var carmodelid = row_id;
-                        if(selRowId == null) selRowId = 0;
-                        $.ajax({
-                            url: 'carmodelcolor/check_color',
-                            data: { id:selRowId,carmodelid:carmodelid,colorid:value, _token: "{{ csrf_token() }}" },
-                            type: 'POST',
-                            async: false,
-                            datatype: 'text',
-                            success: function (data) {
-                                if (!data) result = [true, ""];
-                                else result = [false,"แบบรถนี้ รหัสสี "+data+" มีอยู่แล้ว"];
-                            }
-                        })
-                        return result;
-                    }
 
                     jQuery("#"+subgrid_table_id).jqGrid('navGrid',"#"+pager_id,
                             { 	//navbar options
@@ -198,7 +187,9 @@
                                     }else{
                                         return [false,response.responseText];
                                     }
-                                }
+                                },
+                                savekey: [true, 13],
+                                modal:true
                             },
                             {
                                 //new record form
@@ -228,7 +219,9 @@
                                     }else{
                                         return [false,response.responseText];
                                     }
-                                }
+                                },
+                                savekey: [true, 13],
+                                modal:true
                             },
                             {
                                 //delete record form
@@ -324,15 +317,13 @@
 
                     $("#"+subgrid_id).append("<table id='"+subgrid_table_id2+"' class='scroll'></table><div id='"+pager_id2+"' class='scroll'></div>");
                     jQuery("#"+subgrid_table_id2).jqGrid({
-                        url:'carsubmodel/read?carmodelid='+row_id,
+                        url:'carmodelcolor/read?carmodelid='+row_id,
                         datatype: "json",
-                        colNames:['รหัส', 'ชื่อรุ่น','ชื่อรุ่น(ออกใบกำกับภาษี)', 'รายละเอียด'],
+                        colNames:['สี'],
                         colModel:[
-                            {name:'code',index:'code', width:150,editable: true,editoptions:{size:"30",maxlength:"50"}
-                                ,editrules:{required:true,custom: true, custom_func: check_AZ09Hyphen},align:'left'},
-                            {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                            {name:'taxinvoicename',index:'taxinvoicename', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                            {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
+                            {name:'colorid',index:'colorid', width:600, editable: true,edittype:"select",formatter:'select',editoptions:{value:'{{$colorselectlist}}'},align:'left'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }
+                                ,editrules:{required:true,custom: true, custom_func: check_color}}
                         ],
                         viewrecords : true,
                         rowNum:10,
@@ -353,13 +344,30 @@
                             }, 0);
                         },
 
-                        editurl: "carsubmodel/update",
-                        caption: "รุ่นของแบบรถ",
+                        editurl: "carmodelcolor/update",
+                        caption: "สีของแบบรถ",
                         height:'100%'
-                        //width:desired_width
                     });
 
                     $(window).triggerHandler('resize.jqGridSubGrid2');
+
+                    function check_color(value, colname) {
+                        var selRowId = $("#"+subgrid_table_id2).jqGrid ('getGridParam', 'selrow');
+                        var carmodelid = row_id;
+                        if(selRowId == null) selRowId = 0;
+                        $.ajax({
+                            url: 'carmodelcolor/check_color',
+                            data: { id:selRowId,carmodelid:carmodelid,colorid:value, _token: "{{ csrf_token() }}" },
+                            type: 'POST',
+                            async: false,
+                            datatype: 'text',
+                            success: function (data) {
+                                if (!data) result = [true, ""];
+                                else result = [false,"แบบรถนี้ รหัสสี "+data+" มีอยู่แล้ว"];
+                            }
+                        })
+                        return result;
+                    }
 
                     jQuery("#"+subgrid_table_id2).jqGrid('navGrid',"#"+pager_id2,
                             { 	//navbar options
@@ -401,7 +409,9 @@
                                     }else{
                                         return [false,response.responseText];
                                     }
-                                }
+                                },
+                                savekey: [true, 13],
+                                modal:true
                             },
                             {
                                 //new record form
@@ -431,7 +441,9 @@
                                     }else{
                                         return [false,response.responseText];
                                     }
-                                }
+                                },
+                                savekey: [true, 13],
+                                modal:true
                             },
                             {
                                 //delete record form
@@ -554,7 +566,9 @@
                         }else{
                             return [false,response.responseText];
                         }
-                    }
+                    },
+                    savekey: [true, 13],
+                    modal:true
                 },
                 {
                     //new record form
@@ -582,7 +596,9 @@
                         }else{
                             return [false,response.responseText];
                         }
-                    }
+                    },
+                    savekey: [true, 13],
+                    modal:true
                 },
                 {
                     //delete record form

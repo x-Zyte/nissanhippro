@@ -174,6 +174,7 @@
 
         function CarModelChange(sel) {
             var carmodelid = sel.value;
+            if(carmodelid == null || carmodelid == '') return;
             $('#carsubmodelid').children('option:not(:first)').remove();
             $('#colorid').children('option:not(:first)').remove();
             $.get('../carmodel/getsubmodelandcolorbyid/'+carmodelid, function(data){
@@ -267,11 +268,23 @@
 
             }
         }
+
     </script>
 
     <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> เพิ่มใบจองใหม่</h3>
 
-    {!! Form::open(array('url' => 'foo/bar', 'id'=>'form-carpreemption', 'class'=>'form-horizontal', 'role'=>'form')) !!}
+    @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <strong>ขออภัย!</strong> มีปัญหาบางอย่างกับการป้อนข้อมูลของคุณ<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    {!! Form::open(array('url' => 'carpreemption/add', 'id'=>'form-carpreemption', 'class'=>'form-horizontal', 'role'=>'form')) !!}
         <div class="form-group" style="margin-top:10px;" >
             {!! Form::label('bookno', 'เล่มที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
             <div class="col-sm-2">
@@ -310,7 +323,7 @@
                         <div class="widget-body-inner" style="display: block;">
                             <div class="widget-main">
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label no-padding-right " >ชื่อผู้สั่งจอง</label>
+                                    <label class="col-sm-1 control-label no-padding-right " >ผู้สั่งจอง</label>
                                     <div class="col-sm-11" >
                                         <label>
                                             {!! Form::radio('customer-type',0, true, array('class' => 'ace', 'onchange'=>'NewCustomer("n")')) !!}
@@ -356,7 +369,7 @@
                                 <div class="form-group">
                                     {!! Form::label('bookingcustomerzipcode', 'รหัสไปรษณีย์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::text('bookingcustomerzipcode') !!}
+                                        {!! Form::number('bookingcustomerzipcode') !!}
                                     </div>
                                     {!! Form::label('bookingcustomerphone1', 'เบอร์โทร 1', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
@@ -364,7 +377,7 @@
                                             <span class="input-group-addon">
                                                 <i class="ace-icon fa fa-phone"></i>
                                             </span>
-                                            {!! Form::text('bookingcustomerphone1') !!}
+                                            {!! Form::number('bookingcustomerphone1') !!}
                                         </div>
                                     </div>
                                     {!! Form::label('bookingcustomerphone2', 'เบอร์โทร 2', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
@@ -373,7 +386,7 @@
                                             <span class="input-group-addon">
                                                 <i class="ace-icon fa fa-phone"></i>
                                             </span>
-                                            {!! Form::text('bookingcustomerphone2') !!}
+                                            {!! Form::number('bookingcustomerphone2') !!}
                                         </div>
                                     </div>
                                 </div>
@@ -682,6 +695,10 @@
                     <div class="widget-body">
                         <div class="widget-body-inner" style="display: block;">
                             <div class="widget-main">
+                                <div>
+                                    <table id="grid-table"></table>
+                                    <div id="grid-pager"></div>
+                                </div><br>
                                 <div class="form-group">
                                     <div style="height:35px;">
                                         {!! Form::label('buyertype', 'ผู้ซื้อ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
@@ -746,7 +763,7 @@
                                 <div class="form-group same-customer" style="display:none;">
                                     {!! Form::label('buyercustomerzipcode', 'รหัสไปรษณีย์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::text('buyercustomerzipcode') !!}
+                                        {!! Form::number('buyercustomerzipcode') !!}
                                     </div>
                                     {!! Form::label('buyercustomerphone1', 'เบอร์โทร 1', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
@@ -754,7 +771,7 @@
                                             <span class="input-group-addon">
                                                 <i class="ace-icon fa fa-phone"></i>
                                             </span>
-                                            {!! Form::text('buyercustomerphone1') !!}
+                                            {!! Form::number('buyercustomerphone1') !!}
                                         </div>
                                     </div>
                                     {!! Form::label('buyercustomerphone2', 'เบอร์โทร 2', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
@@ -763,7 +780,7 @@
                                             <span class="input-group-addon">
                                                 <i class="ace-icon fa fa-phone"></i>
                                             </span>
-                                            {!! Form::text('buyercustomerphone2') !!}
+                                            {!! Form::number('buyercustomerphone2') !!}
                                         </div>
                                     </div>
                                 </div>
@@ -960,7 +977,7 @@
 
         <div class="clearfix form-actions">
             <div class="col-md-offset-5 col-md-5">
-                <button id="btnSubmit" class="btn btn-info" type="button">
+                <button id="btnSubmit" class="btn btn-info" type="submit">
                     <i class="ace-icon fa fa-check bigger-110"></i>
                     Submit
                 </button>
@@ -976,8 +993,311 @@
 
     <!-- inline scripts related to this page -->
     <script type="text/javascript">
-        $(document).ready(function() {
+        var giveawayData = [];
 
+        onclickSubmitLocal = function (options, postdata) {
+            var $this = $(this), p = $(this).jqGrid("getGridParam"),// p = this.p,
+                    idname = p.prmNames.id,
+                    id = this.id,
+                    idInPostdata = id + "_id",
+                    rowid = postdata[idInPostdata],
+                    addMode = rowid === "_empty",
+                    oldValueOfSortColumn,
+                    newId,
+                    idOfTreeParentNode;
+
+            // postdata has row id property with another name. we fix it:
+            if (addMode) {
+                // generate new id
+                newId = $.jgrid.randId();
+                while ($("#" + newId).length !== 0) {
+                    newId = $.jgrid.randId();
+                }
+                postdata[idname] = String(newId);
+            } else if (postdata[idname] === undefined) {
+                // set id property only if the property not exist
+                postdata[idname] = rowid;
+            }
+            delete postdata[idInPostdata];
+
+            // prepare postdata for tree grid
+            if (p.treeGrid === true) {
+                if (addMode) {
+                    idOfTreeParentNode = p.treeGridModel === "adjacency" ? p.treeReader.parent_id_field : "parent_id";
+                    postdata[idOfTreeParentNode] = p.selrow;
+                }
+
+                $.each(p.treeReader, function () {
+                    if (postdata.hasOwnProperty(this)) {
+                        delete postdata[this];
+                    }
+                });
+            }
+
+            // decode data if there encoded with autoencode
+            if (p.autoencode) {
+                $.each(postdata, function (n, v) {
+                    postdata[n] = $.jgrid.htmlDecode(v); // TODO: some columns could be skipped
+                });
+            }
+
+            // save old value from the sorted column
+            oldValueOfSortColumn = p.sortname === "" ? undefined : $this.jqGrid("getCell", rowid, p.sortname);
+
+            // save the data in the grid
+            if (p.treeGrid === true) {
+                if (addMode) {
+                    $this.jqGrid("addChildNode", newId, p.selrow, postdata);
+                } else {
+                    $this.jqGrid("setTreeRow", rowid, postdata);
+                }
+            } else {
+                if (addMode) {
+                    $this.jqGrid("addRowData", newId, postdata, options.addedrow);
+                } else {
+                    $this.jqGrid("setRowData", rowid, postdata);
+                }
+            }
+
+            if ((addMode && options.closeAfterAdd) || (!addMode && options.closeAfterEdit)) {
+                // close the edit/add dialog
+                $.jgrid.hideModal("#editmod" + $.jgrid.jqID(id), {
+                    gb: "#gbox_" + $.jgrid.jqID(id),
+                    jqm: options.jqModal,
+                    onClose: options.onClose
+                });
+            }
+
+            if (postdata[p.sortname] !== oldValueOfSortColumn) {
+                // if the data are changed in the column by which are currently sorted
+                // we need resort the grid
+                setTimeout(function () {
+                    $this.trigger("reloadGrid", [{current: true}]);
+                }, 100);
+            }
+
+            // !!! the most important step: skip ajax request to the server
+            options.processing = true;
+            return {};
+        }
+
+        $(document).ready(function() {
+            var grid_selector = "#grid-table";
+            var pager_selector = "#grid-pager";
+
+            //resize to fit page size
+            $(window).on('resize.jqGrid', function () {
+                resizeGridInForm();
+            })
+            //resize on sidebar collapse/expand
+            var parent_column = $(grid_selector).closest('[class*="col-"]');
+            $(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
+                if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
+                    $(grid_selector).jqGrid( 'setGridWidth', parent_column.width() );
+                }
+            })
+
+            $(grid_selector).jqGrid({
+                datatype: "local",
+                data: giveawayData,
+                colNames: ["อุปกรณ์ของแถม", "ราคา"],
+                colModel:[
+                    {name:'giveawayid',index:'giveawayid', width:100, editable: true,edittype:"select",formatter:'select',
+                        editoptions:{value: "{{ $giveawayselectlist }}"},editrules:{required:true}
+                        ,align:'left',stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "{{ $giveawayselectlist }}" }},
+                    {name:'price',index:'price', width:200,editable: true,editrules:{required:true, number:true},align:'left'
+                        ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}}
+                ],
+                cmTemplate: {editable: true, sortable: false, searchoptions: {clearSearch: false }},
+                rowNum: 10,
+                rowList: [5, 10, 20],
+                pager: pager_selector,
+                gridview: true,
+                rownumbers: true,
+                //autoencode: true,
+                //ignoreCase: true,
+                viewrecords: true,
+                altRows: true,
+                multiselect: true,
+                multiboxonly: true,
+                caption: "อุปกรณ์ของแถม",
+                height: "100%",
+                editurl: "clientArray",
+                loadComplete : function() {
+                    var table = this;
+                    setTimeout(function(){
+                        styleCheckbox(table);
+
+                        updateActionIcons(table);
+                        updatePagerIcons(table);
+                        enableTooltips(table);
+                    }, 0);
+                },
+                ondblClickRow: function (rowid) {
+                    /*var $this = $(this), p = this.p;
+                    if (p.selrow !== rowid) {
+                        // prevent the row from be unselected on double-click
+                        // the implementation is for "multiselect:false" which we use,
+                        // but one can easy modify the code for "multiselect:true"
+                        $this.jqGrid("setSelection", rowid);
+                    }
+                    $this.jqGrid("editGridRow", rowid, editSettings);*/
+                }
+            });
+
+            $(window).triggerHandler('resize.jqGrid');
+
+            var alertt = $(".page-content").height()*0.71;
+            var alertl = ($(window).width()-80)/2;
+            $(grid_selector).jqGrid("navGrid", pager_selector,
+                { 	//navbar options
+                    edit: true,
+                    editicon : 'ace-icon fa fa-pencil blue',
+                    add: true,
+                    addicon : 'ace-icon fa fa-plus-circle purple',
+                    del: true,
+                    delicon : 'ace-icon fa fa-trash-o red',
+                    search: false,
+                    searchicon : 'ace-icon fa fa-search orange',
+                    refresh: false,
+                    refreshicon : 'ace-icon fa fa-refresh green',
+                    view: false,
+                    viewicon : 'ace-icon fa fa-search-plus grey',
+                    alerttop : alertt,
+                    alertleft : alertl
+                },
+                {
+                    //edit record form
+                    closeAfterEdit: true,
+                    width: 600,
+                    recreateForm: true,
+                    viewPagerButtons: false,
+                    beforeShowForm : function(e) {
+                        var form = $(e[0]);
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        style_edit_form(form);
+
+                        var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
+                        dlgDiv[0].style.left = (($(grid_selector).width() - 150)/2) + "px";
+                    },
+                    reloadAfterSubmit: false,
+                    savekey: [true, 13],
+                    modal:true,
+                    onclickSubmit: onclickSubmitLocal
+                },
+                {
+                    //new record form
+                    width: 600,
+                    closeAfterAdd: true,
+                    recreateForm: true,
+                    viewPagerButtons: false,
+                    beforeShowForm : function(e) {
+                        jQuery(grid_selector).jqGrid('resetSelection');
+                        var form = $(e[0]);
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        style_edit_form(form);
+
+                        var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
+                        dlgDiv[0].style.left = (($(grid_selector).width() - 150)/2) + "px";
+                    }
+                    reloadAfterSubmit: false,
+                    savekey: [true, 13],
+                    modal:true,
+                    onclickSubmit: onclickSubmitLocal
+                },
+                {
+                    //delete record form
+                    width: 400,
+                    recreateForm: true,
+                    beforeShowForm : function(e) {
+                        var form = $(e[0]);
+                        if(!form.data('styled')) {
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            style_delete_form(form);
+
+                            form.data('styled', true);
+
+                            var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
+                            dlgDiv[0].style.left = (($(grid_selector).width() - 150)/2) + "px";
+                        }
+
+                        var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
+                        var totalRowsCount = totalRows.length;
+                        $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
+                    },
+                    // because I use "local" data I don't want to send the changes to the server
+                    // so I use "processing:true" setting and delete the row manually in onclickSubmit
+                    onclickSubmit: function (options, rowid) {
+                        var $this = $(this), id = $.jgrid.jqID(this.id), p = this.p,
+                                newPage = p.page;
+
+                        // reset the value of processing option to true to
+                        // skip the ajax request to "clientArray".
+                        options.processing = true;
+
+                        var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
+                        var rowLength = totalRows.length;
+                        for (var i = 0; i < rowLength; i++) {
+                            $this.jqGrid("delRowData", totalRows[0]);
+                        }
+
+                        $.jgrid.hideModal("#delmod" + id, {
+                            gb: "#gbox_" + id,
+                            jqm: options.jqModal,
+                            onClose: options.onClose
+                        });
+
+                        if (p.lastpage > 1) {// on the multipage grid reload the grid
+                            if (p.reccount === 0 && newPage === p.lastpage) {
+                                // if after deliting there are no rows on the current page
+                                // which is the last page of the grid
+                                newPage--; // go to the previous page
+                            }
+                            // reload grid to make the row from the next page visable.
+                            $this.trigger("reloadGrid", [{page: newPage}]);
+                        }
+
+                        return true;
+                    },
+                    processing: true
+                }
+            )
+
+            var customertype = jQuery( 'input[name=customer-type]:checked' ).val();
+            if(customertype == 0){
+                $(".new-customer").css("display","none");
+                $(".old-customer").css("display","inline-block");
+            }
+            else if(customertype == 1){
+                $(".new-customer").css("display","");
+                $(".old-customer").css("display","none");
+            }
+
+            //$('#carmodelid').trigger('change');
+
+            var buyertype = jQuery( 'input[name=buyertype]:checked' ).val();
+            if(buyertype == 0){
+                $(".same-customer").css("display","none");
+                $(".insystem-customer").css("display","none");
+                $(".newbuy-customer").css("display","none");
+            }
+            else if(buyertype == 1){
+                $(".insystem-customer").css("display","inline-block");
+                $(".same-customer").css("display","");
+                $(".newbuy-customer").css("display","none");
+            }
+            else if(buyertype == 2){
+                $(".newbuy-customer").css("display","");
+                $(".same-customer").css("display","");
+                $(".insystem-customer").css("display","none");
+            }
         })
+
+        $('#form-carpreemption').submit(function(){ //listen for submit event
+            giveawayData = JSON.stringify(giveawayData);
+            $(this).append($('<input>').attr('type', 'hidden').attr('name', 'giveawayData').val(giveawayData));
+
+            return true;
+        });
     </script>
 @endsection

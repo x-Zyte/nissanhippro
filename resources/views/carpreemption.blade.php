@@ -194,7 +194,7 @@
                     {caption: '',
                         buttonicon:'ace-icon fa fa-search-plus grey',
                         onClickButton: function(){
-                            alert("View Row");
+                            window.location="{{URL::to('carpreemption/view')}}";
                         },
                         position:"first",
                         title:"ดูรายละเอียดข้อมูล"
@@ -203,7 +203,7 @@
                     {caption: '',
                         buttonicon:'ace-icon fa fa-pencil blue',
                         onClickButton: function(){
-                            alert("Editting Row");
+                            window.location="{{URL::to('carpreemption/edit')}}";
                         },
                         position:"first",
                         title:"แก้ไขข้อมูล"
@@ -212,7 +212,7 @@
                     {caption: '',
                         buttonicon:'ace-icon fa fa-plus-circle purple',
                         onClickButton: function(){
-                            window.location="{{URL::to('carpreemption/add')}}";
+                            window.location="{{URL::to('carpreemption/newcarpreemption')}}";
                         },
                         position:"first",
                         title:"เพิ่มข้อมูล"

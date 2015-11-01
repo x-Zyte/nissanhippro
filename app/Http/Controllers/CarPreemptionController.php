@@ -16,6 +16,7 @@ use App\Models\CarSubModel;
 use App\Facades\GridEncoder;
 use App\Models\Customer;
 use App\Models\Employee;
+use App\Models\Giveaway;
 use App\Models\SystemDatas\Occupation;
 use App\Models\SystemDatas\Province;
 use App\Repositories\CarPreemptionRepository;
@@ -121,7 +122,7 @@ class CarPreemptionController extends Controller {
         GridEncoder::encodeRequestedData(new CarPreemptionRepository(), $request);
     }
 
-    public function add()
+    public function newcarpreemption()
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
@@ -177,13 +178,64 @@ class CarPreemptionController extends Controller {
             $saleemployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
         }
 
+        $giveaways = Giveaway::orderBy('name', 'asc')->get(['id','name']);
+        $giveawayselectlist = array();
+        array_push($giveawayselectlist,':เลือกของแถม');
+        foreach($giveaways as $ct){
+            array_push($giveawayselectlist,$ct->id.':'.$ct->name);
+        }
+
         return view('carpreemptionadd',
             ['customerselectlist' => $customerselectlist,
                 'provinceselectlist' => $provinceselectlist,
                 'occupationselectlist' => $occupationselectlist,
                 'carmodelselectlist' => $carmodelselectlist,
                 'oldcarbrandselectlist' => $oldcarbrandselectlist,
-                'saleemployeeselectlist' => $saleemployeeselectlist]);
+                'saleemployeeselectlist' => $saleemployeeselectlist,
+                'giveawayselectlist' => implode(";",$giveawayselectlist)]);
+    }
+
+    public function add(Request $request)
+    {
+        if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $this->validate($request, [
+            'bookno' => 'required',
+            'no' => 'required',
+            'date' => 'required',
+
+            'bookingcustomerid' => 'required_if:customer-type,0',
+            'bookingcustomerfirstname' => 'required_if:customer-type,1',
+            'bookingcustomerphone1' => 'required',
+
+            'carmodelid' => 'required',
+            'carsubmodelid' => 'required',
+            'colorid' => 'required',
+            'price' => 'required',
+
+            'buyercustomerid' => 'required_if:buyertype,1',
+            'buyercustomerfirstname' => 'required_if:buyertype,2',
+            'buyercustomerphone1' => 'required_if:buyertype,1,2',
+            ],
+            [
+                'bookno.required' => 'ข้อมูล เล่มที่ จำเป็นต้องกรอก',
+                'no.required' => 'ข้อมูล เลขที่ จำเป็นต้องกรอก',
+                'date.required' => 'ข้อมูล วันที่ จำเป็นต้องกรอก',
+
+                'bookingcustomerid.required_if' => 'ผู้สั่งจอง กรุณาเลือกชื่อลูกค้า',
+                'bookingcustomerfirstname.required_if' => 'ผู้สั่งจอง ชื่อ จำเป็นต้องกรอก',
+                'bookingcustomerphone1.required' => 'ผู้สั่งจอง เบอร์โทร 1 จำเป็นต้องกรอก',
+
+                'carmodelid.required' => 'รายละเอียดรถยนตร์ใหม่ กรุณาเลือกแบบ',
+                'carsubmodelid.required' => 'รายละเอียดรถยนตร์ใหม่ กรุณาเลือกรุ่น',
+                'colorid.required' => 'รายละเอียดรถยนตร์ใหม่ กรุณาเลือกสี',
+                'price.required' => 'รายละเอียดรถยนตร์ใหม่ ราคา ต้องมีข้อมูล (กรุณาเพิ่มข้อมูล ราคา ของรถรุ่นนี้ แล้วทำการเลือกรุ่น ใหม่อีกครั้ง)',
+
+                'buyercustomerid.required_if' => 'ผู้ซื้อ กรุณาเลือกชื่อลูกค้า',
+                'buyercustomerfirstname.required_if' => 'ผู้ซื้อ ชื่อ จำเป็นต้องกรอก',
+                'buyercustomerphone1.required_if' => 'ผู้ซื้อ เบอร์โทร 1 จำเป็นต้องกรอก',
+            ]
+        );
     }
 
     public function edit()

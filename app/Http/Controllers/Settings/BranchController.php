@@ -50,9 +50,29 @@ class BranchController extends Controller {
             array_push($districtselectlist,$item->id.':'.$item->name);
         }
 
-        return view('settings.branch',['provinceselectlist' => implode(";",$provinceselectlist),
+        $taxamphurids = Branch::distinct()->lists('taxamphurid');
+        $taxamphurs = Amphur::whereIn('id', $taxamphurids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $taxamphurselectlist = array();
+        array_push($taxamphurselectlist,':เลือกเขต/อำเภอ');
+        foreach($taxamphurs as $item){
+            array_push($taxamphurselectlist,$item->id.':'.$item->name);
+        }
+
+        $taxdistrictids = Branch::distinct()->lists('taxdistrictid');
+        $taxdistricts = District::whereIn('id', $taxdistrictids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $taxdistrictselectlist = array();
+        array_push($taxdistrictselectlist,':เลือกตำบล/แขวง');
+        foreach($taxdistricts as $item){
+            array_push($taxdistrictselectlist,$item->id.':'.$item->name);
+        }
+
+        return view('settings.branch',
+            ['provinceselectlist' => implode(";",$provinceselectlist),
             'amphurselectlist' => implode(";",$amphurselectlist),
-            'districtselectlist' => implode(";",$districtselectlist)]);
+            'districtselectlist' => implode(";",$districtselectlist),
+                'taxprovinceselectlist' => implode(";",$provinceselectlist),
+                'taxamphurselectlist' => implode(";",$taxamphurselectlist),
+                'taxdistrictselectlist' => implode(";",$taxdistrictselectlist)]);
     }
 
     public function read()
@@ -89,7 +109,26 @@ class BranchController extends Controller {
             array_push($districtselectlist,$item->id.':'.$item->name);
         }
 
-        return ['amphurselectlist'=>implode(";",$amphurselectlist),'districtselectlist'=>implode(";",$districtselectlist)];
+        $taxamphurids = Branch::distinct()->lists('taxamphurid');
+        $taxamphurs = Amphur::whereIn('id', $taxamphurids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $taxamphurselectlist = array();
+        array_push($taxamphurselectlist,':เลือกเขต/อำเภอ');
+        foreach($taxamphurs as $item){
+            array_push($taxamphurselectlist,$item->id.':'.$item->name);
+        }
+
+        $taxdistrictids = Branch::distinct()->lists('taxdistrictid');
+        $taxdistricts = District::whereIn('id', $taxdistrictids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $taxdistrictselectlist = array();
+        array_push($taxdistrictselectlist,':เลือกตำบล/แขวง');
+        foreach($taxdistricts as $item){
+            array_push($taxdistrictselectlist,$item->id.':'.$item->name);
+        }
+
+        return ['amphurselectlist'=>implode(";",$amphurselectlist),
+            'districtselectlist'=>implode(";",$districtselectlist),
+            'taxamphurselectlist'=>implode(";",$taxamphurselectlist),
+            'taxdistrictselectlist'=>implode(";",$taxdistrictselectlist)];
     }
 
     public function check_headquarter(Request $request)

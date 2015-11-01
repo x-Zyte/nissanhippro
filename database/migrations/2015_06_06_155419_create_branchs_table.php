@@ -18,6 +18,14 @@ class CreateBranchsTable extends Migration {
             $table->string('name',100);
             $table->string('taxinvoicename',100);
             $table->string('taxpayerno',50);
+            $table->text('taxaddress');
+            $table->integer('taxdistrictid')->unsigned();
+            $table->foreign('taxdistrictid')->references('id')->on('districts');
+            $table->integer('taxamphurid')->unsigned();
+            $table->foreign('taxamphurid')->references('id')->on('amphurs');
+            $table->integer('taxprovinceid')->unsigned();
+            $table->foreign('taxprovinceid')->references('id')->on('provinces');
+            $table->string('taxzipcode',5);
             $table->text('address');
             $table->integer('districtid')->unsigned();
             $table->foreign('districtid')->references('id')->on('districts');

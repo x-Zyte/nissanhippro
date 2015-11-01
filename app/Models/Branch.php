@@ -11,7 +11,8 @@ class Branch extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['name','taxinvoicename','taxpayerno', 'address', 'districtid', 'amphurid', 'provinceid', 'zipcode','isheadquarter','keyslot', 'active',
+    protected $fillable = ['name','taxinvoicename','taxpayerno', 'taxaddress', 'taxdistrictid', 'taxamphurid', 'taxprovinceid', 'taxzipcode',
+        'address', 'districtid', 'amphurid', 'provinceid', 'zipcode','isheadquarter','keyslot', 'active',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()
@@ -101,6 +102,21 @@ class Branch extends Model {
     public function province()
     {
         return $this->belongsTo('App\Models\SystemDatas\Province', 'provinceid', 'id');
+    }
+
+    public function taxProvince()
+    {
+        return $this->belongsTo('App\Models\SystemDatas\Province', 'taxprovinceid', 'id');
+    }
+
+    public function taxDistrict()
+    {
+        return $this->belongsTo('App\Models\SystemDatas\District', 'taxdistrictid', 'id');
+    }
+
+    public function taxAmphur()
+    {
+        return $this->belongsTo('App\Models\SystemDatas\Amphur', 'taxamphurid', 'id');
     }
 
     public function employees()

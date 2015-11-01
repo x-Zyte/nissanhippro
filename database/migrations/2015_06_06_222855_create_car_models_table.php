@@ -20,7 +20,10 @@ class CreateCarModelsTable extends Migration {
             $table->integer('carbrandid')->unsigned();
             $table->foreign('carbrandid')->references('id')->on('car_brands');
             $table->string('name',50);
-            $table->decimal('registercost', 10, 2);
+            $table->decimal('individualregistercost', 10, 2);
+            $table->decimal('implementingindividualregistercost', 10, 2);
+            $table->decimal('companyregistercost', 10, 2);
+            $table->decimal('implementingcompanyregistercost', 10, 2);
             $table->text('detail')->nullable();
             $table->boolean('active')->default(true);
 

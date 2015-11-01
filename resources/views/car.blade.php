@@ -295,7 +295,9 @@
                         }else{
                             return [false,response.responseText];
                         }
-                    }
+                    },
+                    savekey: [true, 13],
+                    modal:true
                 },
                 {
                     //new record form
@@ -334,7 +336,9 @@
                         }else{
                             return [false,response.responseText];
                         }
-                    }
+                    },
+                    savekey: [true, 13],
+                    modal:true
                 },
                 {
                     //delete record form

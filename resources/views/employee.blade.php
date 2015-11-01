@@ -56,8 +56,8 @@
                     {name:'code',index:'code', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'title',index:'title', width:60, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว" },align:'left'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว" }},
-                    {name:'firstname',index:'firstname', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'lastname',index:'lastname', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'firstname',index:'firstname', width:100,editable: true,editoptions:{size:"25",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'lastname',index:'lastname', width:100,editable: true,editoptions:{size:"25",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'workingstartdate',index:'workingstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
                         ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center',editrules:{required:true}
                         ,searchrules:{required:true}
@@ -69,7 +69,7 @@
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}
                         ,editrules:{custom: true, custom_func: check_workingenddate}},
-                    {name:'username',index:'username', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},align:'left'},
+                    {name:'username',index:'username', width:100,editable: true,editoptions:{size:"25",maxlength:"50"},align:'left'},
                     {name:'loginstartdate',index:'loginstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
                         ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
                         ,searchrules:{required:true}
@@ -80,8 +80,8 @@
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
-                    {name:'email',index:'email', width:120,editable: true,editoptions:{size:"30",maxlength:"50"},align:'left'},
-                    {name:'phone',index:'phone', width:100,editable: true,editoptions:{size:"20",maxlength:"20"},editrules:{},align:'left'},
+                    {name:'email',index:'email', width:120,editable: true,editoptions:{size:"25",maxlength:"50"},align:'left'},
+                    {name:'phone',index:'phone', width:100,editable: true,editoptions:{size:"15",maxlength:"20"},editrules:{},align:'left'},
                     {name:'isadmin',index:'isadmin', width:60, editable: true,edittype:"checkbox",formatter: booleanFormatter,unformat: aceSwitch,align:'center'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }
                         ,editoptions: {value:"1:0",
@@ -131,7 +131,7 @@
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
                     {name:'active',index:'active', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"1"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
-                    {name:'remarks',index:'remarks', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},align:'left'}
+                    {name:'remarks',index:'remarks', width:150,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"35"},align:'left'}
                 ],
                 viewrecords : true,
                 rowNum:10,
@@ -256,7 +256,9 @@
                                     }else{
                                         return [false,response.responseText];
                                     }
-                                }
+                                },
+                                savekey: [true, 13],
+                                modal:true
                             },
                             {
                                 //new record form
@@ -286,7 +288,9 @@
                                     }else{
                                         return [false,response.responseText];
                                     }
-                                }
+                                },
+                                savekey: [true, 13],
+                                modal:true
                             },
                             {
                                 //delete record form
@@ -459,7 +463,9 @@
                         }else{
                             return [false,response.responseText];
                         }
-                    }
+                    },
+                    savekey: [true, 13],
+                    modal:true
                 },
                 {
                     //new record form
@@ -490,7 +496,9 @@
                         }else{
                             return [false,response.responseText];
                         }
-                    }
+                    },
+                    savekey: [true, 13],
+                    modal:true
                 },
                 {
                     //delete record form

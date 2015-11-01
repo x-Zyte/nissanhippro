@@ -10902,6 +10902,8 @@ th[aria-selected=true] .ui-jqgrid-sortable {
 }
 .FormGrid .EditTable tr:first-child {
     display: none;
+    position: fixed;
+    top: 10px;
 }
 .ui-jqgrid .ui-jqgrid-view input, .ui-jqgrid .ui-jqgrid-view select, .ui-jqgrid .ui-jqgrid-view textarea, .ui-jqgrid .ui-jqgrid-view button {
     font-size: 13px;

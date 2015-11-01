@@ -44,12 +44,56 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('/branch/read') }}',
                 datatype: "json",
-                colNames:['ชื่อสาขา','ชื่อสำหรับออกใบกำกับภาษี','เลขประจำตัวผู้เสียภาษี', 'ที่อยู่', 'แขวง/ตำบล', 'เขต/อำเภอ', 'จังหวัด', 'รหัสไปรษณีย์','สำนักงานใหญ่','ช่องกุญแจ'],
+                colNames:['ชื่อสาขา','ชื่อออกใบกำกับภาษี','เลขประจำตัวผู้เสียภาษี','ที่อยู่(ใบกำกับภาษี)', 'แขวง/ตำบล(ใบกำกับภาษี)', 'เขต/อำเภอ(ใบกำกับภาษี)', 'จังหวัด(ใบกำกับภาษี)', 'รหัสไปรษณีย์(ใบกำกับภาษี)', 'ที่อยู่', 'แขวง/ตำบล', 'เขต/อำเภอ', 'จังหวัด', 'รหัสไปรษณีย์','สำนักงานใหญ่','ช่องกุญแจ'],
                 colModel:[
-                    {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'taxinvoicename',index:'taxinvoicename', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'taxpayerno',index:'taxpayerno', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'address',index:'address', width:200,editable: true,editoptions:{size:"50",maxlength:"200"},editrules:{required:true},align:'left'},
+                    {name:'name',index:'name', width:250,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'taxinvoicename',index:'taxinvoicename', width:250,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'taxpayerno',index:'taxpayerno', width:120,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'taxaddress',index:'taxaddress', width:150,editable: true,editoptions:{size:"50",maxlength:"200"},editrules:{required:true,edithidden:true},align:'left',hidden: true},
+                    {name:'taxdistrictid',index:'taxdistrictid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true,edithidden:true},align:'left',hidden: true,
+                        editoptions:{value: "{{$taxdistrictselectlist}}",
+                            dataEvents :[{type: 'change', fn: function(e){
+                                var thisval = $(e.target).val();
+                                $.get('zipcode/read/'+thisval, function(data){
+                                    $('#taxzipcode').val(data.code);
+                                });
+                            }}]
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$taxdistrictselectlist}}" }
+                        ,formoptions:{rowpos:7}
+                    },
+                    {name:'taxamphurid',index:'taxamphurid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true,edithidden:true},align:'left',hidden: true,
+                        editoptions:{value: "{{$taxamphurselectlist}}",
+                            dataEvents :[{type: 'change', fn: function(e){
+                                var thisval = $(e.target).val();
+                                $.get('district/read/'+thisval, function(data){
+                                    $('#taxdistrictid').children('option:not(:first)').remove();
+                                    $('#taxzipcode').val('');
+                                    $.each(data, function(i, option) {
+                                        $('#taxdistrictid').append($('<option/>').attr("value", option.id).text(option.name));
+                                    });
+                                });
+                            }}]
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$taxamphurselectlist}}" }
+                        ,formoptions:{rowpos:6}
+                    },
+                    {name:'taxprovinceid',index:'taxprovinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true,edithidden:true},align:'left',hidden: true,
+                        editoptions:{value: "{{$taxprovinceselectlist}}",
+                            dataEvents :[{type: 'change', fn: function(e){
+                                var thisval = $(e.target).val();
+                                $.get('amphur/read/'+thisval, function(data){
+                                    $('#taxamphurid').children('option:not(:first)').remove();
+                                    $('#taxdistrictid').children('option:not(:first)').remove();
+                                    $('#taxzipcode').val('');
+                                    $.each(data, function(i, option) {
+                                        $('#taxamphurid').append($('<option/>').attr("value", option.id).text(option.name));
+                                    });
+                                });
+                            }}]
+                        },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$taxprovinceselectlist}}" }
+                        ,formoptions:{rowpos:5}
+                    },
+                    {name:'taxzipcode',index:'taxzipcode', width:100,editable: true,editoptions:{size:"5",maxlength:"5"},editrules:{required:true, number:true,edithidden:true},align:'left',hidden: true},
+                    {name:'address',index:'address', width:150,editable: true,editoptions:{size:"50",maxlength:"200"},editrules:{required:true},align:'left'},
                     {name:'districtid',index:'districtid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$districtselectlist}}",
                             dataEvents :[{type: 'change', fn: function(e){
@@ -63,7 +107,7 @@
                                 });
                             }}]
                         },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$districtselectlist}}" }
-                        ,formoptions:{rowpos:7}
+                        ,formoptions:{rowpos:12}
                     },
                     {name:'amphurid',index:'amphurid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$amphurselectlist}}",
@@ -79,7 +123,7 @@
                                 });
                             }}]
                         },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$amphurselectlist}}" }
-                        ,formoptions:{rowpos:6}
+                        ,formoptions:{rowpos:11}
                     },
                     {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$provinceselectlist}}",
@@ -96,7 +140,7 @@
                                 });
                             }}]
                         },stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }
-                        ,formoptions:{rowpos:5}
+                        ,formoptions:{rowpos:10}
                     },
                     {name:'zipcode',index:'zipcode', width:100,editable: true,editoptions:{size:"5",maxlength:"5"},editrules:{required:true, number:true},align:'left'},
                     {name:'isheadquarter',index:'isheadquarter', width:80, editable: true,edittype:"checkbox",
@@ -139,6 +183,14 @@
                 editurl: "branch/update",
                 caption: "",
                 height:'100%'
+            });
+
+            $(grid_selector).jqGrid('setGroupHeaders', {
+                useColSpanStyle: true,
+                groupHeaders:[
+                    {startColumnName: 'execusiveinternal', numberOfColumns: 4, titleText: 'NLTH Execusive'},
+                    {startColumnName: 'internal', numberOfColumns: 3, titleText: 'กรณีเงินสด/ดอกเบี้ยปกติ'}
+                ]
             });
 
             $(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
@@ -216,6 +268,10 @@
                         var amphurid = $('#amphurid').val();
                         var districtid = $('#districtid').val();
 
+                        var taxprovinceid = $('#taxprovinceid').val();
+                        var taxamphurid = $('#taxamphurid').val();
+                        var taxdistrictid = $('#taxdistrictid').val();
+
                         $.get('amphur/read/'+provinceid, function(data){
                             $('#amphurid').children('option:not(:first)').remove();
                             $.each(data, function(i, option) {
@@ -230,6 +286,22 @@
                                 $('#districtid').append($('<option/>').attr("value", option.id).text(option.name));
                             });
                             $('#districtid').val(districtid);
+                        });
+
+                        $.get('amphur/read/'+taxprovinceid, function(data){
+                            $('#taxamphurid').children('option:not(:first)').remove();
+                            $.each(data, function(i, option) {
+                                $('#taxamphurid').append($('<option/>').attr("value", option.id).text(option.name));
+                            });
+                            $('#taxamphurid').val(taxamphurid);
+                        });
+
+                        $.get('district/read/'+taxamphurid, function(data){
+                            $('#taxdistrictid').children('option:not(:first)').remove();
+                            $.each(data, function(i, option) {
+                                $('#taxdistrictid').append($('<option/>').attr("value", option.id).text(option.name));
+                            });
+                            $('#taxdistrictid').val(taxdistrictid);
                         });
 
                         var checked = $('#isheadquarter').is(':checked');
@@ -249,13 +321,18 @@
                             $.get('branch/readSelectlistForDisplayInGrid', function(data){
                                 $(grid_selector).setColProp('amphurid', { editoptions: { value: data.amphurselectlist } });
                                 $(grid_selector).setColProp('districtid', { editoptions: { value: data.districtselectlist } });
+
+                                $(grid_selector).setColProp('taxamphurid', { editoptions: { value: data.taxamphurselectlist } });
+                                $(grid_selector).setColProp('taxdistrictid', { editoptions: { value: data.taxdistrictselectlist } });
                             });
                             alert("ดำเนินการสำเร็จ")
                             return [true,""];
                         }else{
                             return [false,response.responseText];
                         }
-                    }
+                    },
+                    savekey: [true, 13],
+                    modal:true
                 },
                 {
                     //new record form
@@ -272,6 +349,9 @@
                         $('#amphurid').children('option:not(:first)').remove();
                         $('#districtid').children('option:not(:first)').remove();
 
+                        $('#taxamphurid').children('option:not(:first)').remove();
+                        $('#taxdistrictid').children('option:not(:first)').remove();
+
                         $('#tr_keyslot').hide();
                         $('#keyslot').val(0);
 
@@ -287,13 +367,18 @@
                             $.get('branch/readSelectlistForDisplayInGrid', function(data){
                                 $(grid_selector).setColProp('amphurid', { editoptions: { value: data.amphurselectlist } });
                                 $(grid_selector).setColProp('districtid', { editoptions: { value: data.districtselectlist } });
+
+                                $(grid_selector).setColProp('taxamphurid', { editoptions: { value: data.taxamphurselectlist } });
+                                $(grid_selector).setColProp('taxdistrictid', { editoptions: { value: data.taxdistrictselectlist } });
                             });
                             alert("ดำเนินการสำเร็จ")
                             return [true,""];
                         }else{
                             return [false,response.responseText];
                         }
-                    }
+                    },
+                    savekey: [true, 13],
+                    modal:true
                 },
                 {
                     //delete record form
