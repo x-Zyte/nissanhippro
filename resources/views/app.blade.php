@@ -112,6 +112,8 @@
     $(document).ajaxComplete(function(event, request, settings) {
         $('#modal').hide();
     });
+
+    var showConfirmClose = true;
 </script>
 
 <div id="navbar" class="navbar navbar-default">

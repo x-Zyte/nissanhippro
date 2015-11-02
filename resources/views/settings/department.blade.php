@@ -111,14 +111,25 @@
                     afterSubmit : function(response, postdata)
                     {
                         if(response.responseText == "ok"){
-                            alert("ดำเนินการสำเร็จ")
+                            showConfirmClose = false;
+                            alert("ดำเนินการสำเร็จ");
                             return [true,""];
                         }else{
                             return [false,response.responseText];
                         }
                     },
                     savekey: [true, 13],
-                    modal:true
+                    modal:true,
+                    onClose : function()
+                    {
+                        if(!showConfirmClose){
+                            showConfirmClose = true;
+                            return true;
+                        }
+
+                        if (confirm("คุณต้องการที่จะยกเลิกการ เพิ่ม/แก้ไข ข้อมูล ใช่หรือไม่!!")) return true;
+                        else return false;
+                    }
                 },
                 {
                     //new record form
@@ -141,14 +152,25 @@
                     afterSubmit : function(response, postdata)
                     {
                         if(response.responseText == "ok"){
-                            alert("ดำเนินการสำเร็จ")
+                            showConfirmClose = false;
+                            alert("ดำเนินการสำเร็จ");
                             return [true,""];
                         }else{
                             return [false,response.responseText];
                         }
                     },
                     savekey: [true, 13],
-                    modal:true
+                    modal:true,
+                    onClose : function()
+                    {
+                        if(!showConfirmClose){
+                            showConfirmClose = true;
+                            return true;
+                        }
+
+                        if (confirm("คุณต้องการที่จะยกเลิกการ เพิ่ม/แก้ไข ข้อมูล ใช่หรือไม่!!")) return true;
+                        else return false;
+                    }
                 },
                 {
                     //delete record form
@@ -179,7 +201,7 @@
                     afterSubmit : function(response, postdata)
                     {
                         if(response.responseText == "ok"){
-                            alert("ดำเนินการสำเร็จ")
+                            alert("ดำเนินการสำเร็จ");
                             return [true,""];
                         }else{
                             return [false,response.responseText];

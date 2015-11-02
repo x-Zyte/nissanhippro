@@ -158,7 +158,7 @@
                         afterSubmit : function(response, postdata)
                         {
                             if(response.responseText == "ok"){
-                                alert("ดำเนินการสำเร็จ")
+                                alert("ดำเนินการสำเร็จ");
                                 return [true,""];
                             }else{
                                 return [false,response.responseText];

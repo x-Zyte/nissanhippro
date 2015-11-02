@@ -318,6 +318,7 @@
                     afterSubmit : function(response, postdata)
                     {
                         if(response.responseText == "ok"){
+                            showConfirmClose = false;
                             $.get('branch/readSelectlistForDisplayInGrid', function(data){
                                 $(grid_selector).setColProp('amphurid', { editoptions: { value: data.amphurselectlist } });
                                 $(grid_selector).setColProp('districtid', { editoptions: { value: data.districtselectlist } });
@@ -325,14 +326,24 @@
                                 $(grid_selector).setColProp('taxamphurid', { editoptions: { value: data.taxamphurselectlist } });
                                 $(grid_selector).setColProp('taxdistrictid', { editoptions: { value: data.taxdistrictselectlist } });
                             });
-                            alert("ดำเนินการสำเร็จ")
+                            alert("ดำเนินการสำเร็จ");
                             return [true,""];
                         }else{
                             return [false,response.responseText];
                         }
                     },
                     savekey: [true, 13],
-                    modal:true
+                    modal:true,
+                    onClose : function()
+                    {
+                        if(!showConfirmClose){
+                            showConfirmClose = true;
+                            return true;
+                        }
+
+                        if (confirm("คุณต้องการที่จะยกเลิกการ เพิ่ม/แก้ไข ข้อมูล ใช่หรือไม่!!")) return true;
+                        else return false;
+                    }
                 },
                 {
                     //new record form
@@ -364,6 +375,7 @@
                     afterSubmit : function(response, postdata)
                     {
                         if(response.responseText == "ok"){
+                            showConfirmClose = false;
                             $.get('branch/readSelectlistForDisplayInGrid', function(data){
                                 $(grid_selector).setColProp('amphurid', { editoptions: { value: data.amphurselectlist } });
                                 $(grid_selector).setColProp('districtid', { editoptions: { value: data.districtselectlist } });
@@ -371,14 +383,24 @@
                                 $(grid_selector).setColProp('taxamphurid', { editoptions: { value: data.taxamphurselectlist } });
                                 $(grid_selector).setColProp('taxdistrictid', { editoptions: { value: data.taxdistrictselectlist } });
                             });
-                            alert("ดำเนินการสำเร็จ")
+                            alert("ดำเนินการสำเร็จ");
                             return [true,""];
                         }else{
                             return [false,response.responseText];
                         }
                     },
                     savekey: [true, 13],
-                    modal:true
+                    modal:true,
+                    onClose : function()
+                    {
+                        if(!showConfirmClose){
+                            showConfirmClose = true;
+                            return true;
+                        }
+
+                        if (confirm("คุณต้องการที่จะยกเลิกการ เพิ่ม/แก้ไข ข้อมูล ใช่หรือไม่!!")) return true;
+                        else return false;
+                    }
                 },
                 {
                     //delete record form
@@ -409,7 +431,7 @@
                     afterSubmit : function(response, postdata)
                     {
                         if(response.responseText == "ok"){
-                            alert("ดำเนินการสำเร็จ")
+                            alert("ดำเนินการสำเร็จ");
                             return [true,""];
                         }else{
                             return [false,response.responseText];
