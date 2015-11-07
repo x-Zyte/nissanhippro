@@ -11,7 +11,7 @@ class Department extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['name', 'detail', 'active',
+    protected $fillable = ['nameth', 'nameen', 'detail', 'active',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

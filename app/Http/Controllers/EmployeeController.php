@@ -36,11 +36,11 @@ class EmployeeController extends Controller {
             array_push($branchselectlist,$item->id.':'.$item->name);
         }
 
-        $departments = Department::all(['id','name']);
+        $departments = Department::all(['id','nameth','nameen']);
         $departmentselectlist = array();
         array_push($departmentselectlist,':เลือกแผนก');
         foreach($departments as $item){
-            array_push($departmentselectlist,$item->id.':'.str_replace('&','\u0026',$item->name));
+            array_push($departmentselectlist,$item->id.':'.str_replace('&','\u0026',$item->nameth).' - '.str_replace('&','\u0026',$item->nameen));
         }
 
         $departmentselectlist2 = array();

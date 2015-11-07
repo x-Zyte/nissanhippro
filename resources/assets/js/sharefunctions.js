@@ -48,6 +48,11 @@ function check_AZ09Hyphen(value, colname) {
     return [re.test(value), value + " ต้องเป็นภาษาอังกฤษตัวพิมพ์ใหญ่ ตัวเลข - เท่านั้น"];
 }
 
+function check_AZ09HyphenSquarebracket(value, colname) {
+    var re = new RegExp("^[A-Z0-9-\\[\\]]+$");
+    return [re.test(value), value + " ต้องเป็นภาษาอังกฤษตัวพิมพ์ใหญ่ ตัวเลข - [ ] เท่านั้น"];
+}
+
 function style_edit_form(form) {
     //enable datepicker on "sdate" field and switches for "stock" field
     //form.find('input[name=isadmin],input[name=active],input[type=checkbox]')
@@ -220,9 +225,9 @@ function resizeSubGrid(subgrid_table_id){
     }
 }
 
-function resizeGridInForm(){
-    if($('#grid-table').width() < $(".page-content").width()){
-        $('#grid-table').jqGrid( 'setGridWidth', $(".page-content").width() - 25);
+function resizeGridInForm(table_id){
+    if($('#'+table_id).width() < $(".page-content").width()){
+        $('#'+table_id).jqGrid( 'setGridWidth', $(".page-content").width() - 25);
     }
     else{
         $('.ui-jqgrid' + ' .ui-jqgrid-view').css('overflow','auto');

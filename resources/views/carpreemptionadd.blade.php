@@ -1,6 +1,7 @@
-@extends('appformpathlevel2')
+@extends('app')
 @section('title','เพิ่มใบจองใหม่')
 @section('menu-carpreemption-class','active')
+@section('pathPrefix','../')
 
 @section('content')
     <script type="text/javascript">
@@ -184,7 +185,7 @@
                 $('#carsubmodelid').val(null).trigger('chosen:updated');
 
                 $.each(data.colors, function(i, option) {
-                    $('#colorid').append($('<option/>').attr("value", option.id).text(option.name));
+                    $('#colorid').append($('<option/>').attr("value", option.id).text(option.code + ' - ' + option.name));
                 });
                 $('#colorid').val(null).trigger('chosen:updated');
             });
@@ -357,11 +358,11 @@
                                     <div class="col-sm-2">
                                         {!! Form::select('bookingcustomerprovinceid', $provinceselectlist, null, array('id'=>'bookingcustomerprovinceid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerProvinceChange(this)')); !!}
                                     </div>
-                                    {!! Form::label('bookingcustomeramphurid', 'เขต/อำเภอ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('bookingcustomeramphurid', 'เขต/อำเภอ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         {!! Form::select('bookingcustomeramphurid', array(null => 'เลือกเขต/อำเภอ'), null, array('id'=>'bookingcustomeramphurid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerAmphurChange(this)')); !!}
                                     </div>
-                                    {!! Form::label('bookingcustomerdistrictid', 'แขวง/ตำบล', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('bookingcustomerdistrictid', 'แขวง/ตำบล', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         {!! Form::select('bookingcustomerdistrictid', array(null => 'เลือกแขวง/ตำบล'), null, array('id'=>'bookingcustomerdistrictid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerDistrictChange(this)')); !!}
                                     </div>
@@ -371,7 +372,7 @@
                                     <div class="col-sm-2">
                                         {!! Form::number('bookingcustomerzipcode') !!}
                                     </div>
-                                    {!! Form::label('bookingcustomerphone1', 'เบอร์โทร 1', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('bookingcustomerphone1', 'เบอร์โทร 1', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         <div class="input-group">
                                             <span class="input-group-addon">
@@ -380,7 +381,7 @@
                                             {!! Form::number('bookingcustomerphone1') !!}
                                         </div>
                                     </div>
-                                    {!! Form::label('bookingcustomerphone2', 'เบอร์โทร 2', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('bookingcustomerphone2', 'เบอร์โทร 2', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         <div class="input-group">
                                             <span class="input-group-addon">
@@ -392,12 +393,10 @@
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('bookingcustomeroccupationid', 'อาชีพ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-2">
                                         {!! Form::select('bookingcustomeroccupationid', $occupationselectlist, null, array('id'=>'bookingcustomeroccupationid', 'class' => 'chosen-select', 'style'=>'width:15%;')); !!}
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    {!! Form::label('bookingcustomerbirthdate', 'วันเกิด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('bookingcustomerbirthdate', 'วันเกิด', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         <div class="input-group">
                                             {!! Form::text('bookingcustomerbirthdate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}
@@ -406,7 +405,8 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div><br>
+                                </div>
+                                <br>
                             </div>
                         </div>
                     </div>
@@ -434,7 +434,7 @@
                                     <div class="col-sm-2">
                                         {!! Form::select('carmodelid', $carmodelselectlist, null, array('id'=>'carmodelid', 'class' => 'chosen-select', 'onchange'=>'CarModelChange(this)', 'style'=>'width:150px;')); !!}
                                     </div>
-                                    {!! Form::label('carsubmodelid', 'รุ่น', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('carsubmodelid', 'รุ่น', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         {!! Form::select('carsubmodelid', array(null => 'เลือกรุ่น'), null, array('id'=>'carsubmodelid', 'class' => 'chosen-select')); !!}
                                     </div>
@@ -450,7 +450,7 @@
                                     <div class="col-sm-2">
                                         {!! Form::number('price', null, array('placeholder' => 'บาท', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                     </div>
-                                    {!! Form::label('discount', 'ส่วนลด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('discount', 'ส่วนลด', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         {!! Form::number('discount', null, array('placeholder' => 'บาท')) !!}
                                     </div>
@@ -460,7 +460,7 @@
                                     <div class="col-sm-2">
                                         {!! Form::number('subdown', null, array('placeholder' => 'บาท')) !!}
                                     </div>
-                                    {!! Form::label('accessories', 'บวกอุปกรณ์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('accessories', 'บวกอุปกรณ์', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         {!! Form::number('accessories', null, array('placeholder' => 'บาท')) !!}
                                     </div>
@@ -699,6 +699,10 @@
                                     <table id="grid-table"></table>
                                     <div id="grid-pager"></div>
                                 </div><br>
+                                <div>
+                                    <table id="grid-table2"></table>
+                                    <div id="grid-pager2"></div>
+                                </div><br>
                                 <div class="form-group">
                                     <div style="height:35px;">
                                         {!! Form::label('buyertype', 'ผู้ซื้อ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
@@ -751,11 +755,11 @@
                                     <div class="col-sm-2">
                                         {!! Form::select('buyercustomerprovinceid', $provinceselectlist, null, array('id'=>'buyercustomerprovinceid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerProvinceChange(this)')); !!}
                                     </div>
-                                    {!! Form::label('buyercustomeramphurid', 'เขต/อำเภอ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('buyercustomeramphurid', 'เขต/อำเภอ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         {!! Form::select('buyercustomeramphurid', array(null => 'เลือกเขต/อำเภอ'), null, array('id'=>'buyercustomeramphurid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerAmphurChange(this)')); !!}
                                     </div>
-                                    {!! Form::label('buyercustomerdistrictid', 'แขวง/ตำบล', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('buyercustomerdistrictid', 'แขวง/ตำบล', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         {!! Form::select('buyercustomerdistrictid', array(null => 'เลือกแขวง/ตำบล'), null, array('id'=>'buyercustomerdistrictid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerDistrictChange(this)')); !!}
                                     </div>
@@ -765,7 +769,7 @@
                                     <div class="col-sm-2">
                                         {!! Form::number('buyercustomerzipcode') !!}
                                     </div>
-                                    {!! Form::label('buyercustomerphone1', 'เบอร์โทร 1', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('buyercustomerphone1', 'เบอร์โทร 1', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         <div class="input-group">
                                             <span class="input-group-addon">
@@ -774,7 +778,7 @@
                                             {!! Form::number('buyercustomerphone1') !!}
                                         </div>
                                     </div>
-                                    {!! Form::label('buyercustomerphone2', 'เบอร์โทร 2', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('buyercustomerphone2', 'เบอร์โทร 2', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         <div class="input-group">
                                             <span class="input-group-addon">
@@ -786,12 +790,10 @@
                                 </div>
                                 <div class="form-group same-customer" style="display:none;">
                                     {!! Form::label('buyercustomeroccupationid', 'อาชีพ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-2">
                                         {!! Form::select('buyercustomeroccupationid', $occupationselectlist, null, array('id'=>'buyercustomeroccupationid', 'class' => 'chosen-select', 'style'=>'width:15%;')); !!}
                                     </div>
-                                </div>
-                                <div class="form-group same-customer" style="display:none;">
-                                    {!! Form::label('buyercustomerbirthdate', 'วันเกิด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('buyercustomerbirthdate', 'วันเกิด', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         <div class="input-group">
                                             {!! Form::text('buyercustomerbirthdate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}
@@ -802,7 +804,7 @@
                                     </div>
                                 </div>
                                 <br>
-
+                                <br>
                                 <div class="form-group">
                                     {!! Form::label('salesmanemployeeid', 'พนักงานขาย', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
@@ -1084,10 +1086,13 @@
         $(document).ready(function() {
             var grid_selector = "#grid-table";
             var pager_selector = "#grid-pager";
+            var grid_selector2 = "#grid-table2";
+            var pager_selector2 = "#grid-pager2";
 
             //resize to fit page size
             $(window).on('resize.jqGrid', function () {
-                resizeGridInForm();
+                resizeGridInForm('grid-table');
+                resizeGridInForm('grid-table2');
             })
             //resize on sidebar collapse/expand
             var parent_column = $(grid_selector).closest('[class*="col-"]');
@@ -1097,16 +1102,21 @@
                 }
             })
 
+            var parent_column2 = $(grid_selector2).closest('[class*="col-"]');
+            $(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
+                if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
+                    $(grid_selector2).jqGrid( 'setGridWidth', parent_column2.width() );
+                }
+            })
+
             $(grid_selector).jqGrid({
                 datatype: "local",
                 data: giveawayData,
-                colNames: ["อุปกรณ์ของแถม", "ราคา"],
+                colNames: ["อุปกรณ์ของแถม"],
                 colModel:[
-                    {name:'giveawayid',index:'giveawayid', width:100, editable: true,edittype:"select",formatter:'select',
+                    {name:'giveawayid',index:'giveawayid', width:200, editable: true,edittype:"select",formatter:'select',
                         editoptions:{value: "{{ $giveawayselectlist }}"},editrules:{required:true}
-                        ,align:'left',stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "{{ $giveawayselectlist }}" }},
-                    {name:'price',index:'price', width:200,editable: true,editrules:{required:true, number:true},align:'left'
-                        ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}}
+                        ,align:'left',stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "{{ $giveawayselectlist }}" }}
                 ],
                 cmTemplate: {editable: true, sortable: false, searchoptions: {clearSearch: false }},
                 rowNum: 10,
@@ -1142,6 +1152,54 @@
                         $this.jqGrid("setSelection", rowid);
                     }
                     $this.jqGrid("editGridRow", rowid, editSettings);*/
+                }
+            });
+
+            $(grid_selector2).jqGrid({
+                datatype: "local",
+                data: giveawayData,
+                colNames: ["อุปกรณ์ซื้อเพิ่มเติม", "ราคา"],
+                colModel:[
+                    {name:'giveawayid',index:'giveawayid', width:100, editable: true,edittype:"select",formatter:'select',
+                        editoptions:{value: "{{ $giveawayselectlist }}"},editrules:{required:true}
+                        ,align:'left',stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "{{ $giveawayselectlist }}" }},
+                    {name:'price',index:'price', width:200,editable: true,editrules:{required:true, number:true},align:'left'
+                        ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}}
+                ],
+                cmTemplate: {editable: true, sortable: false, searchoptions: {clearSearch: false }},
+                rowNum: 10,
+                rowList: [5, 10, 20],
+                pager: pager_selector2,
+                gridview: true,
+                rownumbers: true,
+                //autoencode: true,
+                //ignoreCase: true,
+                viewrecords: true,
+                altRows: true,
+                multiselect: true,
+                multiboxonly: true,
+                caption: "อุปกรณ์ซื้อเพิ่มเติม",
+                height: "100%",
+                editurl: "clientArray",
+                loadComplete : function() {
+                    var table = this;
+                    setTimeout(function(){
+                        styleCheckbox(table);
+
+                        updateActionIcons(table);
+                        updatePagerIcons(table);
+                        enableTooltips(table);
+                    }, 0);
+                },
+                ondblClickRow: function (rowid) {
+                    /*var $this = $(this), p = this.p;
+                     if (p.selrow !== rowid) {
+                     // prevent the row from be unselected on double-click
+                     // the implementation is for "multiselect:false" which we use,
+                     // but one can easy modify the code for "multiselect:true"
+                     $this.jqGrid("setSelection", rowid);
+                     }
+                     $this.jqGrid("editGridRow", rowid, editSettings);*/
                 }
             });
 
@@ -1199,7 +1257,7 @@
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                         dlgDiv[0].style.left = (($(grid_selector).width() - 150)/2) + "px";
-                    }
+                    },
                     reloadAfterSubmit: false,
                     savekey: [true, 13],
                     modal:true,
@@ -1291,6 +1349,33 @@
                 $(".same-customer").css("display","");
                 $(".insystem-customer").css("display","none");
             }
+
+            //textarea
+            $('textarea[class*=autosize]').autosize({append: "\n"});
+            $('textarea.limited').inputlimiter({
+                remText: '%n character%s remaining',
+                limitText: 'max allowed : %n.'
+            });
+
+            // pattern validate
+            $('.input-mask-phone').mask('(999) 999-9999');
+
+            //datepicker plugin
+            $('.date-picker').datepicker({
+                autoclose: true,
+                todayHighlight: true
+            })
+                //show datepicker when clicking on the icon
+                    .next().on(ace.click_event, function(){
+                        $(this).prev().focus();
+                    });
+
+            $('.chosen-select').chosen({allow_single_deselect:true});
+            //resize the chosen on window resize
+            $(window).on('resize.chosen', function() {
+                var w = $('.chosen-select').parent().width();
+                $('.chosen-select').next().css({'width':w});
+            }).trigger('resize.chosen');
         })
 
         $('#form-carpreemption').submit(function(){ //listen for submit event

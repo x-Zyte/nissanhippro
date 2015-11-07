@@ -44,9 +44,10 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('/department/read') }}',
                 datatype: "json",
-                colNames:['ชื่อแผนก', 'รายละเอียด'],
+                colNames:['ชื่อแผนก(ไทย)', 'ชื่อแผนก(อังกฤษ)', 'รายละเอียด'],
                 colModel:[
-                    {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'nameth',index:'nameth', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'nameen',index:'nameen', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                 ],
                 viewrecords : true,

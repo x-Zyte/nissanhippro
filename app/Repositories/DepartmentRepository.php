@@ -16,7 +16,7 @@ class DepartmentRepository extends EloquentRepositoryAbstract
     {
         $this->Database = new Department;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id', 'name', 'detail');
+        $this->crudFields = array('oper', 'id', 'nameth', 'nameen', 'detail');
         $this->uniqueKeySingles = array(array('field'=>'name','label'=>'ชื่อแผนก'));
         $this->uniqueKeyMultiples = array();
         $this->hasBranch = false;

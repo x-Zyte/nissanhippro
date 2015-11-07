@@ -52,7 +52,7 @@
                         stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$cartypeselectlist}}" }},
                     {name:'carbrandid',index:'carbrandid', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carbrandselectlist}}", defaultValue:defaultCarBrand},editrules:{required:true},align:'left',
                         stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carbrandselectlist}}" }},
-                    {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                    {name:'name',index:'name', width:250,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'individualregistercost',index:'individualregistercost', width:100,editable: true,editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'implementingindividualregistercost',index:'implementingindividualregistercost', width:100,editable: true,editrules:{required:true, number:true},align:'right',formatter:'number',
@@ -61,7 +61,7 @@
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'implementingcompanyregistercost',index:'implementingcompanyregistercost', width:100,editable: true,editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
+                    {name:'detail',index:'detail', width:200,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                 ],
                 viewrecords : true,
                 rowNum:10,
@@ -114,11 +114,11 @@
                         datatype: "json",
                         colNames:['รหัส', 'ชื่อรุ่น','ชื่อรุ่น(ออกใบกำกับภาษี)', 'รายละเอียด'],
                         colModel:[
-                            {name:'code',index:'code', width:150,editable: true,editoptions:{size:"30",maxlength:"50"}
-                                ,editrules:{required:true,custom: true, custom_func: check_AZ09Hyphen},align:'left'},
-                            {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
+                            {name:'code',index:'code', width:200,editable: true,editoptions:{size:"30",maxlength:"50"}
+                                ,editrules:{required:true,custom: true, custom_func: check_AZ09HyphenSquarebracket},align:'left'},
+                            {name:'name',index:'name', width:250,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                             {name:'taxinvoicename',index:'taxinvoicename', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                            {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
+                            {name:'detail',index:'detail', width:200,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                         ],
                         viewrecords : true,
                         rowNum:10,

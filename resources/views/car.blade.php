@@ -1,10 +1,10 @@
 @extends('app')
-@section('title','รถ')
+@section('title','รับรถเข้าสต๊อก')
 @section('menu-car-class','active')
 
 @section('content')
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-car"></i> รถ</h3>
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-car"></i> รับรถเข้าสต๊อก</h3>
 
     <table id="grid-table"></table>
 
