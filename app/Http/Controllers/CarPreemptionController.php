@@ -1044,7 +1044,7 @@ class CarPreemptionController extends Controller {
                 $obj->save();
             }
 
-            return redirect()->action('CarPreemptionController@index');
+            return redirect()->action('CarPreemptionController@edit',['id' => $model->id]);
         }
         else{
             //hack returning error
