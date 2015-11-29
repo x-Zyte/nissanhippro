@@ -194,7 +194,11 @@
                     {caption: '',
                         buttonicon:'ace-icon fa fa-search-plus grey',
                         onClickButton: function(){
-                            window.location="{{URL::to('carpreemption/view')}}";
+                            var selRowId = $(grid_selector).jqGrid ('getGridParam', 'selrow');
+                            if(selRowId)
+                                window.open("{{URL::to('carpreemption/view')}}"+'/'+selRowId,'_blank');
+                            else
+                                alert("กรุณาเลือกข้อมูล");
                         },
                         position:"first",
                         title:"ดูรายละเอียดข้อมูล"
@@ -203,7 +207,11 @@
                     {caption: '',
                         buttonicon:'ace-icon fa fa-pencil blue',
                         onClickButton: function(){
-                            window.location="{{URL::to('carpreemption/edit')}}";
+                            var selRowId = $(grid_selector).jqGrid ('getGridParam', 'selrow');
+                            if(selRowId)
+                                window.open("{{URL::to('carpreemption/edit')}}"+'/'+selRowId,'_blank');
+                            else
+                                alert("กรุณาเลือกข้อมูล");
                         },
                         position:"first",
                         title:"แก้ไขข้อมูล"
@@ -212,7 +220,7 @@
                     {caption: '',
                         buttonicon:'ace-icon fa fa-plus-circle purple',
                         onClickButton: function(){
-                            window.location="{{URL::to('carpreemption/newcarpreemption')}}";
+                            window.open("{{URL::to('carpreemption/newcarpreemption')}}",'_blank');
                         },
                         position:"first",
                         title:"เพิ่มข้อมูล"

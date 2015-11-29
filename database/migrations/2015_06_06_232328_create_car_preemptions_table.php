@@ -60,6 +60,8 @@ class CreateCarPreemptionsTable extends Migration {
             $table->decimal('otherfee', 10, 2);
             $table->dateTime('datewantgetcar');
 
+            $table->decimal('giveawayadditionalcharges', 10, 2);
+
             $table->integer('buyercustomerid')->unsigned();
             $table->foreign('buyercustomerid')->references('id')->on('customers');
             $table->integer('salesmanemployeeid')->unsigned();

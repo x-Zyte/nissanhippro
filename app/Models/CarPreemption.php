@@ -20,7 +20,7 @@ class CarPreemption extends Model {
 
         'cashpledge', 'purchasetype', 'leasingcompanyname', 'interest', 'down', 'installments', 'cashpledgeredlabel',
         'registrationtype', 'registrationfee', 'insurancefee', 'compulsorymotorinsurancefee', 'accessoriesfee', 'otherfee',
-        'datewantgetcar',
+        'datewantgetcar','giveawayadditionalcharges',
 
         'buyercustomerid', 'salesmanemployeeid', 'salesmanteamid', 'salesmanageremployeeid', 'approversemployeeid', 'approvaldate',
 
@@ -38,6 +38,14 @@ class CarPreemption extends Model {
             if($model->oldcarbrandid == '') $model->oldcarbrandid = null;
             if($model->oldcarmodelid == '') $model->oldcarmodelid = null;
             if($model->oldcargear == '') $model->oldcargear = null;
+            if($model->oldcarcolor == '') $model->oldcarcolor = null;
+            if($model->oldcarenginesize == '') $model->oldcarenginesize = null;
+            if($model->oldcarlicenseplate == '') $model->oldcarlicenseplate = null;
+            if($model->oldcaryear == '') $model->oldcaryear = null;
+            if($model->oldcarprice == '') $model->oldcarprice = null;
+            if($model->oldcarbuyername == '') $model->oldcarbuyername = null;
+            if($model->oldcarother == '') $model->oldcarother = null;
+
             if($model->purchasetype == 0){
                 $model->leasingcompanyname = null;
                 $model->interest = null;
@@ -51,7 +59,7 @@ class CarPreemption extends Model {
 
             $model->date = date('Y-m-d', strtotime($model->date));
             $model->approvaldate = date('Y-m-d', strtotime($model->approvaldate));
-            $model->salesmanteamid = Auth::user()->teamid;
+
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
             $model->modifiedby = Auth::user()->id;
@@ -68,6 +76,17 @@ class CarPreemption extends Model {
             if($model->oldcarbrandid == '') $model->oldcarbrandid = null;
             if($model->oldcarmodelid == '') $model->oldcarmodelid = null;
             if($model->oldcargear == '') $model->oldcargear = null;
+            if($model->oldcarbrandid == '') $model->oldcarbrandid = null;
+            if($model->oldcarmodelid == '') $model->oldcarmodelid = null;
+            if($model->oldcargear == '') $model->oldcargear = null;
+            if($model->oldcarcolor == '') $model->oldcarcolor = null;
+            if($model->oldcarenginesize == '') $model->oldcarenginesize = null;
+            if($model->oldcarlicenseplate == '') $model->oldcarlicenseplate = null;
+            if($model->oldcaryear == '') $model->oldcaryear = null;
+            if($model->oldcarprice == '') $model->oldcarprice = null;
+            if($model->oldcarbuyername == '') $model->oldcarbuyername = null;
+            if($model->oldcarother == '') $model->oldcarother = null;
+
             if($model->purchasetype == 0){
                 $model->leasingcompanyname = null;
                 $model->interest = null;
@@ -78,6 +97,8 @@ class CarPreemption extends Model {
                 $model->recommendedbyname = null;
                 $model->recommendedbytype = null;
             }
+
+            $model->carPreemptionGiveaways()->delete();
 
             $model->date = date('Y-m-d', strtotime($model->date));
             $model->approvaldate = date('Y-m-d', strtotime($model->approvaldate));
@@ -149,5 +170,10 @@ class CarPreemption extends Model {
     public function approversEmployee()
     {
         return $this->belongsTo('App\Models\Employee', 'approversemployeeid', 'id');
+    }
+
+    public function carPreemptionGiveaways()
+    {
+        return $this->hasMany('App\Models\CarPreemptionGiveaway', 'carpreemptionid', 'id');
     }
 }

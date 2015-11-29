@@ -260,9 +260,11 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
         if($input['oper'] == 'add'){
             foreach ($this->uniqueKeySingles as $key)
             {
-                $countDuplicate = intval($this->Database->where($key['field'], $input[$key['field']])->count());
-                if($countDuplicate > 0){
-                    return $key['label'].' '.$input[$key['field']].' มีอยู่ในระบบแล้ว';
+                if($input[$key['field']] != null || $input[$key['field']] != ''){
+                    $countDuplicate = intval($this->Database->where($key['field'], $input[$key['field']])->count());
+                    if($countDuplicate > 0){
+                        return $key['label'].' '.$input[$key['field']].' มีอยู่ในระบบแล้ว';
+                    }
                 }
             }
 
@@ -272,7 +274,9 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
                 {
                     foreach ($this->uniqueKeyMultiples as $key)
                     {
-                        $query->where($key['field'], $input[$key['field']]);
+                        if($input[$key['field']] != null || $input[$key['field']] != '') {
+                            $query->where($key['field'], $input[$key['field']]);
+                        }
                     }
                 })->count());
 
@@ -292,9 +296,11 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
         elseif($input['oper'] == 'edit'){
             foreach ($this->uniqueKeySingles as $key)
             {
-                $countDuplicate = intval($this->Database->where('id','!=', $input['id'])->where($key['field'], $input[$key['field']])->count());
-                if($countDuplicate > 0){
-                    return $key['label'].' '.$input[$key['field']].' มีอยู่ในระบบแล้ว';
+                if($input[$key['field']] != null || $input[$key['field']] != '') {
+                    $countDuplicate = intval($this->Database->where('id', '!=', $input['id'])->where($key['field'], $input[$key['field']])->count());
+                    if ($countDuplicate > 0) {
+                        return $key['label'] . ' ' . $input[$key['field']] . ' มีอยู่ในระบบแล้ว';
+                    }
                 }
             }
 
@@ -305,7 +311,9 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
                     $query->where('id','!=', $input['id']);
                     foreach ($this->uniqueKeyMultiples as $key)
                     {
-                        $query->where($key['field'], $input[$key['field']]);
+                        if($input[$key['field']] != null || $input[$key['field']] != '') {
+                            $query->where($key['field'], $input[$key['field']]);
+                        }
                     }
                 })->count());
 

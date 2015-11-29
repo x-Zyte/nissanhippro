@@ -1,7 +1,15 @@
 @extends('app')
-@section('title','เพิ่มใบจองใหม่')
+
+@if($oper == 'new')
+    @section('title','เพิ่มใบจองใหม่')
+@elseif($oper == 'edit')
+    @section('title','แก้ไขใบจอง '.$carpreemption->bookno.'/'.$carpreemption->no)
+@elseif($oper == 'view')
+    @section('title','ดูข้อมูลใบจอง '.$carpreemption->bookno.'/'.$carpreemption->no)
+@endif
+
 @section('menu-carpreemption-class','active')
-@section('pathPrefix','../')
+@section('pathPrefix',$pathPrefix)
 
 @section('content')
     <script type="text/javascript">
@@ -55,7 +63,7 @@
             $('#bookingcustomeramphurid').children('option:not(:first)').remove();
             $('#bookingcustomerdistrictid').children('option:not(:first)').remove();
 
-            $.get('../customer/getbyid/'+customerid, function(data){
+            $.get('{{$pathPrefix}}customer/getbyid/'+customerid, function(data){
                 $('#bookingcustomeraddress').val(data.address);
                 $('#bookingcustomerprovinceid').val(data.addprovinceid).trigger('chosen:updated');
 
@@ -83,7 +91,7 @@
             $('#buyercustomeramphurid').children('option:not(:first)').remove();
             $('#buyercustomerdistrictid').children('option:not(:first)').remove();
 
-            $.get('../customer/getbyid/'+customerid, function(data){
+            $.get('{{$pathPrefix}}customer/getbyid/'+customerid, function(data){
                 $('#buyercustomeraddress').val(data.address);
                 $('#buyercustomerprovinceid').val(data.addprovinceid).trigger('chosen:updated');
 
@@ -110,7 +118,7 @@
             $('#bookingcustomeramphurid').children('option:not(:first)').remove();
             $('#bookingcustomerdistrictid').children('option:not(:first)').remove();
             $('#bookingcustomerzipcode').val(null);
-            $.get('../amphur/read/'+provinceid, function(data){
+            $.get('{{$pathPrefix}}amphur/read/'+provinceid, function(data){
                 $.each(data, function(i, option) {
                     $('#bookingcustomeramphurid').append($('<option/>').attr("value", option.id).text(option.name));
                 });
@@ -124,7 +132,7 @@
             $('#buyercustomeramphurid').children('option:not(:first)').remove();
             $('#buyercustomerdistrictid').children('option:not(:first)').remove();
             $('#buyercustomerzipcode').val(null);
-            $.get('../amphur/read/'+provinceid, function(data){
+            $.get('{{$pathPrefix}}amphur/read/'+provinceid, function(data){
                 $.each(data, function(i, option) {
                     $('#buyercustomeramphurid').append($('<option/>').attr("value", option.id).text(option.name));
                 });
@@ -137,7 +145,7 @@
             var amphurid = sel.value;
             $('#bookingcustomerdistrictid').children('option:not(:first)').remove();
             $('#bookingcustomerzipcode').val(null);
-            $.get('../district/read/'+amphurid, function(data){
+            $.get('{{$pathPrefix}}district/read/'+amphurid, function(data){
                 $.each(data, function(i, option) {
                     $('#bookingcustomerdistrictid').append($('<option/>').attr("value", option.id).text(option.name));
                 });
@@ -149,7 +157,7 @@
             var amphurid = sel.value;
             $('#buyercustomerdistrictid').children('option:not(:first)').remove();
             $('#buyercustomerzipcode').val(null);
-            $.get('../district/read/'+amphurid, function(data){
+            $.get('{{$pathPrefix}}district/read/'+amphurid, function(data){
                 $.each(data, function(i, option) {
                     $('#buyercustomerdistrictid').append($('<option/>').attr("value", option.id).text(option.name));
                 });
@@ -160,7 +168,7 @@
         function BookingCustomerDistrictChange(sel) {
             var districtid = sel.value;
             $('#bookingcustomerzipcode').val(null);
-            $.get('../zipcode/read/'+districtid, function(data){
+            $.get('{{$pathPrefix}}zipcode/read/'+districtid, function(data){
                 $('#bookingcustomerzipcode').val(data.code);
             });
         }
@@ -168,7 +176,7 @@
         function BuyerCustomerDistrictChange(sel) {
             var districtid = sel.value;
             $('#buyercustomerzipcode').val(null);
-            $.get('../zipcode/read/'+districtid, function(data){
+            $.get('{{$pathPrefix}}zipcode/read/'+districtid, function(data){
                 $('#buyercustomerzipcode').val(data.code);
             });
         }
@@ -178,7 +186,7 @@
             if(carmodelid == null || carmodelid == '') return;
             $('#carsubmodelid').children('option:not(:first)').remove();
             $('#colorid').children('option:not(:first)').remove();
-            $.get('../carmodel/getsubmodelandcolorbyid/'+carmodelid, function(data){
+            $.get('{{$pathPrefix}}carmodel/getsubmodelandcolorbyid/'+carmodelid, function(data){
                 $.each(data.carsubmodels, function(i, option) {
                     $('#carsubmodelid').append($('<option/>').attr("value", option.id).text(option.name));
                 });
@@ -194,7 +202,7 @@
         function OldCarBrandChange(sel) {
             var carbrandid = sel.value;
             $('#oldcarmodelid').children('option:not(:first)').remove();
-            $.get('../carbrand/getmodelbyid/'+carbrandid, function(data){
+            $.get('{{$pathPrefix}}carbrand/getmodelbyid/'+carbrandid, function(data){
                 $.each(data, function(i, option) {
                     $('#oldcarmodelid').append($('<option/>').attr("value", option.id).text(option.name));
                 });
@@ -272,7 +280,13 @@
 
     </script>
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> เพิ่มใบจองใหม่</h3>
+    @if($oper == 'new')
+        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> เพิ่มใบจองใหม่</h3>
+    @elseif($oper == 'edit')
+        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> แก้ไขใบจอง</h3>
+    @elseif($oper == 'view')
+        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> ดูข้อมูลใบจอง</h3>
+    @endif
 
     @if (count($errors) > 0)
         <div class="alert alert-danger">
@@ -285,15 +299,30 @@
         </div>
     @endif
 
-    {!! Form::open(array('url' => 'carpreemption/add', 'id'=>'form-carpreemption', 'class'=>'form-horizontal', 'role'=>'form')) !!}
+    @if($oper == 'new')
+        {!! Form::open(array('url' => 'carpreemption/save', 'id'=>'form-carpreemption', 'class'=>'form-horizontal', 'role'=>'form')) !!}
+    @elseif($oper == 'edit')
+        {!! Form::model($carpreemption, array('url' => 'carpreemption/save', 'id'=>'form-carpreemption', 'class'=>'form-horizontal', 'role'=>'form')) !!}
+        {!! Form::hidden('id') !!}
+    @elseif($oper == 'view')
+        {!! Form::model($carpreemption, array('id'=>'form-carpreemption', 'class'=>'form-horizontal', 'role'=>'form')) !!}
+    @endif
+
+        <div class="form-group" style="margin-top:10px; @if(!Auth::user()->isadmin ) display: none; @endif" >
+            {!! Form::label('provincebranchid', 'จังหวัด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+            <div class="col-sm-3">
+                {!! Form::select('provincebranchid', $provincebranchselectlist, null, array('id'=>'provinceid', 'class' => 'chosen-select')); !!}
+            </div>
+        </div>
+
         <div class="form-group" style="margin-top:10px;" >
             {!! Form::label('bookno', 'เล่มที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
             <div class="col-sm-2">
-                {!! Form::number('bookno') !!}
+                {!! Form::number('bookno',null,array('min' => '0','max' => '999')) !!}
             </div>
             {!! Form::label('no', 'เลขที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
             <div class="col-sm-2">
-                {!! Form::number('no') !!}
+                {!! Form::number('no',null,array('min' => '0','max' => '9999')) !!}
             </div>
             {!! Form::label('date', 'วันที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
             <div class="col-sm-2">
@@ -351,52 +380,52 @@
                                     {!! Form::label('bookingcustomeraddress', 'ที่อยู่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-11">
                                         {!! Form::text('bookingcustomeraddress', null, array('style'=>'width:45%; min-width:250px;')) !!}
-                                    </div>
+                                </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('bookingcustomerprovinceid', 'จังหวัด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         {!! Form::select('bookingcustomerprovinceid', $provinceselectlist, null, array('id'=>'bookingcustomerprovinceid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerProvinceChange(this)')); !!}
                                     </div>
-                                    {!! Form::label('bookingcustomeramphurid', 'เขต/อำเภอ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
-                                        {!! Form::select('bookingcustomeramphurid', array(null => 'เลือกเขต/อำเภอ'), null, array('id'=>'bookingcustomeramphurid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerAmphurChange(this)')); !!}
+                                    {!! Form::label('bookingcustomeramphurid', 'เขต/อำเภอ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-3">
+                                        {!! Form::select('bookingcustomeramphurid', $bookingcustomeramphurselectlist, null, array('id'=>'bookingcustomeramphurid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerAmphurChange(this)')); !!}
                                     </div>
-                                    {!! Form::label('bookingcustomerdistrictid', 'แขวง/ตำบล', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
-                                        {!! Form::select('bookingcustomerdistrictid', array(null => 'เลือกแขวง/ตำบล'), null, array('id'=>'bookingcustomerdistrictid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerDistrictChange(this)')); !!}
+                                    {!! Form::label('bookingcustomerdistrictid', 'แขวง/ตำบล', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-3">
+                                        {!! Form::select('bookingcustomerdistrictid', $bookingcustomerdistrictselectlist, null, array('id'=>'bookingcustomerdistrictid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerDistrictChange(this)')); !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('bookingcustomerzipcode', 'รหัสไปรษณีย์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
-                                        {!! Form::number('bookingcustomerzipcode') !!}
+                                    <div class="col-sm-3">
+                                        {!! Form::number('bookingcustomerzipcode',null,array('min' => '0','max' => '99999')) !!}
                                     </div>
-                                    {!! Form::label('bookingcustomerphone1', 'เบอร์โทร 1', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
+                                    {!! Form::label('bookingcustomerphone1', 'เบอร์โทร 1', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="ace-icon fa fa-phone"></i>
                                             </span>
-                                            {!! Form::number('bookingcustomerphone1') !!}
+                                            {!! Form::number('bookingcustomerphone1',null,array('min' => '0','max' => '9999999999')) !!}
                                         </div>
                                     </div>
-                                    {!! Form::label('bookingcustomerphone2', 'เบอร์โทร 2', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
+                                    {!! Form::label('bookingcustomerphone2', 'เบอร์โทร 2', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="ace-icon fa fa-phone"></i>
                                             </span>
-                                            {!! Form::number('bookingcustomerphone2') !!}
+                                            {!! Form::number('bookingcustomerphone2',null,array('min' => '0','max' => '9999999999')) !!}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('bookingcustomeroccupationid', 'อาชีพ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         {!! Form::select('bookingcustomeroccupationid', $occupationselectlist, null, array('id'=>'bookingcustomeroccupationid', 'class' => 'chosen-select', 'style'=>'width:15%;')); !!}
                                     </div>
-                                    {!! Form::label('bookingcustomerbirthdate', 'วันเกิด', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                    {!! Form::label('bookingcustomerbirthdate', 'วันเกิด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         <div class="input-group">
                                             {!! Form::text('bookingcustomerbirthdate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}
@@ -431,38 +460,38 @@
                             <div class="widget-main">
                                 <div class="form-group" style="padding-top:5px;">
                                     {!! Form::label('carmodelid', 'รถนิสสัน แบบ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-4">
                                         {!! Form::select('carmodelid', $carmodelselectlist, null, array('id'=>'carmodelid', 'class' => 'chosen-select', 'onchange'=>'CarModelChange(this)', 'style'=>'width:150px;')); !!}
-                                    </div>
-                                    {!! Form::label('carsubmodelid', 'รุ่น', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
-                                        {!! Form::select('carsubmodelid', array(null => 'เลือกรุ่น'), null, array('id'=>'carsubmodelid', 'class' => 'chosen-select')); !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    {!! Form::label('carsubmodelid', 'รุ่น', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-3">
+                                        {!! Form::select('carsubmodelid', $carsubmodelselectlist, null, array('id'=>'carsubmodelid', 'class' => 'chosen-select')); !!}
+                                    </div>
                                     {!! Form::label('colorid', 'สี', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::select('colorid', array(null => 'เลือกสี'), null, array('id'=>'colorid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('colorid', $colorselectlist, null, array('id'=>'colorid', 'class' => 'chosen-select')); !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('price', 'ราคา', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
-                                        {!! Form::number('price', null, array('placeholder' => 'บาท', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                    <div class="col-sm-3">
+                                        {!! Form::number('price', null, array('step' => '0.01', 'min' => '0', 'placeholder' => 'บาท', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                     </div>
-                                    {!! Form::label('discount', 'ส่วนลด', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                    {!! Form::label('discount', 'ส่วนลด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::number('discount', null, array('placeholder' => 'บาท')) !!}
+                                        {!! Form::number('discount', null, array('step' => '0.01', 'min' => '0' ,'placeholder' => 'บาท')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('subdown', 'Sub Down', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
-                                        {!! Form::number('subdown', null, array('placeholder' => 'บาท')) !!}
+                                    <div class="col-sm-3">
+                                        {!! Form::number('subdown', null, array('step' => '0.01', 'min' => '0' ,'placeholder' => 'บาท')) !!}
                                     </div>
-                                    {!! Form::label('accessories', 'บวกอุปกรณ์', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                    {!! Form::label('accessories', 'บวกอุปกรณ์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::number('accessories', null, array('placeholder' => 'บาท')) !!}
+                                        {!! Form::number('accessories', null, array('step' => '0.01', 'min' => '0' ,'placeholder' => 'บาท')) !!}
                                     </div>
                                 </div>
                             </div>
@@ -494,7 +523,7 @@
                                     </div>
                                     {!! Form::label('oldcarmodelid', 'แบบ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::select('oldcarmodelid', array(null => 'เลือกแบบ'), null, array('id'=>'oldcarmodelid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('oldcarmodelid', $oldcarmodelselectlist, null, array('id'=>'oldcarmodelid', 'class' => 'chosen-select')); !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -504,13 +533,13 @@
                                     </div>
                                     {!! Form::label('oldcarcolor', 'สี', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::text('oldcarcolors') !!}
+                                        {!! Form::text('oldcarcolor') !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('oldcarenginesize', 'ขนาดเครื่องยนต์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::number('oldcarenginesize', null, array('placeholder' => 'ซีซี')) !!}
+                                        {!! Form::number('oldcarenginesize', null, array('min' => '0','placeholder' => 'ซีซี')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -520,13 +549,13 @@
                                     </div>
                                     {!! Form::label('oldcaryear', 'ปี', array('class' => 'col-sm-1 col-lg-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-1">
-                                        {!! Form::number('oldcaryear') !!}
+                                        {!! Form::number('oldcaryear',null,array('min' => '0','max' => '9999')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('oldcarprice', 'ราคารถเก่า', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-1">
-                                        {!! Form::number('oldcarprice', null, array('placeholder' => 'บาท')) !!}
+                                        {!! Form::number('oldcarprice', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท')) !!}
                                     </div>
                                     {!! Form::label('oldcarbuyername', 'ผู้ให้ราคา', array('class' => 'col-sm-1 col-lg-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
@@ -565,7 +594,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('cashpledge', '1. เงินมัดจำ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('cashpledge', null, array('placeholder' => 'บาท')) !!}
+                                            {!! Form::number('cashpledge', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -591,14 +620,14 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('interest', 'ดอกเบี้ย', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-10">
-                                            {!! Form::number('interest', null, array('placeholder' => '%', 'min'=>'0', 'max'=>'100', 'style'=>'width:70px;')) !!}&nbsp;&nbsp;&nbsp;
+                                            {!! Form::number('interest', null, array('step' => '0.01', 'min' => '0', 'max' => '100','placeholder' => '%', 'min'=>'0', 'max'=>'100', 'style'=>'width:70px;')) !!}&nbsp;&nbsp;&nbsp;
                                             {!! Form::label('down', 'ดาวน์') !!}
                                             &nbsp;&nbsp;
-                                            {!! Form::number('down', null, array('placeholder' => 'บาท')) !!}
+                                            {!! Form::number('down', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท')) !!}
                                             &nbsp;&nbsp;&nbsp;
                                             {!! Form::label('installments', 'จำนวนงวด') !!}
                                             &nbsp;&nbsp;
-                                            {!! Form::number('installments', null, array('style'=>'width:70px;')) !!}
+                                            {!! Form::number('installments', null, array('min' => '0','style'=>'width:70px;')) !!}
                                         </div>
 
                                     </div>
@@ -607,7 +636,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('cashpledgeredlabel', '3. ค่ามัดจำป้ายแดง', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3 ">
-                                            {!! Form::number('cashpledgeredlabel', null, array('placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                            {!! Form::number('cashpledgeredlabel', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -623,7 +652,7 @@
                                             <label>
                                                 {!! Form::radio('registrationtype', 1, false, array('class' => 'ace')) !!}
                                                 <span class="lbl">  นิติบุคคล</span>&nbsp;&nbsp;
-                                                {!! Form::number('registrationfee', null, array('placeholder' => 'บาท')) !!}
+                                                {!! Form::number('registrationfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท')) !!}
                                             </label>
                                         </div>
                                     </div>
@@ -632,7 +661,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('insurancefee', '5. ค่าประกันภัย', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('insurancefee', null, array('placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                            {!! Form::number('insurancefee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -640,7 +669,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('compulsorymotorinsurancefee', '6. ค่า พ.ร.บ.', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('compulsorymotorinsurancefee', null, array('placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                            {!! Form::number('compulsorymotorinsurancefee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -648,7 +677,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('accessoriesfee', '7. ค่าอุปกรณ์', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('accessoriesfee', null, array('placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                            {!! Form::number('accessoriesfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -656,7 +685,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('otherfee', '8. ค่าอื่นๆ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('otherfee', null, array('placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                            {!! Form::number('otherfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -699,6 +728,15 @@
                                     <table id="grid-table"></table>
                                     <div id="grid-pager"></div>
                                 </div><br>
+
+                                <div class="form-group">
+                                    {!! Form::label('giveawayadditionalcharges', 'ลูกค้าจ่ายเพิ่มเติ่มค่าของแถม', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                    <div class="col-sm-2">
+                                        {!! Form::number('giveawayadditionalcharges', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                    </div>
+                                </div>
+
+                                <br>
                                 <div>
                                     <table id="grid-table2"></table>
                                     <div id="grid-pager2"></div>
@@ -752,48 +790,48 @@
                                 </div>
                                 <div class="form-group same-customer" style="display:none;" >
                                     {!! Form::label('buyercustomerprovinceid', 'จังหวัด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         {!! Form::select('buyercustomerprovinceid', $provinceselectlist, null, array('id'=>'buyercustomerprovinceid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerProvinceChange(this)')); !!}
                                     </div>
-                                    {!! Form::label('buyercustomeramphurid', 'เขต/อำเภอ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
-                                        {!! Form::select('buyercustomeramphurid', array(null => 'เลือกเขต/อำเภอ'), null, array('id'=>'buyercustomeramphurid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerAmphurChange(this)')); !!}
+                                    {!! Form::label('buyercustomeramphurid', 'เขต/อำเภอ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-3">
+                                        {!! Form::select('buyercustomeramphurid', $buyercustomeramphurselectlist, null, array('id'=>'buyercustomeramphurid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerAmphurChange(this)')); !!}
                                     </div>
-                                    {!! Form::label('buyercustomerdistrictid', 'แขวง/ตำบล', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
-                                        {!! Form::select('buyercustomerdistrictid', array(null => 'เลือกแขวง/ตำบล'), null, array('id'=>'buyercustomerdistrictid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerDistrictChange(this)')); !!}
+                                    {!! Form::label('buyercustomerdistrictid', 'แขวง/ตำบล', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-3">
+                                        {!! Form::select('buyercustomerdistrictid', $buyercustomerdistrictselectlist, null, array('id'=>'buyercustomerdistrictid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerDistrictChange(this)')); !!}
                                     </div>
                                 </div>
                                 <div class="form-group same-customer" style="display:none;">
                                     {!! Form::label('buyercustomerzipcode', 'รหัสไปรษณีย์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
-                                        {!! Form::number('buyercustomerzipcode') !!}
+                                    <div class="col-sm-3">
+                                        {!! Form::number('buyercustomerzipcode',null,array('min' => '0','max' => '99999')) !!}
                                     </div>
-                                    {!! Form::label('buyercustomerphone1', 'เบอร์โทร 1', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
+                                    {!! Form::label('buyercustomerphone1', 'เบอร์โทร 1', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="ace-icon fa fa-phone"></i>
                                             </span>
-                                            {!! Form::number('buyercustomerphone1') !!}
+                                            {!! Form::number('buyercustomerphone1',null,array('min' => '0','max' => '9999999999')) !!}
                                         </div>
                                     </div>
-                                    {!! Form::label('buyercustomerphone2', 'เบอร์โทร 2', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
+                                    {!! Form::label('buyercustomerphone2', 'เบอร์โทร 2', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="ace-icon fa fa-phone"></i>
                                             </span>
-                                            {!! Form::number('buyercustomerphone2') !!}
+                                            {!! Form::number('buyercustomerphone2',null,array('min' => '0','max' => '9999999999')) !!}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group same-customer" style="display:none;">
                                     {!! Form::label('buyercustomeroccupationid', 'อาชีพ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         {!! Form::select('buyercustomeroccupationid', $occupationselectlist, null, array('id'=>'buyercustomeroccupationid', 'class' => 'chosen-select', 'style'=>'width:15%;')); !!}
                                     </div>
-                                    {!! Form::label('buyercustomerbirthdate', 'วันเกิด', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                    {!! Form::label('buyercustomerbirthdate', 'วันเกิด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         <div class="input-group">
                                             {!! Form::text('buyercustomerbirthdate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}
@@ -812,13 +850,13 @@
                                     </div>
                                     {!! Form::label('salesmanageremployeeid', 'ผู้จัดการฝ่ายขาย', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('salesmanageremployeeid', $saleemployeeselectlist, null, array('id'=>'salesmanageremployeeid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('salesmanageremployeeid', $salemanageremployeeselectlist, null, array('id'=>'salesmanageremployeeid', 'class' => 'chosen-select')); !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('approversemployeeid', 'ผู้อนุมัติ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('approversemployeeid', $saleemployeeselectlist, null, array('id'=>'approversemployeeid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('approversemployeeid', $approveremployeeselectlist, null, array('id'=>'approversemployeeid', 'class' => 'chosen-select')); !!}
                                     </div>
                                     {!! Form::label('approvaldate', 'วันที่อนุมัติ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
@@ -977,25 +1015,39 @@
             </div>
         </div>
 
-        <div class="clearfix form-actions">
-            <div class="col-md-offset-5 col-md-5">
-                <button id="btnSubmit" class="btn btn-info" type="submit">
-                    <i class="ace-icon fa fa-check bigger-110"></i>
-                    Submit
-                </button>
+        @if($oper != 'view')
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-5 col-md-5">
+                    <button id="btnSubmit" class="btn btn-info" type="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        Submit
+                    </button>
 
-                &nbsp; &nbsp; &nbsp;
-                <button id="btnReset" class="btn" type="reset">
-                    <i class="ace-icon fa fa-undo bigger-110"></i>
-                    Reset
-                </button>
+                    &nbsp; &nbsp; &nbsp;
+                    <button id="btnReset" class="btn" type="reset">
+                        <i class="ace-icon fa fa-undo bigger-110"></i>
+                        Reset
+                    </button>
+                </div>
             </div>
-        </div>
+        @endif
+
     {!! Form::close() !!}
 
     <!-- inline scripts related to this page -->
     <script type="text/javascript">
-        var giveawayData = [];
+
+        var giveawayFreeData = [
+            @foreach ($giveawayFreeDatas as $data)
+                {"giveawayid":"{{$data->giveawayid}}"},
+            @endforeach
+        ];
+
+        var giveawayBuyData = [
+            @foreach ($giveawayBuyDatas as $data)
+                {"giveawayid":"{{$data->giveawayid}}"},
+            @endforeach
+        ];
 
         onclickSubmitLocal = function (options, postdata) {
             var $this = $(this), p = $(this).jqGrid("getGridParam"),// p = this.p,
@@ -1111,7 +1163,7 @@
 
             $(grid_selector).jqGrid({
                 datatype: "local",
-                data: giveawayData,
+                data: giveawayFreeData,
                 colNames: ["อุปกรณ์ของแถม"],
                 colModel:[
                     {name:'giveawayid',index:'giveawayid', width:200, editable: true,edittype:"select",formatter:'select',
@@ -1157,14 +1209,12 @@
 
             $(grid_selector2).jqGrid({
                 datatype: "local",
-                data: giveawayData,
-                colNames: ["อุปกรณ์ซื้อเพิ่มเติม", "ราคา"],
+                data: giveawayBuyData,
+                colNames: ["อุปกรณ์ซื้อเพิ่มเติม"],
                 colModel:[
                     {name:'giveawayid',index:'giveawayid', width:100, editable: true,edittype:"select",formatter:'select',
                         editoptions:{value: "{{ $giveawayselectlist }}"},editrules:{required:true}
-                        ,align:'left',stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "{{ $giveawayselectlist }}" }},
-                    {name:'price',index:'price', width:200,editable: true,editrules:{required:true, number:true},align:'left'
-                        ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}}
+                        ,align:'left',stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "{{ $giveawayselectlist }}" }}
                 ],
                 cmTemplate: {editable: true, sortable: false, searchoptions: {clearSearch: false }},
                 rowNum: 10,
@@ -1207,13 +1257,19 @@
 
             var alertt = $(".page-content").height()*0.71;
             var alertl = ($(window).width()-80)/2;
+
+            var notViewMode = true;
+            if('{{$oper}}' == 'view'){
+                notViewMode = false;
+            }
+
             $(grid_selector).jqGrid("navGrid", pager_selector,
                 { 	//navbar options
-                    edit: true,
+                    edit: notViewMode,
                     editicon : 'ace-icon fa fa-pencil blue',
-                    add: true,
+                    add: notViewMode,
                     addicon : 'ace-icon fa fa-plus-circle purple',
-                    del: true,
+                    del: notViewMode,
                     delicon : 'ace-icon fa fa-trash-o red',
                     search: false,
                     searchicon : 'ace-icon fa fa-search orange',
@@ -1321,6 +1377,120 @@
                 }
             )
 
+            $(grid_selector2).jqGrid("navGrid", pager_selector2,
+                    { 	//navbar options
+                        edit: notViewMode,
+                        editicon : 'ace-icon fa fa-pencil blue',
+                        add: notViewMode,
+                        addicon : 'ace-icon fa fa-plus-circle purple',
+                        del: notViewMode,
+                        delicon : 'ace-icon fa fa-trash-o red',
+                        search: false,
+                        searchicon : 'ace-icon fa fa-search orange',
+                        refresh: false,
+                        refreshicon : 'ace-icon fa fa-refresh green',
+                        view: false,
+                        viewicon : 'ace-icon fa fa-search-plus grey',
+                        alerttop : alertt,
+                        alertleft : alertl
+                    },
+                    {
+                        //edit record form
+                        closeAfterEdit: true,
+                        width: 600,
+                        recreateForm: true,
+                        viewPagerButtons: false,
+                        beforeShowForm : function(e) {
+                            var form = $(e[0]);
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            style_edit_form(form);
+
+                            var dlgDiv = $("#editmod" + jQuery(grid_selector2)[0].id);
+                            dlgDiv[0].style.left = (($(grid_selector2).width() - 150)/2) + "px";
+                        },
+                        reloadAfterSubmit: false,
+                        savekey: [true, 13],
+                        modal:true,
+                        onclickSubmit: onclickSubmitLocal
+                    },
+                    {
+                        //new record form
+                        width: 600,
+                        closeAfterAdd: true,
+                        recreateForm: true,
+                        viewPagerButtons: false,
+                        beforeShowForm : function(e) {
+                            jQuery(grid_selector2).jqGrid('resetSelection');
+                            var form = $(e[0]);
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            style_edit_form(form);
+
+                            var dlgDiv = $("#editmod" + jQuery(grid_selector2)[0].id);
+                            dlgDiv[0].style.left = (($(grid_selector2).width() - 150)/2) + "px";
+                        },
+                        reloadAfterSubmit: false,
+                        savekey: [true, 13],
+                        modal:true,
+                        onclickSubmit: onclickSubmitLocal
+                    },
+                    {
+                        //delete record form
+                        width: 400,
+                        recreateForm: true,
+                        beforeShowForm : function(e) {
+                            var form = $(e[0]);
+                            if(!form.data('styled')) {
+                                form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                style_delete_form(form);
+
+                                form.data('styled', true);
+
+                                var dlgDiv = $("#delmod" + jQuery(grid_selector2)[0].id);
+                                dlgDiv[0].style.left = (($(grid_selector2).width() - 150)/2) + "px";
+                            }
+
+                            var totalRows = $(grid_selector2).jqGrid('getGridParam', 'selarrrow');
+                            var totalRowsCount = totalRows.length;
+                            $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
+                        },
+                        // because I use "local" data I don't want to send the changes to the server
+                        // so I use "processing:true" setting and delete the row manually in onclickSubmit
+                        onclickSubmit: function (options, rowid) {
+                            var $this = $(this), id = $.jgrid.jqID(this.id), p = this.p,
+                                    newPage = p.page;
+
+                            // reset the value of processing option to true to
+                            // skip the ajax request to "clientArray".
+                            options.processing = true;
+
+                            var totalRows = $(grid_selector2).jqGrid('getGridParam', 'selarrrow');
+                            var rowLength = totalRows.length;
+                            for (var i = 0; i < rowLength; i++) {
+                                $this.jqGrid("delRowData", totalRows[0]);
+                            }
+
+                            $.jgrid.hideModal("#delmod" + id, {
+                                gb: "#gbox_" + id,
+                                jqm: options.jqModal,
+                                onClose: options.onClose
+                            });
+
+                            if (p.lastpage > 1) {// on the multipage grid reload the grid
+                                if (p.reccount === 0 && newPage === p.lastpage) {
+                                    // if after deliting there are no rows on the current page
+                                    // which is the last page of the grid
+                                    newPage--; // go to the previous page
+                                }
+                                // reload grid to make the row from the next page visable.
+                                $this.trigger("reloadGrid", [{page: newPage}]);
+                            }
+
+                            return true;
+                        },
+                        processing: true
+                    }
+            )
+
             var customertype = jQuery( 'input[name=customer-type]:checked' ).val();
             if(customertype == 0){
                 $(".new-customer").css("display","none");
@@ -1374,14 +1544,50 @@
             //resize the chosen on window resize
             $(window).on('resize.chosen', function() {
                 var w = $('.chosen-select').parent().width();
-                $('.chosen-select').next().css({'width':w});
+                $('.chosen-select').next().css({'width':189});
+
+                $('#bookingcustomerid').width(250);
+                $('#bookingcustomerid_chosen').width(250);
+
+                $('#carmodelid').width(300);
+                $('#carmodelid_chosen').width(300);
+
+                $('#carsubmodelid').width(300);
+                $('#carsubmodelid_chosen').width(300);
+
+                $('#colorid').width(300);
+                $('#colorid_chosen').width(300);
+
+                $('#buyercustomerid').width(250);
+                $('#buyercustomerid_chosen').width(250);
+
+                $('#salesmanemployeeid').width(250);
+                $('#salesmanemployeeid_chosen').width(250);
+
+                $('#salesmanageremployeeid').width(250);
+                $('#salesmanageremployeeid_chosen').width(250);
+
+                $('#approversemployeeid').width(250);
+                $('#approversemployeeid_chosen').width(250);
             }).trigger('resize.chosen');
+
+            $('.date-picker').parent().width(140);
+            $('.date-picker').width(90);
+
+            @if($oper == 'view')
+                $("#form-carpreemption :input").prop("disabled", true);
+                $(".chosen-select").attr('disabled', true).trigger("chosen:updated");
+            @endif
+
         })
 
         $('#form-carpreemption').submit(function(){ //listen for submit event
-            giveawayData = JSON.stringify(giveawayData);
-            $(this).append($('<input>').attr('type', 'hidden').attr('name', 'giveawayData').val(giveawayData));
-
+            var giveawayFreeData = $("#grid-table").jqGrid('getGridParam', 'data');
+            var giveawayBuyData = $("#grid-table2").jqGrid('getGridParam', 'data');
+            giveawayFreeData = JSON.stringify(giveawayFreeData);
+            giveawayBuyData = JSON.stringify(giveawayBuyData);
+            $(this).append($('<input>').attr('type', 'hidden').attr('name', 'giveawayFreeData').val(giveawayFreeData));
+            $(this).append($('<input>').attr('type', 'hidden').attr('name', 'giveawayBuyData').val(giveawayBuyData));
             return true;
         });
     </script>

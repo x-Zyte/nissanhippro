@@ -137,10 +137,9 @@ Route::get('carpreemption', 'CarPreemptionController@index');
 Route::get('carpreemption/read', 'CarPreemptionController@read');
 
 Route::get('carpreemption/newcarpreemption', 'CarPreemptionController@newcarpreemption');
-Route::get('carpreemption/edit', 'CarPreemptionController@edit');
-Route::get('carpreemption/view', 'CarPreemptionController@view');
-Route::post('carpreemption/add', 'CarPreemptionController@add');
-Route::post('carpreemption/update', 'CarPreemptionController@update');
+Route::get('carpreemption/edit/{id}', 'CarPreemptionController@edit');
+Route::get('carpreemption/view/{id}', 'CarPreemptionController@view');
+Route::post('carpreemption/save', 'CarPreemptionController@save');
 
 Route::get('/', 'HomeController@index');
 

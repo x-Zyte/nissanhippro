@@ -47,7 +47,7 @@
                 colNames:['ชื่อของแถม', 'ราคา', 'รายละเอียด'],
                 colModel:[
                     {name:'name',index:'name', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'price',index:'price', width:100,editable: true,editoptions:{defaultValue: '0.00'},
+                    {name:'price',index:'price', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                 ],

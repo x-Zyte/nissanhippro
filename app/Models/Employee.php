@@ -35,6 +35,9 @@ class Employee extends User {
                 if($model->teamid == '') $model->teamid = null;
             }
 
+            if($model->username == '') $model->username = null;
+            if($model->email == '') $model->email = null;
+
             if($model->workingstartdate != null && $model->workingstartdate != '')
                 $model->workingstartdate = date('Y-m-d', strtotime($model->workingstartdate));
             else
@@ -79,6 +82,9 @@ class Employee extends User {
                 if($model->departmentid == '') $model->departmentid = null;
                 if($model->teamid == '') $model->teamid = null;
             }
+
+            if($model->username == '') $model->username = null;
+            if($model->email == '') $model->email = null;
 
             if($model->workingstartdate != null && $model->workingstartdate != '')
                 $model->workingstartdate = date('Y-m-d', strtotime($model->workingstartdate));
