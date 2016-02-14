@@ -193,8 +193,18 @@ function centerGridForm(dlgDiv) {
     //var parentLeft = parentDiv.offset().left;
     ////dlgDiv[0].style.top =  Math.round(  (parentTop+160)  + (parentHeight-dlgHeight)/2  ) + "px";
     //dlgDiv[0].style.left = Math.round(  parentLeft + (parentWidth-dlgWidth  )/2 )  + "px";
+
     dlgDiv[0].style.top = (($(window).height() - dlgDiv.height())/2) + "px";
     dlgDiv[0].style.left = (($(window).width() - dlgDiv.width())/2) + "px";
+
+    window.scrollTo(0,0);
+    //$("body").css("overflow", "hidden");
+
+
+
+    //alert((($("#main-container").height()/2) - (dlgDiv.height()/2)));
+    //window.scrollTo(0,(($("#main-container").height()/2) - (dlgDiv.height()/2) - 200));
+    //window.scrollTo(( ($("#main-container").width()/2) - (dlgDiv.width()/2) ), ( ($("#main-container").height()/2) - (dlgDiv.height()/2) ));
 }
 
 function resizeGrid(){

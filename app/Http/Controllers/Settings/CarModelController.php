@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Models\CarBrand;
+use App\Models\CarModel;
 use App\Models\CarModelColor;
 use App\Models\CarSubModel;
 use App\Models\CarType;
@@ -74,15 +75,38 @@ class CarModelController extends Controller {
         GridEncoder::encodeRequestedData(new CarModelRepository(), $request);
     }
 
-    public function getsubmodelandcolorbyid($id)
+    public function getsubmodelandcolorbyid($id,$registrationtype)
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $carmodel = CarModel::find($id);
+
+        if($registrationtype == 0)
+            $registercost = $carmodel->individualregistercost;
+        else if($registrationtype == 1)
+            $registercost = $carmodel->companyregistercost;
+
+        $actcharged = $carmodel->cartype->actcharged;
 
         $carsubmodels = CarSubModel::where('carmodelid',$id)->orderBy('name', 'asc')->get(['id', 'name']);
 
         $colorids = CarModelColor::where('carmodelid',$id)->lists('colorid');
         $colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
 
-        return ['carsubmodels'=>$carsubmodels,'colors'=>$colors];
+        return ['carsubmodels'=>$carsubmodels,'colors'=>$colors,'actcharged'=>$actcharged,'registercost'=>$registercost];
+    }
+
+    public function getregistrationcost($id,$registrationtype)
+    {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $carmodel = CarModel::find($id);
+
+        if($registrationtype == 0)
+            $registercost = $carmodel->individualregistercost;
+        else if($registrationtype == 1)
+            $registercost = $carmodel->companyregistercost;
+
+        return ['registercost'=>$registercost];
     }
 }

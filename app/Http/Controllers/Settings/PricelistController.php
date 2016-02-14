@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Input;
 
 class PricelistController extends Controller {
 
-    protected $menuPermissionName = "การตั้งค่ารถ";
+    protected $menuPermissionName = "การตั้งค่าการขาย";
 
     public function __construct()
     {
@@ -75,5 +75,18 @@ class PricelistController extends Controller {
         }
 
         return ['carsubmodelselectlist'=>implode(";",$carsubmodelselectlist)];
+    }
+
+    public function getprice($carsubmodelid,$date)
+    {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $date = date('Y-m-d', strtotime($date));
+        $pricelists = Pricelist::where('carsubmodelid',$carsubmodelid)
+            ->where('effectivefrom','<=',$date)
+            ->where('effectiveTo','>=',$date)
+            ->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories']);
+
+        return ['count'=> count($pricelists),'pricelists'=>$pricelists];
     }
 }

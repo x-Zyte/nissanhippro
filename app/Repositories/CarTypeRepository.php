@@ -16,7 +16,7 @@ class CarTypeRepository extends EloquentRepositoryAbstract
     {
         $this->Database = new CarType;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id', 'name','actcharged', 'actpaid', 'detail');
+        $this->crudFields = array('oper', 'id', 'name','actcharged', 'actpaid', 'actpaidincludevat', 'detail');
         $this->uniqueKeySingles = array(array('field'=>'name','label'=>'ชื่อประเภท'));
         $this->uniqueKeyMultiples = array();
         $this->hasBranch = false;

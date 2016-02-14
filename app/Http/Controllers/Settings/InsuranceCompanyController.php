@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Input;
 
 class InsuranceCompanyController extends Controller {
 
-    protected $menuPermissionName = "การตั้งค่าส่วนกลาง";
+    protected $menuPermissionName = "การตั้งค่าทั่วไป";
 
     public function __construct()
     {

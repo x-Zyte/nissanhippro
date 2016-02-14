@@ -263,7 +263,7 @@
                 <b class="arrow"></b>
             </li>
 
-            <li class="@yield('menu-settings-class')" @if(!Auth::user()->isadmin && !in_array("การตั้งค่าส่วนกลาง", $employeeMenus) && !in_array("การตั้งค่ารถ", $employeeMenus)) style="display: none" @endif>
+            <li class="@yield('menu-settings-class')" @if(!Auth::user()->isadmin && !in_array("การตั้งค่าทั่วไป", $employeeMenus) && !in_array("การตั้งค่ารถ", $employeeMenus) && !in_array("การตั้งค่าการขาย", $employeeMenus)) style="display: none" @endif>
                 <a href="javascript:void(0)" class="dropdown-toggle">
                     <i class="menu-icon fa fa-cogs"></i>
                     <span class="menu-text"> การตั้งค่า </span>
@@ -274,10 +274,10 @@
                 <b class="arrow"></b>
 
                 <ul class="submenu">
-                    <li class="@yield('menu-settingcore-class')" @if(!Auth::user()->isadmin && !in_array("การตั้งค่าส่วนกลาง", $employeeMenus)) style="display: none" @endif>
+                    <li class="@yield('menu-settingcore-class')" @if(!Auth::user()->isadmin && !in_array("การตั้งค่าทั่วไป", $employeeMenus)) style="display: none" @endif>
                         <a href="javascript:void(0)" class="dropdown-toggle">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            <span class="menu-text"> ส่วนกลาง </span>
+                            <span class="menu-text"> ทั่วไป </span>
 
                             <b class="arrow fa fa-angle-down"></b>
                         </a>
@@ -325,6 +325,15 @@
                                 <a href="{{ url('/insurancecompany') }}">
                                     <i class="menu-icon fa fa-minus"></i>
                                     บริษัทประกัน
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+
+                            <li class="@yield('menu-settingfinacecompany-class')">
+                                <a href="{{ url('/finacecompany') }}">
+                                    <i class="menu-icon fa fa-minus"></i>
+                                    บริษัทไฟแนนซ์
                                 </a>
 
                                 <b class="arrow"></b>
@@ -379,6 +388,37 @@
                                 <b class="arrow"></b>
                             </li>
 
+                            <li class="@yield('menu-settinggiveaway-class')">
+                                <a href="{{ url('/giveaway') }}">
+                                    <i class="menu-icon fa fa-minus"></i>
+                                    อุปกรณ์/ของแถม
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+
+                            <li class="@yield('menu-settingredlabel-class')">
+                                <a href="{{ url('/redlabel') }}">
+                                    <i class="menu-icon fa fa-minus"></i>
+                                    ป้ายแดง
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="@yield('menu-settingselling-class')" @if(!Auth::user()->isadmin && !in_array("การตั้งค่าการขาย", $employeeMenus)) style="display: none" @endif>
+                        <a href="javascript:void(0)" class="dropdown-toggle">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            <span class="menu-text"> การขาย </span>
+
+                            <b class="arrow fa fa-angle-down"></b>
+                        </a>
+
+                        <b class="arrow"></b>
+
+                        <ul class="submenu @yield('menu-subsettingselling-class')" style="@yield('menu-subsettingselling-style')">
                             <li class="@yield('menu-settingpricelist-class')">
                                 <a href="{{ url('/pricelist') }}">
                                     <i class="menu-icon fa fa-minus"></i>
@@ -388,10 +428,37 @@
                                 <b class="arrow"></b>
                             </li>
 
-                            <li class="@yield('menu-settinggiveaway-class')">
-                                <a href="{{ url('/giveaway') }}">
+                            <li class="@yield('menu-settinginterestratetype-class')">
+                                <a href="{{ url('/interestratetype') }}">
                                     <i class="menu-icon fa fa-minus"></i>
-                                    ของแถม
+                                    ประเภทอัตราดอกเบี้ย
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+
+                            <li class="@yield('menu-settingcommissionfinace-class')">
+                                <a href="{{ url('/commissionfinace') }}">
+                                    <i class="menu-icon fa fa-minus"></i>
+                                    คอมมิชชั่นไฟแนนซ์
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+
+                            <li class="@yield('menu-settingcommissionextra-class')">
+                                <a href="{{ url('/commissionextra') }}">
+                                    <i class="menu-icon fa fa-minus"></i>
+                                    คอมมิชชั่น Extra
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+
+                            <li class="@yield('menu-settingcommissionpa-class')">
+                                <a href="{{ url('/commissionpa') }}">
+                                    <i class="menu-icon fa fa-minus"></i>
+                                    คอมมิชชั่น PA
                                 </a>
 
                                 <b class="arrow"></b>
@@ -432,74 +499,6 @@
         </div>--}}
 
         <div class="page-content">
-            <div class="ace-settings-container" id="ace-settings-container">
-                <div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
-                    <i class="ace-icon fa fa-cog bigger-150"></i>
-                </div>
-
-                <div class="ace-settings-box clearfix" id="ace-settings-box">
-                    <div class="pull-left width-50">
-                        <div class="ace-settings-item">
-                            <div class="pull-left">
-                                <select id="skin-colorpicker" class="hide">
-                                    <option data-skin="no-skin" value="#438EB9">#438EB9</option>
-                                    <option data-skin="skin-1" value="#222A2D">#222A2D</option>
-                                    <option data-skin="skin-2" value="#C6487E">#C6487E</option>
-                                    <option data-skin="skin-3" value="#D0D0D0">#D0D0D0</option>
-                                </select>
-                            </div>
-                            <span>&nbsp; Choose Skin</span>
-                        </div>
-
-                        <div class="ace-settings-item">
-                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-navbar" />
-                            <label class="lbl" for="ace-settings-navbar"> Fixed Navbar</label>
-                        </div>
-
-                        <div class="ace-settings-item">
-                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-sidebar" />
-                            <label class="lbl" for="ace-settings-sidebar"> Fixed Sidebar</label>
-                        </div>
-
-                        <div class="ace-settings-item">
-                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-breadcrumbs" />
-                            <label class="lbl" for="ace-settings-breadcrumbs"> Fixed Breadcrumbs</label>
-                        </div>
-
-                        {{--<div class="ace-settings-item">--}}
-                            {{--<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-rtl" />--}}
-                            {{--<label class="lbl" for="ace-settings-rtl"> Right To Left (rtl)</label>--}}
-                        {{--</div>--}}
-
-                        {{--<div class="ace-settings-item">
-                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-add-container" />
-                            <label class="lbl" for="ace-settings-add-container">
-                                Inside
-                                <b>.container</b>
-                            </label>
-                        </div>--}}
-                    </div><!-- /.pull-left -->
-
-                    <div class="pull-left width-50">
-                        <div class="ace-settings-item">
-                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-hover" />
-                            <label class="lbl" for="ace-settings-hover"> Submenu on Hover</label>
-                        </div>
-
-                        <div class="ace-settings-item">
-                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-compact" />
-                            <label class="lbl" for="ace-settings-compact"> Compact Sidebar</label>
-                        </div>
-
-                        <div class="ace-settings-item">
-                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-highlight" />
-                            <label class="lbl" for="ace-settings-highlight"> Alt. Active Item</label>
-                        </div>
-                    </div><!-- /.pull-left -->
-                </div><!-- /.ace-settings-box -->
-            </div><!-- /.ace-settings-container -->
-
-
             <div class="row">
                 <div class="col-xs-12">
                     <!-- PAGE CONTENT BEGINS -->

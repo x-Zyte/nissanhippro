@@ -13,12 +13,12 @@ class CarPreemption extends Model {
     protected $guarded = ['id'];
 
     protected $fillable = ['bookno', 'no', 'date', 'bookingcustomerid', 'carmodelid', 'carsubmodelid','colorid',
-        'price', 'discount', 'subdown', 'accessories',
+        'pricelistid', 'discount', 'subdown', 'accessories',
 
         'oldcarbrandid', 'oldcarmodelid', 'oldcargear', 'oldcarcolor', 'oldcarenginesize', 'oldcarlicenseplate', 'oldcaryear',
         'oldcarprice', 'oldcarbuyername', 'oldcarother',
 
-        'cashpledge', 'purchasetype', 'leasingcompanyname', 'interest', 'down', 'installments', 'cashpledgeredlabel',
+        'cashpledge', 'purchasetype', 'finacecompanyid', 'interest', 'down', 'installments', 'cashpledgeredlabel',
         'registrationtype', 'registrationfee', 'insurancefee', 'compulsorymotorinsurancefee', 'accessoriesfee', 'otherfee',
         'datewantgetcar','giveawayadditionalcharges',
 
@@ -47,7 +47,7 @@ class CarPreemption extends Model {
             if($model->oldcarother == '') $model->oldcarother = null;
 
             if($model->purchasetype == 0){
-                $model->leasingcompanyname = null;
+                $model->finacecompanyid = null;
                 $model->interest = null;
                 $model->down = null;
                 $model->installments = null;
@@ -88,7 +88,7 @@ class CarPreemption extends Model {
             if($model->oldcarother == '') $model->oldcarother = null;
 
             if($model->purchasetype == 0){
-                $model->leasingcompanyname = null;
+                $model->finacecompanyid = null;
                 $model->interest = null;
                 $model->down = null;
                 $model->installments = null;
@@ -175,5 +175,10 @@ class CarPreemption extends Model {
     public function carPreemptionGiveaways()
     {
         return $this->hasMany('App\Models\CarPreemptionGiveaway', 'carpreemptionid', 'id');
+    }
+
+    public function finaceCompany()
+    {
+        return $this->belongsTo('App\Models\FinaceCompany', 'finacecompanyid', 'id');
     }
 }

@@ -75,7 +75,8 @@ Route::post('cartype/update', 'Settings\CarTypeController@update');
 Route::get('carmodel', 'Settings\CarModelController@index');
 Route::get('carmodel/read', 'Settings\CarModelController@read');
 Route::post('carmodel/update', 'Settings\CarModelController@update');
-Route::get('carmodel/getsubmodelandcolorbyid/{id}', 'Settings\CarModelController@getsubmodelandcolorbyid');
+Route::get('carmodel/getsubmodelandcolorbyid/{id}/{registrationtype}', 'Settings\CarModelController@getsubmodelandcolorbyid');
+Route::get('carmodel/getregistrationcost/{id}/{registrationtype}', 'Settings\CarModelController@getregistrationcost');
 
 //Carsubmodel
 Route::get('carsubmodel/read', 'Settings\CarSubModelController@read');
@@ -103,6 +104,11 @@ Route::get('insurancecompany', 'Settings\InsuranceCompanyController@index');
 Route::get('insurancecompany/read', 'Settings\InsuranceCompanyController@read');
 Route::post('insurancecompany/update', 'Settings\InsuranceCompanyController@update');
 
+//FinaceCompany
+Route::get('finacecompany', 'Settings\FinaceCompanyController@index');
+Route::get('finacecompany/read', 'Settings\FinaceCompanyController@read');
+Route::post('finacecompany/update', 'Settings\FinaceCompanyController@update');
+
 //Customer
 Route::get('customer', 'CustomerController@index');
 Route::get('customer/read', 'CustomerController@read');
@@ -126,20 +132,70 @@ Route::get('pricelist', 'Settings\PricelistController@index');
 Route::get('pricelist/read', 'Settings\PricelistController@read');
 Route::post('pricelist/update', 'Settings\PricelistController@update');
 Route::get('pricelist/readSelectlistForDisplayInGrid', 'Settings\PricelistController@readSelectlistForDisplayInGrid');
+Route::get('pricelist/getprice/{carsubmodelid}/{date}', 'Settings\PricelistController@getprice');
 
 //Giveaway
 Route::get('giveaway', 'Settings\GiveawayController@index');
 Route::get('giveaway/read', 'Settings\GiveawayController@read');
 Route::post('giveaway/update', 'Settings\GiveawayController@update');
+Route::post('giveaway/check_saleprice', 'Settings\GiveawayController@check_saleprice');
 
 //CarPreemption
 Route::get('carpreemption', 'CarPreemptionController@index');
 Route::get('carpreemption/read', 'CarPreemptionController@read');
+Route::post('carpreemption/update', 'CarPreemptionController@update');
 
 Route::get('carpreemption/newcarpreemption', 'CarPreemptionController@newcarpreemption');
 Route::get('carpreemption/edit/{id}', 'CarPreemptionController@edit');
 Route::get('carpreemption/view/{id}', 'CarPreemptionController@view');
 Route::post('carpreemption/save', 'CarPreemptionController@save');
+
+//RedLabel
+Route::get('redlabel', 'Settings\RedLabelController@index');
+Route::get('redlabel/read', 'Settings\RedLabelController@read');
+Route::post('redlabel/update', 'Settings\RedLabelController@update');
+
+//InterestRateType
+Route::get('interestratetype', 'Settings\InterestRateTypeController@index');
+Route::get('interestratetype/read', 'Settings\InterestRateTypeController@read');
+Route::post('interestratetype/update', 'Settings\InterestRateTypeController@update');
+Route::get('interestratetype/readSelectlist/{finacecompanyid}', 'Settings\InterestRateTypeController@readSelectlist');
+
+//CommissionFinace
+Route::get('commissionfinace', 'Settings\CommissionFinaceController@index');
+Route::get('commissionfinace/read', 'Settings\CommissionFinaceController@read');
+Route::post('commissionfinace/update', 'Settings\CommissionFinaceController@update');
+Route::get('commissionfinace/readSelectlistForDisplayInGrid', 'Settings\CommissionFinaceController@readSelectlistForDisplayInGrid');
+
+//CommissionFinaceInterest
+Route::get('commissionfinaceinterest/read', 'Settings\CommissionFinaceInterestController@read');
+Route::post('commissionfinaceinterest/update', 'Settings\CommissionFinaceInterestController@update');
+Route::get('commissionfinaceinterest/readSelectlist/{commissionfinaceid}', 'Settings\CommissionFinaceInterestController@readSelectlist');
+Route::post('commissionfinaceinterest/check_dup_down', 'Settings\CommissionFinaceInterestController@check_dup_down');
+
+//CommissionFinaceCom
+Route::get('commissionfinacecom/read', 'Settings\CommissionFinaceComController@read');
+Route::post('commissionfinacecom/update', 'Settings\CommissionFinaceComController@update');
+Route::get('commissionfinacecom/readSelectlist/{commissionfinaceid}', 'Settings\CommissionFinaceComController@readSelectlist');
+Route::post('commissionfinacecom/check_dup_interestcalculation', 'Settings\CommissionFinaceComController@check_dup_interestcalculation');
+
+//CommissionFinaceCar
+Route::get('commissionfinacecar/read', 'Settings\CommissionFinaceCarController@read');
+Route::post('commissionfinacecar/update', 'Settings\CommissionFinaceCarController@update');
+Route::get('commissionfinacecar/readSelectlist/{commissionfinaceid}', 'Settings\CommissionFinaceCarController@readSelectlist');
+Route::get('commissionfinacecar/readSelectlistForDisplayInGrid', 'Settings\CommissionFinaceCarController@readSelectlistForDisplayInGrid');
+Route::post('commissionfinacecar/check_dup_carsubmodel', 'Settings\CommissionFinaceCarController@check_dup_carsubmodel');
+
+//CommissionExtra
+Route::get('commissionextra', 'Settings\CommissionExtraController@index');
+Route::get('commissionextra/read', 'Settings\CommissionExtraController@read');
+Route::post('commissionextra/update', 'Settings\CommissionExtraController@update');
+Route::get('commissionextra/readSelectlistForDisplayInGrid', 'Settings\CommissionExtraController@readSelectlistForDisplayInGrid');
+
+//CommissionPA
+Route::get('commissionpa', 'Settings\CommissionPAController@index');
+Route::get('commissionpa/read', 'Settings\CommissionPAController@read');
+Route::post('commissionpa/update', 'Settings\CommissionPAController@update');
 
 Route::get('/', 'HomeController@index');
 

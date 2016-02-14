@@ -19,13 +19,16 @@ use App\Models\CarSubModel;
 use App\Facades\GridEncoder;
 use App\Models\Customer;
 use App\Models\Employee;
+use App\Models\FinaceCompany;
 use App\Models\Giveaway;
+use App\Models\Pricelist;
 use App\Models\SystemDatas\Amphur;
 use App\Models\SystemDatas\District;
 use App\Models\SystemDatas\Occupation;
 use App\Models\SystemDatas\Province;
 use App\Repositories\CarPreemptionRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request as SupportRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 
@@ -103,6 +106,13 @@ class CarPreemptionController extends Controller {
             array_push($approversemployeeselectlist,$item->id.':'.$item->title.' '.$item->firstname.' '.$item->lastname);
         }
 
+        $pricelistids = CarPreemption::distinct()->lists('pricelistid');
+        $pricelists = Pricelist::whereIn('id', $pricelistids)->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories']);
+        $priceselectlist = array();
+        foreach($pricelists as $item){
+            array_push($priceselectlist,$item->id.':'.$item->sellingpricewithaccessories);
+        }
+
         return view('carpreemption',
             ['bookingcustomerselectlist' => implode(";",$bookingcustomerselectlist),
             'carmodelselectlist' => implode(";",$carmodelselectlist),
@@ -111,7 +121,8 @@ class CarPreemptionController extends Controller {
             'buyercustomerselectlist' => implode(";",$buyercustomerselectlist),
             'salesmanemployeeselectlist' => implode(";",$salesmanemployeeselectlist),
             'salesmanageremployeeselectlist' => implode(";",$salesmanageremployeeselectlist),
-            'approversemployeeselectlist' => implode(";",$approversemployeeselectlist)]);
+            'approversemployeeselectlist' => implode(";",$approversemployeeselectlist),
+            'priceselectlist' => implode(";",$priceselectlist)]);
     }
 
     public function read()
@@ -259,34 +270,151 @@ class CarPreemptionController extends Controller {
             $approveremployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
         }
 
-        $giveaways = Giveaway::orderBy('name', 'asc')->orderBy('price', 'asc')->get(['id','name','price']);
+        $giveaways = Giveaway::orderBy('name', 'asc')->orderBy('price', 'asc')->get(['id','name','saleprice']);
         $giveawayselectlist = array();
         array_push($giveawayselectlist,':เลือกของแถม');
         foreach($giveaways as $ct){
-            array_push($giveawayselectlist,$ct->id.':'.$ct->name.' ('.$ct->price.' บาท)');
+            array_push($giveawayselectlist,$ct->id.':'.$ct->name.' ('.$ct->saleprice.' บาท)');
+        }
+
+        $finacecompanies = FinaceCompany::orderBy('name', 'asc')->get(['id', 'name']);
+        $finacecompanyselectlist = array();
+        $finacecompanyselectlist[null] = 'เลือกบริษัท';
+        foreach($finacecompanies as $item){
+            $finacecompanyselectlist[$item->id] = $item->name;
+        }
+
+        $bookingcustomeramphurid = SupportRequest::old('bookingcustomeramphurid');
+        $bookingcustomerprovinceid = SupportRequest::old('bookingcustomerprovinceid');
+        $bookingcustomerid = SupportRequest::old('bookingcustomerid');
+        $buyercustomerid = SupportRequest::old('buyercustomerid');
+        $buyercustomeramphurid = SupportRequest::old('bookingcustomeramphurid');
+        $buyercustomerprovinceid = SupportRequest::old('bookingcustomerprovinceid');
+        $carmodelid = SupportRequest::old('carmodelid');
+        $oldcarbrandid = SupportRequest::old('oldcarbrandid');
+        $date = SupportRequest::old('date');
+        $carsubmodelid = SupportRequest::old('carsubmodelid');
+
+        $bookingcustomeramphurselectlist = array();
+        $bookingcustomeramphurselectlist[null] = 'เลือกเขต/อำเภอ';
+        if($bookingcustomerprovinceid != null && $bookingcustomerprovinceid != ''){
+            $bookingcustomeramphurs = Amphur::where('provinceid', $bookingcustomerprovinceid)->orderBy('name', 'asc')->get(['id', 'name']);
+            foreach($bookingcustomeramphurs as $item){
+                $bookingcustomeramphurselectlist[$item->id] = $item->name;
+            }
+        }
+
+        $bookingcustomerdistrictselectlist = array();
+        $bookingcustomerdistrictselectlist[null] = 'เลือกแขวง/ตำบล';
+        if($bookingcustomeramphurid != null && $bookingcustomeramphurid != ''){
+            $bookingcustomerdistricts = District::where('amphurid', $bookingcustomeramphurid)->orderBy('name', 'asc')->get(['id', 'name']);
+            foreach($bookingcustomerdistricts as $item){
+                $bookingcustomerdistrictselectlist[$item->id] = $item->name;
+            }
+        }
+
+        $buyercustomeramphurselectlist = array();
+        $buyercustomeramphurselectlist[null] = 'เลือกเขต/อำเภอ';
+        if($bookingcustomerid != $buyercustomerid && $buyercustomerprovinceid != null && $buyercustomerprovinceid != ''){
+            $buyercustomeramphurs = Amphur::where('provinceid', $buyercustomerprovinceid)->orderBy('name', 'asc')->get(['id', 'name']);
+            foreach($buyercustomeramphurs as $item){
+                $buyercustomeramphurselectlist[$item->id] = $item->name;
+            }
+        }
+
+        $buyercustomerdistrictselectlist = array();
+        $buyercustomerdistrictselectlist[null] = 'เลือกแขวง/ตำบล';
+        if($bookingcustomerid != $buyercustomerid && $buyercustomeramphurid != null && $buyercustomeramphurid != ''){
+            $buyercustomerdistricts = District::where('amphurid', $buyercustomeramphurid)->orderBy('name', 'asc')->get(['id', 'name']);
+            foreach($buyercustomerdistricts as $item){
+                $buyercustomerdistrictselectlist[$item->id] = $item->name;
+            }
+        }
+
+        $carsubmodelselectlist = array();
+        $carsubmodelselectlist[null] = 'เลือกรุ่น';
+        $colorselectlist = array();
+        $colorselectlist[null] = 'เลือกสี';
+        if($carmodelid != null && $carmodelid != ''){
+            $carsubmodels = CarSubModel::where('carmodelid', $carmodelid)->orderBy('name', 'asc')->get(['id','name']);
+            foreach($carsubmodels as $item){
+                $carsubmodelselectlist[$item->id] = $item->name;
+            }
+
+            $colorids = CarModelColor::where('carmodelid', $carmodelid)->lists('colorid');
+            $colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
+            foreach($colors as $item){
+                $colorselectlist[$item->id] = $item->code.' - '.$item->name;
+            }
+        }
+
+        $oldcarmodelselectlist = array();
+        $oldcarmodelselectlist[null] = 'เลือกแบบ';
+        if($oldcarbrandid != null && $oldcarbrandid != '') {
+            $oldcarmodels = CarModel::where('carbrandid', $oldcarbrandid)->orderBy('name', 'asc')->get(['id', 'name']);
+            foreach ($oldcarmodels as $item) {
+                $oldcarmodelselectlist[$item->id] = $item->name;
+            }
+        }
+
+        $priceselectlist = array();
+        $priceselectlist[null] = 'เลือกราคา';
+        if($carsubmodelid != null && $carsubmodelid != '' && $date != null && $date != '') {
+            $date = date('Y-m-d', strtotime($date));
+            $pricelists = Pricelist::where('carsubmodelid',$carsubmodelid)
+                ->where('effectivefrom','<=',$date)
+                ->where('effectiveTo','>=',$date)
+                ->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories']);
+            foreach ($pricelists as $item) {
+                $priceselectlist[$item->id] = $item->sellingpricewithaccessories;
+            }
+        }
+
+        $giveawayFreeData = SupportRequest::old('giveawayFreeData');
+        $giveawayBuyData = SupportRequest::old('giveawayBuyData');
+
+        $giveawayFreeData = json_decode($giveawayFreeData,true);
+        $giveawayBuyData = json_decode($giveawayBuyData,true);
+
+        $giveawayFreeDatas = array();
+        if($giveawayFreeData != null && $giveawayFreeData != '') {
+            foreach ($giveawayFreeData as $data) {
+                $obj = (object)array("giveawayid" => $data["giveawayid"], "price" => $data["price"]);
+                array_push($giveawayFreeDatas, $obj);
+            }
+        }
+
+        $giveawayBuyDatas = array();
+        if($giveawayBuyData != null && $giveawayBuyData != '') {
+            foreach ($giveawayBuyData as $data) {
+                $obj = (object)array("giveawayid" => $data["giveawayid"]);
+                array_push($giveawayBuyDatas, $obj);
+            }
         }
 
         return view('carpreemptionform',
             ['oper' => 'new','pathPrefix' => '../',
-                'giveawayFreeDatas' => array(),
-                'giveawayBuyDatas' => array(),
+                'giveawayFreeDatas' => $giveawayFreeDatas,
+                'giveawayBuyDatas' => $giveawayBuyDatas,
                 'provincebranchselectlist' => $provincebranchselectlist,
                 'customerselectlist' => $customerselectlist,
                 'provinceselectlist' => $provinceselectlist,
-                'bookingcustomeramphurselectlist' => array(null=>"เลือกเขต/อำเภอ"),
-                'buyercustomeramphurselectlist' => array(null=>"เลือกเขต/อำเภอ"),
-                'bookingcustomerdistrictselectlist' => array(null=>"เลือกแขวง/ตำบล"),
-                'buyercustomerdistrictselectlist' => array(null=>"เลือกแขวง/ตำบล"),
+                'bookingcustomeramphurselectlist' => $bookingcustomeramphurselectlist,
+                'buyercustomeramphurselectlist' => $buyercustomeramphurselectlist,
+                'bookingcustomerdistrictselectlist' => $bookingcustomerdistrictselectlist,
+                'buyercustomerdistrictselectlist' => $buyercustomerdistrictselectlist,
                 'occupationselectlist' => $occupationselectlist,
                 'carmodelselectlist' => $carmodelselectlist,
-                'carsubmodelselectlist' => array(null=>"เลือกรุ่น"),
-                'colorselectlist' => array(null=>"เลือกสี"),
+                'carsubmodelselectlist' => $carsubmodelselectlist,
+                'colorselectlist' => $colorselectlist,
                 'oldcarbrandselectlist' => $oldcarbrandselectlist,
-                'oldcarmodelselectlist' => array(null=>"เลือกแบบ"),
+                'oldcarmodelselectlist' => $oldcarmodelselectlist,
                 'giveawayselectlist' => implode(";",$giveawayselectlist),
                 'saleemployeeselectlist' => $saleemployeeselectlist,
                 'salemanageremployeeselectlist' => $salemanageremployeeselectlist,
-                'approveremployeeselectlist' => $approveremployeeselectlist]);
+                'approveremployeeselectlist' => $approveremployeeselectlist,
+                'finacecompanyselectlist' => $finacecompanyselectlist,
+                'priceselectlist' => $priceselectlist]);
     }
 
     public function edit($id)
@@ -516,10 +644,10 @@ class CarPreemptionController extends Controller {
 
         $giveawayFrees = CarPreemptionGiveaway::where('free', true)
             ->where('carpreemptionid',$id)
-            ->get(['id','giveawayid']);
+            ->get(['id','giveawayid','price']);
         $giveawayFreeDatas = array();
         foreach($giveawayFrees as $data){
-            $obj = (object)array("giveawayid" => $data->giveawayid);
+            $obj = (object)array("giveawayid" => $data->giveawayid,"price" => $data->price);
             array_push($giveawayFreeDatas,$obj);
         }
 
@@ -531,6 +659,23 @@ class CarPreemptionController extends Controller {
             $obj = (object)array("giveawayid" => $data->giveawayid);
             array_push($giveawayBuyDatas,$obj);
         }
+
+        $finacecompanies = FinaceCompany::orderBy('name', 'asc')->get(['id', 'name']);
+        $finacecompanyselectlist = array();
+        $finacecompanyselectlist[null] = 'เลือกบริษัท';
+        foreach($finacecompanies as $item){
+            $finacecompanyselectlist[$item->id] = $item->name;
+        }
+
+        $priceselectlist = array();
+        $pricelists = Pricelist::where('carsubmodelid',$model->carsubmodelid)
+            ->where('effectivefrom','<=',$model->date)
+            ->where('effectiveTo','>=',$model->date)
+            ->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories']);
+        foreach ($pricelists as $item) {
+            $priceselectlist[$item->id] = $item->sellingpricewithaccessories;
+        }
+
 
         return view('carpreemptionform',
             ['oper' => 'edit','pathPrefix' => '../../','carpreemption' => $model,
@@ -552,7 +697,9 @@ class CarPreemptionController extends Controller {
                 'giveawayselectlist' => implode(";",$giveawayselectlist),
                 'saleemployeeselectlist' => $saleemployeeselectlist,
                 'salemanageremployeeselectlist' => $salemanageremployeeselectlist,
-                'approveremployeeselectlist' => $approveremployeeselectlist]);
+                'approveremployeeselectlist' => $approveremployeeselectlist,
+                'finacecompanyselectlist' => $finacecompanyselectlist,
+                'priceselectlist' => $priceselectlist]);
     }
 
     public function view($id)
@@ -752,10 +899,10 @@ class CarPreemptionController extends Controller {
 
         $giveawayFrees = CarPreemptionGiveaway::where('free', true)
             ->where('carpreemptionid',$id)
-            ->get(['id','giveawayid']);
+            ->get(['id','giveawayid','price']);
         $giveawayFreeDatas = array();
         foreach($giveawayFrees as $data){
-            $obj = (object)array("giveawayid" => $data->giveawayid);
+            $obj = (object)array("giveawayid" => $data->giveawayid,"price" => $data->price);
             array_push($giveawayFreeDatas,$obj);
         }
 
@@ -767,6 +914,14 @@ class CarPreemptionController extends Controller {
             $obj = (object)array("giveawayid" => $data->giveawayid);
             array_push($giveawayBuyDatas,$obj);
         }
+
+        $finacecompanyselectlist = array();
+        $item = FinaceCompany::find($model->finacecompanyid);
+        $finacecompanyselectlist[$item->id] = $item->name;
+
+        $priceselectlist = array();
+        $item = Pricelist::find($model->pricelistid);
+        $priceselectlist[$item->id] = $item->sellingpricewithaccessories;
 
         return view('carpreemptionform',
             ['oper' => 'view','pathPrefix' => '../../','carpreemption' => $model,
@@ -788,7 +943,9 @@ class CarPreemptionController extends Controller {
                 'giveawayselectlist' => implode(";",$giveawayselectlist),
                 'saleemployeeselectlist' => $saleemployeeselectlist,
                 'salemanageremployeeselectlist' => $salemanageremployeeselectlist,
-                'approveremployeeselectlist' => $approveremployeeselectlist]);
+                'approveremployeeselectlist' => $approveremployeeselectlist,
+                'finacecompanyselectlist' => $finacecompanyselectlist,
+                'priceselectlist' => $priceselectlist]);
     }
 
     public function save(Request $request)
@@ -814,7 +971,7 @@ class CarPreemptionController extends Controller {
 
                 'cashpledge' => 'required',
                 'purchasetype' => 'required',
-                'leasingcompanyname' => 'required_if:purchasetype,1',
+                'finacecompanyid' => 'required_if:purchasetype,1',
                 'interest' => 'required_if:purchasetype,1',
                 'down' => 'required_if:purchasetype,1',
                 'installments' => 'required_if:purchasetype,1',
@@ -851,14 +1008,14 @@ class CarPreemptionController extends Controller {
                 'carmodelid.required' => 'รายละเอียดรถยนตร์ใหม่ กรุณาเลือกแบบ',
                 'carsubmodelid.required' => 'รายละเอียดรถยนตร์ใหม่ กรุณาเลือกรุ่น',
                 'colorid.required' => 'รายละเอียดรถยนตร์ใหม่ กรุณาเลือกสี',
-                'price.required' => 'รายละเอียดรถยนตร์ใหม่ ราคา ต้องมีข้อมูล (กรุณาเพิ่มข้อมูล ราคา ของรถรุ่นนี้ แล้วทำการเลือกรุ่น ใหม่อีกครั้ง)',
+                'pricelistid.required' => 'รายละเอียดรถยนตร์ใหม่ กรุณาเลือกราคา',
                 'discount.required' => 'รายละเอียดรถยนตร์ใหม่ ส่วนลด จำเป็นต้องกรอก',
                 'subdown.required' => 'รายละเอียดรถยนตร์ใหม่ Sub Down จำเป็นต้องกรอก',
                 'accessories.required' => 'รายละเอียดรถยนตร์ใหม่ บวกอุปกรณ์ จำเป็นต้องกรอก',
 
                 'cashpledge.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน เงินมัดจำ จำเป็นต้องกรอก',
                 'purchasetype.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ประเภทซื้อรถยนต์ จำเป็นต้องเลือก',
-                'leasingcompanyname.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ชื่อบริษัทเช่าซื้อ จำเป็นต้องกรอก',
+                'finacecompanyid.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ชื่อบริษัทเช่าซื้อ จำเป็นต้องกรอก',
                 'interest.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ดอกเบี้ย จำเป็นต้องกรอก',
                 'down.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ดาวน์ จำเป็นต้องกรอก',
                 'installments.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน จำนวนงวด จำเป็นต้องกรอก',
@@ -870,7 +1027,7 @@ class CarPreemptionController extends Controller {
                 'accessoriesfee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าอุปกรณ์ จำเป็นต้องกรอก',
                 'otherfee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าอื่นๆ จำเป็นต้องกรอก',
                 'datewantgetcar.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน วันที่ต้องการรับรถ จำเป็นต้องกรอก',
-                'giveawayadditionalcharges' => 'รายละเอียดอื่นๆ ลูกค้าจ่ายเพิ่มเติ่มค่าของแถม จำเป็นต้องกรอก',
+                'giveawayadditionalcharges.required' => 'รายละเอียดอื่นๆ ลูกค้าจ่ายเพิ่มเติ่มค่าของแถม จำเป็นต้องกรอก',
 
                 'buyercustomerid.required_if' => 'ผู้ซื้อ กรุณาเลือกชื่อลูกค้า',
                 'buyercustomerfirstname.required_if' => 'ผู้ซื้อ ชื่อ จำเป็นต้องกรอก',
@@ -930,7 +1087,7 @@ class CarPreemptionController extends Controller {
         $model->carmodelid = $input['carmodelid'];
         $model->carsubmodelid = $input['carsubmodelid'];
         $model->colorid = $input['colorid'];
-        $model->price = 999000;//$input['price'];
+        $model->pricelistid = $input['pricelistid'];
         $model->discount = $input['discount'];
         $model->subdown = $input['subdown'];
         $model->accessories = $input['accessories'];
@@ -948,7 +1105,7 @@ class CarPreemptionController extends Controller {
 
         $model->cashpledge = $input['cashpledge'];
         $model->purchasetype = $input['purchasetype'];
-        $model->leasingcompanyname = $input['leasingcompanyname'];
+        $model->finacecompanyid = $input['finacecompanyid'];
         $model->interest = $input['interest'];
         $model->down = $input['down'];
         $model->installments = $input['installments'];
@@ -1033,6 +1190,7 @@ class CarPreemptionController extends Controller {
                 $obj->carpreemptionid = $model->id;
                 $obj->giveawayid = $data["giveawayid"];
                 $obj->free = true;
+                $obj->price = $data["price"];
                 $obj->save();
             }
 

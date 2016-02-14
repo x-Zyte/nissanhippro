@@ -62,8 +62,8 @@
                     {name:'colorid',index:'colorid', width:100, formatter:'select',editoptions:{value: "{{$colorselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}"}
                     },
-                    {name:'price',index:'price', width:100,align:'right',formatter:'number'
-                        ,formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}
+                    {name:'pricelistid',index:'pricelistid', width:100, formatter:'select',editoptions:{value: "{{$priceselectlist}}"}
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$priceselectlist}}"}
                     },
                     {name:'discount',index:'discount', width:100,align:'right',formatter:'number'
                         ,formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}
@@ -130,6 +130,87 @@
                         viewicon : 'ace-icon fa fa-search-plus grey'
                     },
                     {
+                        //edit record form
+                        closeAfterEdit: true,
+                        width: 600,
+                        recreateForm: true,
+                        viewPagerButtons : false,
+                        beforeShowForm : function(e) {
+                            var form = $(e[0]);
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            style_edit_form(form);
+
+                            var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
+                            centerGridForm(dlgDiv);
+                        },
+                        editData: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        afterSubmit : function(response, postdata)
+                        {
+                            if(response.responseText == "ok"){
+                                showConfirmClose = false;
+                                alert("ดำเนินการสำเร็จ");
+                                return [true,""];
+                            }else{
+                                return [false,response.responseText];
+                            }
+                        },
+                        savekey: [true, 13],
+                        modal:true,
+                        onClose : function()
+                        {
+                            if(!showConfirmClose){
+                                showConfirmClose = true;
+                                return true;
+                            }
+
+                            if (confirm("คุณต้องการที่จะยกเลิกการ เพิ่ม/แก้ไข ข้อมูล ใช่หรือไม่!!")) return true;
+                            else return false;
+                        }
+                    },
+                    {
+                        //new record form
+                        width: 600,
+                        closeAfterAdd: true,
+                        recreateForm: true,
+                        viewPagerButtons: false,
+                        beforeShowForm : function(e) {
+                            jQuery(grid_selector).jqGrid('resetSelection');
+                            var form = $(e[0]);
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            style_edit_form(form);
+
+                            var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
+                            centerGridForm(dlgDiv);
+                        },
+                        editData: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        afterSubmit : function(response, postdata)
+                        {
+                            if(response.responseText == "ok"){
+                                showConfirmClose = false;
+                                alert("ดำเนินการสำเร็จ");
+                                return [true,""];
+                            }else{
+                                return [false,response.responseText];
+                            }
+                        },
+                        savekey: [true, 13],
+                        modal:true,
+                        onClose : function()
+                        {
+                            if(!showConfirmClose){
+                                showConfirmClose = true;
+                                return true;
+                            }
+
+                            if (confirm("คุณต้องการที่จะยกเลิกการ เพิ่ม/แก้ไข ข้อมูล ใช่หรือไม่!!")) return true;
+                            else return false;
+                        }
+                    },
+                    {
                         //delete record form
                         width: 400,
                         recreateForm: true,
@@ -189,6 +270,20 @@
                          multipleGroup:true,
                          showQuery: true
                          */
+                    },
+                    {
+                        //view record form
+                        recreateForm: true,
+                        beforeShowForm: function(e){
+                            var form = $(e[0]);
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+
+                            var dlgDiv = $("#viewmod" + jQuery(grid_selector)[0].id);
+                            centerGridForm(dlgDiv);
+                        },
+                        editData: {
+                            _token: "{{ csrf_token() }}"
+                        }
                     }
             ).jqGrid('navButtonAdd',pager_selector,
                     {caption: '',
@@ -226,6 +321,7 @@
                         title:"เพิ่มข้อมูล"
                     }
             )
+
         })
     </script>
 @endsection

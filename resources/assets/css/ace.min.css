@@ -10904,6 +10904,10 @@ th[aria-selected=true] .ui-jqgrid-sortable {
     display: none;
     position: fixed;
 }
+#FrmGrid_grid-table-in-form .EditTable tr:first-child, #FrmGrid_grid-table-in-form2 .EditTable tr:first-child {
+    display: none;
+    position: absolute;
+}
 .FormGrid .EditTable .tinfo{
     display: table-row !important;
     height: 32px;

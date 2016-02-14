@@ -186,7 +186,10 @@
             if(carmodelid == null || carmodelid == '') return;
             $('#carsubmodelid').children('option:not(:first)').remove();
             $('#colorid').children('option:not(:first)').remove();
-            $.get('{{$pathPrefix}}carmodel/getsubmodelandcolorbyid/'+carmodelid, function(data){
+
+            var registrationtype = $("input[name=registrationtype]:checked").val();
+
+            $.get('{{$pathPrefix}}carmodel/getsubmodelandcolorbyid/'+carmodelid+'/'+registrationtype, function(data){
                 $.each(data.carsubmodels, function(i, option) {
                     $('#carsubmodelid').append($('<option/>').attr("value", option.id).text(option.name));
                 });
@@ -196,6 +199,37 @@
                     $('#colorid').append($('<option/>').attr("value", option.id).text(option.code + ' - ' + option.name));
                 });
                 $('#colorid').val(null).trigger('chosen:updated');
+
+                $('#registrationfee').val(data.registercost);
+                $('#compulsorymotorinsurancefee').val(data.actcharged);
+            });
+        }
+
+        function GetPrice() {
+            var carsubmodelid = $("#carsubmodelid").chosen().val()
+            var date = $('#date').val();
+            if(carsubmodelid == null || carsubmodelid == '' || date == null || date == '') return;
+
+            $.get('{{$pathPrefix}}pricelist/getprice/'+carsubmodelid+'/'+date, function(data){
+                $('#pricelistid').children('option').remove();
+                if(data.count == 0){
+                    $('#pricelistid').append($('<option/>').attr("value", null).text('เลือกราคา'));
+                    alert("ไม่พบข้อูลราคา กรุณาเพิ่มข้อมูล ราคา ของรถรุ่นนี้ แล้วทำการเลือกรุ่น ใหม่อีกครั้ง");
+                }
+
+                $.each(data.pricelists, function(i, option) {
+                    $('#pricelistid').append($('<option/>').attr("value", option.id).text(option.sellingpricewithaccessories));
+                });
+                $('#pricelistid').trigger('chosen:updated');
+            });
+        }
+
+        function RegistrationTypeChange(){
+            var carmodelid = $("#carmodelid").chosen().val()
+            if(carmodelid == null || carmodelid == '') return;
+            var registrationtype = $("input[name=registrationtype]:checked").val();
+            $.get('{{$pathPrefix}}carmodel/getregistrationcost/'+carmodelid+'/'+registrationtype, function(data){
+                $('#registrationfee').val(data.registercost);
             });
         }
 
@@ -327,7 +361,7 @@
             {!! Form::label('date', 'วันที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
             <div class="col-sm-2">
                 <div class="input-group">
-                    {!! Form::text('date', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}
+                    {!! Form::text('date', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date')) !!}
                         <span class="input-group-addon">
 						    <i class="fa fa-calendar bigger-110"></i>
 						</span>
@@ -467,7 +501,7 @@
                                 <div class="form-group">
                                     {!! Form::label('carsubmodelid', 'รุ่น', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('carsubmodelid', $carsubmodelselectlist, null, array('id'=>'carsubmodelid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('carsubmodelid', $carsubmodelselectlist, null, array('id'=>'carsubmodelid', 'class' => 'chosen-select', 'onchange'=>'GetPrice()')); !!}
                                     </div>
                                     {!! Form::label('colorid', 'สี', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
@@ -475,9 +509,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    {!! Form::label('price', 'ราคา', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('pricelistid', 'ราคา', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::number('price', null, array('step' => '0.01', 'min' => '0', 'placeholder' => 'บาท', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                        {!! Form::select('pricelistid', $priceselectlist, null, array('id'=>'pricelistid', 'class' => 'chosen-select')); !!}
                                     </div>
                                     {!! Form::label('discount', 'ส่วนลด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
@@ -610,7 +644,7 @@
                                             <label>
                                                 {!! Form::radio('purchasetype', 1, false, array('class' => 'ace')) !!}
                                                 <span class="lbl">  เช่าซื้อกับบริษัท</span>&nbsp;&nbsp;
-                                                {!! Form::text('leasingcompanyname', null, array('placeholder' => 'ชื่อบริษัท')) !!}
+                                                {!! Form::select('finacecompanyid', $finacecompanyselectlist, null, array('id'=>'finacecompanyid', 'class' => 'chosen-select')); !!}
                                             </label>
                                         </div>
                                     </div>
@@ -645,14 +679,14 @@
                                         {!! Form::label('registrationtype', '4. ค่าจดทะเบียน', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-10">
                                             <label>
-                                                {!! Form::radio('registrationtype', 0, false, array('class' => 'ace')) !!}
+                                                {!! Form::radio('registrationtype', 0, true, array('class' => 'ace', 'onchange'=>'RegistrationTypeChange();')) !!}
                                                 <span class="lbl">  บุคคล</span>
                                             </label>
                                             &nbsp;
                                             <label>
-                                                {!! Form::radio('registrationtype', 1, false, array('class' => 'ace')) !!}
+                                                {!! Form::radio('registrationtype', 1, false, array('class' => 'ace', 'onchange'=>'RegistrationTypeChange();')) !!}
                                                 <span class="lbl">  นิติบุคคล</span>&nbsp;&nbsp;
-                                                {!! Form::number('registrationfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท')) !!}
+                                                {!! Form::number('registrationfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id' => 'registrationfee', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                             </label>
                                         </div>
                                     </div>
@@ -669,7 +703,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('compulsorymotorinsurancefee', '6. ค่า พ.ร.บ.', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('compulsorymotorinsurancefee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                            {!! Form::number('compulsorymotorinsurancefee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -725,12 +759,12 @@
                         <div class="widget-body-inner" style="display: block;">
                             <div class="widget-main">
                                 <div>
-                                    <table id="grid-table"></table>
+                                    <table id="grid-table-in-form"></table>
                                     <div id="grid-pager"></div>
                                 </div><br>
 
                                 <div class="form-group">
-                                    {!! Form::label('giveawayadditionalcharges', 'ลูกค้าจ่ายเพิ่มเติ่มค่าของแถม', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                    {!! Form::label('giveawayadditionalcharges', 'ลูกค้าจ่ายเพิ่มเติ่มค่าของแถม', array('class' => 'col-sm-3 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         {!! Form::number('giveawayadditionalcharges', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
                                     </div>
@@ -738,7 +772,7 @@
 
                                 <br>
                                 <div>
-                                    <table id="grid-table2"></table>
+                                    <table id="grid-table-in-form2"></table>
                                     <div id="grid-pager2"></div>
                                 </div><br>
                                 <div class="form-group">
@@ -1039,7 +1073,7 @@
 
         var giveawayFreeData = [
             @foreach ($giveawayFreeDatas as $data)
-                {"giveawayid":"{{$data->giveawayid}}"},
+                {"giveawayid":"{{$data->giveawayid}}","price":"{{$data->price}}"},
             @endforeach
         ];
 
@@ -1136,15 +1170,15 @@
         }
 
         $(document).ready(function() {
-            var grid_selector = "#grid-table";
+            var grid_selector = "#grid-table-in-form";
             var pager_selector = "#grid-pager";
-            var grid_selector2 = "#grid-table2";
+            var grid_selector2 = "#grid-table-in-form2";
             var pager_selector2 = "#grid-pager2";
 
             //resize to fit page size
             $(window).on('resize.jqGrid', function () {
-                resizeGridInForm('grid-table');
-                resizeGridInForm('grid-table2');
+                resizeGridInForm('grid-table-in-form');
+                resizeGridInForm('grid-table-in-form2');
             })
             //resize on sidebar collapse/expand
             var parent_column = $(grid_selector).closest('[class*="col-"]');
@@ -1164,11 +1198,14 @@
             $(grid_selector).jqGrid({
                 datatype: "local",
                 data: giveawayFreeData,
-                colNames: ["อุปกรณ์ของแถม"],
+                colNames: ["อุปกรณ์ของแถม","ราคาที่แถม"],
                 colModel:[
-                    {name:'giveawayid',index:'giveawayid', width:200, editable: true,edittype:"select",formatter:'select',
+                    {name:'giveawayid',index:'giveawayid', width:100, editable: true,edittype:"select",formatter:'select',
                         editoptions:{value: "{{ $giveawayselectlist }}"},editrules:{required:true}
-                        ,align:'left',stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "{{ $giveawayselectlist }}" }}
+                        ,align:'left',stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "{{ $giveawayselectlist }}" }},
+                    {name:'price',index:'price', width:200,editable: true,
+                        editrules:{required:true, number:true,custom: true, custom_func: check_giveawaysaleprice},align:'right',formatter:'number',
+                        formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}}
                 ],
                 cmTemplate: {editable: true, sortable: false, searchoptions: {clearSearch: false }},
                 rowNum: 10,
@@ -1254,6 +1291,22 @@
             });
 
             $(window).triggerHandler('resize.jqGrid');
+
+            function check_giveawaysaleprice(value, colname) {
+                var giveawayid = $('#giveawayid').val();
+                $.ajax({
+                    url: '../giveaway/check_saleprice',
+                    data: { id:giveawayid,saleprice:value, _token: "{{ csrf_token() }}" },
+                    type: 'POST',
+                    async: false,
+                    datatype: 'text',
+                    success: function (data) {
+                        if (!data) result = [true, ""];
+                        else result = [false,"มูลค่าที่แถมห้ามต่ำกว่า "+data];
+                    }
+                })
+                return result;
+            }
 
             var alertt = $(".page-content").height()*0.71;
             var alertl = ($(window).width()-80)/2;
@@ -1540,6 +1593,8 @@
                         $(this).prev().focus();
                     });
 
+            $('#date').datepicker().on('changeDate', function(){ GetPrice() });
+
             $('.chosen-select').chosen({allow_single_deselect:true});
             //resize the chosen on window resize
             $(window).on('resize.chosen', function() {
@@ -1581,9 +1636,11 @@
 
         })
 
+
+
         $('#form-carpreemption').submit(function(){ //listen for submit event
-            var giveawayFreeData = $("#grid-table").jqGrid('getGridParam', 'data');
-            var giveawayBuyData = $("#grid-table2").jqGrid('getGridParam', 'data');
+            var giveawayFreeData = $("#grid-table-in-form").jqGrid('getGridParam', 'data');
+            var giveawayBuyData = $("#grid-table-in-form2").jqGrid('getGridParam', 'data');
             giveawayFreeData = JSON.stringify(giveawayFreeData);
             giveawayBuyData = JSON.stringify(giveawayBuyData);
             $(this).append($('<input>').attr('type', 'hidden').attr('name', 'giveawayFreeData').val(giveawayFreeData));

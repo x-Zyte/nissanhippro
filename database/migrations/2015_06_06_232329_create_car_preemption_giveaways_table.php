@@ -20,6 +20,7 @@ class CreateCarPreemptionGiveawaysTable extends Migration {
             $table->integer('giveawayid')->unsigned();
             $table->foreign('giveawayid')->references('id')->on('giveaways');
             $table->boolean('free');
+            $table->decimal('price', 10, 2)->nullable();
             $table->boolean('active')->default(true);
 
             $table->integer('createdby')->unsigned();

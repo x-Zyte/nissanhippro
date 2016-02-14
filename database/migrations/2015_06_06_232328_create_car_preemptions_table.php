@@ -27,7 +27,8 @@ class CreateCarPreemptionsTable extends Migration {
             $table->foreign('carsubmodelid')->references('id')->on('car_submodels');
             $table->integer('colorid')->unsigned();
             $table->foreign('colorid')->references('id')->on('colors');
-            $table->decimal('price', 10, 2);
+            $table->integer('pricelistid')->unsigned();
+            $table->foreign('pricelistid')->references('id')->on('pricelists');
             $table->decimal('discount', 10, 2);
             $table->decimal('subdown', 10, 2);
             $table->decimal('accessories', 10, 2);
@@ -47,7 +48,8 @@ class CreateCarPreemptionsTable extends Migration {
 
             $table->decimal('cashpledge', 10, 2);
             $table->integer('purchasetype')->comment('0:เงินสด, 1:เช่าซื้อกับบริษัท');
-            $table->string('leasingcompanyname',100)->nullable();
+            $table->integer('finacecompanyid')->unsigned()->nullable();
+            $table->foreign('finacecompanyid')->references('id')->on('finace_companies');
             $table->decimal('interest', 10, 2)->nullable();
             $table->decimal('down', 10, 2)->nullable();
             $table->integer('installments')->nullable();

@@ -44,12 +44,14 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('/cartype/read') }}',
                 datatype: "json",
-                colNames:['ชื่อประเภท','ค่า พ.ร.บ. (เก็บลูกค้า)','ค่า พ.ร.บ. (จ่าย)', 'รายละเอียด'],
+                colNames:['ชื่อประเภท','ค่า พ.ร.บ. (เก็บลูกค้า)','ค่า พ.ร.บ. (จ่าย)','ค่า พ.ร.บ. (จ่าย) + vat', 'รายละเอียด'],
                 colModel:[
                     {name:'name',index:'name', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'actcharged',index:'actcharged', width:100,editable: true,editrules:{required:true, number:true},align:'right'
                         ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'actpaid',index:'actpaid', width:100,editable: true,editrules:{required:true, number:true},align:'right'
+                        ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
+                    {name:'actpaidincludevat',index:'actpaidincludevat', width:100,editable: true,editrules:{required:true, number:true},align:'right'
                         ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                 ],

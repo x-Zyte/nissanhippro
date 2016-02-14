@@ -1,9 +1,9 @@
 @extends('app')
 @section('title','รายการราคา')
 @section('menu-settings-class','active hsub open')
-@section('menu-settingcar-class','active hsub open')
-@section('menu-subsettingcar-class','nav-show')
-@section('menu-subsettingcar-style','display: block;')
+@section('menu-settingselling-class','active hsub open')
+@section('menu-subsettingselling-class','nav-show')
+@section('menu-subsettingselling-style','display: block;')
 @section('menu-settingpricelist-class','active')
 
 @section('content')
@@ -48,7 +48,7 @@
                     'ส่งเสริมการขาย/Internal', 'คูปองน้ำมัน/Campaign', 'Total Campaign', 'Total Margin Campaign',
                     'ส่งเสริมการขาย/Internal','คูปอง../Extra Campaign','Total Margin + Campaign','โปรโมชั่น'],
                 colModel:[
-                    {name:'carmodelid',index:'carmodelid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
+                    {name:'carmodelid',index:'carmodelid', width:250, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$carmodelselectlist}}",
                             dataEvents :[{type: 'change', fn: function(e){
                                 var thisval = $(e.target).val();
@@ -81,7 +81,7 @@
                         editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'sellingpricewithaccessories',index:'sellingpricewithaccessories', width:100,editable: true,
-                        editrules:{required:true, number:true},align:'right',formatter:'number',
+                        editrules:{number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'margin',index:'margin', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
@@ -93,10 +93,10 @@
                         editrules:{required:true, number:true},align:'right',formatter:'number',formoptions:{label:'คูปองน้ำมัน/Campaign (Execusive)'},
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'execusivetotalcampaing',index:'execusivetotalcampaing', width:100,editable: true,
-                        editrules:{required:true, number:true},align:'right',formatter:'number',
+                        editrules:{number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'execusivetotalmargincampaing',index:'execusivetotalmargincampaing', width:100,editable: true,
-                        editrules:{required:true, number:true},align:'right',formatter:'number',
+                        editrules:{number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'internal',index:'internal', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',formoptions:{label:'ส่งเสริมการขาย/Internal'},
@@ -105,7 +105,7 @@
                         editrules:{required:true, number:true},align:'right',formatter:'number',formoptions:{label:'คูปอง../Extra Campaign'},
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'totalmargincampaing',index:'totalmargincampaing', width:100,editable: true,
-                        editrules:{required:true, number:true},align:'right',formatter:'number',
+                        editrules:{number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'promotion',index:'promotion', width:150,editable: true,editoptions:{size:"30",maxlength:"50"},align:'left'}
                 ],

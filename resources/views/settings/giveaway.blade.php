@@ -1,5 +1,5 @@
 @extends('app')
-@section('title','ของแถม')
+@section('title','อุปกรณ์/ของแถม')
 @section('menu-settings-class','active hsub open')
 @section('menu-settingcar-class','active hsub open')
 @section('menu-subsettingcar-class','nav-show')
@@ -8,7 +8,7 @@
 
 @section('content')
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-cubes"></i> ของแถม</h3>
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-cubes"></i> อุปกรณ์/ของแถม</h3>
 
     <table id="grid-table"></table>
 
@@ -44,10 +44,12 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('giveaway/read') }}',
                 datatype: "json",
-                colNames:['ชื่อของแถม', 'ราคา', 'รายละเอียด'],
+                colNames:['ชื่อของแถม', 'ราคาทุน', 'ราคา sale', 'รายละเอียด'],
                 colModel:[
                     {name:'name',index:'name', width:100,editable: true,editoptions:{size:"30",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'price',index:'price', width:100,editable: true,
+                        editrules:{required:true, number:true},align:'right',formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
+                    {name:'saleprice',index:'saleprice', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'detail',index:'detail', width:300,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"40"},editrules:{},align:'left'}
                 ],
