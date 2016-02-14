@@ -245,13 +245,44 @@
                 <b class="arrow"></b>
             </li>
 
-            <li class="@yield('menu-carpreemption-class')" @if(!Auth::user()->isadmin && !in_array("ใบจอง", $employeeMenus)) style="display: none" @endif>
-                <a href="{{ url('/carpreemption') }}">
-                    <i class="menu-icon fa fa-file-text-o"></i>
-                    <span class="menu-text"> ใบจอง </span>
+            <li class="@yield('menu-selling-class')" @if(!Auth::user()->isadmin && !in_array("การขาย", $employeeMenus)) style="display: none" @endif>
+                <a href="javascript:void(0)" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-btc"></i>
+                    <span class="menu-text"> การขาย </span>
+
+                    <b class="arrow fa fa-angle-down"></b>
                 </a>
 
                 <b class="arrow"></b>
+
+                <ul class="submenu">
+                    <li class="@yield('menu-carpreemption-class')">
+                        <a href="{{ url('/carpreemption') }}">
+                            <i class="menu-icon fa fa-minus"></i>
+                            <span class="menu-text"> การจอง </span>
+
+                            <b class="arrow"></b>
+                        </a>
+                    </li>
+
+                    <li class="@yield('menu-carpayment-class')">
+                        <a href="{{ url('/carpayment') }}">
+                            <i class="menu-icon fa fa-minus"></i>
+                            <span class="menu-text"> การชำระเงิน </span>
+
+                            <b class="arrow"></b>
+                        </a>
+                    </li>
+
+                    <li class="@yield('menu-carcancelpreemption-class')">
+                        <a href="javascript:void(0)">
+                            <i class="menu-icon fa fa-minus"></i>
+                            <span class="menu-text"> ยกเลิกการจอง </span>
+
+                            <b class="arrow"></b>
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             <li class="@yield('menu-employee-class')" @if(!Auth::user()->isadmin && !in_array("พนักงาน", $employeeMenus)) style="display: none" @endif>

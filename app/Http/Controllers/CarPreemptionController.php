@@ -34,7 +34,7 @@ use Illuminate\Support\Facades\Input;
 
 class CarPreemptionController extends Controller {
 
-    protected $menuPermissionName = "ใบจอง";
+    protected $menuPermissionName = "การขาย";
 
     public function __construct()
     {
@@ -1206,7 +1206,7 @@ class CarPreemptionController extends Controller {
         }
         else{
             //hack returning error
-            $this->validate($request, ['bookno' => 'alpha'], ['bookno.alpha' => 'ไม่สามารถทำการบันทึกข้อมูลใบจองได้ กรุณาติดต่อผู้ดูแลระบบ!!']);
+            $this->validate($request, ['bookno' => 'alpha'], ['bookno.alpha' => 'ไม่สามารถทำการบันทึกข้อมูลการจองได้ กรุณาติดต่อผู้ดูแลระบบ!!']);
         }
     }
 }

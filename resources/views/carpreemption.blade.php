@@ -1,10 +1,11 @@
 @extends('app')
-@section('title','ใบจอง')
+@section('title','การจอง')
+@section('menu-selling-class','active hsub open')
 @section('menu-carpreemption-class','active')
 
 @section('content')
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> ใบจอง</h3>
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> การจอง</h3>
 
     <table id="grid-table"></table>
 

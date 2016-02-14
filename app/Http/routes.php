@@ -197,6 +197,16 @@ Route::get('commissionpa', 'Settings\CommissionPAController@index');
 Route::get('commissionpa/read', 'Settings\CommissionPAController@read');
 Route::post('commissionpa/update', 'Settings\CommissionPAController@update');
 
+//CarPayment
+Route::get('carpayment', 'CarPaymentController@index');
+Route::get('carpayment/read', 'CarPaymentController@read');
+Route::post('carpayment/update', 'CarPaymentController@update');
+
+//CarCancelPreemption
+Route::get('carcancelpreemption', 'CarCancelPreemptionController@index');
+Route::get('carcancelpreemption/read', 'CarCancelPreemptionController@read');
+Route::post('carcancelpreemption/update', 'CarCancelPreemptionController@update');
+
 Route::get('/', 'HomeController@index');
 
 Route::get('home', 'HomeController@index');

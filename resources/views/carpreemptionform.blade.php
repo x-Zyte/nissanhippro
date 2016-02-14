@@ -1,13 +1,14 @@
 @extends('app')
 
 @if($oper == 'new')
-    @section('title','เพิ่มใบจองใหม่')
+    @section('title','เพิ่มการจองใหม่')
 @elseif($oper == 'edit')
-    @section('title','แก้ไขใบจอง '.$carpreemption->bookno.'/'.$carpreemption->no)
+    @section('title','แก้ไขการจอง '.$carpreemption->bookno.'/'.$carpreemption->no)
 @elseif($oper == 'view')
-    @section('title','ดูข้อมูลใบจอง '.$carpreemption->bookno.'/'.$carpreemption->no)
+    @section('title','ดูข้อมูลการจอง '.$carpreemption->bookno.'/'.$carpreemption->no)
 @endif
 
+@section('menu-selling-class','active hsub open')
 @section('menu-carpreemption-class','active')
 @section('pathPrefix',$pathPrefix)
 
@@ -315,11 +316,11 @@
     </script>
 
     @if($oper == 'new')
-        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> เพิ่มใบจองใหม่</h3>
+        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> เพิ่มการจองใหม่</h3>
     @elseif($oper == 'edit')
-        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> แก้ไขใบจอง</h3>
+        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> แก้ไขการจอง</h3>
     @elseif($oper == 'view')
-        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> ดูข้อมูลใบจอง</h3>
+        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> ดูข้อมูลการจอง</h3>
     @endif
 
     @if (count($errors) > 0)
