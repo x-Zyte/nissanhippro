@@ -11,7 +11,7 @@ class CommissionPA extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['finacecompanyid', 'effectivefrom', 'effectiveto', 'amount', 'active',
+    protected $fillable = ['finacecompanyid', 'effectivefrom', 'effectiveto', 'finaceminimumprofit', 'amount', 'active',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

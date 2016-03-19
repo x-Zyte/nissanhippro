@@ -16,6 +16,11 @@ class CreateCarPreemptionsTable extends Migration {
 		{
             $table->increments('id');
 
+            $table->integer('provinceid')->unsigned();
+            $table->foreign('provinceid')->references('id')->on('provinces');
+            $table->integer('branchid')->unsigned()->nullable();
+            $table->foreign('branchid')->references('id')->on('branchs');
+
             $table->integer('bookno');
             $table->integer('no');
             $table->dateTime('date');
@@ -90,6 +95,8 @@ class CreateCarPreemptionsTable extends Migration {
             $table->integer('recommendedbytype')->nullable()->comment('0:เพื่อน, 1:ญาติ, 2:ลูกค้าเก่า, 3:พนักงาน');
             $table->integer('customertype')->comment('0:ซื้อใหม่, 1:ซื้อทดแทน');
             $table->text('remark');
+
+            $table->integer('status')->comment('0:จอง, 1:ชำระเงินแล้ว, 2:ยกเลิก')->default(0);
 
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');

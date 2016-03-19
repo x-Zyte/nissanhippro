@@ -11,10 +11,7 @@ class CommissionExtra extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['finacecompanyid', 'interestratetypeid', 'name', //'useforcustomertype',
-        'carmodelid', 'carsubmodelid', 'frominstallment', 'toinstallment',
-        'fromdownrate', 'todownrate', 'amount',
-        'effectivefrom', 'effectiveto', 'active',
+    protected $fillable = ['finacecompanyid', 'effectivefrom', 'effectiveto', 'amount', 'active',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

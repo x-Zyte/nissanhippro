@@ -93,6 +93,11 @@ class Car extends Model {
         return $this->belongsTo('App\Models\CarSubModel', 'carsubmodelid', 'id');
     }
 
+    public function color()
+    {
+        return $this->belongsTo('App\Models\Color', 'colorid', 'id');
+    }
+
     public function province()
     {
         return $this->belongsTo('App\Models\systemdatas\Province', 'provinceid', 'id');

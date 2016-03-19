@@ -71,7 +71,7 @@ class CarController extends Controller {
 
         $defaultProvince = '';
         if(!Auth::user()->isadmin){
-            $defaultProvince =  Auth::user()->branch->provinceid;
+            $defaultProvince =  Auth::user()->provinceid;
         }
 
         return view('car',

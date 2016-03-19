@@ -23,6 +23,9 @@ class RedLabel extends Model {
             if($model->carid == '') $model->carid = null;
             if($model->deposit == '') $model->deposit = null;
 
+            if(!strpos($model->no,"-"))
+                $model->no = substr_replace($model->no,"-",strlen($model->no) - 4,0);
+
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
             $model->modifiedby = Auth::user()->id;
@@ -38,6 +41,9 @@ class RedLabel extends Model {
         {
             if($model->carid == '') $model->carid = null;
             if($model->deposit == '') $model->deposit = null;
+
+            if(!strpos($model->no,"-"))
+                $model->no = substr_replace($model->no,"-",strlen($model->no) - 4,0);
 
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");

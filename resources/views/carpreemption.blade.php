@@ -41,10 +41,10 @@
             $(grid_selector).jqGrid({
                 url: "carpreemption/read",
                 datatype: "json",
-                colNames:['เล่มที่', 'เลขที่', 'วันที่', 'ชื่อผู้จอง', 'แบบ', 'รุ่น', 'สี', 'ราคา', 'ส่วนลด', 'ชื่อผู้ซื้อ', 'พนักงานขาย', 'ผู้จัดการฝ่ายขาย', 'ผู้อนุมัติ', 'วันที่อนุมัติ'],
+                colNames:['เล่มที่', 'เลขที่', 'วันที่', 'ชื่อผู้จอง', 'แบบ', 'รุ่น', 'สี', 'ราคา', 'ส่วนลด', 'สถานะ'], //'ชื่อผู้ซื้อ', 'พนักงานขาย', 'ผู้จัดการฝ่ายขาย', 'ผู้อนุมัติ', 'วันที่อนุมัติ'],
                 colModel:[
-                    {name:'bookno',index:'bookno', width:100,align:'left'},
-                    {name:'no',index:'no', width:100,align:'left'},
+                    {name:'bookno',index:'bookno', width:50,align:'center'},
+                    {name:'no',index:'no', width:50,align:'center'},
                     {name:'date',index:'date', width:100,align:'left', sorttype:"date", formatter: "date",align:'center'
                         ,formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
                         ,searchrules:{required:true}
@@ -54,7 +54,7 @@
                     {name:'bookingcustomerid',index:'bookingcustomerid', width:150, formatter:'select',editoptions:{value: "{{$bookingcustomerselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$bookingcustomerselectlist}}"}
                     },
-                    {name:'carmodelid',index:'carmodelid', width:100, formatter:'select',editoptions:{value: "{{$carmodelselectlist}}"}
+                    {name:'carmodelid',index:'carmodelid', width:150, formatter:'select',editoptions:{value: "{{$carmodelselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carmodelselectlist}}"}
                     },
                     {name:'carsubmodelid',index:'carsubmodelid', width:100, formatter:'select',editoptions:{value: "{{$carsubmodelselectlist}}"}
@@ -63,13 +63,17 @@
                     {name:'colorid',index:'colorid', width:100, formatter:'select',editoptions:{value: "{{$colorselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}"}
                     },
-                    {name:'pricelistid',index:'pricelistid', width:100, formatter:'select',editoptions:{value: "{{$priceselectlist}}"}
+                    {name:'pricelistid',index:'pricelistid', width:100,align:'right', formatter:'select',editoptions:{value: "{{$priceselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$priceselectlist}}"}
                     },
                     {name:'discount',index:'discount', width:100,align:'right',formatter:'number'
                         ,formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}
                     },
-                    {name:'buyercustomerid',index:'buyercustomerid', width:150, formatter:'select',editoptions:{value: "{{$buyercustomerselectlist}}"}
+                    {name:'status',index:'status', width:100, editable: true,edittype:"select",formatter:'select',align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:จอง;1:ชำระเงินแล้ว;2:ยกเลิก" },
+                        editoptions:{value: "0:จอง;1:ชำระเงินแล้ว;2:ยกเลิก"}
+                    }
+                    /*{name:'buyercustomerid',index:'buyercustomerid', width:150, formatter:'select',editoptions:{value: "{{$buyercustomerselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$buyercustomerselectlist}}"}
                     },
                     {name:'salesmanemployeeid',index:'salesmanemployeeid', width:150, formatter:'select',editoptions:{value: "{{$salesmanemployeeselectlist}}"}
@@ -86,7 +90,7 @@
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}
-                    }
+                    }*/
                 ],
                 viewrecords : true,
                 rowNum:10,

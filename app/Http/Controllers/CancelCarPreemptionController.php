@@ -1,0 +1,389 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: xZyte
+ * Date: 8/12/2015
+ * Time: 20:59
+ */
+
+namespace App\Http\Controllers;
+
+use App\Models\CancelCarPreemption;
+use App\Models\Car;
+use App\Models\CarPayment;
+use App\Models\CarPreemption;
+use App\Models\Color;
+use App\Models\CarModel;
+use App\Models\CarSubModel;
+use App\Facades\GridEncoder;
+use App\Models\Customer;
+use App\Models\Employee;
+use App\Models\FinaceCompany;
+use App\Models\InsuranceCompany;
+use App\Models\Pricelist;
+use App\Models\RedLabel;
+use App\Repositories\CancelCarPreemptionRepository;
+use App\Repositories\CarPaymentRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request as SupportRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
+
+class CancelCarPreemptionController extends Controller {
+
+    protected $menuPermissionName = "การขาย";
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    public function index()
+    {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $carpreemptionids = CancelCarPreemption::distinct()->lists('carpreemptionid');
+        $carpreemptions = CarPreemption::whereIn('id', $carpreemptionids)->orderBy('bookno', 'asc')->orderBy('no', 'asc')
+            ->get(['id', 'bookno', 'no']);
+        $carpreemptionselectlist = array();
+        foreach($carpreemptions as $item){
+            array_push($carpreemptionselectlist,$item->id.':'.$item->bookno.'/'.$item->no);
+        }
+
+        $approversemployeeids = CancelCarPreemption::distinct()->lists('approversemployeeid');
+        $approversemployees = Employee::whereIn('id', $approversemployeeids)->orderBy('firstname', 'asc')
+            ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
+        $approversemployeeselectlist = array();
+        foreach($approversemployees as $item){
+            array_push($approversemployeeselectlist,$item->id.':'.$item->title.' '.$item->firstname.' '.$item->lastname);
+        }
+
+        return view('cancelcarpreemption',
+            ['carpreemptionselectlist' => implode(";",$carpreemptionselectlist),
+                'approversemployeeselectlist' => implode(";",$approversemployeeselectlist)]);
+    }
+
+    public function read()
+    {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        GridEncoder::encodeRequestedData(new CancelCarPreemptionRepository(), Input::all());
+    }
+
+    public function update(Request $request)
+    {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        GridEncoder::encodeRequestedData(new CancelCarPreemptionRepository(), $request);
+    }
+
+    public function newcancelcarpreemption()
+    {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        if(Auth::user()->isadmin){
+            $carpreemptions = CarPreemption::where('status',0)
+                ->orderBy('bookno', 'asc')
+                ->orderBy('no', 'asc')
+                ->get(['id','bookno','no']);
+        }
+        else{
+            $carpreemptions = CarPreemption::where('provinceid', Auth::user()->provinceid)
+                ->where('status',0)
+                ->orderBy('bookno', 'asc')
+                ->orderBy('no', 'asc')
+                ->get(['id','bookno','no']);
+        }
+        $carpreemptionselectlist = array();
+        $carpreemptionselectlist[null] = 'เลือกการจอง';
+        foreach($carpreemptions as $item){
+            $carpreemptionselectlist[$item->id] = $item->bookno.'/'.$item->no;
+        }
+
+        $carpreemptionid = SupportRequest::old('carpreemptionid');
+        if($carpreemptionid != null && $carpreemptionid != '') {
+            $carpreemption = CarPreemption::find($carpreemptionid);
+
+            $model = Customer::find($carpreemption->buyercustomerid);
+            $customer = $model->title.' '.$model->firstname.' '.$model->lastname;
+
+            $model = CarModel::find($carpreemption->carmodelid);
+            $model2 = CarSubModel::find($carpreemption->carsubmodelid);
+            $carmodel = $model->name.'/'.$model2->name;
+
+            $date = date('d-m-Y', strtotime($carpreemption->date));
+
+            $cashpledge = $carpreemption->cashpledge;
+
+            $model = Employee::find($carpreemption->salesmanemployeeid);
+            $salesmanemployee = $model->title.' '.$model->firstname.' '.$model->lastname;
+        }
+        else{
+            $customer = null;
+            $carmodel = null;
+            $date = null;
+            $cashpledge = null;
+            $salesmanemployee = null;
+        }
+
+        if(Auth::user()->isadmin){
+            $toemployees = Employee::where('departmentid', 5)
+                //->orWhere(function ($query) {
+                    //$query->where('departmentid', 6)
+                        //->where('teamid', 1);
+                //})
+                ->orderBy('firstname', 'asc')
+                ->orderBy('lastname', 'asc')
+                ->get(['id','title','firstname','lastname']);
+        }
+        else{
+            $toemployees = Employee::where('provinceid', Auth::user()->provinceid)
+                ->where('departmentid', 5)
+                //->where(function ($query) {
+                    //$query->where('departmentid', 5)
+                        //->orWhere(function ($query) {
+                            //$query->where('departmentid', 6)
+                                //->where('teamid', 1);
+                        //});
+                //})
+                ->orderBy('firstname', 'asc')
+                ->orderBy('lastname', 'asc')
+                ->get(['id','title','firstname','lastname']);
+        }
+        $toemployeeselectlist = array();
+        $toemployeeselectlist[null] = 'เลือกพนักงาน';
+        foreach($toemployees as $item){
+            $toemployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
+        }
+
+        if(Auth::user()->isadmin){
+            $accountandfinanceemployees = Employee::where('departmentid', 4)
+                ->orderBy('firstname', 'asc')
+                ->orderBy('lastname', 'asc')
+                ->get(['id','title','firstname','lastname']);
+        }
+        else{
+            $accountandfinanceemployees = Employee::where('provinceid', Auth::user()->provinceid)
+                ->where('departmentid', 4)
+                ->orderBy('firstname', 'asc')
+                ->orderBy('lastname', 'asc')
+                ->get(['id','title','firstname','lastname']);
+        }
+        $accountandfinanceemployeeselectlist = array();
+        $accountandfinanceemployeeselectlist[null] = 'เลือกพนักงาน';
+        foreach($accountandfinanceemployees as $item){
+            $accountandfinanceemployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
+        }
+
+        return view('cancelcarpreemptionform',
+            ['oper' => 'new','pathPrefix' => '../',
+                'carpreemptionselectlist' => $carpreemptionselectlist,
+                'toemployeeselectlist' => $toemployeeselectlist,
+                'accountandfinanceemployeeselectlist' => $accountandfinanceemployeeselectlist,
+                'customer' => $customer,
+                'carmodel' => $carmodel,
+                'date' => $date,
+                'cashpledge' => $cashpledge,
+                'salesmanemployee' => $salesmanemployee
+            ]);
+    }
+
+    public function save(Request $request)
+    {
+        if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $this->validate($request, [
+                'carpreemptionid' => 'required',
+                'toemployeeid' => 'required',
+                'canceltype' => 'required',
+                'cancelreasontype' => 'required',
+                'cancelreasondetails' => 'required_if:cancelreasontype,2',
+                'approvaltype' => 'required',
+                'amountapproved' => 'required_if:approvaltype,0',
+                'salesmanemployeedate' => 'required',
+                'accountemployeeid' => 'required',
+                'accountemployeedate' => 'required',
+                'financeemployeeid' => 'required',
+                'financeemployeedate' => 'required',
+                'approversemployeeid' => 'required',
+                'approversemployeedate' => 'required'
+            ],
+            [
+                'carpreemptionid.required' => 'กรุณาเลือกการจอง',
+                'toemployeeid.required' => 'กรุณาเลือกเรียน',
+                'canceltype.required' => 'คืนจอง หรือ ยึดจอง จำเป็นต้องเลือก',
+                'cancelreasontype.required' => 'ยกเลิกเนื่องจาก จำเป็นต้องเลือก',
+                'cancelreasondetails.required_if' => 'อื่นๆ จำเป็นต้องกรอก',
+                'approvaltype.required' => 'อนุมัติ จำเป็นต้องเลือก',
+                'amountapproved.required_if' => 'จำนวนเงินคืน จำเป็นต้องกรอก',
+                'salesmanemployeedate.required' => 'วันที่ ของพนักงานขาย จำเป็นต้องเลือก',
+                'accountemployeeid.required' => 'พนักงานบัญชี จำเป็นต้องเลือก',
+                'accountemployeedate.required' => 'วันที่ ของพนักงานบัญชี จำเป็นต้องเลือก',
+                'financeemployeeid.required' => 'พนักงานการเงิน จำเป็นต้องเลือก',
+                'financeemployeedate.required' => 'วันที่ ของพนักงานการเงิน จำเป็นต้องเลือก',
+                'approversemployeeid.required' => 'ผู้อนุมัติ จำเป็นต้องเลือก',
+                'approversemployeedate.required' => 'วันที่ ของผู้อนุมัติ จำเป็นต้องเลือก'
+            ]
+        );
+
+        $input = $request->all();
+
+        if ($request->has('id'))
+            $model = CancelCarPreemption::find($input['id']);
+        else
+            $model = new CancelCarPreemption;
+
+        $model->carpreemptionid = $input['carpreemptionid'];
+        $model->toemployeeid = $input['toemployeeid'];
+        $model->canceltype = $input['canceltype'];
+        $model->cancelreasontype = $input['cancelreasontype'];
+
+        if($model->cancelreasontype == 2)
+            $model->cancelreasondetails = $input['cancelreasondetails'];
+        else
+            $model->cancelreasondetails = null;
+
+        $model->remark = $input['remark'];
+
+        $model->approvaltype = $input['approvaltype'];
+        if($model->approvaltype == 0)
+            $model->amountapproved = $input['amountapproved'];
+        else
+            $model->amountapproved = 0;
+
+        $model->salesmanemployeedate = date('Y-m-d', strtotime($input['salesmanemployeedate']));
+        $model->accountemployeeid = $input['accountemployeeid'];
+        $model->accountemployeedate = date('Y-m-d', strtotime($input['accountemployeedate']));
+        $model->financeemployeeid = $input['financeemployeeid'];
+        $model->financeemployeedate = date('Y-m-d', strtotime($input['financeemployeedate']));
+        $model->approversemployeeid = $input['approversemployeeid'];
+        $model->approversemployeedate = date('Y-m-d', strtotime($input['approversemployeedate']));
+
+        if($model->save()) {
+            return redirect()->action('CancelCarPreemptionController@edit',['id' => $model->id]);
+        }
+        else{
+            //hack returning error
+            $this->validate($request, ['carpreemptionid' => 'alpha'], ['carpreemptionid.alpha' => 'ไม่สามารถทำการบันทึกข้อมูลการยกเลิกการจองได้ กรุณาติดต่อผู้ดูแลระบบ!!']);
+        }
+    }
+
+    public function edit($id)
+    {
+        if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $model = CancelCarPreemption::find($id);
+
+        $carpreemption = CarPreemption::find($model->carpreemptionid);
+
+        $carpreemptionselectlist = array();
+        $carpreemptionselectlist[$carpreemption->id] = $carpreemption->bookno.'/'.$carpreemption->no;
+
+        $model->bookno = $carpreemption->bookno;
+        $model->no = $carpreemption->no;
+
+        $customer = Customer::find($carpreemption->buyercustomerid);
+        $model->customer = $customer->title.' '.$customer->firstname.' '.$customer->lastname;
+
+        $carmodel = CarModel::find($carpreemption->carmodelid);
+        $carsubmodel = CarSubModel::find($carpreemption->carsubmodelid);
+        $model->carmodel = $carmodel->name.'/'.$carsubmodel->name;
+
+        $model->carpreemptiondate = $carpreemption->date;
+        $model->cashpledge = $carpreemption->cashpledge;
+
+        $salesmanemployee = Employee::find($carpreemption->salesmanemployeeid);
+        $model->salesmanemployee = $salesmanemployee->title.' '.$salesmanemployee->firstname.' '.$salesmanemployee->lastname;
+
+        if(Auth::user()->isadmin){
+            $toemployees = Employee::where('departmentid', 5)
+                ->orderBy('firstname', 'asc')
+                ->orderBy('lastname', 'asc')
+                ->get(['id','title','firstname','lastname']);
+        }
+        else{
+            $toemployees = Employee::where('provinceid', Auth::user()->provinceid)
+                ->where('departmentid', 5)
+                ->orderBy('firstname', 'asc')
+                ->orderBy('lastname', 'asc')
+                ->get(['id','title','firstname','lastname']);
+        }
+        $toemployeeselectlist = array();
+        $toemployeeselectlist[null] = 'เลือกพนักงาน';
+        foreach($toemployees as $item){
+            $toemployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
+        }
+
+        if(Auth::user()->isadmin){
+            $accountandfinanceemployees = Employee::where('departmentid', 4)
+                ->orderBy('firstname', 'asc')
+                ->orderBy('lastname', 'asc')
+                ->get(['id','title','firstname','lastname']);
+        }
+        else{
+            $accountandfinanceemployees = Employee::where('provinceid', Auth::user()->provinceid)
+                ->where('departmentid', 4)
+                ->orderBy('firstname', 'asc')
+                ->orderBy('lastname', 'asc')
+                ->get(['id','title','firstname','lastname']);
+        }
+        $accountandfinanceemployeeselectlist = array();
+        $accountandfinanceemployeeselectlist[null] = 'เลือกพนักงาน';
+        foreach($accountandfinanceemployees as $item){
+            $accountandfinanceemployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
+        }
+
+        return view('cancelcarpreemptionform',
+            ['oper' => 'edit','pathPrefix' => '../../','cancelcarpreemption' => $model,
+                'carpreemptionselectlist' => $carpreemptionselectlist,
+                'toemployeeselectlist' => $toemployeeselectlist,
+                'accountandfinanceemployeeselectlist' => $accountandfinanceemployeeselectlist]);
+    }
+
+    public function view($id)
+    {
+        if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $model = CancelCarPreemption::find($id);
+
+        $carpreemption = CarPreemption::find($model->carpreemptionid);
+
+        $carpreemptionselectlist = array();
+        $carpreemptionselectlist[$carpreemption->id] = $carpreemption->bookno.'/'.$carpreemption->no;
+
+        $model->bookno = $carpreemption->bookno;
+        $model->no = $carpreemption->no;
+
+        $customer = Customer::find($carpreemption->buyercustomerid);
+        $model->customer = $customer->title.' '.$customer->firstname.' '.$customer->lastname;
+
+        $carmodel = CarModel::find($carpreemption->carmodelid);
+        $carsubmodel = CarSubModel::find($carpreemption->carsubmodelid);
+        $model->carmodel = $carmodel->name.'/'.$carsubmodel->name;
+
+        $model->carpreemptiondate = $carpreemption->date;
+        $model->cashpledge = $carpreemption->cashpledge;
+
+        $salesmanemployee = Employee::find($carpreemption->salesmanemployeeid);
+        $model->salesmanemployee = $salesmanemployee->title.' '.$salesmanemployee->firstname.' '.$salesmanemployee->lastname;
+
+        $toemployeeselectlist = array();
+        $item = Employee::find($model->toemployeeid);
+        $toemployeeselectlist[$item->id] = $item->title . ' ' . $item->firstname . ' ' . $item->lastname;
+        $item = Employee::find($model->approversemployeeid);
+        $toemployeeselectlist[$item->id] = $item->title . ' ' . $item->firstname . ' ' . $item->lastname;
+
+        $accountandfinanceemployeeselectlist = array();
+        $item = Employee::find($model->accountemployeeid);
+        $accountandfinanceemployeeselectlist[$item->id] = $item->title . ' ' . $item->firstname . ' ' . $item->lastname;
+        $item = Employee::find($model->financeemployeeid);
+        $accountandfinanceemployeeselectlist[$item->id] = $item->title . ' ' . $item->firstname . ' ' . $item->lastname;
+
+
+        return view('cancelcarpreemptionform',
+            ['oper' => 'view','pathPrefix' => '../../','cancelcarpreemption' => $model,
+                'carpreemptionselectlist' => $carpreemptionselectlist,
+                'toemployeeselectlist' => $toemployeeselectlist,
+                'accountandfinanceemployeeselectlist' => $accountandfinanceemployeeselectlist]);
+    }
+}

@@ -30,6 +30,29 @@ function aceSwitch( cellvalue, options, cell ) {
         return '0';
     }
 }
+
+function booleanFormatter2( cellvalue, options, cell ) {
+    if (cellvalue == '1') {
+        return 'ล่าสุด';
+    }else if(cellvalue == '0') {
+        return 'เก่า';
+    }
+}
+
+function aceSwitch2( cellvalue, options, cell ) {
+    setTimeout(function(){
+        $(cell) .find('input[type=checkbox]')
+            .addClass('ace ace-switch ace-switch-5')
+            .after('<span class="lbl"></span>');
+    }, 0);
+
+    if (cellvalue == 'ล่าสุด') {
+        return '1';
+    }else if(cellvalue == 'เก่า') {
+        return '0';
+    }
+}
+
 //enable datepicker
 function pickDate( cellvalue, options, cell ) {
     setTimeout(function(){

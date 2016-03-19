@@ -10,7 +10,7 @@ class Employee extends User {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['title', 'firstname', 'lastname','code','workingstartdate','workingenddate', 'username',
+    protected $fillable = ['provinceid','title', 'firstname', 'lastname','code','workingstartdate','workingenddate', 'username',
         'password', 'email','loginstartdate','loginenddate', 'phone', 'isadmin', 'branchid',
         'departmentid', 'teamid', 'candeletedata', 'remarks', 'active', 'remember_token',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
@@ -24,13 +24,21 @@ class Employee extends User {
         static::creating(function($model)
         {
             if($model->isadmin){
+                $model->provinceid = null;
                 $model->branchid = null;
                 $model->departmentid = null;
                 $model->teamid = null;
                 $model->candeletedata = true;
             }
             else{
-                if($model->branchid == '') $model->branchid = null;
+                if($model->branchid == ''){
+                    $model->branchid = null;
+                    $model->provinceid = null;
+                }
+                else if($model->branchid != null){
+                    $branch = Branch::find($model->branchid);
+                    $model->provinceid = $branch->provinceid;
+                }
                 if($model->departmentid == '') $model->departmentid = null;
                 if($model->teamid == '') $model->teamid = null;
             }
@@ -72,13 +80,21 @@ class Employee extends User {
         static::updating(function($model)
         {
             if($model->isadmin){
+                $model->provinceid = null;
                 $model->branchid = null;
                 $model->departmentid = null;
                 $model->teamid = null;
                 $model->candeletedata = true;
             }
             else{
-                if($model->branchid == '') $model->branchid = null;
+                if($model->branchid == ''){
+                    $model->branchid = null;
+                    $model->provinceid = null;
+                }
+                else if($model->branchid != null){
+                    $branch = Branch::find($model->branchid);
+                    $model->provinceid = $branch->provinceid;
+                }
                 if($model->departmentid == '') $model->departmentid = null;
                 if($model->teamid == '') $model->teamid = null;
             }
@@ -124,6 +140,11 @@ class Employee extends User {
     public function branch()
     {
         return $this->belongsTo('App\Models\Branch', 'branchid', 'id');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo('App\Models\SystemDatas\Province', 'provinceid', 'id');
     }
 
     public function department()

@@ -62,6 +62,10 @@ class Customer extends Model {
         static::updated(function($model)
         {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Update','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
+
+            if($model->statusexpect != 1){
+                CustomerExpectation::where('customerid', $model->id)->where('active',true)->update(['active' => false]);
+            }
         });
 
         static::deleted(function($model)

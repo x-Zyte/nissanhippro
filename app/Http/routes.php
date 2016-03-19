@@ -144,6 +144,8 @@ Route::post('giveaway/check_saleprice', 'Settings\GiveawayController@check_salep
 Route::get('carpreemption', 'CarPreemptionController@index');
 Route::get('carpreemption/read', 'CarPreemptionController@read');
 Route::post('carpreemption/update', 'CarPreemptionController@update');
+Route::get('carpreemption/getbyid/{id}', 'CarPreemptionController@getbyid');
+Route::get('carpreemption/getbyidforcancelcarpreemption/{id}', 'CarPreemptionController@getbyidforcancelcarpreemption');
 
 Route::get('carpreemption/newcarpreemption', 'CarPreemptionController@newcarpreemption');
 Route::get('carpreemption/edit/{id}', 'CarPreemptionController@edit');
@@ -170,42 +172,62 @@ Route::get('commissionfinace/readSelectlistForDisplayInGrid', 'Settings\Commissi
 //CommissionFinaceInterest
 Route::get('commissionfinaceinterest/read', 'Settings\CommissionFinaceInterestController@read');
 Route::post('commissionfinaceinterest/update', 'Settings\CommissionFinaceInterestController@update');
-Route::get('commissionfinaceinterest/readSelectlist/{commissionfinaceid}', 'Settings\CommissionFinaceInterestController@readSelectlist');
+//Route::get('commissionfinaceinterest/readSelectlist/{commissionfinaceid}', 'Settings\CommissionFinaceInterestController@readSelectlist');
 Route::post('commissionfinaceinterest/check_dup_down', 'Settings\CommissionFinaceInterestController@check_dup_down');
 
 //CommissionFinaceCom
 Route::get('commissionfinacecom/read', 'Settings\CommissionFinaceComController@read');
 Route::post('commissionfinacecom/update', 'Settings\CommissionFinaceComController@update');
-Route::get('commissionfinacecom/readSelectlist/{commissionfinaceid}', 'Settings\CommissionFinaceComController@readSelectlist');
-Route::post('commissionfinacecom/check_dup_interestcalculation', 'Settings\CommissionFinaceComController@check_dup_interestcalculation');
+//Route::get('commissionfinacecom/readSelectlist/{commissionfinaceid}', 'Settings\CommissionFinaceComController@readSelectlist');
+Route::post('commissionfinacecom/check_dup_interestcalculationbeginning', 'Settings\CommissionFinaceComController@check_dup_interestcalculationbeginning');
+Route::post('commissionfinacecom/check_dup_interestcalculationending', 'Settings\CommissionFinaceComController@check_dup_interestcalculationending');
 
 //CommissionFinaceCar
 Route::get('commissionfinacecar/read', 'Settings\CommissionFinaceCarController@read');
 Route::post('commissionfinacecar/update', 'Settings\CommissionFinaceCarController@update');
-Route::get('commissionfinacecar/readSelectlist/{commissionfinaceid}', 'Settings\CommissionFinaceCarController@readSelectlist');
+//Route::get('commissionfinacecar/readSelectlist/{commissionfinaceid}', 'Settings\CommissionFinaceCarController@readSelectlist');
 Route::get('commissionfinacecar/readSelectlistForDisplayInGrid', 'Settings\CommissionFinaceCarController@readSelectlistForDisplayInGrid');
 Route::post('commissionfinacecar/check_dup_carsubmodel', 'Settings\CommissionFinaceCarController@check_dup_carsubmodel');
 
-//CommissionExtra
-Route::get('commissionextra', 'Settings\CommissionExtraController@index');
-Route::get('commissionextra/read', 'Settings\CommissionExtraController@read');
-Route::post('commissionextra/update', 'Settings\CommissionExtraController@update');
-Route::get('commissionextra/readSelectlistForDisplayInGrid', 'Settings\CommissionExtraController@readSelectlistForDisplayInGrid');
+//CommissionSpecial
+Route::get('commissionspecial', 'Settings\CommissionSpecialController@index');
+Route::get('commissionspecial/read', 'Settings\CommissionSpecialController@read');
+Route::post('commissionspecial/update', 'Settings\CommissionSpecialController@update');
+Route::get('commissionspecial/readSelectlistForDisplayInGrid', 'Settings\CommissionSpecialController@readSelectlistForDisplayInGrid');
 
 //CommissionPA
 Route::get('commissionpa', 'Settings\CommissionPAController@index');
 Route::get('commissionpa/read', 'Settings\CommissionPAController@read');
 Route::post('commissionpa/update', 'Settings\CommissionPAController@update');
 
+//CommissionExtra
+Route::get('commissionextra', 'Settings\CommissionExtraController@index');
+Route::get('commissionextra/read', 'Settings\CommissionExtraController@read');
+Route::post('commissionextra/update', 'Settings\CommissionExtraController@update');
+
 //CarPayment
 Route::get('carpayment', 'CarPaymentController@index');
 Route::get('carpayment/read', 'CarPaymentController@read');
 Route::post('carpayment/update', 'CarPaymentController@update');
+Route::get('carpayment/getbahttext/{amount}', 'CarPaymentController@getbahttext');
 
-//CarCancelPreemption
-Route::get('carcancelpreemption', 'CarCancelPreemptionController@index');
-Route::get('carcancelpreemption/read', 'CarCancelPreemptionController@read');
-Route::post('carcancelpreemption/update', 'CarCancelPreemptionController@update');
+Route::get('carpayment/newcarpayment', 'CarPaymentController@newcarpayment');
+Route::get('carpayment/edit/{id}', 'CarPaymentController@edit');
+Route::get('carpayment/view/{id}', 'CarPaymentController@view');
+Route::post('carpayment/save', 'CarPaymentController@save');
+
+//CancelCarPreemption
+Route::get('cancelcarpreemption', 'CancelCarPreemptionController@index');
+Route::get('cancelcarpreemption/read', 'CancelCarPreemptionController@read');
+Route::post('cancelcarpreemption/update', 'CancelCarPreemptionController@update');
+
+Route::get('cancelcarpreemption/newcancelcarpreemption', 'CancelCarPreemptionController@newcancelcarpreemption');
+Route::get('cancelcarpreemption/edit/{id}', 'CancelCarPreemptionController@edit');
+Route::get('cancelcarpreemption/view/{id}', 'CancelCarPreemptionController@view');
+Route::post('cancelcarpreemption/save', 'CancelCarPreemptionController@save');
+
+Route::get('reporting', 'ReportController@index');
+Route::post('reporting', 'ReportController@post');
 
 Route::get('/', 'HomeController@index');
 

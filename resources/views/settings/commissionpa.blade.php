@@ -44,7 +44,7 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('commissionpa/read') }}',
                 datatype: "json",
-                colNames:['ไฟแนนซ์','วันที่เริ่ม', 'วันที่สิ้นสุด', 'จำนวนเงิน'],
+                colNames:['ไฟแนนซ์','วันที่เริ่ม', 'วันที่สิ้นสุด', 'ไฟแนนซ์กำไรขั้นต่ำ', 'จำนวนเงิน'],
                 colModel:[
                     {name:'finacecompanyid',index:'finacecompanyid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$finacecompanyselectlist}}"}
@@ -61,6 +61,9 @@
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}
                         ,editrules:{required:true, custom: true, custom_func: check_effectiveto}},
+                    {name:'finaceminimumprofit',index:'finaceminimumprofit', width:100,editable: true,
+                        editrules:{required:true, number:true},align:'right',formatter:'number',
+                        formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'amount',index:'amount', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}}

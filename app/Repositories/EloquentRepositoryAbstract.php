@@ -66,7 +66,7 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
                 $query->where('branchid', Auth::user()->branchid);
             }
             if($this->hasProvince && !Auth::user()->isadmin){
-                $query->where('provinceid', Auth::user()->branch->provinceid);
+                $query->where('provinceid', Auth::user()->provinceid);
             }
 
             foreach ($filters as $filter)
@@ -197,7 +197,7 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
                 $query->where('branchid', Auth::user()->branchid);
             }
             if($this->hasProvince && !Auth::user()->isadmin){
-                $query->where('provinceid', Auth::user()->branch->provinceid);
+                $query->where('provinceid', Auth::user()->provinceid);
             }
 
             foreach ($filters as $filter)

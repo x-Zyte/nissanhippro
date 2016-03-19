@@ -9,8 +9,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
+use App\Models\Car;
 use App\Models\CarBrand;
 use App\Models\CarModelColor;
+use App\Models\CarPayment;
 use App\Models\CarPreemption;
 use App\Models\CarPreemptionGiveaway;
 use App\Models\Color;
@@ -107,10 +109,13 @@ class CarPreemptionController extends Controller {
         }
 
         $pricelistids = CarPreemption::distinct()->lists('pricelistid');
-        $pricelists = Pricelist::whereIn('id', $pricelistids)->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories']);
+        $pricelists = Pricelist::whereIn('id', $pricelistids)->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories', 'promotion']);
         $priceselectlist = array();
         foreach($pricelists as $item){
-            array_push($priceselectlist,$item->id.':'.$item->sellingpricewithaccessories);
+            //if($item->promotion != null && $item->promotion != '')
+                //array_push($priceselectlist,$item->id.':'.$item->sellingpricewithaccessories.' ('.$item->promotion.')');
+            //else
+                array_push($priceselectlist,$item->id.':'.$item->sellingpricewithaccessories);
         }
 
         return view('carpreemption',
@@ -156,7 +161,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','title','firstname','lastname']);
         }
         else{
-            $customers = Customer::where('provinceid', Auth::user()->branch->provinceid)
+            $customers = Customer::where('provinceid', Auth::user()->provinceid)
                 ->orderBy('firstname', 'asc')
                 ->orderBy('lastname', 'asc')
                 ->get(['id','title','firstname','lastname']);
@@ -207,7 +212,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','title','firstname','lastname']);
         }
         else{
-            $saleemployees = Employee::where('branchid', Auth::user()->branchid)
+            $saleemployees = Employee::where('provinceid', Auth::user()->provinceid)
                 ->where('departmentid', 6)
                 ->where('teamid','<>', 1)
                 ->orderBy('firstname', 'asc')
@@ -228,7 +233,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','title','firstname','lastname']);
         }
         else{
-            $salemanageremployees = Employee::where('branchid', Auth::user()->branchid)
+            $salemanageremployees = Employee::where('provinceid', Auth::user()->provinceid)
                 ->where('departmentid', 6)
                 ->where('teamid', 1)
                 ->orderBy('firstname', 'asc')
@@ -252,7 +257,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','title','firstname','lastname']);
         }
         else{
-            $approveremployees = Employee::where('branchid', Auth::user()->branchid)
+            $approveremployees = Employee::where('provinceid', Auth::user()->provinceid)
                 ->where(function ($query) {
                     $query->where('departmentid', 5)
                         ->orWhere(function ($query) {
@@ -364,9 +369,12 @@ class CarPreemptionController extends Controller {
             $pricelists = Pricelist::where('carsubmodelid',$carsubmodelid)
                 ->where('effectivefrom','<=',$date)
                 ->where('effectiveTo','>=',$date)
-                ->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories']);
+                ->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories', 'promotion']);
             foreach ($pricelists as $item) {
-                $priceselectlist[$item->id] = $item->sellingpricewithaccessories;
+                if($item->promotion != null && $item->promotion != '')
+                    $priceselectlist[$item->id] = $item->sellingpricewithaccessories.' ('.$item->promotion.')';
+                else
+                    $priceselectlist[$item->id] = $item->sellingpricewithaccessories;
             }
         }
 
@@ -467,7 +475,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','title','firstname','lastname']);
         }
         else{
-            $customers = Customer::where('provinceid', Auth::user()->branch->provinceid)
+            $customers = Customer::where('provinceid', Auth::user()->provinceid)
                 ->orderBy('firstname', 'asc')
                 ->orderBy('lastname', 'asc')
                 ->get(['id','title','firstname','lastname']);
@@ -572,7 +580,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','title','firstname','lastname']);
         }
         else{
-            $saleemployees = Employee::where('branchid', Auth::user()->branchid)
+            $saleemployees = Employee::where('provinceid', Auth::user()->provinceid)
                 ->where('departmentid', 6)
                 ->where('teamid','<>', 1)
                 ->orderBy('firstname', 'asc')
@@ -593,7 +601,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','title','firstname','lastname']);
         }
         else{
-            $salemanageremployees = Employee::where('branchid', Auth::user()->branchid)
+            $salemanageremployees = Employee::where('provinceid', Auth::user()->provinceid)
                 ->where('departmentid', 6)
                 ->where('teamid', 1)
                 ->orderBy('firstname', 'asc')
@@ -617,7 +625,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','title','firstname','lastname']);
         }
         else{
-            $approveremployees = Employee::where('branchid', Auth::user()->branchid)
+            $approveremployees = Employee::where('provinceid', Auth::user()->provinceid)
                 ->where(function ($query) {
                     $query->where('departmentid', 5)
                         ->orWhere(function ($query) {
@@ -671,9 +679,12 @@ class CarPreemptionController extends Controller {
         $pricelists = Pricelist::where('carsubmodelid',$model->carsubmodelid)
             ->where('effectivefrom','<=',$model->date)
             ->where('effectiveTo','>=',$model->date)
-            ->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories']);
+            ->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories', 'promotion']);
         foreach ($pricelists as $item) {
-            $priceselectlist[$item->id] = $item->sellingpricewithaccessories;
+            if($item->promotion != null && $item->promotion != '')
+                $priceselectlist[$item->id] = $item->sellingpricewithaccessories.' ('.$item->promotion.')';
+            else
+                $priceselectlist[$item->id] = $item->sellingpricewithaccessories;
         }
 
 
@@ -740,18 +751,6 @@ class CarPreemptionController extends Controller {
         $provincebranchselectlist = array();
         foreach($provincebranchs as $item){
             $provincebranchselectlist[$item->id] = $item->name;
-        }
-
-        if(Auth::user()->isadmin){
-            $customers = Customer::orderBy('firstname', 'asc')
-                ->orderBy('lastname', 'asc')
-                ->get(['id','title','firstname','lastname']);
-        }
-        else{
-            $customers = Customer::where('provinceid', Auth::user()->branch->provinceid)
-                ->orderBy('firstname', 'asc')
-                ->orderBy('lastname', 'asc')
-                ->get(['id','title','firstname','lastname']);
         }
 
         $customerselectlist = array();
@@ -827,7 +826,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','title','firstname','lastname']);
         }
         else{
-            $saleemployees = Employee::where('branchid', Auth::user()->branchid)
+            $saleemployees = Employee::where('provinceid', Auth::user()->provinceid)
                 ->where('departmentid', 6)
                 ->where('teamid','<>', 1)
                 ->orderBy('firstname', 'asc')
@@ -848,7 +847,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','title','firstname','lastname']);
         }
         else{
-            $salemanageremployees = Employee::where('branchid', Auth::user()->branchid)
+            $salemanageremployees = Employee::where('provinceid', Auth::user()->provinceid)
                 ->where('departmentid', 6)
                 ->where('teamid', 1)
                 ->orderBy('firstname', 'asc')
@@ -872,7 +871,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','title','firstname','lastname']);
         }
         else{
-            $approveremployees = Employee::where('branchid', Auth::user()->branchid)
+            $approveremployees = Employee::where('provinceid', Auth::user()->provinceid)
                 ->where(function ($query) {
                     $query->where('departmentid', 5)
                         ->orWhere(function ($query) {
@@ -921,7 +920,10 @@ class CarPreemptionController extends Controller {
 
         $priceselectlist = array();
         $item = Pricelist::find($model->pricelistid);
-        $priceselectlist[$item->id] = $item->sellingpricewithaccessories;
+        if($item->promotion != null && $item->promotion != '')
+            $priceselectlist[$item->id] = $item->sellingpricewithaccessories.' ('.$item->promotion.')';
+        else
+            $priceselectlist[$item->id] = $item->sellingpricewithaccessories;
 
         return view('carpreemptionform',
             ['oper' => 'view','pathPrefix' => '../../','carpreemption' => $model,
@@ -1059,7 +1061,7 @@ class CarPreemptionController extends Controller {
         else{
             $customer = new Customer;
             if(Auth::user()->isadmin) $customer->provinceid = $input['provincebranchid'];
-            else $customer->provinceid = Auth::user()->branch->provinceid;
+            else $customer->provinceid = Auth::user()->provinceid;
             $customer->title = $input['bookingcustomertitle'];
             $customer->firstname = $input['bookingcustomerfirstname'];
             $customer->lastname = $input['bookingcustomerlastname'];
@@ -1129,7 +1131,7 @@ class CarPreemptionController extends Controller {
             else{
                 $customer = new Customer;
                 if(Auth::user()->isadmin) $customer->provinceid = $input['provincebranchid'];
-                else $customer->provinceid = Auth::user()->branch->provinceid;
+                else $customer->provinceid = Auth::user()->provinceid;
                 $customer->title = $input['buyercustomertitle'];
                 $customer->firstname = $input['buyercustomerfirstname'];
                 $customer->lastname = $input['buyercustomerlastname'];
@@ -1156,8 +1158,6 @@ class CarPreemptionController extends Controller {
         }
 
         $model->salesmanemployeeid = $input['salesmanemployeeid'];
-        $employee = Employee::find($input['salesmanemployeeid']);
-        $model->salesmanteamid = $employee->teamid;
         $model->salesmanageremployeeid = $input['salesmanageremployeeid'];
         $model->approversemployeeid = $input['approversemployeeid'];
         $model->approvaldate = date('Y-m-d', strtotime($input['approvaldate']));
@@ -1177,8 +1177,29 @@ class CarPreemptionController extends Controller {
         if ($request->has('customertype')) $model->customertype = $input['customertype'];
         $model->remark = $input['remark'];
 
-        if($model->save()) {
+        if($model->oldcarbrandid == '') $model->oldcarbrandid = null;
+        if($model->oldcarmodelid == '') $model->oldcarmodelid = null;
+        if($model->oldcargear == '') $model->oldcargear = null;
+        if($model->oldcarcolor == '') $model->oldcarcolor = null;
+        if($model->oldcarenginesize == '') $model->oldcarenginesize = null;
+        if($model->oldcarlicenseplate == '') $model->oldcarlicenseplate = null;
+        if($model->oldcaryear == '') $model->oldcaryear = null;
+        if($model->oldcarprice == '') $model->oldcarprice = null;
+        if($model->oldcarbuyername == '') $model->oldcarbuyername = null;
+        if($model->oldcarother == '') $model->oldcarother = null;
 
+        if($model->purchasetype == 0){
+            $model->finacecompanyid = null;
+            $model->interest = null;
+            $model->down = null;
+            $model->installments = null;
+        }
+        if($model->recommendedby == false){
+            $model->recommendedbyname = null;
+            $model->recommendedbytype = null;
+        }
+
+        if($model->save()) {
             $giveawayFreeData = $request->giveawayFreeData;
             $giveawayBuyData = $request->giveawayBuyData;
 
@@ -1208,5 +1229,89 @@ class CarPreemptionController extends Controller {
             //hack returning error
             $this->validate($request, ['bookno' => 'alpha'], ['bookno.alpha' => 'ไม่สามารถทำการบันทึกข้อมูลการจองได้ กรุณาติดต่อผู้ดูแลระบบ!!']);
         }
+    }
+
+    public function getbyid($id)
+    {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $model = CarPreemption::find($id);
+
+        $customer = Customer::find($model->buyercustomerid);
+        $model->customer = $customer->title.' '.$customer->firstname.' '.$customer->lastname;
+
+        $carmodel = CarModel::find($model->carmodelid);
+        $carsubmodel = CarSubModel::find($model->carsubmodelid);
+        $model->carmodel = $carmodel->name.'/'.$carsubmodel->name;
+
+        $color = Color::find($model->colorid);
+        $model->carcolor = $color->code.' - '.$color->name;
+
+        $pricelist = Pricelist::find($model->pricelistid);
+        $model->carprice = $pricelist->sellingpricewithaccessories;
+
+        if(Auth::user()->isadmin){
+            $carsoldids = CarPayment::distinct()->lists('carid');
+
+            $cars = Car::whereNotIn('id', $carsoldids)
+                ->where('carmodelid',$model->carmodelid)
+                ->where('carsubmodelid',$model->carsubmodelid)
+                ->where('colorid',$model->colorid)
+                ->orderBy('chassisno', 'asc')
+                ->orderBy('engineno', 'asc')
+                ->get(['id','chassisno','engineno']);
+        }
+        else{
+            $carsoldids = CarPayment::where('provinceid', Auth::user()->provinceid)
+                ->distinct()->lists('carid');
+
+            $cars = Car::where('provinceid', Auth::user()->provinceid)
+                ->whereNotIn('id', $carsoldids)
+                ->where('carmodelid',$model->carmodelid)
+                ->where('carsubmodelid',$model->carsubmodelid)
+                ->where('colorid',$model->colorid)
+                ->orderBy('chassisno', 'asc')
+                ->orderBy('engineno', 'asc')
+                ->get(['id','chassisno','engineno']);
+        }
+        $model->cars = $cars;
+
+        $finacecompany = FinaceCompany::find($model->finacecompanyid);
+        $model->finacecompany = $finacecompany->name;
+
+        $model->yodjud =  $model->carprice - $model->down;
+        $model->openbill =  $model->carprice + $model->accessories - $model->discount - $model->subdown;
+
+        $salesmanemployee = Employee::find($model->salesmanemployeeid);
+        $model->salesmanemployee = $salesmanemployee->title.' '.$salesmanemployee->firstname.' '.$salesmanemployee->lastname;
+
+        $approversemployee = Employee::find($model->approversemployeeid);
+        $model->approversemployee = $approversemployee->title.' '.$approversemployee->firstname.' '.$approversemployee->lastname;
+
+        //if($cust->birthdate != null)
+            //$cust->birthdate = date('d-m-Y', strtotime($cust->birthdate));
+
+        return $model;
+    }
+
+    public function getbyidforcancelcarpreemption($id)
+    {
+        if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $model = CarPreemption::find($id);
+
+        $customer = Customer::find($model->buyercustomerid);
+        $model->customer = $customer->title.' '.$customer->firstname.' '.$customer->lastname;
+
+        $carmodel = CarModel::find($model->carmodelid);
+        $carsubmodel = CarSubModel::find($model->carsubmodelid);
+        $model->carmodel = $carmodel->name.'/'.$carsubmodel->name;
+
+        $salesmanemployee = Employee::find($model->salesmanemployeeid);
+        $model->salesmanemployee = $salesmanemployee->title.' '.$salesmanemployee->firstname.' '.$salesmanemployee->lastname;
+
+        $model->date = date('d-m-Y', strtotime($model->date));
+
+        return $model;
     }
 }

@@ -80,7 +80,7 @@ class CustomerController extends Controller {
         if(Auth::user()->isadmin)
             $employees = Employee::all(['id','firstname','lastname']);
         else{
-            $provinceid = Auth::user()->branch->provinceid;
+            $provinceid = Auth::user()->provinceid;
             $employees = Employee::whereHas('branch', function($q) use($provinceid)
             {
                 $q->where('provinceid', $provinceid);
@@ -112,7 +112,7 @@ class CustomerController extends Controller {
 
         $defaultProvince = '';
         if(Auth::user()->isadmin == false){
-            $defaultProvince = Auth::user()->branch->provinceid;
+            $defaultProvince = Auth::user()->provinceid;
         }
 
         return view($this->viewname,

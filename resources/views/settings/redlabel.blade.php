@@ -51,7 +51,7 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('redlabel/read') }}',
                 datatype: "json",
-                colNames:['จังหวัด', 'เลขทะเบียน', 'รถ', 'เงินมัดจำ'],
+                colNames:['จังหวัด', 'เลขทะเบียน', 'รถที่ใช้ป้ายอยู่ เลขตัวถัง/เลขเครื่อง', 'เงินมัดจำ'],
                 colModel:[
                     {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
@@ -116,6 +116,9 @@
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
+
+                        $('#tr_carid', form).hide();
+                        $('#tr_deposit', form).hide();
                     },
                     editData: {
                         _token: "{{ csrf_token() }}"
@@ -157,6 +160,9 @@
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
+
+                        $('#tr_carid', form).hide();
+                        $('#tr_deposit', form).hide();
                     },
                     editData: {
                         _token: "{{ csrf_token() }}"

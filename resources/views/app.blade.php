@@ -275,7 +275,7 @@
                     </li>
 
                     <li class="@yield('menu-carcancelpreemption-class')">
-                        <a href="javascript:void(0)">
+                        <a href="{{ url('/cancelcarpreemption') }}">
                             <i class="menu-icon fa fa-minus"></i>
                             <span class="menu-text"> ยกเลิกการจอง </span>
 
@@ -472,6 +472,15 @@
                                 <a href="{{ url('/commissionfinace') }}">
                                     <i class="menu-icon fa fa-minus"></i>
                                     คอมมิชชั่นไฟแนนซ์
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+
+                            <li class="@yield('menu-settingcommissionspecial-class')">
+                                <a href="{{ url('/commissionspecial') }}">
+                                    <i class="menu-icon fa fa-minus"></i>
+                                    คอมมิชชั่น Special
                                 </a>
 
                                 <b class="arrow"></b>

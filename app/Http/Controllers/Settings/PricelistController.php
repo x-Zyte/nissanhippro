@@ -85,7 +85,7 @@ class PricelistController extends Controller {
         $pricelists = Pricelist::where('carsubmodelid',$carsubmodelid)
             ->where('effectivefrom','<=',$date)
             ->where('effectiveTo','>=',$date)
-            ->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories']);
+            ->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories', 'promotion']);
 
         return ['count'=> count($pricelists),'pricelists'=>$pricelists];
     }

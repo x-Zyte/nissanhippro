@@ -11,7 +11,7 @@ class CommissionFinaceCom extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['commissionfinaceid', 'interestcalculation', 'com',
+    protected $fillable = ['commissionfinaceid', 'interestcalculationbeginning', 'interestcalculationending', 'com',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

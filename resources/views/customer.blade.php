@@ -212,8 +212,8 @@
                                 ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
                                 ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
                             {name:'remarks',index:'remarks', width:100,editable: true,editoptions:{size:"30",maxlength:"100"},align:'left',hidden: true,editrules:{edithidden:true}},
-                            {name:'active',index:'active', width:60, editable: true,edittype:"checkbox",hidden: true,editoptions: {value:"1:0", defaultValue:"1"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
-                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }}
+                            {name:'active',index:'active', width:60, editable: true,edittype:"checkbox",hidden: true,editoptions: {value:"1:0", defaultValue:"1"},formatter: booleanFormatter2,unformat: aceSwitch2,align:'center'
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:ล่าสุด;0:เก่า" }}
                         ],
                         viewrecords : true,
                         rowNum:10,

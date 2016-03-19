@@ -15,11 +15,12 @@ class CommissionFinaceComRepository extends EloquentRepositoryAbstract
     public function __construct()
     {
         $this->Database = new CommissionFinaceCom;
-        $this->orderBy = array(array('interestcalculation', 'asc'));
-        $this->crudFields = array('oper', 'id', 'commissionfinaceid','interestcalculation','com');
+        $this->orderBy = array(array('interestcalculationbeginning', 'asc'),array('interestcalculationending', 'asc'));
+        $this->crudFields = array('oper', 'id', 'commissionfinaceid','interestcalculationbeginning','interestcalculationending','com');
         $this->uniqueKeySingles = array();
         $this->uniqueKeyMultiples = array(array('field'=>'commissionfinaceid','showInMsg'=>false,'label'=>'คอมไฟแนนซ์'),
-            array('field'=>'interestcalculation','showInMsg'=>true,'label'=>'คอมไฟแนนซ์นี้ ดอกเบี้ยคำนวณ'));
+            array('field'=>'interestcalculationbeginning','showInMsg'=>true,'label'=>'คอมไฟแนนซ์นี้ ดอกเบี้ยคำนวณ beginning'),
+            array('field'=>'interestcalculationending','showInMsg'=>true,'label'=>' ดอกเบี้ยคำนวณ ending'));
         $this->hasBranch = false;
         $this->hasProvince = false;
     }

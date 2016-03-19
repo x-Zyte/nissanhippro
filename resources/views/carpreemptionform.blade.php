@@ -219,7 +219,10 @@
                 }
 
                 $.each(data.pricelists, function(i, option) {
-                    $('#pricelistid').append($('<option/>').attr("value", option.id).text(option.sellingpricewithaccessories));
+                    if(option.promotion != null && option.promotion != '')
+                        $('#pricelistid').append($('<option/>').attr("value", option.id).text(option.sellingpricewithaccessories+' ('+option.promotion+')'));
+                    else
+                        $('#pricelistid').append($('<option/>').attr("value", option.id).text(option.sellingpricewithaccessories));
                 });
                 $('#pricelistid').trigger('chosen:updated');
             });
@@ -352,15 +355,15 @@
 
         <div class="form-group" style="margin-top:10px;" >
             {!! Form::label('bookno', 'เล่มที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-            <div class="col-sm-2">
+            <div class="col-sm-1">
                 {!! Form::number('bookno',null,array('min' => '0','max' => '999')) !!}
             </div>
             {!! Form::label('no', 'เลขที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-            <div class="col-sm-2">
+            <div class="col-sm-1">
                 {!! Form::number('no',null,array('min' => '0','max' => '9999')) !!}
             </div>
             {!! Form::label('date', 'วันที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-            <div class="col-sm-2">
+            <div class="col-sm-1">
                 <div class="input-group">
                     {!! Form::text('date', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date')) !!}
                         <span class="input-group-addon">
@@ -368,6 +371,19 @@
 						</span>
                 </div>
             </div>
+
+            @if($oper != 'new')
+                {!! Form::label('statustext', 'สถานะ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                <div class="col-sm-1">
+                    @if($carpreemption->status == 0)
+                        {!! Form::text('statustext', 'จอง', array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                    @elseif($carpreemption->status == 1)
+                        {!! Form::text('statustext', 'ชำระเงินแล้ว', array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                    @elseif($carpreemption->status == 2)
+                        {!! Form::text('statustext', 'ยกเลิก', array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                    @endif
+                </div>
+            @endif
         </div>
 
         <!-- Customer Details -->
@@ -655,7 +671,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('interest', 'ดอกเบี้ย', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-10">
-                                            {!! Form::number('interest', null, array('step' => '0.01', 'min' => '0', 'max' => '100','placeholder' => '%', 'min'=>'0', 'max'=>'100', 'style'=>'width:70px;')) !!}&nbsp;&nbsp;&nbsp;
+                                            {!! Form::number('interest', null, array('step' => '0.01','placeholder' => '%', 'min'=>'0', 'max'=>'100', 'style'=>'width:70px;')) !!}&nbsp;&nbsp;&nbsp;
                                             {!! Form::label('down', 'ดาวน์') !!}
                                             &nbsp;&nbsp;
                                             {!! Form::number('down', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท')) !!}

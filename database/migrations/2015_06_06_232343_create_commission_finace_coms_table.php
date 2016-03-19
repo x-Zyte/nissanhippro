@@ -17,7 +17,8 @@ class CreateCommissionFinaceComsTable extends Migration {
             $table->increments('id');
             $table->integer('commissionfinaceid')->unsigned();
             $table->foreign('commissionfinaceid')->references('id')->on('commission_finaces');
-            $table->decimal('interestcalculation', 10, 2);
+            $table->decimal('interestcalculationbeginning', 10, 2);
+            $table->decimal('interestcalculationending', 10, 2);
             $table->decimal('com', 10, 2);
 
             $table->integer('createdby')->unsigned();

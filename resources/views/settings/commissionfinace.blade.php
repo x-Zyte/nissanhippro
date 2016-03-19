@@ -401,9 +401,11 @@
                     jQuery("#"+subgrid_table_id2).jqGrid({
                         url:'commissionfinacecom/read?commissionfinaceid='+row_id,
                         datatype: "json",
-                        colNames:['%ดอกเบี้ย + -','%คอมมิสชั่น'],
+                        colNames:['%ดอกเบี้ย + - beginning','%ดอกเบี้ย + - ending','%คอมมิสชั่น'],
                         colModel:[
-                            {name:'interestcalculation',index:'interestcalculation', width:70,editable: true,editrules:{required:true, number:true, custom: true, custom_func: check_dup_interestcalculation},align:'center'
+                            {name:'interestcalculationbeginning',index:'interestcalculationbeginning', width:70,editable: true,editrules:{required:true, number:true, custom: true, custom_func: check_dup_interestcalculationbeginning},align:'center'
+                                ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
+                            {name:'interestcalculationending',index:'interestcalculationending', width:70,editable: true,editrules:{required:true, number:true, custom: true, custom_func: check_dup_interestcalculationending},align:'center'
                                 ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                             {name:'com',index:'com', width:70,editable: true,editrules:{required:true, number:true},align:'center'
                                 ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}}
@@ -434,20 +436,42 @@
 
                     $(window).triggerHandler('resize.jqGridSubGrid2');
 
-                    function check_dup_interestcalculation(value, colname) {
+                    function check_dup_interestcalculationbeginning(value, colname) {
                         var selRowId = $("#"+subgrid_table_id2).jqGrid ('getGridParam', 'selrow');
                         var commissionfinaceid = row_id;
                         if(selRowId == null) selRowId = 0;
                         $.ajax({
-                            url: 'commissionfinacecom/check_dup_interestcalculation',
-                            data: { id:selRowId,commissionfinaceid:commissionfinaceid,interestcalculation:value, _token: "{{ csrf_token() }}" },
+                            url: 'commissionfinacecom/check_dup_interestcalculationbeginning',
+                            data: { id:selRowId,commissionfinaceid:commissionfinaceid,interestcalculationbeginning:value, _token: "{{ csrf_token() }}" },
                             type: 'POST',
                             async: false,
                             datatype: 'text',
                             success: function (data) {
                                 if (!data) result = [true, ""];
                                 else {
-                                    result = [false,"%ดอกเบี้ย + - " + value + " มีอยู่ในระบบแล้ว"];
+                                    result = [false,"%ดอกเบี้ย + - beginning " + value + " มีอยู่ในระบบแล้ว"];
+                                    //alert("%ดอกเบี้ย + - " + value + " มีอยู่ในระบบแล้ว");
+                                    //$('.ui-state-error').attr('style', 'display: none !important');
+                                }
+                            }
+                        })
+                        return result;
+                    }
+
+                    function check_dup_interestcalculationending(value, colname) {
+                        var selRowId = $("#"+subgrid_table_id2).jqGrid ('getGridParam', 'selrow');
+                        var commissionfinaceid = row_id;
+                        if(selRowId == null) selRowId = 0;
+                        $.ajax({
+                            url: 'commissionfinacecom/check_dup_interestcalculationending',
+                            data: { id:selRowId,commissionfinaceid:commissionfinaceid,interestcalculationending:value, _token: "{{ csrf_token() }}" },
+                            type: 'POST',
+                            async: false,
+                            datatype: 'text',
+                            success: function (data) {
+                                if (!data) result = [true, ""];
+                                else {
+                                    result = [false,"%ดอกเบี้ย + - ending " + value + " มีอยู่ในระบบแล้ว"];
                                     //alert("%ดอกเบี้ย + - " + value + " มีอยู่ในระบบแล้ว");
                                     //$('.ui-state-error').attr('style', 'display: none !important');
                                 }

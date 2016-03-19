@@ -55,14 +55,29 @@ class CommissionFinaceComController extends Controller {
         GridEncoder::encodeRequestedData(new CommissionFinaceComRepository(), $request);
     }
 
-    public function check_dup_interestcalculation(Request $request)
+    public function check_dup_interestcalculationbeginning(Request $request)
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $input = $request->only('id','commissionfinaceid','interestcalculation');
+        $input = $request->only('id','commissionfinaceid','interestcalculationbeginning');
         $model = CommissionFinaceCom::where('id','!=', $input['id'])
             ->where('commissionfinaceid', $input['commissionfinaceid'])
-            ->where('interestcalculation', $input['interestcalculation'])
+            ->where('interestcalculationbeginning', $input['interestcalculationbeginning'])
+            ->first();
+
+        if($model != null){
+            return "x";
+        }
+    }
+
+    public function check_dup_interestcalculationending(Request $request)
+    {
+        if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $input = $request->only('id','commissionfinaceid','interestcalculationending');
+        $model = CommissionFinaceCom::where('id','!=', $input['id'])
+            ->where('commissionfinaceid', $input['commissionfinaceid'])
+            ->where('interestcalculationending', $input['interestcalculationending'])
             ->first();
 
         if($model != null){

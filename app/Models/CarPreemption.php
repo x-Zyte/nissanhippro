@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class CarPreemption extends Model {
 
@@ -12,7 +11,7 @@ class CarPreemption extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['bookno', 'no', 'date', 'bookingcustomerid', 'carmodelid', 'carsubmodelid','colorid',
+    protected $fillable = ['provinceid','branchid','bookno', 'no', 'date', 'bookingcustomerid', 'carmodelid', 'carsubmodelid','colorid',
         'pricelistid', 'discount', 'subdown', 'accessories',
 
         'oldcarbrandid', 'oldcarmodelid', 'oldcargear', 'oldcarcolor', 'oldcarenginesize', 'oldcarlicenseplate', 'oldcaryear',
@@ -25,7 +24,7 @@ class CarPreemption extends Model {
         'buyercustomerid', 'salesmanemployeeid', 'salesmanteamid', 'salesmanageremployeeid', 'approversemployeeid', 'approvaldate',
 
         'place', 'showroom', 'booth', 'leaflet', 'businesscard', 'invitationcard', 'phone', 'signshowroom', 'spotradiowalkin',
-        'recommendedby', 'recommendedbyname', 'recommendedbytype', 'customertype', 'remark',
+        'recommendedby', 'recommendedbyname', 'recommendedbytype', 'customertype', 'remark','status',
 
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
@@ -35,30 +34,12 @@ class CarPreemption extends Model {
 
         static::creating(function($model)
         {
-            if($model->oldcarbrandid == '') $model->oldcarbrandid = null;
-            if($model->oldcarmodelid == '') $model->oldcarmodelid = null;
-            if($model->oldcargear == '') $model->oldcargear = null;
-            if($model->oldcarcolor == '') $model->oldcarcolor = null;
-            if($model->oldcarenginesize == '') $model->oldcarenginesize = null;
-            if($model->oldcarlicenseplate == '') $model->oldcarlicenseplate = null;
-            if($model->oldcaryear == '') $model->oldcaryear = null;
-            if($model->oldcarprice == '') $model->oldcarprice = null;
-            if($model->oldcarbuyername == '') $model->oldcarbuyername = null;
-            if($model->oldcarother == '') $model->oldcarother = null;
+            $employee = Employee::find($model->salesmanemployeeid);
+            $model->salesmanteamid = $employee->teamid;
+            $model->provinceid = $employee->branch->provinceid;
+            $model->branchid = $employee->branchid;
 
-            if($model->purchasetype == 0){
-                $model->finacecompanyid = null;
-                $model->interest = null;
-                $model->down = null;
-                $model->installments = null;
-            }
-            if($model->recommendedby == false){
-                $model->recommendedbyname = null;
-                $model->recommendedbytype = null;
-            }
-
-            $model->date = date('Y-m-d', strtotime($model->date));
-            $model->approvaldate = date('Y-m-d', strtotime($model->approvaldate));
+            $model->status = 0;
 
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
@@ -69,39 +50,34 @@ class CarPreemption extends Model {
         static::created(function($model)
         {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Add','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
+
+            Customer::where('id',$model->bookingcustomerid)->orWhere('id',$model->buyercustomerid)->update(['statusexpect' => 0]);
+
+            $bookingcustomerid = $model->bookingcustomerid;
+            $buyercustomerid = $model->buyercustomerid;
+
+            CustomerExpectation::where('active', true)
+                ->where(function ($query) use ($bookingcustomerid,$buyercustomerid) {
+                    $query->where('customerid', $bookingcustomerid)
+                        ->orWhere('customerid', $buyercustomerid);
+                })->update(['active' => false]);
+
+            //$customer = Customer::find($model->bookingcustomerid);
+            //$customer->statusexpect = 6;
+            //$customer->save();
+
+            //$customer = Customer::find($model->buyercustomerid);
+            //$customer->statusexpect = 6;
+            //$customer->save();
+
+            //CustomerExpectation::where('customerid', $model->bookingcustomerid)->where('active',true)->update(['active' => false]);
+            //CustomerExpectation::where('customerid', $model->buyercustomerid)->where('active',true)->update(['active' => false]);
         });
 
         static::updating(function($model)
         {
-            if($model->oldcarbrandid == '') $model->oldcarbrandid = null;
-            if($model->oldcarmodelid == '') $model->oldcarmodelid = null;
-            if($model->oldcargear == '') $model->oldcargear = null;
-            if($model->oldcarbrandid == '') $model->oldcarbrandid = null;
-            if($model->oldcarmodelid == '') $model->oldcarmodelid = null;
-            if($model->oldcargear == '') $model->oldcargear = null;
-            if($model->oldcarcolor == '') $model->oldcarcolor = null;
-            if($model->oldcarenginesize == '') $model->oldcarenginesize = null;
-            if($model->oldcarlicenseplate == '') $model->oldcarlicenseplate = null;
-            if($model->oldcaryear == '') $model->oldcaryear = null;
-            if($model->oldcarprice == '') $model->oldcarprice = null;
-            if($model->oldcarbuyername == '') $model->oldcarbuyername = null;
-            if($model->oldcarother == '') $model->oldcarother = null;
-
-            if($model->purchasetype == 0){
-                $model->finacecompanyid = null;
-                $model->interest = null;
-                $model->down = null;
-                $model->installments = null;
-            }
-            if($model->recommendedby == false){
-                $model->recommendedbyname = null;
-                $model->recommendedbytype = null;
-            }
-
             $model->carPreemptionGiveaways()->delete();
 
-            $model->date = date('Y-m-d', strtotime($model->date));
-            $model->approvaldate = date('Y-m-d', strtotime($model->approvaldate));
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");
         });

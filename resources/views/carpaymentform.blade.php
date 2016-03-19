@@ -3,16 +3,166 @@
 @if($oper == 'new')
     @section('title','เพิ่มการชำระเงินใหม่')
 @elseif($oper == 'edit')
-    @section('title','แก้ไขการชำระเงิน '.$carpreemption->bookno.'/'.$carpreemption->no)
+    @section('title','แก้ไขการชำระเงิน ของรายการจอง '.$carpayment->bookno.'/'.$carpayment->no)
 @elseif($oper == 'view')
-    @section('title','ดูข้อมูลการชำระเงิน '.$carpreemption->bookno.'/'.$carpreemption->no)
+    @section('title','ดูข้อมูลการชำระเงิน ของรายการจอง '.$carpayment->bookno.'/'.$carpayment->no)
 @endif
 
 @section('menu-selling-class','active hsub open')
 @section('menu-carpayment-class','active')
-@section('pathPrefix','')
+@section('pathPrefix',$pathPrefix)
 
 @section('content')
+    <script type="text/javascript">
+        function CarpreemptionChange(sel)
+        {
+            var carpreemptionid = sel.value;
+
+            $('#carid').children('option:not(:first)').remove();
+
+            $.get('{{$pathPrefix}}carpreemption/getbyid/'+carpreemptionid, function(data){
+
+                $('#customer').val(data.customer);
+                $('#customer2').val(data.customer);
+                $('#carmodel').val(data.carmodel);
+                $('#carcolor').val(data.carcolor);
+                $('#carprice').val(data.carprice);
+
+                $.each(data.cars, function(i, option) {
+                    $('#carid').append($('<option/>').attr("value", option.id).text(option.chassisno+'/'+option.engineno));
+                });
+                $('#carid').val(null).trigger('chosen:updated');
+
+                $("input[name=purchasetype][value=" + data.purchasetype + "]").prop('checked', true);
+                $('#installments').val(data.installments);
+                $('#interest').val(data.interest);
+                $('#finacecompany').val(data.finacecompany);
+
+                $('#down').val(data.down);
+                $('#yodjud').val(data.yodjud);
+
+                var insurancepremium = $('#insurancepremium').val();
+                if(insurancepremium == null || insurancepremium == '')
+                    insurancepremium = 0;
+                $('#yodjudwithinsurancepremium').val((parseFloat(data.yodjud) + parseFloat(insurancepremium)).toFixed(2));
+
+                $('#openbill').val(data.openbill);
+
+                $('#accessoriesfee').val(data.accessoriesfee);
+                $('#insurancefee').val(data.insurancefee);
+                $('#compulsorymotorinsurancefee').val(data.compulsorymotorinsurancefee);
+                $("input[name=registrationtype][value=" + data.registrationtype + "]").prop('checked', true);
+                $('#registrationfee').val(data.registrationfee);
+                $('#cashpledgeredlabel').val(data.cashpledgeredlabel);
+
+                $('#subdown').val(data.subdown);
+                $('#cashpledge').val(data.cashpledge);
+                $('#oldcarprice').val(data.oldcarprice);
+
+                $('#salesmanemployee').val(data.salesmanemployee);
+                $('#approversemployee').val(data.approversemployee);
+
+                CalTotalpayments();
+            });
+        }
+
+        function PaymentmodeChange(){
+            var paymentmode = $("input[name=paymentmode]:checked").val();
+            var $installmentsinadvance = $("#installmentsinadvance");
+            if(paymentmode == 0){
+                $installmentsinadvance.val(1);
+            }
+
+            AmountperinstallmentChange();
+        }
+
+        function AmountperinstallmentChange(){
+            var amountperinstallment = $('#amountperinstallment').val();
+            if(amountperinstallment == null || amountperinstallment == '')
+                amountperinstallment = 0;
+
+            var installmentsinadvance = $('#installmentsinadvance').val();
+            if(installmentsinadvance == null || installmentsinadvance == '')
+                installmentsinadvance = 0;
+
+            $("#payinadvanceamount").val((parseFloat(amountperinstallment)*parseFloat(installmentsinadvance)).toFixed(2));
+
+            CalTotalpayments();
+        }
+
+        function InstallmentsinadvanceChange(){
+            AmountperinstallmentChange();
+        }
+
+        function InsurancepremiumChange(){
+            var insurancepremium = $('#insurancepremium').val();
+            if(insurancepremium == null || insurancepremium == '')
+                insurancepremium = 0;
+            var yodjud = $('#yodjud').val();
+            if(yodjud == null || yodjud == '')
+                yodjud = 0;
+            $('#yodjudwithinsurancepremium').val((parseFloat(yodjud) + parseFloat(insurancepremium)).toFixed(2));
+        }
+
+        function CalTotalpayments(){
+            var down = $('#down').val();
+            if(down == null || down == '') down = 0;
+
+            var payinadvanceamount = $('#payinadvanceamount').val();
+            if(payinadvanceamount == null || payinadvanceamount == '') payinadvanceamount = 0.00;
+
+            var accessoriesfee = $('#accessoriesfee').val();
+            if(accessoriesfee == null || accessoriesfee == '') accessoriesfee = 0;
+
+            var insurancefee = $('#insurancefee').val();
+            if(insurancefee == null || insurancefee == '') insurancefee = 0;
+
+            var compulsorymotorinsurancefee = $('#compulsorymotorinsurancefee').val();
+            if(compulsorymotorinsurancefee == null || compulsorymotorinsurancefee == '') compulsorymotorinsurancefee = 0;
+
+            var registrationfee = $('#registrationfee').val();
+            if(registrationfee == null || registrationfee == '') registrationfee = 0;
+
+            var cashpledgeredlabel = $('#cashpledgeredlabel').val();
+            if(cashpledgeredlabel == null || cashpledgeredlabel == '') cashpledgeredlabel = 0;
+
+            var total = parseFloat(down) + parseFloat(payinadvanceamount) + parseFloat(accessoriesfee) + parseFloat(insurancefee) + parseFloat(compulsorymotorinsurancefee) + parseFloat(registrationfee) + parseFloat(cashpledgeredlabel);
+            $('#total').val(total.toFixed(2));
+
+            var subdown = $('#subdown').val();
+            if(subdown == null || subdown == '') subdown = 0;
+
+            var cashpledge = $('#cashpledge').val();
+            if(cashpledge == null || cashpledge == '') cashpledge = 0;
+
+            var oldcarprice = $('#oldcarprice').val();
+            if(oldcarprice == null || oldcarprice == '') oldcarprice = 0;
+
+            var totalpayments = parseFloat(total) - parseFloat(subdown) - parseFloat(cashpledge) - parseFloat(oldcarprice);
+            $('#totalpayments').val(totalpayments.toFixed(2));
+
+            //$.get('{{$pathPrefix}}carpayment/getbahttext/'+ totalpayments.toFixed(2), function(data){
+                //alert(data);
+            //});
+        }
+
+        function CalOverdue(){
+            var totalpayments = $('#totalpayments').val();
+            if(totalpayments == null || totalpayments == '') totalpayments = 0;
+
+            var buyerpay = $('#buyerpay').val();
+            if(buyerpay == null || buyerpay == '') buyerpay = 0;
+
+            var overdue = parseFloat(totalpayments) - parseFloat(buyerpay);
+            $('#overdue').val(overdue.toFixed(2));
+
+            var overdueinterest = $('#overdueinterest').val();
+            if(overdueinterest == null || overdueinterest == '') overdueinterest = 0;
+
+            var totaloverdue = parseFloat(overdue) + parseFloat(overdueinterest);
+            $('#totaloverdue').val(totaloverdue.toFixed(2));
+        }
+    </script>
 
     @if($oper == 'new')
         <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-btc"></i> เพิ่มการชำระเงินใหม่</h3>
@@ -42,6 +192,18 @@
         {!! Form::model($carpayment, array('id'=>'form-carpayment', 'class'=>'form-horizontal', 'role'=>'form')) !!}
     @endif
 
+        <div class="form-group" style="margin-top:10px;" >
+            {!! Form::label('carpreemptionid', 'ชำระเงินการจอง เล่มที่/เลขที่', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+            <div class="col-sm-3">
+                @if($oper == 'new')
+                    {!! Form::select('carpreemptionid', $carpreemptionselectlist, null, array('id'=>'carpreemptionid', 'class' => 'chosen-select', 'onchange'=>'CarpreemptionChange(this)')); !!}
+                @else
+                    {!! Form::select('carpreemptionid', $carpreemptionselectlist, null, array('id'=>'carpreemptionid', 'class' => 'chosen-select', 'onchange'=>'CarpreemptionChange(this)', 'disabled'=>'disabled')); !!}
+                    {!! Form::hidden('carpreemptionid') !!}
+                @endif
+            </div>
+        </div>
+
         <!-- Detail 1 -->
         <div class="row">
             <div class="col-xs-1 col-sm-1"></div>
@@ -60,104 +222,71 @@
                         <div class="widget-body-inner" style="display: block;">
                             <div class="widget-main">
                                 <div class="form-group" style="padding-top:5px;">
-                                    <label class="col-sm-1 control-label no-padding-right" for="customer">ชื่อลูกค้า</label>
-                                    <div class="col-sm-3">
-                                        <div>
-                                            <select id="customer" data-placeholder="โปรดเลือกชื่อลูกค้า ...">
-                                                <option value="">  </option>
-                                                <option value="customer1">นายเสก โลโซ</option>
-                                                <option value="customer2">นายเรืองศักดิ์ ลอยชูศักดิ์</option>
-                                                <option value="customer3">นางสาวคักกิ่งรักษ์ คิกคักสะระนัง</option>
-                                            </select>
-                                        </div>
+                                    {!! Form::label('customer', 'ชื่อลูกค้า', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-4">
+                                        {!! Form::text('customer', null, array('style'=>'width:235px;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                     </div>
-                                    <label class="col-sm-1 control-label no-padding-right" for="date">วันที่</label>
+                                    {!! Form::label('date', 'วันที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         <div class="input-group">
-                                            <input class="form-control date-picker" id="date" type="text" data-date-format="dd-mm-yyyy" />
-																<span class="input-group-addon">
-																	<i class="fa fa-calendar bigger-110"></i>
-																</span>
+                                            {!! Form::text('date', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date')) !!}
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar bigger-110"></i>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label no-padding-right" for="models">รถนิสสันรุ่น</label>
+                                    {!! Form::label('carmodel', 'แบบ/รุ่น', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-4">
+                                        {!! Form::text('carmodel', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                    </div>
+                                    {!! Form::label('carcolor', 'สี', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        <select id="models" data-placeholder="โปรดเลือกรุ่น ...">
-                                            <option value="">  </option>
-                                            <option value="saleman1">รุ่น A </option>
-                                            <option value="saleman2">รุ่น B</option>
-                                            <option value="saleman3">รุ่น C</option>
-                                        </select>
+                                        {!! Form::text('carcolor', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                     </div>
-                                    <label class="col-sm-1 control-label no-padding-right" for="color">สี</label>
-                                    <div class="col-sm-3">
-                                        <select id="color" data-placeholder="โปรดเลือกสี ...">
-                                            <option value="">  </option>
-                                            <option value="saleman1">K21</option>
-                                            <option value="saleman2">B32</option>
-                                            <option value="saleman3">C49</option>
-                                        </select>
-                                    </div>
-                                    <label class="col-sm-1 control-label no-padding-right" for="price">ราคาขายจริง</label>
-                                    <div class="col-sm-2">
-                                        <input type="number" id="price" placeholder="บาท" />
-                                    </div>
+
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label no-padding-right" for="body">ตัวถัง</label>
-                                    <div class="col-sm-3">
-                                        <select id="body" data-placeholder="โปรดเลือกหมายเลขตัวถัง ...">
-                                            <option value="">  </option>
-                                            <option value="saleman1">ตัวถัง A </option>
-                                            <option value="saleman2">ตัวถัง B</option>
-                                            <option value="saleman3">ตัวถัง C</option>
-                                        </select>
+                                    {!! Form::label('carprice', 'ราคาขาย', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-2">
+                                        {!! Form::number('carprice', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                     </div>
-                                    <label class="col-sm-1 control-label no-padding-right" for="enginenumber">เลขเครื่อง</label>
+
+                                    {!! Form::label('carid', 'รถ เลขตัวถัง/เลขเครื่อง', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        <select id="enginenumber" data-placeholder="โปรดเลือกหมายเลขเครื่อง ...">
-                                            <option value="">  </option>
-                                            <option value="saleman1">เลขเครื่อง A</option>
-                                            <option value="saleman2">เลขเครื่อง B</option>
-                                            <option value="saleman3">เลขเครื่อง C</option>
-                                        </select>
+                                        {!! Form::select('carid', $carselectlist, null, array('id'=>'carid', 'class' => 'chosen-select')); !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-1"></div>
                                     <div class="col-sm-11">
-
                                         <label>
-                                            <input name="paymenttype" type="radio" class="ace" />
+                                            {!! Form::radio('purchasetype', 0, $purchasetype0, array('class' => 'ace', 'disabled'=>'disabled')) !!}
                                             <span class="lbl">  สด</span>
                                         </label>
                                         &nbsp;
                                         <label>
-                                            <input name="paymenttype" type="radio" class="ace" />
-                                            <span class="lbl"> ผ่อน</span>&nbsp;&nbsp;
-                                            <input type="number" id="numberinstallments" min="0" style="width:80px;" placeholder="งวด" />
+                                            {!! Form::radio('purchasetype', 1, $purchasetype1, array('class' => 'ace', 'disabled'=>'disabled')) !!}
+                                            <span class="lbl">  ผ่อน</span>&nbsp;&nbsp;
+                                            {!! Form::number('installments', null, array('style'=>'width:70px;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'installments')) !!}
                                         </label>
+
                                         <label>
                                             <span class="lbl"> งวด ๆ ละ</span>&nbsp;
-                                            <input type="number" id="interestpertime" min="0" style="width:120px;" placeholder="บาท" />
+                                            {!! Form::number('amountperinstallment', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id'=>'amountperinstallment', 'onchange'=>'AmountperinstallmentChange();')) !!}
                                         </label>
                                         <label>
                                             <span class="lbl"> บาท ดอกเบี้ย</span>&nbsp;
-                                            <input type="number" id="interest" min="0" max="100" style="width:60px;" placeholder="%" /> %
+                                            {!! Form::number('interest', null, array('style'=>'width:70px;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'interest')) !!}
+                                            <span class="lbl"> %</span>
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label no-padding-right" for="financeofficer">ไฟแนนซ์ </label>
-                                    <div class="col-sm-3">
-                                        <select id="financeofficer" data-placeholder="โปรดเลือกไฟแนนซ์ (จนท.) ...">
-                                            <option value="">  </option>
-                                            <option value="finan1">ไฟแนนซ์ A</option>
-                                            <option value="finan2">ไฟแนนซ์ B</option>
-                                            <option value="finan3">ไฟแนนซ์ C</option>
-                                        </select>
+                                    {!! Form::label('finacecompany', 'ไฟแนนซ์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-2">
+                                        {!! Form::text('finacecompany', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                     </div>
                                 </div>
                             </div>
@@ -186,56 +315,68 @@
                                 <div class="form-group" style="padding-top:10px; padding-left:20px;">
                                     <div class="col-sm-7">
                                         <label style="width:180px;"> ชำระเงินค่าดาวน์ / ค่ารถ</label>
-                                        <label> ( ยอดจัด</label>
-                                        <input type="number" min="0" id="financingamount" placeholder="บาท" style="width:120px;" />
-                                        <label> บาท )</label>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" min="0" id="downcarpayment" placeholder="บาท"  />
+                                    <div class="col-sm-2">
+                                        {!! Form::number('down', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'down')) !!}
+                                    </div>
+                                </div>
+                                <div class="form-group" style="padding-left:20px;">
+                                    <div class="col-sm-9">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label> ( ยอดจัด</label>
+                                        {!! Form::number('yodjud', null, array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'yodjud')) !!}
+                                        <label> เบี้ยประกันชีวิต</label>
+                                        {!! Form::number('insurancepremium', null, array('style'=>'width:100px;','step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id'=>'insurancepremium', 'onchange'=>'InsurancepremiumChange();')) !!}
+                                        <label> รวม</label>
+                                        {!! Form::number('yodjudwithinsurancepremium', null, array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'yodjudwithinsurancepremium')) !!}
+                                        <label> บาท</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <label>เปิดบิล</label>
+                                        {!! Form::number('openbill', null, array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'openbill')) !!}
+                                        <label> บาท )</label>
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:20px;">
                                     <div class="col-sm-7">
-                                        <label style="width:180px;"> ชำระงวดแรก</label>
+                                        <label>
+                                            {!! Form::radio('paymentmode', 0, false, array('class' => 'ace', 'onchange'=>'PaymentmodeChange();')) !!}
+                                            <span class="lbl">  ชำระงวดแรก</span>
+                                        </label>
+                                        &nbsp;
+                                        <label>
+                                            {!! Form::radio('paymentmode', 1, false, array('class' => 'ace', 'onchange'=>'PaymentmodeChange();')) !!}
+                                            <span class="lbl">  ชำระงวดล่วงหน้า</span>&nbsp;&nbsp;
+                                        </label>
+
                                         <label> ( จำนวนงวด</label>
-                                        <input type="number" min="0" id="time" placeholder="งวด" style="width:50px;" />
-                                        <label> รวมเบี้ยประกัน</label>
-                                        <input type="number" min="0" id="totalplusinsurance" placeholder="บาท" style="width:100px;" />
-                                        <label> บาท )</label>
+                                        {!! Form::number('installmentsinadvance', null, array('style'=>'width:60px;','step' => '1', 'min' => '1', 'id'=>'installmentsinadvance', 'onchange'=>'InstallmentsinadvanceChange();')) !!}
+                                        <label> )</label>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" min="0" id="firstinstallmentpayment " placeholder="บาท"  />
+                                    <div class="col-sm-2">
+                                        {!! Form::number('payinadvanceamount', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'payinadvanceamount')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:20px;">
                                     <div class="col-sm-7">
                                         <label style="width:180px;"> อุปกรณ์รวม</label>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" min="0" id="totalequipment" placeholder="บาท"  />
+                                    <div class="col-sm-2">
+                                        {!! Form::number('accessoriesfee', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'accessoriesfee')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:20px;">
                                     <div class="col-sm-7">
                                         <label style="width:180px;"> เบี้ยประกันชั้น 1,3</label>
                                         <label style="width:45px;"> บริษัท</label>
-                                        <select id="insurancecompany" data-placeholder="เลือกบริษัท">
-                                            <option value=""></option>
-                                            <option value="company1">ไฟแนนซ์ A</option>
-                                            <option value="company2">ไฟแนนซ์ B</option>
-                                            <option value="company3">ไฟแนนซ์ C</option>
-                                        </select>
-
+                                        {!! Form::select('insurancecompanyid', $insurancecompanyselectlist, null, array('id'=>'insurancecompanyid', 'class' => 'chosen-select')); !!}
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" min="0" id="insurancepremium" placeholder="บาท"  />
+                                    <div class="col-sm-2">
+                                        {!! Form::number('insurancefee', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'insurancefee')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:20px;">
                                     <div class="col-sm-7">
                                         <label style="width:180px;"></label>
                                         <label style="width:45px;"> ทุน</label>
-                                        <input type="number" min="0" id="insurancecapital" placeholder="บาท" style="width:100px;" />
+                                        {!! Form::number('capitalinsurance', null, array('style'=>'width:100px;','step' => '0.01', 'min' => '0')) !!}
                                         <label> บาท</label>
                                     </div>
                                 </div>
@@ -243,40 +384,37 @@
                                     <div class="col-sm-7">
                                         <label style="width:180px;"> เบี้ย พ.ร.บ.</label>
                                         <label style="width:45px;"> บริษัท</label>
-                                        <select id="compulsoryinsurancecompany" data-placeholder="เลือกบริษัท">
-                                            <option value=""></option>
-                                            <option value="company1">ไฟแนนซ์ A</option>
-                                            <option value="company2">ไฟแนนซ์ B</option>
-                                            <option value="company3">ไฟแนนซ์ C</option>
-                                        </select>
+                                        {!! Form::select('compulsorymotorinsurancecompanyid', $insurancecompanyselectlist, null, array('id'=>'compulsorymotorinsurancecompanyid', 'class' => 'chosen-select')); !!}
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" min="0" id="compulsoryinsurancepremium" placeholder="บาท"  />
+                                    <div class="col-sm-2">
+                                        {!! Form::number('compulsorymotorinsurancefee', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'compulsorymotorinsurancefee')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:20px;">
                                     <div class="col-sm-7">
                                         <label style="width:180px;"> ทะเบียน</label>
+
                                         <label>
-                                            <input name="registrationtype" type="radio" class="ace" />
+                                            {!! Form::radio('registrationtype', 0, $registrationtype0, array('class' => 'ace', 'disabled'=>'disabled')) !!}
                                             <span class="lbl">  บุคคล</span>
                                         </label>
                                         &nbsp;
                                         <label>
-                                            <input name="registrationtype" type="radio" class="ace" />
-                                            <span class="lbl"> นิติบุคคล</span>
+                                            {!! Form::radio('registrationtype', 1, $registrationtype1, array('class' => 'ace', 'disabled'=>'disabled')) !!}
+                                            <span class="lbl">  นิติบุคคล</span>
                                         </label>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" min="0" id="registrationfees" placeholder="บาท"  />
+                                    <div class="col-sm-2">
+                                        {!! Form::number('registrationfee', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'registrationfee')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:20px;">
                                     <div class="col-sm-7">
                                         <label style="width:180px;"> มัดจำป้ายแดง</label>
+                                        {!! Form::select('redlabelid', $redlabelselectlist, null, array('id'=>'redlabelid', 'class' => 'chosen-select')); !!}
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" min="0" id="depositredplate" placeholder="บาท"  />
+                                    <div class="col-sm-2">
+                                        {!! Form::number('cashpledgeredlabel', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'cashpledgeredlabel')) !!}
                                     </div>
                                 </div>
                                 <hr>
@@ -284,8 +422,8 @@
                                     <div class="col-sm-7">
                                         <label style="width:170px; text-align:right; padding-right:10px; font-weight:bold;"> รวมเงิน</label>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" readonly min="0" id="total" placeholder="" value=""  />
+                                    <div class="col-sm-2">
+                                        {!! Form::number('total', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'total')) !!}
                                     </div>
                                 </div>
                                 <hr>
@@ -293,24 +431,24 @@
                                     <div class="col-sm-7">
                                         <label style="width:180px;"> <span style=" text-decoration:underline;">หัก</span> Sub ดาวน์</label>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" min="0" id="deductsubdown" placeholder="บาท"  />
+                                    <div class="col-sm-2">
+                                        {!! Form::number('subdown', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'subdown')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:20px;">
                                     <div class="col-sm-7">
                                         <label style="width:180px;"><span style=" text-decoration:underline;">หัก</span> มัดจำรถ</label>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" min="0" id="deductearnestcar " placeholder="บาท"  />
+                                    <div class="col-sm-2">
+                                        {!! Form::number('cashpledge', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'cashpledge')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:20px;">
                                     <div class="col-sm-7">
                                         <label style="width:180px;"><span style=" text-decoration:underline;">หัก</span> ค่ารถเก่า</label>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" min="0" id="deductoldcar" placeholder="บาท"  />
+                                    <div class="col-sm-2">
+                                        {!! Form::number('oldcarprice', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'oldcarprice')) !!}
                                     </div>
                                 </div>
                                 <hr>
@@ -318,8 +456,8 @@
                                     <div class="col-sm-7">
                                         <label style="width:170px; text-align:right; padding-right:10px; font-weight:bold;"> ชำระเงินรวม</label>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" readonly min="0" id="totalpayment" placeholder="" value=""  />
+                                    <div class="col-sm-2">
+                                        {!! Form::number('totalpayments', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'totalpayments')) !!}
                                     </div>
                                 </div>
 
@@ -348,13 +486,13 @@
                             <div class="widget-main">
                                 <div class="form-group" style="padding-left:20px; padding-top:10px;">
                                     <div class="col-sm-12">
-                                        <label class="control-label no-padding-right" style="float:left;" for="downinstallmentsdate">วันที่</label>
+                                        {!! Form::label('date2', 'วันที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                <input class="form-control date-picker" id="downinstallmentsdate" type="text" data-date-format="dd-mm-yyyy" />
-																	<span class="input-group-addon">
-																		<i class="fa fa-calendar bigger-110"></i>
-																	</span>
+                                                {!! Form::text('date2', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date2')) !!}
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar bigger-110"></i>
+                                            </span>
                                             </div>
                                         </div>
                                     </div>
@@ -365,11 +503,12 @@
                                         <label style="width:180px;">
                                             ผู้ซื้อได้ชำระเงินเป็นจำนวน&nbsp;
                                         </label>
-                                        <input type="number" id="downinstallmentspaid" min="0" style="margin-right:70px;" placeholder="บาท" />
+                                        {!! Form::number('buyerpay', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id'=>'buyerpay', 'onchange'=>'CalOverdue();')) !!}
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <label style="width:165px;">
                                             สำหรับส่วนที่ค้างชำระอีก&nbsp;
                                         </label>
-                                        <input type="number" id="downinstallmentsunpaid" min="0" placeholder="บาท" />
+                                        {!! Form::number('overdue', null, array('class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'overdue')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:20px;">
@@ -377,11 +516,12 @@
                                         <label style="width:180px;">
                                             พร้อมดอกเบี้ยจำนวน&nbsp;
                                         </label>
-                                        <input type="number" id="downinstallmentsunpaidinterest" min="0" style="margin-right:70px;" placeholder="บาท" />
+                                        {!! Form::number('overdueinterest', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinterest', 'onchange'=>'CalOverdue();')) !!}
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <label style="width:165px;">
-                                            รวมเป็นเงินทั้งสิ้น&nbsp;
+                                            รวมเป็นเงินค้างชำระทั้งสิ้น&nbsp;
                                         </label>
-                                        <input type="number" id="totaldowninstallmentsunpaid" min="0" placeholder="บาท" />
+                                        {!! Form::number('totaloverdue', null, array('class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'totaloverdue')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:20px;">
@@ -393,172 +533,146 @@
                                         </div>
                                         <div class="checkbox" style="padding-top:0px;">
                                             <label>
-                                                <input name="downinstallmentspaymenttype" type="checkbox" class="ace" />
+                                                {!! Form::checkbox('paybyoldcar', 1, false, array('class' => 'ace')) !!}
                                                 <span class="lbl" style="width:60px;" > รถเก่า</span>
                                             </label>
                                             &nbsp;&nbsp;
                                             <label>
-                                                <input name="downinstallmentspaymenttype" type="checkbox" class="ace" />
+                                                {!! Form::checkbox('paybycash', 1, false, array('class' => 'ace')) !!}
                                                 <span class="lbl" style="width:60px;" > เงินสด</span>
                                             </label>
                                             &nbsp;&nbsp;
                                             <label>
-                                                <input name="downinstallmentspaymenttype" type="checkbox" class="ace" />
+                                                {!! Form::checkbox('paybyother', 1, false, array('class' => 'ace')) !!}
                                                 <span class="lbl" style="width:60px;" >  อื่น ๆ </span>
                                             </label>
-                                            <input type="text" id="otherpaymenttype" placeholder="" />
-                                            <label> จำนวน </label><input type="number" id="numberdowninstallments" min="0" style="width:70px;" placeholder="งวด" /><label> งวด  ดังนี้</label>
+                                            {!! Form::text('paybyotherdetails') !!}
+                                            <label> จำนวน </label>
+                                            {!! Form::number('overdueinstallments', null, array('style'=>'width:60px;','step' => '1', 'min' => '1', 'max' => '6', 'id'=>'overdueinstallments')) !!}
+                                            <label> งวด  ดังนี้</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:60px;  padding-top:10px;">
                                     <div class="col-sm-12">
-                                        <label class="control-label no-padding-right" style="float:left;" for="downinstallmentdate1">งวดที่ 1 วันที่</label>
+                                        {!! Form::label('overdueinstallmentdate1', 'งวดที่ 1 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                <input class="form-control date-picker" id="downinstallmentdate1" type="text" data-date-format="dd-mm-yyyy" />
-																	<span class="input-group-addon">
-																		<i class="fa fa-calendar bigger-110"></i>
-																	</span>
+                                                {!! Form::text('overdueinstallmentdate1', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate1')) !!}
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar bigger-110"></i>
+                                            </span>
                                             </div>
                                         </div>
-                                        <label class="col-sm-1 control-label no-padding-right" style="float:left;" for="downinstallmentamount1">จำนวน</label>
+                                        {!! Form::label('overdueinstallmentamount1', 'จำนวน', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
-                                            <input type="number" id="downinstallmentamount1" min="0" placeholder="บาท" />
+                                            {!! Form::number('overdueinstallmentamount1', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount1')) !!}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:60px;">
                                     <div class="col-sm-12">
-                                        <label class="control-label no-padding-right" style="float:left;" for="downinstallmentdate2">งวดที่ 2 วันที่</label>
+                                        {!! Form::label('overdueinstallmentdate2', 'งวดที่ 2 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                <input class="form-control date-picker" id="downinstallmentdate2" type="text" data-date-format="dd-mm-yyyy" />
-																	<span class="input-group-addon">
-																		<i class="fa fa-calendar bigger-110"></i>
-																	</span>
+                                                {!! Form::text('overdueinstallmentdate2', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate2')) !!}
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar bigger-110"></i>
+                                            </span>
                                             </div>
                                         </div>
-                                        <label class="col-sm-1 control-label no-padding-right" style="float:left;" for="downinstallmentamount2">จำนวน</label>
+                                        {!! Form::label('overdueinstallmentamount2', 'จำนวน', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
-                                            <input type="number" id="downinstallmentamount2" min="0" placeholder="บาท" />
+                                            {!! Form::number('overdueinstallmentamount2', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount2')) !!}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:60px;">
                                     <div class="col-sm-12">
-                                        <label class="control-label no-padding-right" style="float:left;" for="downinstallmentdate3">งวดที่ 3 วันที่</label>
+                                        {!! Form::label('overdueinstallmentdate3', 'งวดที่ 3 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                <input class="form-control date-picker" id="downinstallmentdate3" type="text" data-date-format="dd-mm-yyyy" />
-																	<span class="input-group-addon">
-																		<i class="fa fa-calendar bigger-110"></i>
-																	</span>
+                                                {!! Form::text('overdueinstallmentdate3', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate3')) !!}
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar bigger-110"></i>
+                                            </span>
                                             </div>
                                         </div>
-                                        <label class="col-sm-1 control-label no-padding-right" style="float:left;" for="downinstallmentamount3">จำนวน</label>
+                                        {!! Form::label('overdueinstallmentamount3', 'จำนวน', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
-                                            <input type="number" id="downinstallmentamount3" min="0" placeholder="บาท" />
+                                            {!! Form::number('overdueinstallmentamount3', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount3')) !!}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:60px;">
                                     <div class="col-sm-12">
-                                        <label class="control-label no-padding-right" style="float:left;" for="downinstallmentdate4">งวดที่ 4 วันที่</label>
+                                        {!! Form::label('overdueinstallmentdate4', 'งวดที่ 4 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                <input class="form-control date-picker" id="downinstallmentdate4" type="text" data-date-format="dd-mm-yyyy" />
-																	<span class="input-group-addon">
-																		<i class="fa fa-calendar bigger-110"></i>
-																	</span>
+                                                {!! Form::text('overdueinstallmentdate4', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate4')) !!}
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar bigger-110"></i>
+                                            </span>
                                             </div>
                                         </div>
-                                        <label class="col-sm-1 control-label no-padding-right" style="float:left;" for="downinstallmentamount4">จำนวน</label>
+                                        {!! Form::label('overdueinstallmentamount4', 'จำนวน', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
-                                            <input type="number" id="downinstallmentamount4" min="0" placeholder="บาท" />
+                                            {!! Form::number('overdueinstallmentamount4', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount4')) !!}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:60px;">
                                     <div class="col-sm-12">
-                                        <label class="control-label no-padding-right" style="float:left;" for="downinstallmentdate5">งวดที่ 5 วันที่</label>
+                                        {!! Form::label('overdueinstallmentdate5', 'งวดที่ 5 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                <input class="form-control date-picker" id="downinstallmentdate5" type="text" data-date-format="dd-mm-yyyy" />
-																	<span class="input-group-addon">
-																		<i class="fa fa-calendar bigger-110"></i>
-																	</span>
+                                                {!! Form::text('overdueinstallmentdate5', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate5')) !!}
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar bigger-110"></i>
+                                            </span>
                                             </div>
                                         </div>
-                                        <label class="col-sm-1 control-label no-padding-right" style="float:left;" for="downinstallmentamount5">จำนวน</label>
+                                        {!! Form::label('overdueinstallmentamount5', 'จำนวน', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
-                                            <input type="number" id="downinstallmentamount5" min="0" placeholder="บาท" />
+                                            {!! Form::number('overdueinstallmentamount5', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount5')) !!}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:60px;">
                                     <div class="col-sm-12">
-                                        <label class="control-label no-padding-right" style="float:left;" for="downinstallmentdate6">งวดที่ 6 วันที่</label>
+                                        {!! Form::label('overdueinstallmentdate6', 'งวดที่ 6 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                <input class="form-control date-picker" id="downinstallmentdate6" type="text" data-date-format="dd-mm-yyyy" />
-																	<span class="input-group-addon">
-																		<i class="fa fa-calendar bigger-110"></i>
-																	</span>
+                                                {!! Form::text('overdueinstallmentdate6', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate6')) !!}
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar bigger-110"></i>
+                                            </span>
                                             </div>
                                         </div>
-                                        <label class="col-sm-1 control-label no-padding-right" style="float:left;" for="downinstallmentamount6">จำนวน</label>
+                                        {!! Form::label('overdueinstallmentamount6', 'จำนวน', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
-                                            <input type="number" id="downinstallmentamount6" min="0" placeholder="บาท" />
+                                            {!! Form::number('overdueinstallmentamount6', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount6')) !!}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-top:15px;">
                                     <label class="col-sm-1 control-label no-padding-right" for="customerbuy">ผู้ซื้อ</label>
                                     <div class="col-sm-3">
-                                        <div>
-                                            <select id="customerbuy" data-placeholder="โปรดเลือกชื่อลูกค้า ...">
-                                                <option value="">  </option>
-                                                <option value="customer1">นายเสก โลโซ</option>
-                                                <option value="customer2">นายเรืองศักดิ์ ลอยชูศักดิ์</option>
-                                                <option value="customer3">นางสาวคักกิ่งรักษ์ คิกคักสะระนัง</option>
-                                            </select>
-                                        </div>
+                                        {!! Form::text('customer2', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'customer2')) !!}
                                     </div>
-                                    <label class="col-sm-1 control-label no-padding-right" for="salesperson">พนักงานขาย</label>
+                                    <label class="col-sm-2 control-label no-padding-right" for="salesperson">พนักงานขาย</label>
                                     <div class="col-sm-3">
-                                        <div>
-                                            <select id="salesperson" data-placeholder="โปรดเลือกชื่อพนักงานขาย ...">
-                                                <option value="">  </option>
-                                                <option value="saleman1">นายเสก โลโซ</option>
-                                                <option value="saleman2">นายเรืองศักดิ์ ลอยชูศักดิ์</option>
-                                                <option value="saleman3">นางสาวคักกิ่งรักษ์ คิกคักสะระนัง</option>
-                                            </select>
-                                        </div>
+                                        {!! Form::text('salesmanemployee', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'salesmanemployee')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label no-padding-right" for="customerbuyoldcar">ผู้ซื้อรถเก่า</label>
                                     <div class="col-sm-3">
-                                        <div>
-                                            <select id="customerbuyoldcar" data-placeholder="โปรดเลือกชื่อลูกค้า ...">
-                                                <option value="">  </option>
-                                                <option value="customer1">นายเสก โลโซ</option>
-                                                <option value="customer2">นายเรืองศักดิ์ ลอยชูศักดิ์</option>
-                                                <option value="customer3">นางสาวคักกิ่งรักษ์ คิกคักสะระนัง</option>
-                                            </select>
-                                        </div>
+                                        {!! Form::text('oldcarbuyername', null, array('style'=>'width:100%;')) !!}
                                     </div>
-                                    <label class="col-sm-1 control-label no-padding-right" for="approver">ผู้อนุมัติ</label>
+                                    <label class="col-sm-2 control-label no-padding-right" for="approver">ผู้อนุมัติ</label>
                                     <div class="col-sm-3">
-                                        <div>
-                                            <select id="approver" data-placeholder="โปรดเลือกชื่อผู้อนุมัติ ...">
-                                                <option value="">  </option>
-                                                <option value="approver1">นายเสก โลโซ</option>
-                                                <option value="approver2">นายเรืองศักดิ์ ลอยชูศักดิ์</option>
-                                                <option value="approver3">นางสาวคักกิ่งรักษ์ คิกคักสะระนัง</option>
-                                            </select>
-                                        </div>
+                                        {!! Form::text('approversemployee', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'approversemployee')) !!}
                                     </div>
                                 </div>
                             </div>
@@ -588,48 +702,38 @@
                                     <div class="col-sm-12">
                                         <label>
                                             <span> ชำระค่ารถเก่าจำนวน</span>&nbsp;&nbsp;
-                                            <input type="number" id="oldcarpaymentamount" min="0" style="width:120px;" placeholder="บาท" />
+                                            {!! Form::number('oldcarpayamount', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id'=>'oldcarpayamount')) !!}
                                         </label>
                                         <label>&nbsp;
                                             <span>&nbsp;&nbsp;&nbsp; โดย&nbsp;&nbsp;&nbsp;</span>
-                                            <input name="oldcarpaymenttype" type="radio" class="ace" />
+                                            {!! Form::radio('oldcarpaytype', 0, false, array('class' => 'ace')) !!}
                                             <span class="lbl" style="margin-right:15px;	">  เงินสด</span>
                                         </label>
                                         <label>
-                                            <input name="oldcarpaymenttype" type="radio" class="ace" />
+                                            {!! Form::radio('oldcarpaytype', 1, false, array('class' => 'ace')) !!}
                                             <span class="lbl" style="margin-right:15px;"> เช็ค</span>&nbsp;
                                         </label>
                                         <label>
-                                            <input name="oldcarpaymenttype" type="radio" class="ace" />
+                                            {!! Form::radio('oldcarpaytype', 2, false, array('class' => 'ace')) !!}
                                             <span class="lbl"> โอน</span>&nbsp;
                                         </label>
                                     </div>
-
-
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label no-padding-right" for="receivedpaymentdate">วันที่รับเงิน</label>
                                     <div class="col-sm-2">
                                         <div class="input-group">
-                                            <input class="form-control date-picker" id="receivedpaymentdate" type="text" data-date-format="dd-mm-yyyy" />
-																<span class="input-group-addon">
-																	<i class="fa fa-calendar bigger-110"></i>
-																</span>
+                                            {!! Form::text('oldcarpaydate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'oldcarpaydate')) !!}
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar bigger-110"></i>
+                                            </span>
                                         </div>
                                     </div>
 
                                     <label class="col-sm-1 control-label no-padding-right" for="receivedpaymentby">ผู้รับเงิน</label>
                                     <div class="col-sm-3">
-                                        <div>
-                                            <select id="receivedpaymentby" data-placeholder="โปรดเลือกชื่อผู้รับเงิน ...">
-                                                <option value="">  </option>
-                                                <option value="receiver1">นายเสก โลโซ</option>
-                                                <option value="receiver2">นายเรืองศักดิ์ ลอยชูศักดิ์</option>
-                                                <option value="receiver3">นางสาวคักกิ่งรักษ์ คิกคักสะระนัง</option>
-                                            </select>
-                                        </div>
+                                        {!! Form::select('payeeemployeeid', $payeeemployeeselectlist, null, array('id'=>'payeeemployeeid', 'class' => 'chosen-select')); !!}
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -657,4 +761,41 @@
 
     {!! Form::close() !!}
 
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            //datepicker plugin
+            $('.date-picker').datepicker({
+                autoclose: true,
+                todayHighlight: true
+            }).next().on(ace.click_event, function(){ //show datepicker when clicking on the icon
+                $(this).prev().focus();
+            });
+
+            $('.chosen-select').chosen({allow_single_deselect: true});
+            //resize the chosen on window resize
+            $(window).on('resize.chosen', function () {
+                var w = $('.chosen-select').parent().width();
+                $('.chosen-select').next().css({'width': 189});
+
+                $('#carid').width(300);
+                $('#carid_chosen').width(300);
+
+                $('#payeeemployeeid').width(250);
+                $('#payeeemployeeid_chosen').width(250);
+            }).trigger('resize.chosen');
+
+            $('.date-picker').parent().width(140);
+            $('.date-picker').width(90);
+
+            @if($oper == 'view')
+                $("#form-carpayment :input").prop("disabled", true);
+                $(".chosen-select").attr('disabled', true).trigger("chosen:updated");
+            @endif
+        });
+
+        $('#form-carpayment').submit(function(){ //listen for submit event
+            return true;
+        });
+    </script>
 @endsection

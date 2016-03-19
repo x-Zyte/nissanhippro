@@ -19,7 +19,8 @@ class CreateCustomersTable extends Migration {
             $table->foreign('provinceid')->references('id')->on('provinces');
             $table->boolean('isreal')->default(false);
             $table->integer('statusexpect')
-                ->comment('0:ไม่มีการติดตาม, 1:กำลังติดตามอยู่, 2:ยกเลิก - ไปซื้อดีลเลอร์อื่น, 3:ยกเลิก - ไปซื้อยี่ห้ออื่น, 4:ยกเลิก - เปลี่ยนใจไม่ซื้อแล้ว, 5:ยกเลิก - ติดต่อไม่ได้');
+                ->comment('0:ไม่มีการติดตาม, 1:กำลังติดตามอยู่, 2:ยกเลิก - ไปซื้อดีลเลอร์อื่น, 3:ยกเลิก - ไปซื้อยี่ห้ออื่น,
+                4:ยกเลิก - เปลี่ยนใจไม่ซื้อแล้ว, 5:ยกเลิก - ติดต่อไม่ได้');
             $table->string('title',10);
             $table->string('firstname',50);
             $table->string('lastname',50)->nullable();

@@ -17,6 +17,8 @@ class FilesystemTestCase extends \PHPUnit_Framework_TestCase
 {
     private $umask;
 
+    static protected $longPathNamesWindows = array();
+
     /**
      * @var \Symfony\Component\Filesystem\Filesystem
      */
@@ -31,6 +33,12 @@ class FilesystemTestCase extends \PHPUnit_Framework_TestCase
 
     public static function setUpBeforeClass()
     {
+        if (!empty(self::$longPathNamesWindows)) {
+            foreach (self::$longPathNamesWindows as $path) {
+                exec('DEL '.$path);
+            }
+        }
+
         if ('\\' === DIRECTORY_SEPARATOR && null === self::$symlinkOnWindows) {
             $target = tempnam(sys_get_temp_dir(), 'sl');
             $link = sys_get_temp_dir().'/sl'.microtime(true).mt_rand();
@@ -92,28 +100,33 @@ class FilesystemTestCase extends \PHPUnit_Framework_TestCase
         $this->markTestSkipped('Unable to retrieve file group name');
     }
 
-    protected function markAsSkippedIfSymlinkIsMissing()
+    protected function markAsSkippedIfSymlinkIsMissing($relative = false)
     {
         if (!function_exists('symlink')) {
-            $this->markTestSkipped('symlink is not supported');
+            $this->markTestSkipped('Function symlink is required.');
         }
 
         if ('\\' === DIRECTORY_SEPARATOR && false === self::$symlinkOnWindows) {
-            $this->markTestSkipped('symlink requires "Create symbolic links" privilege on windows');
+            $this->markTestSkipped('symlink requires "Create symbolic links" privilege on Windows');
+        }
+
+        // https://bugs.php.net/bug.php?id=69473
+        if ($relative && '\\' === DIRECTORY_SEPARATOR && 1 === PHP_ZTS) {
+            $this->markTestSkipped('symlink does not support relative paths on thread safe Windows PHP versions');
         }
     }
 
     protected function markAsSkippedIfChmodIsMissing()
     {
         if ('\\' === DIRECTORY_SEPARATOR) {
-            $this->markTestSkipped('chmod is not supported on windows');
+            $this->markTestSkipped('chmod is not supported on Windows');
         }
     }
 
     protected function markAsSkippedIfPosixIsMissing()
     {
-        if ('\\' === DIRECTORY_SEPARATOR || !function_exists('posix_isatty')) {
-            $this->markTestSkipped('Posix is not supported');
+        if (!function_exists('posix_isatty')) {
+            $this->markTestSkipped('Function posix_isatty is required.');
         }
     }
 }

@@ -19,6 +19,7 @@ class CreateCommissionPAsTable extends Migration {
             $table->foreign('finacecompanyid')->references('id')->on('finace_companies');
             $table->dateTime('effectivefrom');
             $table->dateTime('effectiveto');
+            $table->decimal('finaceminimumprofit', 10, 2)->default(0);
             $table->decimal('amount', 10, 2)->default(0);
             $table->boolean('active')->default(true);
 

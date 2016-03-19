@@ -23,7 +23,7 @@ class EmployeeRepository extends EloquentRepositoryAbstract
             array('field'=>'email','label'=>'อีเมล์'));
         $this->uniqueKeyMultiples = array(array('field'=>'firstname','showInMsg'=>true,'label'=>'ชื่อจริง'),
             array('field'=>'lastname','showInMsg'=>true,'label'=>'นามสกุล'));
-        $this->hasBranch = true;
-        $this->hasProvince = false;
+        $this->hasBranch = false;
+        $this->hasProvince = true;
     }
 }

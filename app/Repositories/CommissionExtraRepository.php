@@ -16,10 +16,7 @@ class CommissionExtraRepository extends EloquentRepositoryAbstract
     {
         $this->Database = new CommissionExtra;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id', 'finacecompanyid','interestratetypeid', 'name', //'useforcustomertype',
-            'carmodelid', 'carsubmodelid', 'frominstallment', 'toinstallment',
-            'fromdownrate', 'todownrate', 'amount',
-            'effectivefrom', 'effectiveto');
+        $this->crudFields = array('oper', 'id', 'finacecompanyid', 'effectivefrom', 'effectiveto', 'amount');
         $this->uniqueKeySingles = array();
         $this->uniqueKeyMultiples = array();
         $this->hasBranch = false;
