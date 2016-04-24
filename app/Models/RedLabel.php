@@ -11,7 +11,7 @@ class RedLabel extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['provinceid','no', 'carid','deposit', 'active',
+    protected $fillable = ['provinceid','no', 'customerid', 'carid','deposit', 'active',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()
@@ -20,6 +20,7 @@ class RedLabel extends Model {
 
         static::creating(function($model)
         {
+            if($model->customerid == '') $model->customerid = null;
             if($model->carid == '') $model->carid = null;
             if($model->deposit == '') $model->deposit = null;
 
@@ -39,6 +40,7 @@ class RedLabel extends Model {
 
         static::updating(function($model)
         {
+            if($model->customerid == '') $model->customerid = null;
             if($model->carid == '') $model->carid = null;
             if($model->deposit == '') $model->deposit = null;
 

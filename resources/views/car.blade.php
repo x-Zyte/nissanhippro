@@ -47,7 +47,7 @@
             $(grid_selector).jqGrid({
                 url:'car/read',
                 datatype: "json",
-                colNames:['จังหวัด','แบบ','รุ่น','ซื้อจาก','ชื่อดีลเลอร์','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'กุญแจ', 'สี', 'รถสำหรับ','ใบรับรถเข้า'], //'ใบส่งรถให้ลูกค้า'],
+                colNames:['จังหวัด','แบบ','รุ่น','ซื้อจาก','ชื่อดีลเลอร์','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'กุญแจ', 'สี','จอดอยู่ที่', 'รถสำหรับ','ใบรับรถเข้า'], //'ใบส่งรถให้ลูกค้า'],
                 colModel:[
                     {name:'provinceid',index:'provinceid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
@@ -90,7 +90,7 @@
                     },
                     {name:'dealername',index:'dealername', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},align:'left',
                         editrules:{custom: true, custom_func: check_dealername}},
-                    {name:'no',index:'no', width:50,editable: true,editoptions:{size:"5"},align:'center'},
+                    {name:'no',index:'no', width:50,editable: true,editoptions:{size:"5"},align:'center',editrules:{required:true}},
                     {name:'dodate',index:'dodate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
                         ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
                         ,searchrules:{required:true}
@@ -107,9 +107,11 @@
                         editrules:{required:true,custom: true, custom_func: check_AZ09},align:'left'},
                     {name:'chassisno',index:'chassisno', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},
                         editrules:{required:true,custom: true, custom_func: check_AZ09},align:'left'},
-                    {name:'keyno',index:'keyno', width:50,editable: true,editoptions:{size:"5"},editrules:{number:true},align:'center'},
+                    {name:'keyno',index:'keyno', width:50,editable: true,editoptions:{size:"5"},editrules:{number:true,required:true},align:'center'},
                     {name:'colorid',index:'colorid', width:180, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$colorselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }},
+                    {name:'parklocation',index:'parklocation', width:100,editable: true,editoptions:{size:"20",maxlength:"50"}
+                        ,align:'left'},
                     {name:'objective',index:'objective', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:ขาย;1:ใช้งาน;2:ทดสอบ"},align:'center'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:ขาย;1:ใช้งาน;2:ทดสอบ" }},
                     /*{name:'issold',index:'issold', width:100, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
@@ -119,7 +121,6 @@
                     {name:'isdelivered',index:'isdelivered', width:100, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
                      ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},*/
                     {name:'receivecarfilepath',index:'receivecarfilepath',width:100,editable: true,edittype:'file',editoptions:{enctype:"multipart/form-data"},formatter:imageLinkFormatter,search:false,align:'center'}
-                    //{name:'deliverycarfilepath',index:'deliverycarfilepath',width:100,editable: true,edittype:'file',editoptions:{enctype:"multipart/form-data"},formatter:imageLinkFormatter,search:false,align:'center'}
                 ],
                 viewrecords : true,
                 rowNum:10,
@@ -183,17 +184,11 @@
 
             function uploadfiles(){
                 var receivecarfilepath = $("#receivecarfilepath");
-                var deliverycarfilepath = $("#deliverycarfilepath");
-                if((receivecarfilepath.val() != '' && receivecarfilepath.val() != null) || (deliverycarfilepath.val() != '' && deliverycarfilepath.val() != null)){
+                if(receivecarfilepath.val() != '' && receivecarfilepath.val() != null){
                     var data = new FormData();
                     data.append('_token','{{ csrf_token() }}');
                     data.append('engineno',$('#engineno').val());
-                    if(receivecarfilepath.val() != '' && receivecarfilepath.val() != null){
-                        data.append('receivecarfile', receivecarfilepath.prop('files')[0]);
-                    }
-                    if(deliverycarfilepath.val() != '' && deliverycarfilepath.val() != null){
-                        data.append('deliverycarfile', deliverycarfilepath.prop('files')[0]);
-                    }
+                    data.append('receivecarfile', receivecarfilepath.prop('files')[0]);
 
                     return $.ajax({
                         url: 'car/upload',
@@ -327,8 +322,8 @@
                         $('#colorid').children('option:not(:first)').remove();
 
                         $('#tr_dealername').hide();
-                        $('#tr_no', form).hide();
-                        $('#tr_keyno', form).hide();
+                        //$('#tr_no', form).hide();
+                        //$('#tr_keyno', form).hide();
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);

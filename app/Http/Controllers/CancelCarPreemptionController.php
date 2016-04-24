@@ -195,7 +195,6 @@ class CancelCarPreemptionController extends Controller {
         $this->validate($request, [
                 'carpreemptionid' => 'required',
                 'toemployeeid' => 'required',
-                'canceltype' => 'required',
                 'cancelreasontype' => 'required',
                 'cancelreasondetails' => 'required_if:cancelreasontype,2',
                 'approvaltype' => 'required',
@@ -211,7 +210,6 @@ class CancelCarPreemptionController extends Controller {
             [
                 'carpreemptionid.required' => 'กรุณาเลือกการจอง',
                 'toemployeeid.required' => 'กรุณาเลือกเรียน',
-                'canceltype.required' => 'คืนจอง หรือ ยึดจอง จำเป็นต้องเลือก',
                 'cancelreasontype.required' => 'ยกเลิกเนื่องจาก จำเป็นต้องเลือก',
                 'cancelreasondetails.required_if' => 'อื่นๆ จำเป็นต้องกรอก',
                 'approvaltype.required' => 'อนุมัติ จำเป็นต้องเลือก',
@@ -235,7 +233,6 @@ class CancelCarPreemptionController extends Controller {
 
         $model->carpreemptionid = $input['carpreemptionid'];
         $model->toemployeeid = $input['toemployeeid'];
-        $model->canceltype = $input['canceltype'];
         $model->cancelreasontype = $input['cancelreasontype'];
 
         if($model->cancelreasontype == 2)

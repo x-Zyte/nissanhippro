@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRedLabelsTable extends Migration {
+class CreateRedlabelhistoriesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,18 +12,16 @@ class CreateRedLabelsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('redlabels', function(Blueprint $table)
+		Schema::create('redlabelhistories', function(Blueprint $table)
 		{
             $table->increments('id');
-            $table->integer('provinceid')->unsigned();
-            $table->foreign('provinceid')->references('id')->on('provinces');
-            $table->string('no',20);
-            $table->integer('customerid')->unsigned()->nullable();
-            $table->foreign('customerid')->references('id')->on('customers');
-            $table->integer('carid')->unsigned()->nullable();
-            $table->foreign('carid')->references('id')->on('cars');
-            $table->decimal('deposit', 10, 2)->nullable();
-            $table->boolean('active')->default(true);
+            $table->integer('redlabelid')->unsigned();
+            $table->foreign('redlabelid')->references('id')->on('redlabels');
+            $table->dateTime('issuedate');
+            $table->integer('carpreemptionid')->unsigned();
+            $table->foreign('carpreemptionid')->references('id')->on('car_preemptions');
+            $table->dateTime('returndate')->nullable();
+            $table->text('remarks')->nullable();
 
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');
@@ -43,7 +41,7 @@ class CreateRedLabelsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('redlabels');
+		Schema::drop('redlabelhistories');
 	}
 
 }

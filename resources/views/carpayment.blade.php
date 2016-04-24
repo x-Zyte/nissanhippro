@@ -41,7 +41,7 @@
             $(grid_selector).jqGrid({
                 url: "carpayment/read",
                 datatype: "json",
-                colNames:['การจอง เล่มที่/เลขที่','วันที่', 'รถ เลขตัวถัง/เลขเครื่อง', 'ป้ายแดง', 'ชำระเงินรวม'],
+                colNames:['การจอง เล่มที่/เลขที่','วันที่', 'รถ เลขตัวถัง/เลขเครื่อง', 'ชำระเงินรวม'],
                 colModel:[
                     {name:'carpreemptionid',index:'carpreemptionid', width:100, formatter:'select',editoptions:{value: "{{$carpreemptionselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carpreemptionselectlist}}"}
@@ -54,9 +54,6 @@
                     },
                     {name:'carid',index:'carid', width:150, formatter:'select',editoptions:{value: "{{$carselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carselectlist}}"}
-                    },
-                    {name:'redlabelid',index:'redlabelid', width:100, formatter:'select',editoptions:{value: "{{$redlabelselectlist}}"}
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$redlabelselectlist}}"}
                     },
                     {name:'totalpayments',index:'totalpayments', width:100,align:'right',formatter:'number'
                         ,formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}

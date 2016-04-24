@@ -12,6 +12,7 @@ use App\Models\Branch;
 use App\Models\Car;
 use App\Models\CarBrand;
 use App\Models\CarModelColor;
+use App\Models\CarModelRegister;
 use App\Models\CarPayment;
 use App\Models\CarPreemption;
 use App\Models\CarPreemptionGiveaway;
@@ -24,6 +25,8 @@ use App\Models\Employee;
 use App\Models\FinaceCompany;
 use App\Models\Giveaway;
 use App\Models\Pricelist;
+use App\Models\RedLabel;
+use App\Models\Redlabelhistory;
 use App\Models\SystemDatas\Amphur;
 use App\Models\SystemDatas\District;
 use App\Models\SystemDatas\Occupation;
@@ -340,6 +343,8 @@ class CarPreemptionController extends Controller {
         $carsubmodelselectlist[null] = 'เลือกรุ่น';
         $colorselectlist = array();
         $colorselectlist[null] = 'เลือกสี';
+        $registerprovinceselectlist = array();
+        $registerprovinceselectlist[null] = 'เลือกจังหวัด';
         if($carmodelid != null && $carmodelid != ''){
             $carsubmodels = CarSubModel::where('carmodelid', $carmodelid)->orderBy('name', 'asc')->get(['id','name']);
             foreach($carsubmodels as $item){
@@ -350,6 +355,12 @@ class CarPreemptionController extends Controller {
             $colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
             foreach($colors as $item){
                 $colorselectlist[$item->id] = $item->code.' - '.$item->name;
+            }
+
+            $provinceids = CarModelRegister::where('carmodelid', $carmodelid)->lists('provinceid');
+            $provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
+            foreach($provinces as $item){
+                $registerprovinceselectlist[$item->id] = $item->name;
             }
         }
 
@@ -422,7 +433,8 @@ class CarPreemptionController extends Controller {
                 'salemanageremployeeselectlist' => $salemanageremployeeselectlist,
                 'approveremployeeselectlist' => $approveremployeeselectlist,
                 'finacecompanyselectlist' => $finacecompanyselectlist,
-                'priceselectlist' => $priceselectlist]);
+                'priceselectlist' => $priceselectlist,
+                'registerprovinceselectlist' => $registerprovinceselectlist]);
     }
 
     public function edit($id)
@@ -556,6 +568,14 @@ class CarPreemptionController extends Controller {
         $colorselectlist[null] = 'เลือกสี';
         foreach($colors as $item){
             $colorselectlist[$item->id] = $item->code.' - '.$item->name;
+        }
+
+        $provinceids = CarModelRegister::where('carmodelid', $model->carmodelid)->lists('provinceid');
+        $provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $registerprovinceselectlist = array();
+        $registerprovinceselectlist[null] = 'เลือกจังหวัด';
+        foreach($provinces as $item){
+            $registerprovinceselectlist[$item->id] = $item->name;
         }
 
         $oldcarbrands = CarBrand::where('ismain', false)->orderBy('name', 'asc')->get(['id','name']);
@@ -710,7 +730,8 @@ class CarPreemptionController extends Controller {
                 'salemanageremployeeselectlist' => $salemanageremployeeselectlist,
                 'approveremployeeselectlist' => $approveremployeeselectlist,
                 'finacecompanyselectlist' => $finacecompanyselectlist,
-                'priceselectlist' => $priceselectlist]);
+                'priceselectlist' => $priceselectlist,
+                'registerprovinceselectlist' => $registerprovinceselectlist]);
     }
 
     public function view($id)
@@ -767,21 +788,29 @@ class CarPreemptionController extends Controller {
         }
 
         $bookingcustomeramphurselectlist = array();
-        $item = Amphur::find($model->bookingcustomeramphurid);
-        $bookingcustomeramphurselectlist[$item->id] = $item->name;
+        $bookingcustomeramphurselectlist[null] = 'เลือกเขต/อำเภอ';
+        if($model->bookingcustomeramphurid != null && $model->bookingcustomeramphurid != '') {
+            $item = Amphur::find($model->bookingcustomeramphurid);
+            $bookingcustomeramphurselectlist[$item->id] = $item->name;
+        }
 
         $buyercustomeramphurselectlist = array();
-        if($model->bookingcustomerid != $model->buyercustomerid) {
+        $buyercustomeramphurselectlist[null] = 'เลือกเขต/อำเภอ';
+        if($model->bookingcustomerid != $model->buyercustomerid && $model->buyercustomeramphurid != null && $model->buyercustomeramphurid != '') {
             $item = Amphur::find($model->buyercustomeramphurid);
             $buyercustomeramphurselectlist[$item->id] = $item->name;
         }
 
         $bookingcustomerdistrictselectlist = array();
-        $item = District::find($model->bookingcustomerdistrictid);
-        $bookingcustomerdistrictselectlist[$item->id] = $item->name;
+        $bookingcustomerdistrictselectlist[null] = 'เลือกแขวง/ตำบล';
+        if($model->bookingcustomerdistrictid != null && $model->bookingcustomerdistrictid != '') {
+            $item = District::find($model->bookingcustomerdistrictid);
+            $bookingcustomerdistrictselectlist[$item->id] = $item->name;
+        }
 
         $buyercustomerdistrictselectlist = array();
-        if($model->bookingcustomerid != $model->buyercustomerid) {
+        $buyercustomerdistrictselectlist[null] = 'เลือกแขวง/ตำบล';
+        if($model->bookingcustomerid != $model->buyercustomerid && $model->buyercustomerdistrictid != null && $model->buyercustomerdistrictid != '') {
             $item = District::find($model->buyercustomerdistrictid);
             $buyercustomerdistrictselectlist[$item->id] = $item->name;
         }
@@ -805,13 +834,21 @@ class CarPreemptionController extends Controller {
         $item = Color::find($model->colorid);
         $colorselectlist[$item->id] = $item->code.' - '.$item->name;
 
+        $registerprovinceselectlist = array();
+        if($model->registerprovinceid != null && $model->registerprovinceid != ''){
+            $item = Province::find($model->registerprovinceid);
+            $registerprovinceselectlist[$item->id] = $item->name;
+        }
+
         $oldcarbrandselectlist = array();
+        $oldcarbrandselectlist[null] = 'เลือกยี่ห้อรถ';
         if($model->oldcarbrandid != null) {
             $item = CarBrand::find($model->oldcarbrandid);
             $oldcarbrandselectlist[$item->id] = $item->name;
         }
 
         $oldcarmodelselectlist = array();
+        $oldcarmodelselectlist[null] = 'เลือกแบบ';
         if($model->oldcarmodelid != null) {
             $item = CarModel::find($model->oldcarmodelid);
             $oldcarmodelselectlist[$item->id] = $item->name;
@@ -947,7 +984,8 @@ class CarPreemptionController extends Controller {
                 'salemanageremployeeselectlist' => $salemanageremployeeselectlist,
                 'approveremployeeselectlist' => $approveremployeeselectlist,
                 'finacecompanyselectlist' => $finacecompanyselectlist,
-                'priceselectlist' => $priceselectlist]);
+                'priceselectlist' => $priceselectlist,
+                'registerprovinceselectlist' => $registerprovinceselectlist]);
     }
 
     public function save(Request $request)
@@ -963,10 +1001,11 @@ class CarPreemptionController extends Controller {
                 'bookingcustomerfirstname' => 'required_if:customer-type,1',
                 'bookingcustomerphone1' => 'required',
 
+                'carobjectivetype' => 'required',
                 'carmodelid' => 'required',
                 'carsubmodelid' => 'required',
                 'colorid' => 'required',
-                //'price' => 'required',
+                'pricelistid' => 'required',
                 'discount' => 'required',
                 'subdown' => 'required',
                 'accessories' => 'required',
@@ -977,9 +1016,9 @@ class CarPreemptionController extends Controller {
                 'interest' => 'required_if:purchasetype,1',
                 'down' => 'required_if:purchasetype,1',
                 'installments' => 'required_if:purchasetype,1',
-                'cashpledgeredlabel' => 'required',
-                'registrationtype' => 'required',
-                'registrationfee' => 'required',
+                'cashpledgeredlabel' => 'required_if:carobjectivetype,0',
+                'registrationtype' => 'required_if:carobjectivetype,0',
+                'registrationfee' => 'required_if:carobjectivetype,0',
                 'insurancefee' => 'required',
                 'compulsorymotorinsurancefee' => 'required',
                 'accessoriesfee' => 'required',
@@ -1007,6 +1046,7 @@ class CarPreemptionController extends Controller {
                 'bookingcustomerfirstname.required_if' => 'ผู้สั่งจอง ชื่อ จำเป็นต้องกรอก',
                 'bookingcustomerphone1.required' => 'ผู้สั่งจอง เบอร์โทร 1 จำเป็นต้องกรอก',
 
+                'carobjectivetype.required' => 'รายละเอียดรถยนตร์ใหม่ รถใหม่/รถบริษัท จำเป็นต้องเลือก',
                 'carmodelid.required' => 'รายละเอียดรถยนตร์ใหม่ กรุณาเลือกแบบ',
                 'carsubmodelid.required' => 'รายละเอียดรถยนตร์ใหม่ กรุณาเลือกรุ่น',
                 'colorid.required' => 'รายละเอียดรถยนตร์ใหม่ กรุณาเลือกสี',
@@ -1021,9 +1061,9 @@ class CarPreemptionController extends Controller {
                 'interest.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ดอกเบี้ย จำเป็นต้องกรอก',
                 'down.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ดาวน์ จำเป็นต้องกรอก',
                 'installments.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน จำนวนงวด จำเป็นต้องกรอก',
-                'cashpledgeredlabel.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่ามัดจำป้ายแดง จำเป็นต้องกรอก',
-                'registrationtype.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ประเภทจดทะเบียน จำเป็นต้องเลือก',
-                'registrationfee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าจดทะเบียน จำเป็นต้องกรอก',
+                'cashpledgeredlabel.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่ามัดจำป้ายแดง จำเป็นต้องกรอก',
+                'registrationtype.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ประเภทจดทะเบียน จำเป็นต้องเลือก',
+                'registrationfee.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าจดทะเบียน จำเป็นต้องกรอก',
                 'insurancefee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าประกันภัย จำเป็นต้องกรอก',
                 'compulsorymotorinsurancefee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่า พ.ร.บ. จำเป็นต้องกรอก',
                 'accessoriesfee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าอุปกรณ์ จำเป็นต้องกรอก',
@@ -1086,6 +1126,7 @@ class CarPreemptionController extends Controller {
             $this->validate($request, ['bookno' => 'alpha'], ['bookno.alpha' => 'ไม่สามารถทำการบันทึกข้อมูลผู้จองได้ กรุณาติดต่อผู้ดูแลระบบ!!']);
         }
 
+        $model->carobjectivetype = $input['carobjectivetype'];
         $model->carmodelid = $input['carmodelid'];
         $model->carsubmodelid = $input['carsubmodelid'];
         $model->colorid = $input['colorid'];
@@ -1111,7 +1152,11 @@ class CarPreemptionController extends Controller {
         $model->interest = $input['interest'];
         $model->down = $input['down'];
         $model->installments = $input['installments'];
+        $model->financingfee = $input['financingfee'];
+        $model->transferfee = $input['transferfee'];
+        $model->transferoperationfee = $input['transferoperationfee'];
         $model->cashpledgeredlabel = $input['cashpledgeredlabel'];
+        $model->registerprovinceid = $input['registerprovinceid'];
         $model->registrationtype = $input['registrationtype'];
         $model->registrationfee = $input['registrationfee'];
         $model->insurancefee = $input['insurancefee'];
@@ -1276,17 +1321,32 @@ class CarPreemptionController extends Controller {
         }
         $model->cars = $cars;
 
-        $finacecompany = FinaceCompany::find($model->finacecompanyid);
-        $model->finacecompany = $finacecompany->name;
+        if($model->finacecompanyid != null && $model->finacecompanyid != '') {
+            $finacecompany = FinaceCompany::find($model->finacecompanyid);
+            $model->finacecompany = $finacecompany->name;
+        }
 
-        $model->yodjud =  $model->carprice - $model->down;
-        $model->openbill =  $model->carprice + $model->accessories - $model->discount - $model->subdown;
+        $model->yodjud =  $model->carprice - $model->discount + $model->accessories;
+
+        $model->realprice = $model->carprice - $model->discount - $model->subdown;
 
         $salesmanemployee = Employee::find($model->salesmanemployeeid);
         $model->salesmanemployee = $salesmanemployee->title.' '.$salesmanemployee->firstname.' '.$salesmanemployee->lastname;
 
         $approversemployee = Employee::find($model->approversemployeeid);
         $model->approversemployee = $approversemployee->title.' '.$approversemployee->firstname.' '.$approversemployee->lastname;
+
+        if($model->carobjectivetype == 0) {
+            $registerprovince = Province::find($model->registerprovinceid);
+            $model->registerprovince = $registerprovince->name;
+
+            $redlabelhistory = Redlabelhistory::where('carpreemptionid',$id)->first();
+            $redlabel = Redlabel::find($redlabelhistory->redlabelid);
+            $model->redlabel = $redlabel->no;
+        }
+        else{
+            $model->redlabel = null;
+        }
 
         //if($cust->birthdate != null)
             //$cust->birthdate = date('d-m-Y', strtotime($cust->birthdate));
@@ -1313,5 +1373,23 @@ class CarPreemptionController extends Controller {
         $model->date = date('d-m-Y', strtotime($model->date));
 
         return $model;
+    }
+
+    public function calculateaccessoriesfee($giveawayids)
+    {
+        $fee = 0;
+        $ids = explode(",",$giveawayids);
+        foreach($ids as $id){
+            $model = Giveaway::find($id);
+            $fee += $model->saleprice;
+        }
+
+        return $fee;
+    }
+
+    public function getprice($pricelistid)
+    {
+        $model = Pricelist::find($pricelistid);
+        return $model->sellingpricewithaccessories;
     }
 }

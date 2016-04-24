@@ -115,15 +115,6 @@ class CarController extends Controller {
             else
                 $error = true;
         }
-        if(Input::hasFile('deliverycarfile') && Input::file('deliverycarfile')->isValid()){
-            $extension = Input::file('deliverycarfile')->getClientOriginalExtension();
-            $fileName = $engineno.'_delivered'.'.'.$extension;
-            $upload_success = Input::file('deliverycarfile')->move($uploaddir, $fileName);
-            if($upload_success)
-                $car->deliverycarfilepath = '/uploads/images/'.$fileName;
-            else
-                $error = true;
-        }
 
         $car->save();
 

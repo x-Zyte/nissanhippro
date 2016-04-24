@@ -75,8 +75,8 @@ Route::post('cartype/update', 'Settings\CarTypeController@update');
 Route::get('carmodel', 'Settings\CarModelController@index');
 Route::get('carmodel/read', 'Settings\CarModelController@read');
 Route::post('carmodel/update', 'Settings\CarModelController@update');
-Route::get('carmodel/getsubmodelandcolorbyid/{id}/{registrationtype}', 'Settings\CarModelController@getsubmodelandcolorbyid');
-Route::get('carmodel/getregistrationcost/{id}/{registrationtype}', 'Settings\CarModelController@getregistrationcost');
+Route::get('carmodel/getsubmodelandcolorbyid/{id}/{registrationtype}/{registerprovinceid}', 'Settings\CarModelController@getsubmodelandcolorbyid');
+Route::get('carmodel/getregistrationcost/{id}/{registrationtype}/{registerprovinceid}', 'Settings\CarModelController@getregistrationcost');
 
 //Carsubmodel
 Route::get('carsubmodel/read', 'Settings\CarSubModelController@read');
@@ -93,6 +93,10 @@ Route::get('carmodelcolor/read', 'Settings\CarModelColorController@read');
 Route::post('carmodelcolor/update', 'Settings\CarModelColorController@update');
 Route::get('carmodelcolor/readSelectlist/{carmodelid}', 'Settings\CarModelColorController@readSelectlist');
 Route::post('carmodelcolor/check_color', 'Settings\CarModelColorController@check_color');
+
+//CarmodelRegister
+Route::get('carmodelregister/read', 'Settings\CarModelRegisterController@read');
+Route::post('carmodelregister/update', 'Settings\CarModelRegisterController@update');
 
 //Bank
 Route::get('bank', 'Settings\BankController@index');
@@ -146,6 +150,8 @@ Route::get('carpreemption/read', 'CarPreemptionController@read');
 Route::post('carpreemption/update', 'CarPreemptionController@update');
 Route::get('carpreemption/getbyid/{id}', 'CarPreemptionController@getbyid');
 Route::get('carpreemption/getbyidforcancelcarpreemption/{id}', 'CarPreemptionController@getbyidforcancelcarpreemption');
+Route::get('carpreemption/calculateaccessoriesfee/{giveawayids}', 'CarPreemptionController@calculateaccessoriesfee');
+Route::get('carpreemption/getprice/{pricelistid}', 'CarPreemptionController@getprice');
 
 Route::get('carpreemption/newcarpreemption', 'CarPreemptionController@newcarpreemption');
 Route::get('carpreemption/edit/{id}', 'CarPreemptionController@edit');
@@ -153,9 +159,11 @@ Route::get('carpreemption/view/{id}', 'CarPreemptionController@view');
 Route::post('carpreemption/save', 'CarPreemptionController@save');
 
 //RedLabel
-Route::get('redlabel', 'Settings\RedLabelController@index');
-Route::get('redlabel/read', 'Settings\RedLabelController@read');
-Route::post('redlabel/update', 'Settings\RedLabelController@update');
+Route::get('redlabel', 'RedLabelController@index');
+Route::get('redlabel/read', 'RedLabelController@read');
+Route::post('redlabel/update', 'RedLabelController@update');
+Route::get('redlabel/checkbusy/{id}', 'RedLabelController@checkbusy');
+Route::get('redlabel/readSelectlistForDisplayInGrid', 'RedLabelController@readSelectlistForDisplayInGrid');
 
 //InterestRateType
 Route::get('interestratetype', 'Settings\InterestRateTypeController@index');
@@ -205,6 +213,12 @@ Route::get('commissionextra', 'Settings\CommissionExtraController@index');
 Route::get('commissionextra/read', 'Settings\CommissionExtraController@read');
 Route::post('commissionextra/update', 'Settings\CommissionExtraController@update');
 
+//CommissionExtraCar
+Route::get('commissionextracar/read', 'Settings\CommissionExtraCarController@read');
+Route::post('commissionextracar/update', 'Settings\CommissionExtraCarController@update');
+Route::get('commissionextracar/readSelectlistForDisplayInGrid', 'Settings\CommissionExtraCarController@readSelectlistForDisplayInGrid');
+Route::post('commissionextracar/check_dup_carsubmodel', 'Settings\CommissionExtraCarController@check_dup_carsubmodel');
+
 //CarPayment
 Route::get('carpayment', 'CarPaymentController@index');
 Route::get('carpayment/read', 'CarPaymentController@read');
@@ -225,6 +239,10 @@ Route::get('cancelcarpreemption/newcancelcarpreemption', 'CancelCarPreemptionCon
 Route::get('cancelcarpreemption/edit/{id}', 'CancelCarPreemptionController@edit');
 Route::get('cancelcarpreemption/view/{id}', 'CancelCarPreemptionController@view');
 Route::post('cancelcarpreemption/save', 'CancelCarPreemptionController@save');
+
+//Redlabelhistory
+Route::get('redlabelhistory/read', 'RedlabelhistoryController@read');
+Route::post('redlabelhistory/update', 'RedlabelhistoryController@update');
 
 Route::get('reporting', 'ReportController@index');
 Route::post('reporting', 'ReportController@post');

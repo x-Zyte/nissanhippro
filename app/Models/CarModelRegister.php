@@ -1,18 +1,19 @@
 <?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;;
+use Illuminate\Support\Facades\Auth;
 
-class CommissionFinace extends Model {
+class CarModelRegister extends Model {
 
-    protected $table = 'commission_finaces';
+    protected $table = 'car_model_registers';
 
     public $timestamps = false;
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['finacecompanyid', 'interestratetypeid', 'name', //'useforcustomertype',
-        'effectivefrom', 'effectiveto', 'finaceminimumprofit', 'active',
+    protected $fillable = ['carmodelid','provinceid','individualregistercost','implementingindividualregistercost',
+        'companyregistercost','implementingcompanyregistercost',
+        'governmentregistercost','implementinggovernmentregistercost',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()
@@ -21,9 +22,6 @@ class CommissionFinace extends Model {
 
         static::creating(function($model)
         {
-            $model->effectivefrom = date('Y-m-d', strtotime($model->effectivefrom));
-            $model->effectiveto = date('Y-m-d', strtotime($model->effectiveto));
-
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
             $model->modifiedby = Auth::user()->id;
@@ -37,9 +35,6 @@ class CommissionFinace extends Model {
 
         static::updating(function($model)
         {
-            $model->effectivefrom = date('Y-m-d', strtotime($model->effectivefrom));
-            $model->effectiveto = date('Y-m-d', strtotime($model->effectiveto));
-
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");
         });
@@ -53,5 +48,15 @@ class CommissionFinace extends Model {
         {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Delete','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
         });
+    }
+
+    public function carmodel()
+    {
+        return $this->belongsTo('App\Models\CarModel', 'carmodelid', 'id');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo('App\Models\Province', 'provinceid', 'id');
     }
 }

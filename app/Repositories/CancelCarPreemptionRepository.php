@@ -16,7 +16,7 @@ class CancelCarPreemptionRepository extends EloquentRepositoryAbstract
     {
         $this->Database = new CancelCarPreemption;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id','carpreemptionid','toemployeeid', 'canceltype', 'cancelreasontype',
+        $this->crudFields = array('oper', 'id','carpreemptionid','toemployeeid', 'cancelreasontype',
             'cancelreasondetails', 'remark','approvaltype','amountapproved',
             'salesmanemployeedate', 'accountemployeeid', 'accountemployeedate',
             'financeemployeeid', 'financeemployeedate', 'approversemployeeid', 'approversemployeedate');

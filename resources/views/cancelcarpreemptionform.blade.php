@@ -113,26 +113,16 @@
                                 <div class="col-sm-3">
                                     {!! Form::select('toemployeeid', $toemployeeselectlist, null, array('id'=>'toemployeeid', 'class' => 'chosen-select')); !!}
                                 </div>
-                                <div class="col-sm-2">
-                                    <label style="margin-right:20px;">
-                                        {!! Form::radio('canceltype', 0, false, array('class' => 'ace')) !!}
-                                        <span class="lbl"> คืนจอง </span>
-                                    </label>
-                                    <label style="margin-right:20px;">
-                                        {!! Form::radio('canceltype', 1, false, array('class' => 'ace')) !!}
-                                        <span class="lbl"> ยึดจอง </span>
-                                    </label>
-                                </div>
                             </div>
                             <div class="clear"></div>
                             <div class="form-group" style="padding-top:5px;">
                                 {!! Form::label('customer', 'ชื่อลูกค้า', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                                <div class="col-sm-2">
+                                <div class="col-sm-3">
                                     {!! Form::text('customer', $customer, array('style'=>'width:250px;','disabled'=>'true')) !!}
                                 </div>
 
                                 {!! Form::label('carmodel', 'แบบ/รุ่น รถ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     {!! Form::text('carmodel', $carmodel, array('style'=>'width:100%;','disabled'=>'true')) !!}
                                 </div>
                             </div>

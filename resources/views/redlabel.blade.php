@@ -1,10 +1,10 @@
 @extends('app')
-@section('title','พนักงาน')
-@section('menu-employee-class','active')
+@section('title','ป้ายแดง')
+@section('menu-redlabel-class','active')
 
 @section('content')
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-male"></i> พนักงาน</h3>
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-ticket"></i> ป้ายแดง</h3>
 
     <table id="grid-table"></table>
 
@@ -37,101 +37,27 @@
                 candeletedata = true;
             }
 
-            $(grid_selector).jqGrid({
-                url:'employee/read',
-                datatype: "json",
-                colNames:['รหัส','คำนำหน้า', 'ชื่อจริง', 'นามสกุล','วันที่เริ่มการเป็นพนักงาน','วันที่สิ้นสุดการเป็นพนักงาน',
-                    'ชื่อเข้าใช้ระบบ','วันที่เริ่มให้เข้าใช้ระบบ','วันที่สิ้นสุดให้เข้าใช้ระบบ', 'อีเมล์', 'โทรศัพท์', 'เป็นผู้ดูแล',
-                    'สาขา', 'แผนก','ทีม', 'สามารถลบข้อมูลได้', 'เปิดใช้งาน','บันทึกเพิ่มเติม'],
-                colModel:[
-                    /*{name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
-                        formatter:'actions',
-                        formatoptions:{
-                            keys:true,
-                            delOptions:{recreateForm: true, beforeShowForm:beforeDeleteCallback}
-                            //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
-                        }
-                    },*/
-                    //{hidden: true},
-                    {name:'code',index:'code', width:70,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'title',index:'title', width:50, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว" },align:'left'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว" }},
-                    {name:'firstname',index:'firstname', width:100,editable: true,editoptions:{size:"25",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'lastname',index:'lastname', width:100,editable: true,editoptions:{size:"25",maxlength:"50"},editrules:{required:true},align:'left'},
-                    {name:'workingstartdate',index:'workingstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
-                        ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center',editrules:{required:true,edithidden:true}
-                        ,searchrules:{required:true}
-                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
-                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']},hidden: true},
-                    {name:'workingenddate',index:'workingenddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
-                        ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
-                        ,searchrules:{required:true}
-                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
-                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}
-                        ,editrules:{custom: true, custom_func: check_workingenddate,edithidden:true},hidden: true},
-                    {name:'username',index:'username', width:100,editable: true,editoptions:{size:"25",maxlength:"50"},align:'left'},
-                    {name:'loginstartdate',index:'loginstartdate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
-                        ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
-                        ,searchrules:{required:true}
-                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
-                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']},editrules:{edithidden:true},hidden: true},
-                    {name:'loginenddate',index:'loginenddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
-                        ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
-                        ,searchrules:{required:true}
-                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
-                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']},editrules:{edithidden:true},hidden: true},
-                    {name:'email',index:'email', width:120,editable: true,editoptions:{size:"25",maxlength:"50"},editrules:{edithidden:true},align:'left',hidden: true},
-                    {name:'phone',index:'phone', width:100,editable: true,editoptions:{size:"15",maxlength:"20"},editrules:{edithidden:true},align:'left',hidden: true},
-                    {name:'isadmin',index:'isadmin', width:60, editable: true,edittype:"checkbox",formatter: booleanFormatter,unformat: aceSwitch,align:'center'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }
-                        ,editoptions: {value:"1:0",
-                            dataEvents :[{type: 'change', fn: function(e){
-                                var checked = $(e.target).is(':checked');
-                                if(checked){
-                                    $('#tr_branchid').hide();
-                                    $('#tr_departmentid').hide();
-                                    $('#tr_teamid').hide();
-                                    $('#tr_candeletedata').hide();
+            var defaultProvince = '';
+            var hiddenProvince = false;
+            if('{{Auth::user()->isadmin}}' == '0'){
+                defaultProvince = '{{$defaultProvince}}';
+                hiddenProvince = true;
+            }
 
-                                    $('#branchid').val(null);
-                                    $('#departmentid').val(null);
-                                    $('#teamid').val(null);
-                                    $('#candeletedata').prop("checked", false);
-                                }
-                                else{
-                                    $('#tr_branchid').show();
-                                    $('#tr_departmentid').show();
-                                    $('#tr_candeletedata').show();
-                                }
-                            }}]
-                        }
-                    },
-                    {name:'branchid',index:'branchid', width:240, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$branchselectlist}}"}
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$branchselectlist}}" }
-                        ,editrules:{custom: true, custom_func: check_branch}},
-                    {name:'departmentid',index:'departmentid', width:200, editable: true,edittype:"select",formatter:'select'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$departmentselectlist}}" }
-                        ,editrules:{custom: true, custom_func: check_department}
-                        ,editoptions:{value: "{{$departmentselectlist}}",
-                            dataEvents :[{type: 'change', fn: function(e){
-                                var thisval = $(e.target).val();
-                                if(thisval == 6){
-                                    $('#tr_teamid').show();
-                                }
-                                else{
-                                    $('#tr_teamid').hide();
-                                    $('#teamid').val(null);
-                                }
-                            }}]
-                        }
-                    },
-                    {name:'teamid',index:'teamid', width:70, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$teamselectlist}}"}
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$teamselectlist}}" },align:'center'},
-                    {name:'candeletedata',index:'candeletedata', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
-                    {name:'active',index:'active', width:60, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"1"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
-                    {name:'remarks',index:'remarks', width:150,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"35"},align:'left'}
+            $(grid_selector).jqGrid({
+                url:'{{ url('redlabel/read') }}',
+                datatype: "json",
+                colNames:['จังหวัด', 'เลขทะเบียน', 'ชื่อลูกค้า', 'รถที่ใช้อยู่ เลขตัวถัง/เลขเครื่อง', 'เงินมัดจำ'],
+                colModel:[
+                    {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
+                    {name:'no',index:'no', width:100,editable: true,editoptions:{size:"30",maxlength:"20"},editrules:{required:true},align:'left'},
+                    {name:'customerid',index:'customerid', width:150, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$customerselectlist}}"},align:'left',
+                        stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$customerselectlist}}" }},
+                    {name:'carid',index:'carid', width:200, editable: true,edittype:"select",formatter:'select',editoptions:{value:"{{$carselectlist}}"},align:'left',
+                        stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carselectlist}}" }},
+                    {name:'deposit',index:'deposit', width:100,editable: true,editrules:{number:true},align:'right'
+                        ,formatter:'number',formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}}
                 ],
                 viewrecords : true,
                 rowNum:10,
@@ -152,7 +78,7 @@
                     }, 0);
                 },
 
-                editurl: "employee/update",//nothing is saved
+                editurl: "redlabel/update",
                 caption: "",
                 height:'100%',
                 subGrid: true,
@@ -162,9 +88,19 @@
                     openicon : "ace-icon fa fa-chevron-right center orange"
                 },
                 subGridRowExpanded: function(subgrid_id, row_id) {
+
                     var subgrid_table_id, pager_id;
                     subgrid_table_id = subgrid_id+"_t";
                     pager_id = "p_"+subgrid_table_id;
+
+                    $.get('redlabel/checkbusy/'+row_id, function(data){
+                        if(data == 1){
+                            $("#add_" + subgrid_table_id).css("display", "none");
+                        }
+                        else{
+                            $("#add_" + subgrid_table_id).css("display", "table-cell");
+                        }
+                    });
 
                     //resize to fit page size
                     $(window).on('resize.jqGridSubGrid', function () {
@@ -180,14 +116,25 @@
 
                     $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table><div id='"+pager_id+"' class='scroll'></div>");
                     jQuery("#"+subgrid_table_id).jqGrid({
-                        url:'employeepermission/read?employeeid='+row_id,
+                        url:'redlabelhistory/read?redlabelid='+row_id,
                         datatype: "json",
-                        colNames:['เมนูที่สามารถเข้าถึง'],
+                        colNames:['วันที่เบิก','รายละเอียด','วันที่คืน','หมายเหตุ'],
                         colModel:[
-                            {name:'menu',index:'menu', width:150, editable: true,edittype:"select",formatter:'select',
-                                editoptions:{value: "รับรถเข้าสต๊อก:รับรถเข้าสต๊อก;ลูกค้ามุ่งหวัง:ลูกค้ามุ่งหวัง;การขาย:การขาย;ป้ายแดง:ป้ายแดง;พนักงาน:พนักงาน;การตั้งค่าทั่วไป:การตั้งค่าทั่วไป;การตั้งค่ารถ:การตั้งค่ารถ;การตั้งค่าการขาย:การตั้งค่าการขาย"}
-                                ,align:'left',stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"]
-                                , value: "รับรถเข้าสต๊อก:รับรถเข้าสต๊อก;ลูกค้ามุ่งหวัง:ลูกค้ามุ่งหวัง;การขาย:การขาย;ป้ายแดง:ป้ายแดง;พนักงาน:พนักงาน;การตั้งค่าทั่วไป:การตั้งค่าทั่วไป;การตั้งค่ารถ:การตั้งค่ารถ;การตั้งค่าการขาย:การตั้งค่าการขาย" }}
+                            {name:'issuedate',index:'issuedate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
+                                ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center',editrules:{required:true}
+                                ,searchrules:{required:true}
+                                ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
+                                ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
+                            {name:'carpreemptionid',index:'carpreemptionid', width:400, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$carpreemptionselectlist}}"}
+                                ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carpreemptionselectlist}}" }
+                                ,editrules:{required:true}},
+                            {name:'returndate',index:'returndate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
+                                ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
+                                ,searchrules:{required:true}
+                                ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
+                                ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}
+                                ,editrules:{custom: true, custom_func: check_returndate}},
+                            {name:'remarks',index:'remarks', width:150,editable: true,edittype:'textarea',editoptions:{rows:"2",cols:"35"},align:'left'}
                         ],
                         viewrecords : true,
                         rowNum:10,
@@ -198,6 +145,7 @@
                         multiboxonly: true,
 
                         loadComplete : function() {
+
                             var table = this;
                             setTimeout(function(){
                                 styleCheckbox(table);
@@ -208,13 +156,32 @@
                             }, 0);
                         },
 
-                        editurl: "employeepermission/update",
-                        caption: "สิทธิ์การเข้าถึงเมนู",
+                        editurl: "redlabelhistory/update",
+                        caption: "การเบิก/การคืน",
                         height:'100%'
                         //width:desired_width
                     });
 
                     $(window).triggerHandler('resize.jqGridSubGrid');
+
+                    function check_returndate(value, colname) {
+                        if(value == null || value == '') return [true, ""];
+
+                        var issuedate = $('#issuedate').val();
+
+                        var issuedateArr = issuedate.split("-");
+                        var returndateArr = value.split("-");
+
+                        var newissuedate = new Date(issuedateArr[1]+'-'+issuedateArr[0]+'-'+issuedateArr[2]);
+                        var newreturndate = new Date(returndateArr[1]+'-'+returndateArr[0]+'-'+returndateArr[2]);
+
+                        if(newissuedate.getTime() < newreturndate.getTime()){
+                            return [true, ""];
+                        }
+                        else{
+                            return [false,"วันที่เบิก ต้องน้อยกว่า วันที่คืน"];
+                        }
+                    }
 
                     jQuery("#"+subgrid_table_id).jqGrid('navGrid',"#"+pager_id,
                             { 	//navbar options
@@ -247,12 +214,19 @@
                                 },
                                 editData: {
                                     _token: "{{ csrf_token() }}",
-                                    employeeid: row_id
+                                    redlabelid: row_id
                                 },
                                 afterSubmit : function(response, postdata)
                                 {
                                     if(response.responseText == "ok"){
                                         showConfirmClose = false;
+                                        $.get('redlabel/readSelectlistForDisplayInGrid', function(data){
+                                            $(grid_selector).setColProp('customerid', { editoptions: { value: data.customerselectlist } });
+                                        });
+                                        $(grid_selector).trigger('reloadGrid',[{current:true}]);
+                                        setTimeout(function(){
+                                            $(grid_selector).expandSubGridRow(row_id);
+                                        }, 1000);
                                         alert("ดำเนินการสำเร็จ");
                                         return [true,""];
                                     }else{
@@ -285,17 +259,26 @@
                                             .wrapInner('<div class="widget-header" />')
                                     style_edit_form(form);
 
+                                    $('#tr_returndate').hide();
+
                                     var dlgDiv = $("#editmod" + jQuery("#"+subgrid_table_id)[0].id);
                                     centerGridForm(dlgDiv);
                                 },
                                 editData: {
                                     _token: "{{ csrf_token() }}",
-                                    employeeid: row_id
+                                    redlabelid: row_id
                                 },
                                 afterSubmit : function(response, postdata)
                                 {
                                     if(response.responseText == "ok"){
                                         showConfirmClose = false;
+                                        $.get('redlabel/readSelectlistForDisplayInGrid', function(data){
+                                            $(grid_selector).setColProp('customerid', { editoptions: { value: data.customerselectlist } });
+                                        });
+                                        $(grid_selector).trigger('reloadGrid',[{current:true}]);
+                                        setTimeout(function(){
+                                            $(grid_selector).expandSubGridRow(row_id);
+                                        }, 1000);
                                         alert("ดำเนินการสำเร็จ");
                                         return [true,""];
                                     }else{
@@ -344,6 +327,10 @@
                                 afterSubmit : function(response, postdata)
                                 {
                                     if(response.responseText == "ok"){
+                                        $(grid_selector).trigger('reloadGrid',[{current:true}]);
+                                        setTimeout(function(){
+                                            $(grid_selector).expandSubGridRow(row_id);
+                                        }, 1000);
                                         alert("ดำเนินการสำเร็จ");
                                         return [true,""];
                                     }else{
@@ -396,43 +383,6 @@
 
             $(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
 
-            function check_branch(value, colname) {
-                var checked = $('#isadmin').is(':checked');
-                if(checked) return [true, ""];
-                else{
-                    if(value != '' && value != null) return [true, ""];
-                    else return [false,"กรุณาเลือกสาขา"];
-                }
-            }
-
-            function check_department(value, colname) {
-                var checked = $('#isadmin').is(':checked');
-                if(checked) return [true, ""];
-                else{
-                    if(value != '' && value != null) return [true, ""];
-                    else return [false,"กรุณาเลือกแผนก"];
-                }
-            }
-
-            function check_workingenddate(value, colname) {
-                if(value == null || value == '') return [true, ""];
-
-                var workingstartdate = $('#workingstartdate').val();
-
-                var workingstartdateArr = workingstartdate.split("-");
-                var workingenddateArr = value.split("-");
-
-                var newworkingstartdate = new Date(workingstartdateArr[1]+'-'+workingstartdateArr[0]+'-'+workingstartdateArr[2]);
-                var newworkingenddate = new Date(workingenddateArr[1]+'-'+workingenddateArr[0]+'-'+workingenddateArr[2]);
-
-                if(newworkingstartdate.getTime() < newworkingenddate.getTime()){
-                    return [true, ""];
-                }
-                else{
-                    return [false,"วันที่เริ่มการเป็นพนักงาน ต้องน้อยกว่า วันที่สิ้นสุดการเป็นพนักงาน"];
-                }
-            }
-
             //navButtons
             jQuery(grid_selector).jqGrid('navGrid',pager_selector,
                 { 	//navbar options
@@ -451,29 +401,21 @@
                 },
                 {
                     //edit record form
+                    closeAfterEdit: true,
                     width: 600,
                     recreateForm: true,
+                    viewPagerButtons : false,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
                         form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
                         style_edit_form(form);
 
-                        var checked = $('#isadmin').is(':checked');
-                        if(checked){
-                            $('#tr_branchid').hide();
-                            $('#tr_departmentid').hide();
-                            $('#tr_teamid').hide();
-                            $('#tr_candeletedata').hide();
-                        }
-                        else{
-                            var departmentid = $('#departmentid').val();
-                            if(departmentid != 6){
-                                $('#tr_teamid').hide();
-                            }
-                        }
-
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
+
+                        $('#tr_customerid', form).hide();
+                        $('#tr_carid', form).hide();
+                        $('#tr_deposit', form).hide();
                     },
                     editData: {
                         _token: "{{ csrf_token() }}"
@@ -510,14 +452,15 @@
                     beforeShowForm : function(e) {
                         jQuery(grid_selector).jqGrid('resetSelection');
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
-                                .wrapInner('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
                         style_edit_form(form);
-
-                        $('#tr_teamid').hide();
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);
+
+                        $('#tr_customerid', form).hide();
+                        $('#tr_carid', form).hide();
+                        $('#tr_deposit', form).hide();
                     },
                     editData: {
                         _token: "{{ csrf_token() }}"
@@ -560,7 +503,6 @@
                             var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
                             centerGridForm(dlgDiv);
                         }
-
                         var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
                         var totalRowsCount = totalRows.length;
                         $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");

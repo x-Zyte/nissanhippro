@@ -188,9 +188,16 @@
             $('#carsubmodelid').children('option:not(:first)').remove();
             $('#colorid').children('option:not(:first)').remove();
 
-            var registrationtype = $("input[name=registrationtype]:checked").val();
+            var registrationtype = null;
+            var registrationtypes = $("input[name=registrationtype]:checked");
+            if(registrationtypes.length > 0)
+                registrationtype = registrationtypes.val();
 
-            $.get('{{$pathPrefix}}carmodel/getsubmodelandcolorbyid/'+carmodelid+'/'+registrationtype, function(data){
+            var registerprovinceid = $("#registerprovinceid").chosen().val();
+            if(registerprovinceid == null || registerprovinceid == '') registerprovinceid = 0;
+            $('#registerprovinceid').children('option:not(:first)').remove();
+
+            $.get('{{$pathPrefix}}carmodel/getsubmodelandcolorbyid/'+carmodelid+'/'+registrationtype+'/'+registerprovinceid, function(data){
                 $.each(data.carsubmodels, function(i, option) {
                     $('#carsubmodelid').append($('<option/>').attr("value", option.id).text(option.name));
                 });
@@ -200,6 +207,16 @@
                     $('#colorid').append($('<option/>').attr("value", option.id).text(option.code + ' - ' + option.name));
                 });
                 $('#colorid').val(null).trigger('chosen:updated');
+
+                $.each(data.registerprovinces, function(i, option) {
+                    $('#registerprovinceid').append($('<option/>').attr("value", option.id).text(option.name));
+                });
+                if(registerprovinceid == 0 || data.registerprovinces.length <= 0){
+                    $('#registerprovinceid').val(null).trigger('chosen:updated');
+                }
+                else{
+                    $('#registerprovinceid').val(registerprovinceid).trigger('chosen:updated');
+                }
 
                 $('#registrationfee').val(data.registercost);
                 $('#compulsorymotorinsurancefee').val(data.actcharged);
@@ -229,12 +246,68 @@
         }
 
         function RegistrationTypeChange(){
-            var carmodelid = $("#carmodelid").chosen().val()
+            var carmodelid = $("#carmodelid").chosen().val();
             if(carmodelid == null || carmodelid == '') return;
+            var registerprovinceid = $("#registerprovinceid").chosen().val();
+            if(registerprovinceid == null || registerprovinceid == '') return;
             var registrationtype = $("input[name=registrationtype]:checked").val();
-            $.get('{{$pathPrefix}}carmodel/getregistrationcost/'+carmodelid+'/'+registrationtype, function(data){
+            $.get('{{$pathPrefix}}carmodel/getregistrationcost/'+carmodelid+'/'+registrationtype+'/'+registerprovinceid, function(data){
                 $('#registrationfee').val(data.registercost);
             });
+        }
+
+        function RegisterProvinceChange(){
+            var carmodelid = $("#carmodelid").chosen().val();
+            if(carmodelid == null || carmodelid == '') return;
+            var registerprovinceid = $("#registerprovinceid").chosen().val();
+            var registrationtype = $("input[name=registrationtype]:checked").val();
+            $.get('{{$pathPrefix}}carmodel/getregistrationcost/'+carmodelid+'/'+registrationtype+'/'+registerprovinceid, function(data){
+                $('#registrationfee').val(data.registercost);
+            });
+        }
+
+        function CarobjectivetypeChange(){
+            var carobjectivetype = $("input[name=carobjectivetype]:checked").val();
+            if(carobjectivetype == 0){
+                $(".financingfee").css("display","none");
+                $(".transferfee").css("display","none");
+                $(".transferoperationfee").css("display","none");
+                $(".cashpledgeredlabel").css("display","block");
+                $(".registrationtype").css("display","block");
+            }
+            else if(carobjectivetype == 1){
+                var purchasetype = jQuery( 'input[name=purchasetype]:checked' ).val();
+                if(purchasetype == 0){
+                    $(".financingfee").css("display","none");
+                }
+                else if(purchasetype == 1) {
+                    $(".financingfee").css("display","block");
+                }
+
+                $(".transferfee").css("display","block");
+                $(".transferoperationfee").css("display","block");
+                $(".cashpledgeredlabel").css("display","none");
+                $(".registrationtype").css("display","none");
+
+                CalTransferfee();
+            }
+        }
+
+        function PurchasetypeChange(){
+            var purchasetype = $("input[name=purchasetype]:checked").val();
+            var carobjectivetype = $("input[name=carobjectivetype]:checked").val();
+            if(purchasetype == 0){
+                $(".financingfee").css("display","none");
+                $(".purchasetype1").css("display","none");
+                $(".purchasetype11").css("display","none");
+            }
+            else if(purchasetype == 1){
+                $(".purchasetype1").css("display","inline-block");
+                $(".purchasetype11").css("display","block");
+
+                if(carobjectivetype == 1)
+                    $(".financingfee").css("display","block");
+            }
         }
 
         function OldCarBrandChange(sel) {
@@ -316,6 +389,27 @@
             }
         }
 
+        function CalTransferfee(){
+            var carobjectivetype = $("input[name=carobjectivetype]:checked").val();
+            if(carobjectivetype != 1) return;
+
+            var pricelistid = $("#pricelistid").chosen().val()
+            if(pricelistid == null || pricelistid == '') return;
+
+            $.get('{{$pathPrefix}}carpreemption/getprice/'+pricelistid, function(data){
+                var discount = $('#discount').val();
+                if(discount == null || discount == '')
+                    discount = 0;
+
+                var subdown = $('#subdown').val();
+                if(subdown == null || subdown == '')
+                    subdown = 0;
+
+                var transferfee = parseFloat(0.75/100.00) * (parseFloat(data) - parseFloat(discount) - parseFloat(subdown));
+                $('#transferfee').val(transferfee);
+            });
+        }
+
     </script>
 
     @if($oper == 'new')
@@ -373,7 +467,7 @@
             </div>
 
             @if($oper != 'new')
-                {!! Form::label('statustext', 'สถานะ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                {!! Form::label('statustext', 'สถานะ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                 <div class="col-sm-1">
                     @if($carpreemption->status == 0)
                         {!! Form::text('statustext', 'จอง', array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
@@ -510,6 +604,19 @@
                         <div class="widget-body-inner" style="display: block;">
                             <div class="widget-main">
                                 <div class="form-group" style="padding-top:5px;">
+                                    {!! Form::label('', '', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-3">
+                                        <label>
+                                            {!! Form::radio('carobjectivetype', 0, true, array('class' => 'ace', 'onchange'=>'CarobjectivetypeChange();')) !!}
+                                            <span class="lbl">  รถใหม่</span>
+                                        </label>
+                                        &nbsp;
+                                        <label>
+                                            {!! Form::radio('carobjectivetype', 1, false, array('class' => 'ace', 'onchange'=>'CarobjectivetypeChange();')) !!}
+                                            <span class="lbl">  รถบริษัท (รถใช้งาน รถทดสอบ)</span>
+                                        </label>
+                                    </div>
+
                                     {!! Form::label('carmodelid', 'รถนิสสัน แบบ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-4">
                                         {!! Form::select('carmodelid', $carmodelselectlist, null, array('id'=>'carmodelid', 'class' => 'chosen-select', 'onchange'=>'CarModelChange(this)', 'style'=>'width:150px;')); !!}
@@ -528,17 +635,17 @@
                                 <div class="form-group">
                                     {!! Form::label('pricelistid', 'ราคา', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('pricelistid', $priceselectlist, null, array('id'=>'pricelistid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('pricelistid', $priceselectlist, null, array('id'=>'pricelistid', 'class' => 'chosen-select', 'onchange'=>'CalTransferfee()')); !!}
                                     </div>
                                     {!! Form::label('discount', 'ส่วนลด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::number('discount', null, array('step' => '0.01', 'min' => '0' ,'placeholder' => 'บาท')) !!}
+                                        {!! Form::number('discount', null, array('step' => '0.01', 'min' => '0' ,'placeholder' => 'บาท', 'id'=>'discount', 'onchange'=>'CalTransferfee();')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('subdown', 'Sub Down', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::number('subdown', null, array('step' => '0.01', 'min' => '0' ,'placeholder' => 'บาท')) !!}
+                                        {!! Form::number('subdown', null, array('step' => '0.01', 'min' => '0' ,'placeholder' => 'บาท', 'id'=>'subdown', 'onchange'=>'CalTransferfee();')) !!}
                                     </div>
                                     {!! Form::label('accessories', 'บวกอุปกรณ์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
@@ -654,20 +761,22 @@
                                         {!! Form::label('purchasetype', '2. ซื้อรถยนต์', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-10">
                                             <label>
-                                                {!! Form::radio('purchasetype', 0, false, array('class' => 'ace')) !!}
+                                                {!! Form::radio('purchasetype', 0, true, array('class' => 'ace', 'onchange'=>'PurchasetypeChange();')) !!}
                                                 <span class="lbl">  เงินสด</span>
                                             </label>
                                             &nbsp;
                                             <label>
-                                                {!! Form::radio('purchasetype', 1, false, array('class' => 'ace')) !!}
+                                                {!! Form::radio('purchasetype', 1, false, array('class' => 'ace', 'onchange'=>'PurchasetypeChange();')) !!}
                                                 <span class="lbl">  เช่าซื้อกับบริษัท</span>&nbsp;&nbsp;
+                                                <div class="purchasetype1">
                                                 {!! Form::select('finacecompanyid', $finacecompanyselectlist, null, array('id'=>'finacecompanyid', 'class' => 'chosen-select')); !!}
+                                                </div>
                                             </label>
                                         </div>
                                     </div>
 
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group purchasetype11">
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('interest', 'ดอกเบี้ย', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-10">
@@ -680,10 +789,35 @@
                                             &nbsp;&nbsp;
                                             {!! Form::number('installments', null, array('min' => '0','style'=>'width:70px;')) !!}
                                         </div>
-
                                     </div>
                                 </div>
-                                <div class="form-group">
+
+                                <div class="form-group financingfee">
+                                    <div class="col-sm-9 no-padding-left">
+                                        {!! Form::label('financingfee', 'ค่าจัดไฟแนนซ์', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                        <div class="col-sm-3">
+                                            {!! Form::number('financingfee', 3000, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group transferfee">
+                                    <div class="col-sm-9 no-padding-left">
+                                        {!! Form::label('transferfee', '3. ค่าโอน (0.75%)', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                        <div class="col-sm-3 ">
+                                            {!! Form::number('transferfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group transferoperationfee">
+                                    <div class="col-sm-9 no-padding-left">
+                                        {!! Form::label('transferoperationfee', '4. ค่าดำเนินการโอน', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                        <div class="col-sm-3 ">
+                                            {!! Form::number('transferoperationfee', 2000, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group cashpledgeredlabel">
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('cashpledgeredlabel', '3. ค่ามัดจำป้ายแดง', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3 ">
@@ -691,10 +825,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group registrationtype">
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('registrationtype', '4. ค่าจดทะเบียน', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-10">
+                                            {!! Form::select('registerprovinceid', $registerprovinceselectlist, null, array('id'=>'registerprovinceid', 'class' => 'chosen-select', 'onchange'=>'RegisterProvinceChange(this)')); !!}
+                                            &nbsp;&nbsp;
                                             <label>
                                                 {!! Form::radio('registrationtype', 0, true, array('class' => 'ace', 'onchange'=>'RegistrationTypeChange();')) !!}
                                                 <span class="lbl">  บุคคล</span>
@@ -703,6 +839,10 @@
                                             <label>
                                                 {!! Form::radio('registrationtype', 1, false, array('class' => 'ace', 'onchange'=>'RegistrationTypeChange();')) !!}
                                                 <span class="lbl">  นิติบุคคล</span>&nbsp;&nbsp;
+                                            </label>
+                                            <label>
+                                                {!! Form::radio('registrationtype', 2, false, array('class' => 'ace', 'onchange'=>'RegistrationTypeChange();')) !!}
+                                                <span class="lbl">  ราชการ</span>&nbsp;&nbsp;
                                                 {!! Form::number('registrationfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id' => 'registrationfee', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                             </label>
                                         </div>
@@ -728,7 +868,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('accessoriesfee', '7. ค่าอุปกรณ์', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('accessoriesfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                            {!! Form::number('accessoriesfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -783,7 +923,7 @@
                                 <div class="form-group">
                                     {!! Form::label('giveawayadditionalcharges', 'ลูกค้าจ่ายเพิ่มเติ่มค่าของแถม', array('class' => 'col-sm-3 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::number('giveawayadditionalcharges', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                        {!! Form::number('giveawayadditionalcharges', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'onchange'=>'CalculateAccessoriesFee();')) !!}
                                     </div>
                                 </div>
 
@@ -1100,6 +1240,29 @@
             @endforeach
         ];
 
+        function CalculateAccessoriesFee(){
+            var datas = $("#grid-table-in-form2").jqGrid('getGridParam', 'data');
+
+            var giveawayadditionalcharges = $('#giveawayadditionalcharges').val();
+            if(giveawayadditionalcharges == null || giveawayadditionalcharges == '')
+                giveawayadditionalcharges = 0;
+
+            if(datas.length > 0) {
+                var ids = [];
+                datas.forEach(function (arrayItem) {
+                    ids.push(arrayItem.giveawayid);
+                });
+
+                var giveawayids = ids.join();
+                $.get('{{$pathPrefix}}carpreemption/calculateaccessoriesfee/'+giveawayids, function(data){
+                    $('#accessoriesfee').val(parseFloat(giveawayadditionalcharges) + parseFloat(data));
+                });
+            }
+            else{
+                $('#accessoriesfee').val(giveawayadditionalcharges);
+            }
+        }
+
         onclickSubmitLocal = function (options, postdata) {
             var $this = $(this), p = $(this).jqGrid("getGridParam"),// p = this.p,
                     idname = p.prmNames.id,
@@ -1183,6 +1346,11 @@
 
             // !!! the most important step: skip ajax request to the server
             options.processing = true;
+
+            if(this.id == "grid-table-in-form2"){
+                CalculateAccessoriesFee();
+            }
+
             return {};
         }
 
@@ -1554,7 +1722,7 @@
                                 // reload grid to make the row from the next page visable.
                                 $this.trigger("reloadGrid", [{page: newPage}]);
                             }
-
+                            CalculateAccessoriesFee();
                             return true;
                         },
                         processing: true
@@ -1588,6 +1756,31 @@
                 $(".newbuy-customer").css("display","");
                 $(".same-customer").css("display","");
                 $(".insystem-customer").css("display","none");
+            }
+
+            var purchasetype = jQuery( 'input[name=purchasetype]:checked' ).val();
+            if(purchasetype == 0){
+                $(".purchasetype1").css("display","none");
+                $(".purchasetype11").css("display","none");
+            }
+            else{
+                $(".purchasetype1").css("display","inline-block");
+                $(".purchasetype11").css("display","block");
+            }
+
+            var carobjectivetype = jQuery( 'input[name=carobjectivetype]:checked' ).val();
+            if(carobjectivetype == 0){
+                $(".financingfee").css("display","none");
+                $(".transferfee").css("display","none");
+                $(".transferoperationfee").css("display","none");
+            }
+            else if(carobjectivetype == 1){
+                if(purchasetype == 0){
+                    $(".financingfee").css("display","none");
+                }
+
+                $(".cashpledgeredlabel").css("display","none");
+                $(".registrationtype").css("display","none");
             }
 
             //textarea

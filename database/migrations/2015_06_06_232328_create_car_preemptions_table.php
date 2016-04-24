@@ -26,6 +26,7 @@ class CreateCarPreemptionsTable extends Migration {
             $table->dateTime('date');
             $table->integer('bookingcustomerid')->unsigned();
             $table->foreign('bookingcustomerid')->references('id')->on('customers');
+            $table->integer('carobjectivetype')->comment('0:รถใหม่, 1:รถบริษัท');
             $table->integer('carmodelid')->unsigned();
             $table->foreign('carmodelid')->references('id')->on('car_models');
             $table->integer('carsubmodelid')->unsigned();
@@ -58,9 +59,18 @@ class CreateCarPreemptionsTable extends Migration {
             $table->decimal('interest', 10, 2)->nullable();
             $table->decimal('down', 10, 2)->nullable();
             $table->integer('installments')->nullable();
-            $table->decimal('cashpledgeredlabel', 10, 2);
-            $table->integer('registrationtype')->comment('0:บุคคล, 1:นิติบุคคล');
-            $table->decimal('registrationfee', 10, 2);
+
+            $table->decimal('financingfee', 10, 2)->nullable()->comment('ค่าจัดไฟแนนซ์ กรณีซื้อรถบริษัทและผ่อน - 3000');
+
+            $table->decimal('cashpledgeredlabel', 10, 2)->nullable();
+            $table->integer('registerprovinceid')->unsigned()->nullable();
+            $table->foreign('registerprovinceid')->references('id')->on('provinces');
+            $table->integer('registrationtype')->nullable()->comment('0:บุคคล, 1:นิติบุคคล, 2:ราชการ');
+            $table->decimal('registrationfee', 10, 2)->nullable();
+
+            $table->decimal('transferfee', 10, 2)->nullable()->comment('ค่าโอน กรณีซื้อรถบริษัท - 0.75% ของราคาขายจริง');
+            $table->decimal('transferoperationfee', 10, 2)->nullable()->comment('ค่าดำเนินการโอน กรณีซื้อรถบริษัท - 2000');
+
             $table->decimal('insurancefee', 10, 2);
             $table->decimal('compulsorymotorinsurancefee', 10, 2);
             $table->decimal('accessoriesfee', 10, 2);

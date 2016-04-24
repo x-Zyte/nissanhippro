@@ -33,8 +33,6 @@ class CreateCarPaymentsTable extends Migration {
             $table->decimal('capitalinsurance', 10, 2);
             $table->integer('compulsorymotorinsurancecompanyid')->unsigned();
             $table->foreign('compulsorymotorinsurancecompanyid')->references('id')->on('insurance_companies');
-            $table->integer('redlabelid')->unsigned();
-            $table->foreign('redlabelid')->references('id')->on('redlabels');
             $table->decimal('totalpayments', 10, 2);
 
             $table->dateTime('date2')->nullable();
@@ -42,9 +40,7 @@ class CreateCarPaymentsTable extends Migration {
             $table->decimal('overdue', 10, 2)->nullable();
             $table->decimal('overdueinterest', 10, 2)->nullable();
             $table->decimal('totaloverdue', 10, 2)->nullable();
-            $table->boolean('paybyoldcar')->nullable();
-            $table->boolean('paybycash')->nullable();
-            $table->boolean('paybyother')->nullable();
+            $table->integer('paybytype')->nullable()->comment('0:รถ, 1:เงินสด, 2:อื่นๆ');
             $table->string('paybyotherdetails',100)->nullable();
             $table->integer('overdueinstallments')->nullable();
             $table->dateTime('overdueinstallmentdate1')->nullable();
@@ -65,6 +61,11 @@ class CreateCarPaymentsTable extends Migration {
             $table->dateTime('oldcarpaydate')->nullable();
             $table->integer('payeeemployeeid')->unsigned()->nullable();
             $table->foreign('payeeemployeeid')->references('id')->on('employees');
+
+            $table->integer('deliverycarbookno')->nullable();
+            $table->integer('deliverycarno')->nullable();
+            $table->dateTime('deliverycardate')->nullable();
+            $table->string('deliverycarfilepath',2083)->nullable();
 
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');

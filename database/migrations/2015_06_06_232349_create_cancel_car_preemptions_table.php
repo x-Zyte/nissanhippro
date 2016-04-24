@@ -23,7 +23,6 @@ class CreateCancelCarPreemptionsTable extends Migration {
             $table->foreign('branchid')->references('id')->on('branchs');
             $table->integer('toemployeeid')->unsigned();
             $table->foreign('toemployeeid')->references('id')->on('employees');
-            $table->integer('canceltype')->comment('0:คืนจอง, 1:ยึดจอง');
             $table->integer('cancelreasontype')->comment('0:สัญญาไม่ผ่าน, 1:ไม่มีรถ, 2:อื่นๆ');
             $table->string('cancelreasondetails',100)->nullable();
             $table->text('remark');

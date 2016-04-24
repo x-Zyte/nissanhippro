@@ -49,7 +49,7 @@
                         <h1>
                             <i class="ace-icon fa fa-car green"></i>
                             <span class="red">Nissan</span>
-                            <span class="grey" id="id-text2">Hippo</span>
+                            <span class="grey" id="id-text2">Hippro</span>
                             <span class="blue" id="id-company-text">Power</span>
                             {{--<i class="ace-icon fa fa-leaf green"></i>--}}
                         </h1>

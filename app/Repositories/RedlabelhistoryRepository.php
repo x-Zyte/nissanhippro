@@ -8,16 +8,15 @@
 
 namespace App\Repositories;
 
-use App\Models\CommissionFinace;
+use App\Models\Redlabelhistory;
 
-class CommissionFinaceRepository extends EloquentRepositoryAbstract
+class RedlabelhistoryRepository extends EloquentRepositoryAbstract
 {
     public function __construct()
     {
-        $this->Database = new CommissionFinace;
+        $this->Database = new Redlabelhistory;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id', 'finacecompanyid','interestratetypeid', 'name', //'useforcustomertype',
-            'effectivefrom', 'effectiveto', 'finaceminimumprofit');
+        $this->crudFields = array('oper', 'id', 'redlabelid', 'issuedate', 'carpreemptionid', 'returndate', 'remarks');
         $this->uniqueKeySingles = array();
         $this->uniqueKeyMultiples = array();
         $this->hasBranch = false;

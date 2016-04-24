@@ -21,6 +21,8 @@ use App\Models\FinaceCompany;
 use App\Models\InsuranceCompany;
 use App\Models\Pricelist;
 use App\Models\RedLabel;
+use App\Models\Redlabelhistory;
+use App\Models\SystemDatas\Province;
 use App\Repositories\CarPaymentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as SupportRequest;
@@ -59,18 +61,9 @@ class CarPaymentController extends Controller {
             //array_push($carselectlist,$item->id.':'.$item->chassisno.'/'.$item->engineno.'/'.$item->carModel->name.'/'.$item->carSubModel->name.'/'.$item->color->name);
         }
 
-        $redlabelids = CarPayment::distinct()->lists('redlabelid');
-        $redlabels = RedLabel::whereIn('id', $redlabelids)->orderBy('no', 'asc')
-            ->get(['id', 'no']);
-        $redlabelselectlist = array();
-        foreach($redlabels as $item){
-            array_push($redlabelselectlist,$item->id.':'.$item->no);
-        }
-
         return view('carpayment',
             ['carpreemptionselectlist' => implode(";",$carpreemptionselectlist),
-                'carselectlist' => implode(";",$carselectlist),
-                'redlabelselectlist' => implode(";",$redlabelselectlist)]);
+                'carselectlist' => implode(";",$carselectlist)]);
     }
 
     public function read()
@@ -91,23 +84,25 @@ class CarPaymentController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
+        $carpreemptionids = Redlabelhistory::lists('carpreemptionid');
         if(Auth::user()->isadmin){
-
-            //$carpreemptionhaspaymentids = CarPayment::distinct()->lists('carpreemptionid');
-
             $carpreemptions = CarPreemption::where('status',0)
-                //->whereNotIn('id', $carpreemptionhaspaymentids)
+                ->where(function ($query) use ($carpreemptionids) {
+                    $query->where('carobjectivetype',1)
+                        ->orWhereIn('id', $carpreemptionids);
+                })
+                ->whereIn('id', $carpreemptionids)
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
                 ->get(['id','bookno','no']);
         }
         else{
-            //$carpreemptionhaspaymentids = CarPayment::where('provinceid', Auth::user()->provinceid)
-                //->distinct()->lists('carpreemptionid');
-
             $carpreemptions = CarPreemption::where('provinceid', Auth::user()->provinceid)
                 ->where('status',0)
-                //->whereNotIn('id', $carpreemptionhaspaymentids)
+                ->where(function ($query) use ($carpreemptionids) {
+                    $query->where('carobjectivetype',1)
+                        ->orWhereIn('id', $carpreemptionids);
+                })
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
                 ->get(['id','bookno','no']);
@@ -125,8 +120,12 @@ class CarPaymentController extends Controller {
         $purchasetype0 = false;
         $purchasetype1 = false;
 
+        $carobjectivetype0 = false;
+        $carobjectivetype1 = false;
+
         $registrationtype0 = false;
         $registrationtype1 = false;
+        $registrationtype2 = false;
 
         if($carpreemptionid != null && $carpreemptionid != ''){
             $carpreemption = CarPreemption::find($carpreemptionid);
@@ -140,13 +139,29 @@ class CarPaymentController extends Controller {
                 $purchasetype1 = true;
             }
 
+            if($carpreemption->carobjectivetype == 0){
+                $carobjectivetype0 = true;
+                $carobjectivetype1 = false;
+            }
+            elseif($carpreemption->carobjectivetype == 1){
+                $carobjectivetype0 = false;
+                $carobjectivetype1 = true;
+            }
+
             if($carpreemption->registrationtype == 0){
                 $registrationtype0 = true;
                 $registrationtype1 = false;
+                $registrationtype2 = false;
             }
             elseif($carpreemption->registrationtype == 1){
                 $registrationtype0 = false;
                 $registrationtype1 = true;
+                $registrationtype2 = false;
+            }
+            elseif($carpreemption->registrationtype == 2){
+                $registrationtype0 = false;
+                $registrationtype1 = false;
+                $registrationtype2 = true;
             }
 
             if(Auth::user()->isadmin){
@@ -176,23 +191,6 @@ class CarPaymentController extends Controller {
             foreach($cars as $item){
                 $carselectlist[$item->id] = $item->chassisno.'/'.$item->engineno;
             }
-        }
-
-        if(Auth::user()->isadmin){
-            $redlabels = RedLabel::whereNull('carid')
-                ->orderBy('no', 'asc')
-                ->get(['id','no']);
-        }
-        else{
-            $redlabels = RedLabel::where('provinceid', Auth::user()->provinceid)
-                ->whereNull('carid')
-                ->orderBy('no', 'asc')
-                ->get(['id','no']);
-        }
-        $redlabelselectlist = array();
-        $redlabelselectlist[null] = 'เลือกป้ายแดง';
-        foreach($redlabels as $item){
-            $redlabelselectlist[$item->id] = $item->no;
         }
 
         $insurancecompanies = InsuranceCompany::orderBy('name', 'asc')->get(['id', 'name']);
@@ -225,13 +223,15 @@ class CarPaymentController extends Controller {
             ['oper' => 'new','pathPrefix' => '../',
                 'carpreemptionselectlist' => $carpreemptionselectlist,
                 'carselectlist' => $carselectlist,
-                'redlabelselectlist' => $redlabelselectlist,
                 'insurancecompanyselectlist' => $insurancecompanyselectlist,
                 'payeeemployeeselectlist' => $payeeemployeeselectlist,
                 'purchasetype0' => $purchasetype0,
                 'purchasetype1' => $purchasetype1,
+                'carobjectivetype0' => $carobjectivetype0,
+                'carobjectivetype1' => $carobjectivetype1,
                 'registrationtype0' => $registrationtype0,
-                'registrationtype1' => $registrationtype1,]);
+                'registrationtype1' => $registrationtype1,
+                'registrationtype2' => $registrationtype2]);
     }
 
     public function save(Request $request)
@@ -242,27 +242,25 @@ class CarPaymentController extends Controller {
                 'carpreemptionid' => 'required',
                 'date' => 'required',
                 'carid' => 'required',
-                'amountperinstallment' => 'required',
+                'amountperinstallment' => 'required_if:purchasetype,1',
                 'insurancepremium' => 'required',
                 'paymentmode' => 'required',
                 'installmentsinadvance' => 'required_if:paymentmode,1',
                 'insurancecompanyid' => 'required',
                 'capitalinsurance' => 'required',
-                'compulsorymotorinsurancecompanyid' => 'required',
-                'redlabelid' => 'required',
+                'compulsorymotorinsurancecompanyid' => 'required'
             ],
             [
                 'carpreemptionid.required' => 'กรุณาเลือกการจอง',
                 'date.required' => 'วันที่ จำเป็นต้องกรอก',
                 'carid.required' => 'กรุณาเลือกรถ',
-                'amountperinstallment.required' => 'ยอดชำระต่องวด จำเป็นต้องกรอก',
+                'amountperinstallment.required_if' => 'ยอดชำระต่องวด จำเป็นต้องกรอก',
                 'insurancepremium.required' => 'เบี้ยประกันชีวิต จำเป็นต้องกรอก',
                 'paymentmode.required' => 'ชำระงวดแรก หรือ ชำระงวดล่วงหน้า จำเป็นต้องเลือก',
                 'installmentsinadvance.required_if' => 'จำนวนงวดล่วงหน้า จำเป็นต้องกรอก',
                 'insurancecompanyid.required' => 'เบี้ยประกันชั้น 1,3 กรุณาเลือกบริษัทประกัน',
                 'capitalinsurance.required' => 'ทุนประกัน จำเป็นต้องกรอก',
-                'compulsorymotorinsurancecompanyid.required' => 'เบี้ย พ.ร.บ. กรุณาเลือกบริษัทประกัน',
-                'redlabelid.required' => 'กรุณาเลือกทะเบียนป้ายแดง',
+                'compulsorymotorinsurancecompanyid.required' => 'เบี้ย พ.ร.บ. กรุณาเลือกบริษัทประกัน'
             ]
         );
 
@@ -284,31 +282,56 @@ class CarPaymentController extends Controller {
         $model->insurancecompanyid = $input['insurancecompanyid'];
         $model->capitalinsurance = $input['capitalinsurance'];
         $model->compulsorymotorinsurancecompanyid = $input['compulsorymotorinsurancecompanyid'];
-        $model->redlabelid = $input['redlabelid'];
         $model->totalpayments = $input['totalpayments'];
 
-        $model->date2 = $input['date2'];
+        if($input['date2'] != null && $input['date2'] != '')
+            $model->date2 = date('Y-m-d', strtotime($input['date2']));
+        else
+            $model->date2 = $input['date2'];
         $model->buyerpay = $input['buyerpay'];
         $model->overdue = $input['overdue'];
         $model->overdueinterest = $input['overdueinterest'];
         $model->totaloverdue = $input['totaloverdue'];
-        if ($request->has('paybyoldcar')) $model->paybyoldcar = $input['paybyoldcar'];
-        if ($request->has('paybycash')) $model->paybycash = $input['paybycash'];
-        if ($request->has('paybyother')) $model->paybyother = $input['paybyother'];
+        $model->paybytype = $input['paybytype'];
         $model->paybyotherdetails = $input['paybyotherdetails'];
         $model->overdueinstallments = $input['overdueinstallments'];
-        $model->overdueinstallmentdate1 = $input['overdueinstallmentdate1'];
+
+        if($input['overdueinstallmentdate1'] != null && $input['overdueinstallmentdate1'] != '')
+            $model->overdueinstallmentdate1 = date('Y-m-d', strtotime($input['overdueinstallmentdate1']));
+        else
+            $model->overdueinstallmentdate1 = $input['overdueinstallmentdate1'];
         $model->overdueinstallmentamount1 = $input['overdueinstallmentamount1'];
-        $model->overdueinstallmentdate2 = $input['overdueinstallmentdate2'];
+
+        if($input['overdueinstallmentdate2'] != null && $input['overdueinstallmentdate2'] != '')
+            $model->overdueinstallmentdate2 = date('Y-m-d', strtotime($input['overdueinstallmentdate2']));
+        else
+            $model->overdueinstallmentdate2 = $input['overdueinstallmentdate2'];
         $model->overdueinstallmentamount2 = $input['overdueinstallmentamount2'];
-        $model->overdueinstallmentdate3 = $input['overdueinstallmentdate3'];
+
+        if($input['overdueinstallmentdate3'] != null && $input['overdueinstallmentdate3'] != '')
+            $model->overdueinstallmentdate3 = date('Y-m-d', strtotime($input['overdueinstallmentdate3']));
+        else
+            $model->overdueinstallmentdate3 = $input['overdueinstallmentdate3'];
         $model->overdueinstallmentamount3 = $input['overdueinstallmentamount3'];
-        $model->overdueinstallmentdate4 = $input['overdueinstallmentdate4'];
+
+        if($input['overdueinstallmentdate4'] != null && $input['overdueinstallmentdate4'] != '')
+            $model->overdueinstallmentdate4 = date('Y-m-d', strtotime($input['overdueinstallmentdate4']));
+        else
+            $model->overdueinstallmentdate4 = $input['overdueinstallmentdate4'];
         $model->overdueinstallmentamount4 = $input['overdueinstallmentamount4'];
-        $model->overdueinstallmentdate5 = $input['overdueinstallmentdate5'];
+
+        if($input['overdueinstallmentdate5'] != null && $input['overdueinstallmentdate5'] != '')
+            $model->overdueinstallmentdate5 = date('Y-m-d', strtotime($input['overdueinstallmentdate5']));
+        else
+            $model->overdueinstallmentdate5 = $input['overdueinstallmentdate5'];
         $model->overdueinstallmentamount5 = $input['overdueinstallmentamount5'];
-        $model->overdueinstallmentdate6 = $input['overdueinstallmentdate6'];
+
+        if($input['overdueinstallmentdate6'] != null && $input['overdueinstallmentdate6'] != '')
+            $model->overdueinstallmentdate6 = date('Y-m-d', strtotime($input['overdueinstallmentdate6']));
+        else
+            $model->overdueinstallmentdate6 = $input['overdueinstallmentdate6'];
         $model->overdueinstallmentamount6 = $input['overdueinstallmentamount6'];
+
         $model->oldcarbuyername = $input['oldcarbuyername'];
         $model->oldcarpayamount = $input['oldcarpayamount'];
         if ($request->has('oldcarpaytype')) $model->oldcarpaytype = $input['oldcarpaytype'];
@@ -319,6 +342,13 @@ class CarPaymentController extends Controller {
             $model->oldcarpaydate = $input['oldcarpaydate'];
 
         $model->payeeemployeeid = $input['payeeemployeeid'];
+
+        $model->deliverycarbookno = $input['deliverycarbookno'];
+        $model->deliverycarno = $input['deliverycarno'];
+        if($input['deliverycardate'] != null && $input['deliverycardate'] != '')
+            $model->deliverycardate = date('Y-m-d', strtotime($input['deliverycardate']));
+        else
+            $model->deliverycardate = $input['deliverycardate'];
 
         if($model->save()) {
             return redirect()->action('CarPaymentController@edit',['id' => $model->id]);
@@ -352,13 +382,29 @@ class CarPaymentController extends Controller {
             $purchasetype1 = true;
         }
 
+        if($carpreemption->carobjectivetype == 0){
+            $carobjectivetype0 = true;
+            $carobjectivetype1 = false;
+        }
+        elseif($carpreemption->carobjectivetype == 1){
+            $carobjectivetype0 = false;
+            $carobjectivetype1 = true;
+        }
+
         if($carpreemption->registrationtype == 0){
             $registrationtype0 = true;
             $registrationtype1 = false;
+            $registrationtype2 = false;
         }
         elseif($carpreemption->registrationtype == 1){
             $registrationtype0 = false;
             $registrationtype1 = true;
+            $registrationtype2 = false;
+        }
+        elseif($carpreemption->registrationtype == 2){
+            $registrationtype0 = false;
+            $registrationtype1 = false;
+            $registrationtype2 = true;
         }
 
         $customer = Customer::find($carpreemption->buyercustomerid);
@@ -427,27 +473,24 @@ class CarPaymentController extends Controller {
 
         $model->insurancefee = $carpreemption->insurancefee;
         $model->compulsorymotorinsurancefee = $carpreemption->compulsorymotorinsurancefee;
+
+        if($carpreemption->carobjectivetype == 0) {
+            $registerprovince = Province::find($carpreemption->registerprovinceid);
+            $model->registerprovince = $registerprovince->name;
+        }
+        else{
+            $model->registerprovince = null;
+        }
         $model->registrationtype = $carpreemption->registrationtype;
         $model->registrationfee = $carpreemption->registrationfee;
 
-        if(Auth::user()->isadmin){
-            $redlabels = RedLabel::whereNull('carid')->orWhere('carid',$model->carid)
-                ->orderBy('no', 'asc')
-                ->get(['id','no']);
+        if($carpreemption->carobjectivetype == 0) {
+            $redlabelhistory = Redlabelhistory::where('carpreemptionid', $carpreemption->id)->first();
+            $redlabel = Redlabel::find($redlabelhistory->redlabelid);
+            $model->redlabel = $redlabel->no;
         }
         else{
-            $redlabels = RedLabel::where('provinceid', Auth::user()->provinceid)
-                ->where(function ($query) use ($model) {
-                    $query->whereNull('carid')
-                        ->orWhere('carid',$model->carid);
-                })
-                ->orderBy('no', 'asc')
-                ->get(['id','no']);
-        }
-        $redlabelselectlist = array();
-        $redlabelselectlist[null] = 'เลือกป้ายแดง';
-        foreach($redlabels as $item){
-            $redlabelselectlist[$item->id] = $item->no;
+            $model->redlabel = null;
         }
 
         $model->cashpledgeredlabel = $carpreemption->cashpledgeredlabel;
@@ -486,12 +529,14 @@ class CarPaymentController extends Controller {
                 'carpreemptionselectlist' => $carpreemptionselectlist,
                 'carselectlist' => $carselectlist,
                 'insurancecompanyselectlist' => $insurancecompanyselectlist,
-                'redlabelselectlist' => $redlabelselectlist,
                 'payeeemployeeselectlist' => $payeeemployeeselectlist,
                 'purchasetype0' => $purchasetype0,
                 'purchasetype1' => $purchasetype1,
+                'carobjectivetype0' => $carobjectivetype0,
+                'carobjectivetype1' => $carobjectivetype1,
                 'registrationtype0' => $registrationtype0,
-                'registrationtype1' => $registrationtype1,]);
+                'registrationtype1' => $registrationtype1,
+                'registrationtype2' => $registrationtype2]);
     }
 
     public function view($id)
@@ -517,13 +562,29 @@ class CarPaymentController extends Controller {
             $purchasetype1 = true;
         }
 
+        if($carpreemption->carobjectivetype == 0){
+            $carobjectivetype0 = true;
+            $carobjectivetype1 = false;
+        }
+        elseif($carpreemption->carobjectivetype == 1){
+            $carobjectivetype0 = false;
+            $carobjectivetype1 = true;
+        }
+
         if($carpreemption->registrationtype == 0){
             $registrationtype0 = true;
             $registrationtype1 = false;
+            $registrationtype2 = false;
         }
         elseif($carpreemption->registrationtype == 1){
             $registrationtype0 = false;
             $registrationtype1 = true;
+            $registrationtype2 = false;
+        }
+        elseif($carpreemption->registrationtype == 2){
+            $registrationtype0 = false;
+            $registrationtype1 = false;
+            $registrationtype2 = true;
         }
 
         $customer = Customer::find($carpreemption->buyercustomerid);
@@ -566,12 +627,25 @@ class CarPaymentController extends Controller {
 
         $model->insurancefee = $carpreemption->insurancefee;
         $model->compulsorymotorinsurancefee = $carpreemption->compulsorymotorinsurancefee;
+
+        if($carpreemption->carobjectivetype == 0) {
+            $registerprovince = Province::find($carpreemption->registerprovinceid);
+            $model->registerprovince = $registerprovince->name;
+        }
+        else{
+            $model->registerprovince = null;
+        }
         $model->registrationtype = $carpreemption->registrationtype;
         $model->registrationfee = $carpreemption->registrationfee;
 
-        $redlabelselectlist = array();
-        $item = RedLabel::find($model->redlabelid);
-        $redlabelselectlist[$item->id] = $item->no;
+        if($carpreemption->carobjectivetype == 0) {
+            $redlabelhistory = Redlabelhistory::where('carpreemptionid', $carpreemption->id)->first();
+            $redlabel = Redlabel::find($redlabelhistory->redlabelid);
+            $model->redlabel = $redlabel->no;
+        }
+        else{
+            $model->redlabel = null;
+        }
 
         $model->cashpledgeredlabel = $carpreemption->cashpledgeredlabel;
         $model->total = $model->down + $model->payinadvanceamount + $model->accessoriesfee + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel;
@@ -599,12 +673,14 @@ class CarPaymentController extends Controller {
                 'carpreemptionselectlist' => $carpreemptionselectlist,
                 'carselectlist' => $carselectlist,
                 'insurancecompanyselectlist' => $insurancecompanyselectlist,
-                'redlabelselectlist' => $redlabelselectlist,
                 'payeeemployeeselectlist' => $payeeemployeeselectlist,
                 'purchasetype0' => $purchasetype0,
                 'purchasetype1' => $purchasetype1,
+                'carobjectivetype0' => $carobjectivetype0,
+                'carobjectivetype1' => $carobjectivetype1,
                 'registrationtype0' => $registrationtype0,
-                'registrationtype1' => $registrationtype1,]);
+                'registrationtype1' => $registrationtype1,
+                'registrationtype2' => $registrationtype2]);
     }
 
     public function getbahttext($amount)

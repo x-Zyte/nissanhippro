@@ -285,6 +285,15 @@
                 </ul>
             </li>
 
+            <li class="@yield('menu-redlabel-class')" @if(!Auth::user()->isadmin && !in_array("ป้ายแดง", $employeeMenus)) style="display: none" @endif>
+                <a href="{{ url('/redlabel') }}">
+                    <i class="menu-icon fa fa-ticket"></i>
+                    <span class="menu-text"> ป้ายแดง (เพิ่ม/เบิก/คืน) </span>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
             <li class="@yield('menu-employee-class')" @if(!Auth::user()->isadmin && !in_array("พนักงาน", $employeeMenus)) style="display: none" @endif>
                 <a href="{{ url('/employee') }}">
                     <i class="menu-icon fa fa-male"></i>
@@ -423,15 +432,6 @@
                                 <a href="{{ url('/giveaway') }}">
                                     <i class="menu-icon fa fa-minus"></i>
                                     อุปกรณ์/ของแถม
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-
-                            <li class="@yield('menu-settingredlabel-class')">
-                                <a href="{{ url('/redlabel') }}">
-                                    <i class="menu-icon fa fa-minus"></i>
-                                    ป้ายแดง
                                 </a>
 
                                 <b class="arrow"></b>

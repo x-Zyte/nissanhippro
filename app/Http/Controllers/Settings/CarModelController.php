@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Settings;
 use App\Models\CarBrand;
 use App\Models\CarModel;
 use App\Models\CarModelColor;
+use App\Models\CarModelRegister;
 use App\Models\CarSubModel;
 use App\Models\CarType;
 use App\Facades\GridEncoder;
 use App\Http\Controllers\Controller;
 use App\Models\Color;
+use App\Models\SystemDatas\Province;
 use App\Repositories\CarModelRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -48,6 +50,13 @@ class CarModelController extends Controller {
             array_push($colorselectlist,$item->id.':'.$item->code.' - '.$item->name);
         }
 
+        $provinces = Province::orderBy('name', 'asc')->get(['id', 'name']);
+        $provinceselectlist = array();
+        array_push($provinceselectlist,':เลือกจังหวัด');
+        foreach($provinces as $item){
+            array_push($provinceselectlist,$item->id.':'.$item->name);
+        }
+
         $defaultCarBrand = '';
         $carBrand = CarBrand::where('name',"NISSAN")->first();
         if($carBrand != null){
@@ -58,6 +67,7 @@ class CarModelController extends Controller {
             ['cartypeselectlist' => implode(";",$cartypeselectlist),
                 'carbrandselectlist' => implode(";",$carbrandselectlist),
                 'colorselectlist' => implode(";",$colorselectlist),
+                'provinceselectlist' => implode(";",$provinceselectlist),
                 'defaultCarBrand' => $defaultCarBrand]);
     }
 
@@ -75,16 +85,23 @@ class CarModelController extends Controller {
         GridEncoder::encodeRequestedData(new CarModelRepository(), $request);
     }
 
-    public function getsubmodelandcolorbyid($id,$registrationtype)
+    public function getsubmodelandcolorbyid($id,$registrationtype,$registerprovinceid)
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
         $carmodel = CarModel::find($id);
+        $carmodelregister = CarModelRegister::where('carmodelid',$id)->where('provinceid',$registerprovinceid)->first();
 
-        if($registrationtype == 0)
-            $registercost = $carmodel->individualregistercost;
+        if($carmodelregister == null)
+            $registercost = 0;
+        else if($registrationtype == 0)
+            $registercost = $carmodelregister->individualregistercost;
         else if($registrationtype == 1)
-            $registercost = $carmodel->companyregistercost;
+            $registercost = $carmodelregister->companyregistercost;
+        else if($registrationtype == 2)
+            $registercost = $carmodelregister->governmentregistercost;
+        else
+            $registercost = null;
 
         $actcharged = $carmodel->cartype->actcharged;
 
@@ -93,19 +110,26 @@ class CarModelController extends Controller {
         $colorids = CarModelColor::where('carmodelid',$id)->lists('colorid');
         $colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
 
-        return ['carsubmodels'=>$carsubmodels,'colors'=>$colors,'actcharged'=>$actcharged,'registercost'=>$registercost];
+        $provinceids = CarModelRegister::where('carmodelid', $id)->lists('provinceid');
+        $provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
+
+        return ['carsubmodels'=>$carsubmodels,'colors'=>$colors,'actcharged'=>$actcharged,'registercost'=>$registercost, 'registerprovinces' => $provinces];
     }
 
-    public function getregistrationcost($id,$registrationtype)
+    public function getregistrationcost($id,$registrationtype,$registerprovinceid)
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $carmodel = CarModel::find($id);
+        $carmodelregister = CarModelRegister::where('carmodelid',$id)->where('provinceid',$registerprovinceid)->first();
 
-        if($registrationtype == 0)
-            $registercost = $carmodel->individualregistercost;
+        if($carmodelregister == null)
+            $registercost = 0;
+        else if($registrationtype == 0)
+            $registercost = $carmodelregister->individualregistercost;
         else if($registrationtype == 1)
-            $registercost = $carmodel->companyregistercost;
+            $registercost = $carmodelregister->companyregistercost;
+        else if($registrationtype == 2)
+            $registercost = $carmodelregister->governmentregistercost;
 
         return ['registercost'=>$registercost];
     }

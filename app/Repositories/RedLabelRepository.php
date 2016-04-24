@@ -17,7 +17,7 @@ class RedLabelRepository extends EloquentRepositoryAbstract
     {
         $this->Database = new RedLabel;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id', 'provinceid','no', 'carid','deposit');
+        $this->crudFields = array('oper', 'id', 'provinceid','no','customerid', 'carid','deposit');
         $this->uniqueKeySingles = array(array('field'=>'no','label'=>'เลขทะเบียน'));
         $this->uniqueKeyMultiples = array();
         $this->hasBranch = false;

@@ -11,15 +11,16 @@ class CarPreemption extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['provinceid','branchid','bookno', 'no', 'date', 'bookingcustomerid', 'carmodelid', 'carsubmodelid','colorid',
+    protected $fillable = ['provinceid','branchid','bookno', 'no', 'date', 'bookingcustomerid',
+        'carobjectivetype', 'carmodelid', 'carsubmodelid','colorid',
         'pricelistid', 'discount', 'subdown', 'accessories',
 
         'oldcarbrandid', 'oldcarmodelid', 'oldcargear', 'oldcarcolor', 'oldcarenginesize', 'oldcarlicenseplate', 'oldcaryear',
         'oldcarprice', 'oldcarbuyername', 'oldcarother',
 
         'cashpledge', 'purchasetype', 'finacecompanyid', 'interest', 'down', 'installments', 'cashpledgeredlabel',
-        'registrationtype', 'registrationfee', 'insurancefee', 'compulsorymotorinsurancefee', 'accessoriesfee', 'otherfee',
-        'datewantgetcar','giveawayadditionalcharges',
+        'registerprovinceid','registrationtype', 'registrationfee', 'insurancefee', 'compulsorymotorinsurancefee', 'accessoriesfee', 'otherfee',
+        'datewantgetcar','giveawayadditionalcharges','financingfee', 'transferfee', 'transferoperationfee',
 
         'buyercustomerid', 'salesmanemployeeid', 'salesmanteamid', 'salesmanageremployeeid', 'approversemployeeid', 'approvaldate',
 
@@ -40,6 +41,18 @@ class CarPreemption extends Model {
             $model->branchid = $employee->branchid;
 
             $model->status = 0;
+
+            if($model->carobjectivetype == 0){
+                $model->financingfee = null;
+                $model->transferfee = null;
+                $model->transferoperationfee = null;
+            }
+            else if($model->carobjectivetype == 1){
+                $model->cashpledgeredlabel = null;
+                $model->registerprovinceid = null;
+                $model->registrationtype = null;
+                $model->registrationfee = null;
+            }
 
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
@@ -76,6 +89,18 @@ class CarPreemption extends Model {
 
         static::updating(function($model)
         {
+            if($model->carobjectivetype == 0){
+                $model->financingfee = null;
+                $model->transferfee = null;
+                $model->transferoperationfee = null;
+            }
+            else if($model->carobjectivetype == 1){
+                $model->cashpledgeredlabel = null;
+                $model->registerprovinceid = null;
+                $model->registrationtype = null;
+                $model->registrationfee = null;
+            }
+
             $model->carPreemptionGiveaways()->delete();
 
             $model->modifiedby = Auth::user()->id;

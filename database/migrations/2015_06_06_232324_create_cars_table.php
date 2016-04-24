@@ -35,8 +35,8 @@ class CreateCarsTable extends Migration {
             $table->integer('colorid')->unsigned();
             $table->foreign('colorid')->references('id')->on('colors');
             $table->integer('objective')->comment('0:ขาย, 1:ใช้งาน, 2:ทดสอบ');
+            $table->string('parklocation',50)->nullable();
             $table->string('receivecarfilepath',2083)->nullable();
-            $table->string('deliverycarfilepath',2083)->nullable();
             $table->boolean('issold')->default(false);
             $table->boolean('isregistered')->default(false);
             $table->boolean('isdelivered')->default(false);

@@ -46,10 +46,6 @@
                     {name:'carpreemptionid',index:'carpreemptionid', width:100, formatter:'select',editoptions:{value: "{{$carpreemptionselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carpreemptionselectlist}}"}
                     },
-                    {name:'canceltype',index:'canceltype', width:100, editable: true,edittype:"select",formatter:'select',align:'center'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:คืนจอง;1:ยึดจอง;" },
-                        editoptions:{value: "0:คืนจอง;1:ยึดจอง;"}
-                    },
                     {name:'cancelreasontype',index:'cancelreasontype', width:100, editable: true,edittype:"select",formatter:'select',align:'center'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:สัญญาไม่ผ่าน;1:ไม่มีรถ;2:อื่นๆ" },
                         editoptions:{value: "0:สัญญาไม่ผ่าน;1:ไม่มีรถ;2:อื่นๆ"}

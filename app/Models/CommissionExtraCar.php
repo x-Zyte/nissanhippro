@@ -3,16 +3,15 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;;
 
-class CommissionFinace extends Model {
+class CommissionExtraCar extends Model {
 
-    protected $table = 'commission_finaces';
+    protected $table = 'commission_extra_cars';
 
     public $timestamps = false;
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['finacecompanyid', 'interestratetypeid', 'name', //'useforcustomertype',
-        'effectivefrom', 'effectiveto', 'finaceminimumprofit', 'active',
+    protected $fillable = ['commissionextraid', 'carmodelid', 'carsubmodelid',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()
@@ -21,8 +20,11 @@ class CommissionFinace extends Model {
 
         static::creating(function($model)
         {
-            $model->effectivefrom = date('Y-m-d', strtotime($model->effectivefrom));
-            $model->effectiveto = date('Y-m-d', strtotime($model->effectiveto));
+            if($model->carsubmodelid == 0){
+                CommissionExtraCar::where('commissionextraid', $model->commissionextraid)
+                    ->where('carmodelid', $model->carmodelid)
+                    ->delete();
+            }
 
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
@@ -37,8 +39,12 @@ class CommissionFinace extends Model {
 
         static::updating(function($model)
         {
-            $model->effectivefrom = date('Y-m-d', strtotime($model->effectivefrom));
-            $model->effectiveto = date('Y-m-d', strtotime($model->effectiveto));
+            if($model->carsubmodelid == 0){
+                CommissionExtraCar::where('id','!=', $model->id)
+                    ->where('commissionextraid', $model->commissionextraid)
+                    ->where('carmodelid', $model->carmodelid)
+                    ->delete();
+            }
 
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");
@@ -53,5 +59,15 @@ class CommissionFinace extends Model {
         {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Delete','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
         });
+    }
+
+    public function carmodel()
+    {
+        return $this->belongsTo('App\Models\CarModel', 'carmodelid', 'id');
+    }
+
+    public function carsubmodel()
+    {
+        return $this->belongsTo('App\Models\CarSubModel', 'carsubmodelid', 'id');
     }
 }

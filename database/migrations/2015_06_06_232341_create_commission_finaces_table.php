@@ -23,6 +23,7 @@ class CreateCommissionFinacesTable extends Migration {
             //$table->integer('useforcustomertype')->comment('0:ปกติ, 1:พิเศษ');
             $table->dateTime('effectivefrom');
             $table->dateTime('effectiveto');
+            $table->decimal('finaceminimumprofit', 10, 2)->default(0);
             $table->boolean('active')->default(true);
 
             $table->integer('createdby')->unsigned();

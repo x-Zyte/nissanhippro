@@ -44,7 +44,7 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('commissionpa/read') }}',
                 datatype: "json",
-                colNames:['ไฟแนนซ์','วันที่เริ่ม', 'วันที่สิ้นสุด', 'ไฟแนนซ์กำไรขั้นต่ำ', 'จำนวนเงิน'],
+                colNames:['ไฟแนนซ์','วันที่เริ่ม', 'วันที่สิ้นสุด', 'จำนวนเงิน'],
                 colModel:[
                     {name:'finacecompanyid',index:'finacecompanyid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$finacecompanyselectlist}}"}

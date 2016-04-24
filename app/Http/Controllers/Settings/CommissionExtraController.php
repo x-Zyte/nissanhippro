@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Settings;
 
 use App\Facades\GridEncoder;
 use App\Http\Controllers\Controller;
+use App\Models\CarModel;
+use App\Models\CarSubModel;
+use App\Models\CommissionExtraCar;
 use App\Models\FinaceCompany;
 use App\Repositories\CommissionExtraRepository;
 use Illuminate\Http\Request;
@@ -29,8 +32,29 @@ class CommissionExtraController extends Controller {
             array_push($finacecompanyselectlist,$model->id.':'.$model->name);
         }
 
+        $carmodels = CarModel::whereHas("carbrand", function($q)
+        {
+            $q->where('ismain',true);
+
+        })->orderBy('name', 'asc')->get(['id', 'name']);
+        $carmodelselectlist = array();
+        array_push($carmodelselectlist,':เลือกแบบ');
+        foreach($carmodels as $item){
+            array_push($carmodelselectlist,$item->id.':'.$item->name);
+        }
+
+        $carsubmodelids = CommissionExtraCar::distinct()->lists('carsubmodelid');
+        $carsubmodels = CarSubModel::whereIn('id', $carsubmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $carsubmodelselectlist = array();
+        array_push($carsubmodelselectlist,'0:ทุกรุ่น');
+        foreach($carsubmodels as $item){
+            array_push($carsubmodelselectlist,$item->id.':'.$item->name);
+        }
+
         return view('settings.commissionextra',
-            ['finacecompanyselectlist' => implode(";",$finacecompanyselectlist)]);
+            ['finacecompanyselectlist' => implode(";",$finacecompanyselectlist),
+                'carmodelselectlist' => implode(";",$carmodelselectlist),
+                'carsubmodelselectlist' => implode(";",$carsubmodelselectlist)]);
     }
 
     public function read()

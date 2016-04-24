@@ -11,7 +11,7 @@ class CancelCarPreemption extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['provinceid','branchid','carpreemptionid','toemployeeid', 'canceltype', 'cancelreasontype',
+    protected $fillable = ['provinceid','branchid','carpreemptionid','toemployeeid', 'cancelreasontype',
         'cancelreasondetails', 'remark','approvaltype','amountapproved',
         'salesmanemployeedate', 'accountemployeeid', 'accountemployeedate',
         'financeemployeeid', 'financeemployeedate', 'approversemployeeid', 'approversemployeedate',
