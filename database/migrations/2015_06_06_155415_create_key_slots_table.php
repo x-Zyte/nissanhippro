@@ -18,6 +18,8 @@ class CreateKeySlotsTable extends Migration {
             $table->integer('provinceid')->unsigned();
             $table->foreign('provinceid')->references('id')->on('provinces');
             $table->integer('no');
+            $table->integer('carid')->unsigned()->nullable();
+            $table->foreign('carid')->references('id')->on('cars');
             $table->boolean('active')->default(true);
 
             $table->engine = 'InnoDB';

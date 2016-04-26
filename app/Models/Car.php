@@ -52,7 +52,7 @@ class Car extends Model {
             //    $model->keyno = $min;
             //}
             //$model->save();
-            KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->update(['active' => false]);
+            KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->update(['carid' => $model->id ,'active' => false]);
         });
 
         static::updating(function($model)
@@ -77,7 +77,7 @@ class Car extends Model {
             if($model->receivecarfilepath != '')
                 File::delete(public_path().$model->receivecarfilepath);
 
-            KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->update(['active' => true]);
+            KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->update(['carid' => null ,'active' => true]);
         });
     }
 

@@ -952,8 +952,11 @@ class CarPreemptionController extends Controller {
         }
 
         $finacecompanyselectlist = array();
-        $item = FinaceCompany::find($model->finacecompanyid);
-        $finacecompanyselectlist[$item->id] = $item->name;
+        array_push($giveawayselectlist,':เลือกบริษัท');
+        if($model->purchasetype == 1) {
+            $item = FinaceCompany::find($model->finacecompanyid);
+            $finacecompanyselectlist[$item->id] = $item->name;
+        }
 
         $priceselectlist = array();
         $item = Pricelist::find($model->pricelistid);
@@ -1207,16 +1210,16 @@ class CarPreemptionController extends Controller {
         $model->approversemployeeid = $input['approversemployeeid'];
         $model->approvaldate = date('Y-m-d', strtotime($input['approvaldate']));
 
-        if ($request->has('place')) $model->place = $input['place'];
-        if ($request->has('showroom')) $model->showroom = $input['showroom'];
-        if ($request->has('booth')) $model->booth = $input['booth'];
-        if ($request->has('leaflet')) $model->leaflet = $input['leaflet'];
-        if ($request->has('businesscard')) $model->businesscard = $input['businesscard'];
-        if ($request->has('invitationcard')) $model->invitationcard = $input['invitationcard'];
-        if ($request->has('phone')) $model->phone = $input['phone'];
-        if ($request->has('signshowroom')) $model->signshowroom = $input['signshowroom'];
-        if ($request->has('spotradiowalkin')) $model->spotradiowalkin = $input['spotradiowalkin'];
-        if ($request->has('recommendedby')) $model->recommendedby = $input['recommendedby'];
+        if ($request->has('place')) $model->place = $input['place']; else $model->place = 0;
+        if ($request->has('showroom')) $model->showroom = $input['showroom']; else $model->showroom = 0;
+        if ($request->has('booth')) $model->booth = $input['booth']; else $model->booth = 0;
+        if ($request->has('leaflet')) $model->leaflet = $input['leaflet']; else $model->leaflet = 0;
+        if ($request->has('businesscard')) $model->businesscard = $input['businesscard']; else $model->businesscard = 0;
+        if ($request->has('invitationcard')) $model->invitationcard = $input['invitationcard']; else $model->invitationcard = 0;
+        if ($request->has('phone')) $model->phone = $input['phone']; else $model->phone = 0;
+        if ($request->has('signshowroom')) $model->signshowroom = $input['signshowroom']; else $model->signshowroom = 0;
+        if ($request->has('spotradiowalkin')) $model->spotradiowalkin = $input['spotradiowalkin']; else $model->spotradiowalkin = 0;
+        if ($request->has('recommendedby')) $model->recommendedby = $input['recommendedby']; else $model->recommendedby = 0;
         $model->recommendedbyname = $input['recommendedbyname'];
         if ($request->has('recommendedbytype')) $model->recommendedbytype = $input['recommendedbytype'];
         if ($request->has('customertype')) $model->customertype = $input['customertype'];

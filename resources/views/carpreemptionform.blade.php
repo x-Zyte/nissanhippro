@@ -883,9 +883,13 @@
                                 <div class="form-group" >
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('datewantgetcar', 'วันที่ต้องการรับรถ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-2">
                                             <div class="input-group">
-                                                {!! Form::text('datewantgetcar', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}
+                                                @if($carpreemption->datewantgetcar != null && $carpreemption->datewantgetcar != '')
+                                                    {!! Form::text('datewantgetcar', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}
+                                                @else
+                                                    {!! Form::text('datewantgetcar', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}
+                                                @endif
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar bigger-110"></i>
                                                 </span>

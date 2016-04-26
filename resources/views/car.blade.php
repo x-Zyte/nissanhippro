@@ -188,6 +188,7 @@
                     var data = new FormData();
                     data.append('_token','{{ csrf_token() }}');
                     data.append('engineno',$('#engineno').val());
+                    data.append('chassisno',$('#chassisno').val());
                     data.append('receivecarfile', receivecarfilepath.prop('files')[0]);
 
                     return $.ajax({

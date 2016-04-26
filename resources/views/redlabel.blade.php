@@ -125,7 +125,7 @@
                                 ,searchrules:{required:true}
                                 ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
                                 ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
-                            {name:'carpreemptionid',index:'carpreemptionid', width:400, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$carpreemptionselectlist}}"}
+                            {name:'carpreemptionid',index:'carpreemptionid', width:500, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$carpreemptionselectlist}}"}
                                 ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carpreemptionselectlist}}" }
                                 ,editrules:{required:true}},
                             {name:'returndate',index:'returndate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }

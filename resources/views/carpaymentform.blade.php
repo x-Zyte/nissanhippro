@@ -35,11 +35,22 @@
                 $('#carid').val(null).trigger('chosen:updated');
 
                 $("input[name=purchasetype][value=" + data.purchasetype + "]").prop('checked', true);
+
+                if(data.purchasetype == 0){
+                    $('#down').val(parseFloat(data.carprice).toFixed(0));
+                    $(".purchasetype1ib").css("display","none");
+                    $(".purchasetype1b").css("display","none");
+                }
+                else if(data.purchasetype == 1){
+                    $('#down').val(parseFloat(data.down).toFixed(0));
+                    $(".purchasetype1ib").css("display","inline-block");
+                    $(".purchasetype1b").css("display","block");
+                }
+
                 $('#installments').val(data.installments);
                 $('#interest').val(data.interest);
                 $('#finacecompany').val(data.finacecompany);
 
-                $('#down').val(parseFloat(data.down).toFixed(0));
                 $('#yodjud').val(parseFloat(data.yodjud).toFixed(0));
 
                 var insurancepremium = $('#insurancepremium').val();
@@ -256,9 +267,9 @@
     @endif
 
     @if($oper == 'new')
-        {!! Form::open(array('url' => 'carpayment/save', 'id'=>'form-carpayment', 'class'=>'form-horizontal', 'role'=>'form')) !!}
+        {!! Form::open(array('url' => 'carpayment/save', 'id'=>'form-carpayment', 'class'=>'form-horizontal', 'role'=>'form', 'files'=>true)) !!}
     @elseif($oper == 'edit')
-        {!! Form::model($carpayment, array('url' => 'carpayment/save', 'id'=>'form-carpayment', 'class'=>'form-horizontal', 'role'=>'form')) !!}
+        {!! Form::model($carpayment, array('url' => 'carpayment/save', 'id'=>'form-carpayment', 'class'=>'form-horizontal', 'role'=>'form', 'files'=>true)) !!}
         {!! Form::hidden('id') !!}
     @elseif($oper == 'view')
         {!! Form::model($carpayment, array('id'=>'form-carpayment', 'class'=>'form-horizontal', 'role'=>'form')) !!}
@@ -355,21 +366,21 @@
                                         <label>
                                             {!! Form::radio('purchasetype', 1, $purchasetype1, array('class' => 'ace', 'disabled'=>'disabled')) !!}
                                             <span class="lbl">  ผ่อน</span>&nbsp;&nbsp;
-                                            {!! Form::number('installments', null, array('style'=>'width:70px;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'installments')) !!}
                                         </label>
 
-                                        <label>
+                                        <label class="purchasetype1ib">
+                                            {!! Form::number('installments', null, array('style'=>'width:70px;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'installments')) !!}
                                             <span class="lbl"> งวด ๆ ละ</span>&nbsp;
                                             {!! Form::number('amountperinstallment', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'amountperinstallment', 'onchange'=>'AmountperinstallmentChange();')) !!}
                                         </label>
-                                        <label>
+                                        <label class="purchasetype1ib">
                                             <span class="lbl"> บาท ดอกเบี้ย</span>&nbsp;
                                             {!! Form::number('interest', null, array('style'=>'width:70px;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'interest')) !!}
                                             <span class="lbl"> %</span>
                                         </label>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group purchasetype1b">
                                     {!! Form::label('finacecompany', 'ไฟแนนซ์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         {!! Form::text('finacecompany', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
@@ -423,7 +434,7 @@
                                         <label> บาท )</label>
                                     </div>
                                 </div>
-                                <div class="form-group" style="padding-left:20px;">
+                                <div class="form-group purchasetype1b" style="padding-left:20px;">
                                     <div class="col-sm-7">
                                         <label>
                                             {!! Form::radio('paymentmode', 0, false, array('class' => 'ace', 'onchange'=>'PaymentmodeChange();')) !!}
@@ -896,7 +907,11 @@
                                     </div>
                                     <div class="col-sm-1" style="margin-left: -60px;">
                                         <div class="input-group">
-                                            {!! Form::text('deliverycardate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'deliverycardate')) !!}
+                                            @if($carpayment->deliverycardate != null && $carpayment->deliverycardate != '')
+                                                {!! Form::text('deliverycardate', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'deliverycardate')) !!}
+                                            @else
+                                                {!! Form::text('deliverycardate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'deliverycardate')) !!}
+                                            @endif
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -910,9 +925,20 @@
                                         <span> รูป</span>&nbsp;&nbsp;
                                     </label>
                                 </div>
-                                <div class="col-xs-1" style="margin-left: -50px;">
-                                    {!! Form::file('deliverycarfilepath','',array('id'=>'deliverycarfilepath')) !!}
-                                </div>
+
+                                @if($oper != 'new' && $carpayment->deliverycarfilepath != null)
+                                    <div class="col-xs-1" style="margin-left: -50px;">
+                                        <a href = "{{ $carpayment->deliverycarfilepath }}" data-lightbox="' + cellvalue + '">View photo</a>
+                                    </div>
+
+                                    <div class="col-xs-1" style="margin-left: -30px;">
+                                        {!! Form::file('deliverycarfile','',array('id'=>'deliverycarfile')) !!}
+                                    </div>
+                                @else
+                                    <div class="col-xs-1" style="margin-left: -50px;">
+                                        {!! Form::file('deliverycarfile','',array('id'=>'deliverycarfile')) !!}
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -924,6 +950,12 @@
         @if($oper != 'view')
             <div class="clearfix form-actions">
                 <div class="col-md-offset-5 col-md-5">
+                    <label>
+                        {!! Form::checkbox('isdraft', 1, false, array('class' => 'ace')) !!}
+                        <span class="lbl" style="width:130px;" >  บันทึกเป็นฉบับร่าง</span>
+                    </label>
+                    &nbsp;&nbsp;
+
                     <button id="btnSubmit" class="btn btn-info" type="submit">
                         <i class="ace-icon fa fa-check bigger-110"></i>
                         Submit
@@ -944,6 +976,16 @@
         $(document).ready(function() {
             var carobjectivetype = jQuery( 'input[name=carobjectivetype]:checked' ).val();
             var purchasetype = jQuery( 'input[name=purchasetype]:checked' ).val();
+
+            if(purchasetype == 0){
+                $(".purchasetype1ib").css("display","none");
+                $(".purchasetype1b").css("display","none");
+            }
+            else if(purchasetype == 1){
+                $(".purchasetype1ib").css("display","inline-block");
+                $(".purchasetype1b").css("display","block");
+            }
+
             if(carobjectivetype == 0){
                 $(".financingfee").css("display","none");
                 $(".transferfee").css("display","none");

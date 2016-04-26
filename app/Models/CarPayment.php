@@ -20,7 +20,7 @@ class CarPayment extends Model {
         'overdueinstallmentdate4', 'overdueinstallmentamount4','overdueinstallmentdate5', 'overdueinstallmentamount5',
         'overdueinstallmentdate6', 'overdueinstallmentamount6', 'oldcarbuyername', 'oldcarpayamount', 'oldcarpaytype',
         'oldcarpaydate', 'payeeemployeeid',
-        'deliverycarbookno','deliverycarno','deliverycardate','deliverycarfilepath',
+        'deliverycarbookno','deliverycarno','deliverycardate','deliverycarfilepath','isdraft',
 
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
@@ -60,6 +60,8 @@ class CarPayment extends Model {
             if($model->oldcarpaydate == '') $model->oldcarpaydate = null;
             if($model->payeeemployeeid == '') $model->payeeemployeeid = null;
 
+            if($model->deliverycarbookno == '') $model->deliverycarbookno = null;
+            if($model->deliverycarno == '') $model->deliverycarno = null;
             if($model->deliverycardate == '') $model->deliverycardate = null;
 
             $model->createdby = Auth::user()->id;
@@ -81,8 +83,16 @@ class CarPayment extends Model {
                 $redlabel->deposit = $carpreemption->cashpledgeredlabel;
                 $redlabel->save();
             }
-            $carpreemption->status = 1;
-            $carpreemption->save();
+
+            if(!$model->isdraft) {
+                $carpreemption->status = 1;
+                $carpreemption->save();
+            }
+
+            if($model->deliverycarbookno != null && $model->deliverycarbookno != ''){
+                $car = Car::find($model->carid);
+                KeySlot::where('provinceid', $car->provinceid)->where('no',$car->keyno)->update(['carid' => null ,'active' => true]);
+            }
         });
 
         static::updating(function($model)
@@ -117,6 +127,10 @@ class CarPayment extends Model {
             if($model->oldcarpaydate == '') $model->oldcarpaydate = null;
             if($model->payeeemployeeid == '') $model->payeeemployeeid = null;
 
+            if($model->deliverycarbookno == '') $model->deliverycarbookno = null;
+            if($model->deliverycarno == '') $model->deliverycarno = null;
+            if($model->deliverycardate == '') $model->deliverycardate = null;
+
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");
         });
@@ -124,6 +138,18 @@ class CarPayment extends Model {
         static::updated(function($model)
         {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Update','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
+
+            $carpreemption = CarPreemption::find($model->carpreemptionid);
+            if($model->isdraft)
+                $carpreemption->status = 0;
+            else
+                $carpreemption->status = 1;
+            $carpreemption->save();
+
+            if($model->deliverycarbookno != null && $model->deliverycarbookno != ''){
+                $car = Car::find($model->carid);
+                KeySlot::where('provinceid', $car->provinceid)->where('no',$car->keyno)->where('carid',$car->id)->update(['carid' => null ,'active' => true]);
+            }
         });
 
         static::deleted(function($model)

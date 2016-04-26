@@ -23,7 +23,7 @@ class CarPaymentRepository extends EloquentRepositoryAbstract
             'overdueinstallmentdate2', 'overdueinstallmentamount2','overdueinstallmentdate3', 'overdueinstallmentamount3',
             'overdueinstallmentdate4', 'overdueinstallmentamount4','overdueinstallmentdate5', 'overdueinstallmentamount5',
             'overdueinstallmentdate6', 'overdueinstallmentamount6', 'oldcarbuyername', 'oldcarpayamount', 'oldcarpaytype',
-            'oldcarpaydate', 'payeeemployeeid','deliverycarbookno','deliverycarno','deliverycardate','deliverycarfilepath');
+            'oldcarpaydate', 'payeeemployeeid','deliverycarbookno','deliverycarno','deliverycardate','deliverycarfilepath','isdraft');
 
         $this->uniqueKeySingles = array(array('field'=>'carpreemptionid','label'=>'รายการชำระเงินของใบจอง'));
         $this->uniqueKeyMultiples = array();

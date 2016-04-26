@@ -26,7 +26,7 @@ class CreateCarPaymentsTable extends Migration {
             $table->foreign('carid')->references('id')->on('cars');
             $table->decimal('amountperinstallment', 10, 2);
             $table->decimal('insurancepremium', 10, 2);
-            $table->integer('paymentmode')->comment('0:ชำระงวดแรก, 1:ชำระงวดล่วงหน้า');
+            $table->integer('paymentmode')->nullable()->comment('0:ชำระงวดแรก, 1:ชำระงวดล่วงหน้า');
             $table->integer('installmentsinadvance')->nullable();
             $table->integer('insurancecompanyid')->unsigned();
             $table->foreign('insurancecompanyid')->references('id')->on('insurance_companies');
@@ -66,6 +66,7 @@ class CreateCarPaymentsTable extends Migration {
             $table->integer('deliverycarno')->nullable();
             $table->dateTime('deliverycardate')->nullable();
             $table->string('deliverycarfilepath',2083)->nullable();
+            $table->boolean('isdraft')->default(false);
 
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');

@@ -10,5 +10,5 @@ class KeySlot extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['provinceid', 'no', 'active'];
+    protected $fillable = ['provinceid', 'no', 'carid', 'active'];
 }

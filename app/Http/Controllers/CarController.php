@@ -101,22 +101,25 @@ class CarController extends Controller {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
         $error = false;
-        $uploaddir = base_path().'/uploads/images/';
-        $engineno = Input::get('engineno');
-
-        $car = Car::where('engineno', $engineno)->first();
 
         if(Input::hasFile('receivecarfile') && Input::file('receivecarfile')->isValid()){
-            $extension = Input::file('receivecarfile')->getClientOriginalExtension();
-            $fileName = $engineno.'_received'.'.'.$extension;
-            $upload_success = Input::file('receivecarfile')->move($uploaddir, $fileName);
-            if($upload_success)
-                $car->receivecarfilepath = '/uploads/images/'.$fileName;
-            else
-                $error = true;
-        }
+            $error = true;
 
-        $car->save();
+            $uploaddir = base_path().'/uploads/images/';
+            $engineno = Input::get('engineno');
+            $chassisno = Input::get('chassisno');
+
+            $car = Car::where('engineno', $engineno)->where('chassisno',$chassisno)->first();
+
+            $extension = Input::file('receivecarfile')->getClientOriginalExtension();
+            $fileName = $engineno.'_'.$chassisno.'_received'.'.'.$extension;
+            $upload_success = Input::file('receivecarfile')->move($uploaddir, $fileName);
+            if($upload_success) {
+                $car->receivecarfilepath = '/uploads/images/' . $fileName;
+                $car->save();
+                $error = false;
+            }
+        }
 
         $data = ($error) ? array('error' => 'เกิดข้อผิดพลาดในการอัพโหลดไฟล์') : array('success' => 'อัพโหลดไฟล์สำเร็จ');
         echo json_encode($data);
