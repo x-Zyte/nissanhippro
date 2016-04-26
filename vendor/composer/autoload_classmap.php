@@ -192,7 +192,7 @@ return array(
     'CreateInsuranceCompaniesTable' => $baseDir . '/database/migrations/2015_06_06_220647_create_insurance_companies_table.php',
     'CreateInterestRateTypesTable' => $baseDir . '/database/migrations/2015_06_06_232331_create_Interestrate_types_table.php',
     'CreateIpaddressesTable' => $baseDir . '/database/migrations/2014_10_12_100001_create_ipaddresses_table.php',
-    'CreateKeySlotsTable' => $baseDir . '/database/migrations/2015_06_06_155415_create_key_slots_table.php',
+    'CreateKeySlotsTable' => $baseDir . '/database/migrations/2016_04_06_155415_create_key_slots_table.php',
     'CreateLogsTable' => $baseDir . '/database/migrations/2015_06_06_155413_create_logs_table.php',
     'CreateOccupationsTable' => $baseDir . '/database/migrations/2015_06_06_222860_create_occupations_table.php',
     'CreatePasswordResetsTable' => $baseDir . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
