@@ -81,8 +81,10 @@ class CancelCarPreemptionController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
+        $carpreemptionids = CarPayment::distinct()->lists('carpreemptionid');
         if(Auth::user()->isadmin){
             $carpreemptions = CarPreemption::where('status',0)
+                ->whereNotIn('id', $carpreemptionids)
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
                 ->get(['id','bookno','no']);
@@ -90,6 +92,7 @@ class CancelCarPreemptionController extends Controller {
         else{
             $carpreemptions = CarPreemption::where('provinceid', Auth::user()->provinceid)
                 ->where('status',0)
+                ->whereNotIn('id', $carpreemptionids)
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
                 ->get(['id','bookno','no']);
