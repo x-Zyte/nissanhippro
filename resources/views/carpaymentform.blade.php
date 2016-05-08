@@ -890,7 +890,7 @@
                         <div class="widget-main">
                             <div class="form-group">
                                 <div class="col-sm-8">
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-6">
                                         <label style="margin-left: 20px;">
                                             <span> เล่มที่</span>&nbsp;&nbsp;
                                         </label>
@@ -905,9 +905,9 @@
                                             <span> วันที่</span>&nbsp;&nbsp;
                                         </label>
                                     </div>
-                                    <div class="col-sm-1" style="margin-left: -60px;">
+                                    <div class="col-sm-1" style="margin-left: -20px;">
                                         <div class="input-group">
-                                            @if($carpayment->deliverycardate != null && $carpayment->deliverycardate != '')
+                                            @if($carpayment != null && $carpayment->deliverycardate != null && $carpayment->deliverycardate != '')
                                                 {!! Form::text('deliverycardate', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'deliverycardate')) !!}
                                             @else
                                                 {!! Form::text('deliverycardate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'deliverycardate')) !!}
@@ -927,15 +927,15 @@
                                 </div>
 
                                 @if($oper != 'new' && $carpayment->deliverycarfilepath != null)
-                                    <div class="col-xs-1" style="margin-left: -50px;">
+                                    <div class="col-xs-2" style="margin-left: -10px;">
                                         <a href = "{{ $carpayment->deliverycarfilepath }}" data-lightbox="' + cellvalue + '">View photo</a>
                                     </div>
 
-                                    <div class="col-xs-1" style="margin-left: -30px;">
+                                    <div class="col-xs-1" style="margin-left: -70px;">
                                         {!! Form::file('deliverycarfile','',array('id'=>'deliverycarfile')) !!}
                                     </div>
                                 @else
-                                    <div class="col-xs-1" style="margin-left: -50px;">
+                                    <div class="col-xs-1" style="margin-left: -30px;">
                                         {!! Form::file('deliverycarfile','',array('id'=>'deliverycarfile')) !!}
                                     </div>
                                 @endif

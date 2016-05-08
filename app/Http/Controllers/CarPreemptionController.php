@@ -412,7 +412,7 @@ class CarPreemptionController extends Controller {
         }
 
         return view('carpreemptionform',
-            ['oper' => 'new','pathPrefix' => '../',
+            ['oper' => 'new','pathPrefix' => '../','carpreemption' => null,
                 'giveawayFreeDatas' => $giveawayFreeDatas,
                 'giveawayBuyDatas' => $giveawayBuyDatas,
                 'provincebranchselectlist' => $provincebranchselectlist,

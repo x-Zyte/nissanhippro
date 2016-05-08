@@ -885,7 +885,7 @@
                                         {!! Form::label('datewantgetcar', 'วันที่ต้องการรับรถ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                @if($carpreemption->datewantgetcar != null && $carpreemption->datewantgetcar != '')
+                                                @if($carpreemption != null && $carpreemption->datewantgetcar != null && $carpreemption->datewantgetcar != '')
                                                     {!! Form::text('datewantgetcar', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}
                                                 @else
                                                     {!! Form::text('datewantgetcar', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}

@@ -41,7 +41,7 @@
             $(grid_selector).jqGrid({
                 url: "cancelcarpreemption/read",
                 datatype: "json",
-                colNames:['การจอง เล่มที่/เลขที่','ประเภทการยกเลิก', 'ยกเลิกเพราะ', 'อนุมัติ', 'คืนเงินจำนวน','ผู้อนุมัติ', 'วันที่อนุมัติ'],
+                colNames:['การจอง เล่มที่/เลขที่', 'ยกเลิกเนื่องจาก', 'อนุมัติ', 'คืนเงินจำนวน','ผู้อนุมัติ', 'วันที่อนุมัติ'],
                 colModel:[
                     {name:'carpreemptionid',index:'carpreemptionid', width:100, formatter:'select',editoptions:{value: "{{$carpreemptionselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carpreemptionselectlist}}"}

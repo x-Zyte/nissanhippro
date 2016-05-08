@@ -91,7 +91,6 @@ class CarPaymentController extends Controller {
                     $query->where('carobjectivetype',1)
                         ->orWhereIn('id', $carpreemptionids);
                 })
-                ->whereIn('id', $carpreemptionids)
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
                 ->get(['id','bookno','no']);
@@ -220,7 +219,7 @@ class CarPaymentController extends Controller {
         }
 
         return view('carpaymentform',
-            ['oper' => 'new','pathPrefix' => '../',
+            ['oper' => 'new','pathPrefix' => '../','carpayment' => null,
                 'carpreemptionselectlist' => $carpreemptionselectlist,
                 'carselectlist' => $carselectlist,
                 'insurancecompanyselectlist' => $insurancecompanyselectlist,

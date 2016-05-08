@@ -78,13 +78,15 @@ class CustomerController extends Controller {
         }
 
         if(Auth::user()->isadmin)
-            $employees = Employee::all(['id','firstname','lastname']);
+            $employees = Employee::orderBy('firstname', 'asc')->orderBy('lastname', 'asc')->get(['id','firstname','lastname']);
         else{
             $provinceid = Auth::user()->provinceid;
             $employees = Employee::whereHas('branch', function($q) use($provinceid)
             {
                 $q->where('provinceid', $provinceid);
-            })->get(['id','firstname','lastname']);
+            })
+            ->orderBy('firstname', 'asc')->orderBy('lastname', 'asc')
+            ->get(['id','firstname','lastname']);
         }
         $employeeselectlist = array();
         array_push($employeeselectlist,':เลือกพนักงาน');
