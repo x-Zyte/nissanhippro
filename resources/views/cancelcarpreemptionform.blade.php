@@ -118,12 +118,12 @@
                             <div class="form-group" style="padding-top:5px;">
                                 {!! Form::label('customer', 'ชื่อลูกค้า', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                 <div class="col-sm-3">
-                                    {!! Form::text('customer', $customer, array('style'=>'width:250px;','disabled'=>'true')) !!}
+                                    {!! Form::text('customer', null, array('style'=>'width:250px;','disabled'=>'true')) !!}
                                 </div>
 
                                 {!! Form::label('carmodel', 'แบบ/รุ่น รถ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                 <div class="col-sm-4">
-                                    {!! Form::text('carmodel', $carmodel, array('style'=>'width:100%;','disabled'=>'true')) !!}
+                                    {!! Form::text('carmodel', null, array('style'=>'width:100%;','disabled'=>'true')) !!}
                                 </div>
                             </div>
                             <div class="clear"></div>
@@ -131,7 +131,7 @@
                                 {!! Form::label('carpreemptiondate', 'ใบจองลงวันที่', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                 <div class="col-sm-2">
                                     <div class="input-group">
-                                        {!! Form::text('carpreemptiondate', $date, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'carpreemptiondate','disabled'=>'true')) !!}
+                                        {!! Form::text('carpreemptiondate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'carpreemptiondate','disabled'=>'true')) !!}
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -161,7 +161,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label no-padding-right" for="approve_value">จำนวนเงินจอง</label>
                                 <div class="col-sm-3">
-                                    {!! Form::number('cashpledge', $cashpledge, array('style'=>'width:100px;','disabled'=>'true','step' => '0.01', 'min' => '0', 'id'=>'cashpledge')) !!}
+                                    {!! Form::number('cashpledge', null, array('style'=>'width:100px;','disabled'=>'true','step' => '0.01', 'min' => '0', 'id'=>'cashpledge')) !!}
                                     <label>บาท</label>
                                 </div>
 
@@ -190,7 +190,7 @@
                                 <label class="col-sm-2"></label>
                                 <div class="col-sm-10">
                                     <label style="margin-right:20px;">
-                                        {!! Form::radio('approvaltype', 0, false, array('class' => 'ace')) !!}
+                                        {!! Form::radio('approvaltype', 1, false, array('class' => 'ace')) !!}
                                         <span class="lbl"> ไม่คืนเงิน </span>
                                     </label>
 
@@ -200,7 +200,7 @@
                             <div class="form-group" style="padding-top:15px;">
                                 <label class="col-sm-2 control-label no-padding-right" for="sale_employee">พนักงานขาย</label>
                                 <div class="col-sm-3">
-                                    {!! Form::text('salesmanemployee', $salesmanemployee, array('style'=>'width:250px;','disabled'=>'true','id'=>'salesmanemployee')) !!}
+                                    {!! Form::text('salesmanemployee', null, array('style'=>'width:250px;','disabled'=>'true','id'=>'salesmanemployee')) !!}
                                 </div>
                                 <label class="col-sm-1 control-label no-padding-right" for="sale_date" >วันที่</label>
                                 <div class="col-sm-2">

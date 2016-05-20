@@ -37,7 +37,7 @@
                 $("input[name=purchasetype][value=" + data.purchasetype + "]").prop('checked', true);
 
                 if(data.purchasetype == 0){
-                    $('#down').val(parseFloat(data.carprice).toFixed(0));
+                    $('#down').val((parseFloat(data.carprice) - parseFloat(data.discount)).toFixed(0));
                     $(".purchasetype1ib").css("display","none");
                     $(".purchasetype1b").css("display","none");
                 }
@@ -225,6 +225,11 @@
             if(paybytype == 1 || paybytype == 2){
                 var overdueinstallments = $('#overdueinstallments').val();
                 if(overdueinstallments == null || overdueinstallments == '') overdueinstallments = 0;
+
+                if(overdueinstallments > 6){
+                    overdueinstallments = 6;
+                    $('#overdueinstallments').val(overdueinstallments);
+                }
 
                 $(".paybytype12").css("display","inline-block");
 
@@ -619,8 +624,12 @@
                                         {!! Form::label('date2', 'วันที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                {!! Form::text('date2', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date2')) !!}
-                                            <span class="input-group-addon">
+                                                @if($carpayment != null && $carpayment->date2 != null && $carpayment->date2 != '')
+                                                    {!! Form::text('date2', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date2')) !!}
+                                                @else
+                                                    {!! Form::text('date2', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date2')) !!}
+                                                @endif
+                                                <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
                                             </div>
@@ -690,7 +699,11 @@
                                         {!! Form::label('overdueinstallmentdate1', 'งวดที่ 1 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                {!! Form::text('overdueinstallmentdate1', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate1')) !!}
+                                                @if($carpayment != null && $carpayment->overdueinstallmentdate1 != null && $carpayment->overdueinstallmentdate1 != '')
+                                                    {!! Form::text('overdueinstallmentdate1', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate1')) !!}
+                                                @else
+                                                    {!! Form::text('overdueinstallmentdate1', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate1')) !!}
+                                                @endif
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -707,7 +720,11 @@
                                         {!! Form::label('overdueinstallmentdate2', 'งวดที่ 2 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                {!! Form::text('overdueinstallmentdate2', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate2')) !!}
+                                                @if($carpayment != null && $carpayment->overdueinstallmentdate2 != null && $carpayment->overdueinstallmentdate2 != '')
+                                                    {!! Form::text('overdueinstallmentdate2', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate2')) !!}
+                                                @else
+                                                    {!! Form::text('overdueinstallmentdate2', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate2')) !!}
+                                                @endif
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -724,7 +741,11 @@
                                         {!! Form::label('overdueinstallmentdate3', 'งวดที่ 3 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                {!! Form::text('overdueinstallmentdate3', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate3')) !!}
+                                                @if($carpayment != null && $carpayment->overdueinstallmentdate3 != null && $carpayment->overdueinstallmentdate3 != '')
+                                                    {!! Form::text('overdueinstallmentdate3', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate3')) !!}
+                                                @else
+                                                    {!! Form::text('overdueinstallmentdate3', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate3')) !!}
+                                                @endif
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -741,7 +762,11 @@
                                         {!! Form::label('overdueinstallmentdate4', 'งวดที่ 4 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                {!! Form::text('overdueinstallmentdate4', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate4')) !!}
+                                                @if($carpayment != null && $carpayment->overdueinstallmentdate4 != null && $carpayment->overdueinstallmentdate4 != '')
+                                                    {!! Form::text('overdueinstallmentdate4', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate4')) !!}
+                                                @else
+                                                    {!! Form::text('overdueinstallmentdate4', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate4')) !!}
+                                                @endif
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -758,7 +783,11 @@
                                         {!! Form::label('overdueinstallmentdate5', 'งวดที่ 5 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                {!! Form::text('overdueinstallmentdate5', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate5')) !!}
+                                                @if($carpayment != null && $carpayment->overdueinstallmentdate5 != null && $carpayment->overdueinstallmentdate5 != '')
+                                                    {!! Form::text('overdueinstallmentdate5', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate5')) !!}
+                                                @else
+                                                    {!! Form::text('overdueinstallmentdate5', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate5')) !!}
+                                                @endif
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -775,7 +804,11 @@
                                         {!! Form::label('overdueinstallmentdate6', 'งวดที่ 6 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                {!! Form::text('overdueinstallmentdate6', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate6')) !!}
+                                                @if($carpayment != null && $carpayment->overdueinstallmentdate6 != null && $carpayment->overdueinstallmentdate6 != '')
+                                                    {!! Form::text('overdueinstallmentdate6', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate6')) !!}
+                                                @else
+                                                    {!! Form::text('overdueinstallmentdate6', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate6')) !!}
+                                                @endif
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>

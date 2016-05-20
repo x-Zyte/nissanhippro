@@ -278,7 +278,7 @@ class CarPreemptionController extends Controller {
             $approveremployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
         }
 
-        $giveaways = Giveaway::orderBy('name', 'asc')->orderBy('price', 'asc')->get(['id','name','saleprice']);
+        $giveaways = Giveaway::orderBy('name', 'asc')->orderBy('saleprice', 'asc')->get(['id','name','saleprice']);
         $giveawayselectlist = array();
         array_push($giveawayselectlist,':เลือกของแถม');
         foreach($giveaways as $ct){
@@ -663,11 +663,11 @@ class CarPreemptionController extends Controller {
             $approveremployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
         }
 
-        $giveaways = Giveaway::orderBy('name', 'asc')->orderBy('price', 'asc')->get(['id','name','price']);
+        $giveaways = Giveaway::orderBy('name', 'asc')->orderBy('saleprice', 'asc')->get(['id','name','saleprice']);
         $giveawayselectlist = array();
         array_push($giveawayselectlist,':เลือกของแถม');
         foreach($giveaways as $ct){
-            array_push($giveawayselectlist,$ct->id.':'.$ct->name.' ('.$ct->price.' บาท)');
+            array_push($giveawayselectlist,$ct->id.':'.$ct->name.' ('.$ct->saleprice.' บาท)');
         }
 
         $giveawayFrees = CarPreemptionGiveaway::where('free', true)
@@ -926,11 +926,11 @@ class CarPreemptionController extends Controller {
             $approveremployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
         }
 
-        $giveaways = Giveaway::orderBy('name', 'asc')->orderBy('price', 'asc')->get(['id','name','price']);
+        $giveaways = Giveaway::orderBy('name', 'asc')->orderBy('saleprice', 'asc')->get(['id','name','saleprice']);
         $giveawayselectlist = array();
         array_push($giveawayselectlist,':เลือกของแถม');
         foreach($giveaways as $ct){
-            array_push($giveawayselectlist,$ct->id.':'.$ct->name.' ('.$ct->price.' บาท)');
+            array_push($giveawayselectlist,$ct->id.':'.$ct->name.' ('.$ct->saleprice.' บาท)');
         }
 
         $giveawayFrees = CarPreemptionGiveaway::where('free', true)

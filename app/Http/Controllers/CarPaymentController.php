@@ -84,7 +84,7 @@ class CarPaymentController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $carpreemptionids = Redlabelhistory::lists('carpreemptionid');
+        $carpreemptionids = Redlabelhistory::whereNull('returndate')->lists('carpreemptionid');
         if(Auth::user()->isadmin){
             $carpreemptions = CarPreemption::where('status',0)
                 ->where(function ($query) use ($carpreemptionids) {
@@ -494,14 +494,14 @@ class CarPaymentController extends Controller {
         }
 
         if($carpreemption->purchasetype == 0)
-            $model->down = $model->carprice;
+            $model->down = $model->carprice - $carpreemption->discount;
         else
             $model->down = $carpreemption->down;
 
         $model->yodjud =  $model->carprice - $model->down;
         $model->yodjudwithinsurancepremium = $model->yodjud + $model->insurancepremium;
         $model->openbill =  $model->carprice + $carpreemption->accessories - $carpreemption->discount - $carpreemption->subdown;
-        $model->realprice = $model->carprice - $model->discount - $model->subdown;
+        $model->realprice = $model->carprice - $carpreemption->discount - $carpreemption->subdown;
         $model->payinadvanceamount = $model->installmentsinadvance * $model->amountperinstallment;
         $model->accessoriesfee = $carpreemption->accessoriesfee;
 
@@ -655,14 +655,14 @@ class CarPaymentController extends Controller {
         }
 
         if($carpreemption->purchasetype == 0)
-            $model->down = $model->carprice;
+            $model->down = $model->carprice - $carpreemption->discount;
         else
             $model->down = $carpreemption->down;
 
         $model->yodjud =  $model->carprice - $model->down;
         $model->yodjudwithinsurancepremium = $model->yodjud + $model->insurancepremium;
         $model->openbill =  $model->carprice + $carpreemption->accessories - $carpreemption->discount - $carpreemption->subdown;
-        $model->realprice = $model->carprice - $model->discount - $model->subdown;
+        $model->realprice = $model->carprice - $carpreemption->discount - $carpreemption->subdown;
         $model->payinadvanceamount = $model->installmentsinadvance * $model->amountperinstallment;
         $model->accessoriesfee = $carpreemption->accessoriesfee;
 

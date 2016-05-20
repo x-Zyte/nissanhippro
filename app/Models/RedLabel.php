@@ -20,9 +20,9 @@ class RedLabel extends Model {
 
         static::creating(function($model)
         {
-            if($model->customerid == '') $model->customerid = null;
-            if($model->carid == '') $model->carid = null;
-            if($model->deposit == '') $model->deposit = null;
+            $model->customerid = null;
+            $model->carid = null;
+            $model->deposit = null;
 
             if(!strpos($model->no,"-"))
                 $model->no = substr_replace($model->no,"-",strlen($model->no) - 4,0);

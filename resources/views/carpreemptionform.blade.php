@@ -1484,7 +1484,7 @@
             function check_giveawaysaleprice(value, colname) {
                 var giveawayid = $('#giveawayid').val();
                 $.ajax({
-                    url: '../giveaway/check_saleprice',
+                    url: '../../giveaway/check_saleprice',
                     data: { id:giveawayid,saleprice:value, _token: "{{ csrf_token() }}" },
                     type: 'POST',
                     async: false,

@@ -212,7 +212,7 @@ class CancelCarPreemptionController extends Controller {
             ],
             [
                 'carpreemptionid.required' => 'กรุณาเลือกการจอง',
-                'toemployeeid.required' => 'กรุณาเลือกเรียน',
+                'toemployeeid.required' => 'กรุณาเลือกคนที่จะเรียนให้ทราบ',
                 'cancelreasontype.required' => 'ยกเลิกเนื่องจาก จำเป็นต้องเลือก',
                 'cancelreasondetails.required_if' => 'อื่นๆ จำเป็นต้องกรอก',
                 'approvaltype.required' => 'อนุมัติ จำเป็นต้องเลือก',

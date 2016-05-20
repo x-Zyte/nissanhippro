@@ -175,11 +175,11 @@
                         var newissuedate = new Date(issuedateArr[1]+'-'+issuedateArr[0]+'-'+issuedateArr[2]);
                         var newreturndate = new Date(returndateArr[1]+'-'+returndateArr[0]+'-'+returndateArr[2]);
 
-                        if(newissuedate.getTime() < newreturndate.getTime()){
+                        if(newissuedate.getTime() <= newreturndate.getTime()){
                             return [true, ""];
                         }
                         else{
-                            return [false,"วันที่เบิก ต้องน้อยกว่า วันที่คืน"];
+                            return [false,"วันที่เบิก ต้องน้อยกว่า หรือเท่ากับ วันที่คืน"];
                         }
                     }
 
