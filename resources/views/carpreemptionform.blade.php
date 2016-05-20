@@ -639,17 +639,17 @@
                                     </div>
                                     {!! Form::label('discount', 'ส่วนลด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::number('discount', null, array('step' => '0.01', 'min' => '0' ,'placeholder' => 'บาท', 'id'=>'discount', 'onchange'=>'CalTransferfee();')) !!}
+                                        {!! Form::number('discount', null, array('step' => '1', 'min' => '0' ,'placeholder' => 'บาท', 'id'=>'discount', 'onchange'=>'CalTransferfee();')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('subdown', 'Sub Down', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::number('subdown', null, array('step' => '0.01', 'min' => '0' ,'placeholder' => 'บาท', 'id'=>'subdown', 'onchange'=>'CalTransferfee();')) !!}
+                                        {!! Form::number('subdown', null, array('step' => '1', 'min' => '0' ,'placeholder' => 'บาท', 'id'=>'subdown', 'onchange'=>'CalTransferfee();')) !!}
                                     </div>
                                     {!! Form::label('accessories', 'บวกอุปกรณ์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::number('accessories', null, array('step' => '0.01', 'min' => '0' ,'placeholder' => 'บาท')) !!}
+                                        {!! Form::number('accessories', null, array('step' => '1', 'min' => '0' ,'placeholder' => 'บาท')) !!}
                                     </div>
                                 </div>
                             </div>
@@ -713,7 +713,7 @@
                                 <div class="form-group">
                                     {!! Form::label('oldcarprice', 'ราคารถเก่า', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-1">
-                                        {!! Form::number('oldcarprice', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท')) !!}
+                                        {!! Form::number('oldcarprice', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท')) !!}
                                     </div>
                                     {!! Form::label('oldcarbuyername', 'ผู้ให้ราคา', array('class' => 'col-sm-1 col-lg-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
@@ -752,7 +752,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('cashpledge', '1. เงินมัดจำ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('cashpledge', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท')) !!}
+                                            {!! Form::number('cashpledge', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -783,7 +783,7 @@
                                             {!! Form::number('interest', null, array('step' => '0.01','placeholder' => '%', 'min'=>'0', 'max'=>'100', 'style'=>'width:70px;')) !!}&nbsp;&nbsp;&nbsp;
                                             {!! Form::label('down', 'ดาวน์') !!}
                                             &nbsp;&nbsp;
-                                            {!! Form::number('down', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท')) !!}
+                                            {!! Form::number('down', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท')) !!}
                                             &nbsp;&nbsp;&nbsp;
                                             {!! Form::label('installments', 'จำนวนงวด') !!}
                                             &nbsp;&nbsp;
@@ -796,7 +796,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('financingfee', 'ค่าจัดไฟแนนซ์', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('financingfee', 3000, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                            {!! Form::number('financingfee', 3000, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -804,7 +804,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('transferfee', '3. ค่าโอน (0.75%)', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3 ">
-                                            {!! Form::number('transferfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                            {!! Form::number('transferfee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -812,7 +812,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('transferoperationfee', '4. ค่าดำเนินการโอน', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3 ">
-                                            {!! Form::number('transferoperationfee', 2000, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                            {!! Form::number('transferoperationfee', 2000, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -821,7 +821,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('cashpledgeredlabel', '3. ค่ามัดจำป้ายแดง', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3 ">
-                                            {!! Form::number('cashpledgeredlabel', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                            {!! Form::number('cashpledgeredlabel', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -843,7 +843,7 @@
                                             <label>
                                                 {!! Form::radio('registrationtype', 2, false, array('class' => 'ace', 'onchange'=>'RegistrationTypeChange();')) !!}
                                                 <span class="lbl">  ราชการ</span>&nbsp;&nbsp;
-                                                {!! Form::number('registrationfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'id' => 'registrationfee', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                                {!! Form::number('registrationfee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id' => 'registrationfee', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                             </label>
                                         </div>
                                     </div>
@@ -852,7 +852,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('insurancefee', '5. ค่าประกันภัย', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('insurancefee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                            {!! Form::number('insurancefee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -860,7 +860,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('compulsorymotorinsurancefee', '6. ค่า พ.ร.บ.', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('compulsorymotorinsurancefee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                            {!! Form::number('compulsorymotorinsurancefee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -868,7 +868,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('accessoriesfee', '7. ค่าอุปกรณ์', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('accessoriesfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                            {!! Form::number('accessoriesfee', 0, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -876,7 +876,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('otherfee', '8. ค่าอื่นๆ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('otherfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                            {!! Form::number('otherfee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -927,7 +927,7 @@
                                 <div class="form-group">
                                     {!! Form::label('giveawayadditionalcharges', 'ลูกค้าจ่ายเพิ่มเติ่มค่าของแถม', array('class' => 'col-sm-3 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::number('giveawayadditionalcharges', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'onchange'=>'CalculateAccessoriesFee();')) !!}
+                                        {!! Form::number('giveawayadditionalcharges', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'onchange'=>'CalculateAccessoriesFee();')) !!}
                                     </div>
                                 </div>
 
