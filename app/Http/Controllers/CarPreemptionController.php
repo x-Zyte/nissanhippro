@@ -442,7 +442,7 @@ class CarPreemptionController extends Controller {
         if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
         $model = CarPreemption::find($id);
-
+        
         $bookingcustomer = Customer::find($model->bookingcustomerid);
         $model->provincebranchid = $bookingcustomer->provinceid;
         $model->bookingcustomeraddress = $bookingcustomer->address;
@@ -1329,9 +1329,14 @@ class CarPreemptionController extends Controller {
             $model->finacecompany = $finacecompany->name;
         }
 
-        $model->yodjud =  $model->carprice - $model->discount + $model->accessories;
-
-        $model->realprice = $model->carprice - $model->discount - $model->subdown;
+        if($model->purchasetype == 0) {
+            $model->yodjud =  0;
+            $model->realprice = $model->carprice - $model->discount;
+        }
+        else{
+            $model->yodjud =  $model->carprice - $model->discount - $model->down + $model->accessories;
+            $model->realprice =  $model->yodjud + $model->down - $model->subdown;
+        }
 
         $salesmanemployee = Employee::find($model->salesmanemployeeid);
         $model->salesmanemployee = $salesmanemployee->title.' '.$salesmanemployee->firstname.' '.$salesmanemployee->lastname;

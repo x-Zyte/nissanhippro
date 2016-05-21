@@ -60,7 +60,13 @@
 
                 if(data.down == null || data.down == '')
                     data.down = 0;
-                $('#openbill').val(parseFloat(data.yodjud) + parseFloat(insurancepremium) + parseFloat(data.down));
+
+                if(data.purchasetype == 0){
+                    $('#openbill').val(parseFloat(data.carprice) - parseFloat(data.discount));
+                }
+                else if(data.purchasetype == 1){
+                    $('#openbill').val(parseFloat(data.yodjud) + parseFloat(insurancepremium) + parseFloat(data.down));
+                }
 
                 $('#realprice').val(data.realprice);
 
@@ -424,13 +430,20 @@
                                 </div>
                                 <div class="form-group" style="padding-left:20px;">
                                     <div class="col-sm-12">
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label> ( ยอดจัด</label>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <label> ( </label>
+
+                                        <div class="purchasetype1ib" style="display: inline-block;">
+                                        <label>ยอดจัด</label>
                                         {!! Form::number('yodjud', null, array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'yodjud')) !!}
                                         <label> เบี้ยประกันชีวิต</label>
                                         {!! Form::number('insurancepremium', null, array('style'=>'width:100px;','step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'insurancepremium', 'onchange'=>'InsurancepremiumChange();')) !!}
                                         <label> รวม</label>
                                         {!! Form::number('yodjudwithinsurancepremium', null, array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'yodjudwithinsurancepremium')) !!}
-                                        <label> บาท</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <label> บาท</label>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        </div>
+
                                         <label>เปิดบิล</label>
                                         {!! Form::number('openbill', null, array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'openbill')) !!}
                                         <label> บาท</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

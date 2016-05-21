@@ -868,7 +868,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('accessoriesfee', '7. ค่าอุปกรณ์', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::number('accessoriesfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                            {!! Form::number('accessoriesfee', null, array('step' => '0.01', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'accessoriesfee')) !!}
                                         </div>
                                     </div>
                                 </div>

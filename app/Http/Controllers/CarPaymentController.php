@@ -242,11 +242,11 @@ class CarPaymentController extends Controller {
                 'date' => 'required',
                 'carid' => 'required',
                 'amountperinstallment' => 'required_if:purchasetype,1',
-                'insurancepremium' => 'required',
+                'insurancepremium' => 'required_if:purchasetype,1',
                 'paymentmode' => 'required_if:purchasetype,1',
                 'installmentsinadvance' => 'required_if:paymentmode,1',
-                'insurancecompanyid' => 'required',
-                'capitalinsurance' => 'required',
+                'insurancecompanyid' => 'required_if:purchasetype,1',
+                'capitalinsurance' => 'required_if:purchasetype,1',
                 'compulsorymotorinsurancecompanyid' => 'required',
                 'deliverycarbookno' => 'required_with:deliverycarno,deliverycardate',
                 'deliverycarno' => 'required_with:deliverycarbookno,deliverycardate',
@@ -257,11 +257,11 @@ class CarPaymentController extends Controller {
                 'date.required' => 'วันที่ จำเป็นต้องกรอก',
                 'carid.required' => 'กรุณาเลือกรถ',
                 'amountperinstallment.required_if' => 'ยอดชำระต่องวด จำเป็นต้องกรอก',
-                'insurancepremium.required' => 'เบี้ยประกันชีวิต จำเป็นต้องกรอก',
+                'insurancepremium.required_if' => 'เบี้ยประกันชีวิต จำเป็นต้องกรอก',
                 'paymentmode.required_if' => 'ชำระงวดแรก หรือ ชำระงวดล่วงหน้า จำเป็นต้องเลือก',
                 'installmentsinadvance.required_if' => 'จำนวนงวดล่วงหน้า จำเป็นต้องกรอก',
-                'insurancecompanyid.required' => 'เบี้ยประกันชั้น 1,3 กรุณาเลือกบริษัทประกัน',
-                'capitalinsurance.required' => 'ทุนประกัน จำเป็นต้องกรอก',
+                'insurancecompanyid.required_if' => 'เบี้ยประกันชั้น 1,3 กรุณาเลือกบริษัทประกัน',
+                'capitalinsurance.required_if' => 'ทุนประกัน จำเป็นต้องกรอก',
                 'compulsorymotorinsurancecompanyid.required' => 'เบี้ย พ.ร.บ. กรุณาเลือกบริษัทประกัน',
                 'deliverycarbookno.required_with' => 'ใบส่งรถ เล่มที่ จำเป็นต้องกรอก',
                 'deliverycarno.required_with' => 'ใบส่งรถ เลขที่ จำเป็นต้องกรอก',
@@ -493,16 +493,23 @@ class CarPaymentController extends Controller {
             $model->finacecompany = $finacecompany->name;
         }
 
-        if($carpreemption->purchasetype == 0)
+        if($carpreemption->purchasetype == 0) {
             $model->down = $model->carprice - $carpreemption->discount;
-        else
+            $model->yodjud =  0;
+            $model->yodjudwithinsurancepremium = 0;
+            $model->openbill = $model->carprice - $carpreemption->discount;
+            $model->realprice = $model->carprice - $carpreemption->discount;
+            $model->payinadvanceamount = 0;
+        }
+        else {
             $model->down = $carpreemption->down;
+            $model->yodjud =  $model->carprice - $carpreemption->discount - $model->down + $carpreemption->accessories;
+            $model->yodjudwithinsurancepremium = $model->yodjud + $model->insurancepremium;
+            $model->openbill = $model->yodjudwithinsurancepremium + $model->down;
+            $model->realprice =  $model->yodjud + $model->down - $carpreemption->subdown;
+            $model->payinadvanceamount = $model->installmentsinadvance * $model->amountperinstallment;
+        }
 
-        $model->yodjud =  $model->carprice - $model->down;
-        $model->yodjudwithinsurancepremium = $model->yodjud + $model->insurancepremium;
-        $model->openbill =  $model->carprice + $carpreemption->accessories - $carpreemption->discount - $carpreemption->subdown;
-        $model->realprice = $model->carprice - $carpreemption->discount - $carpreemption->subdown;
-        $model->payinadvanceamount = $model->installmentsinadvance * $model->amountperinstallment;
         $model->accessoriesfee = $carpreemption->accessoriesfee;
 
         $insurancecompanies = InsuranceCompany::orderBy('name', 'asc')->get(['id', 'name']);
@@ -654,16 +661,22 @@ class CarPaymentController extends Controller {
             $model->finacecompany = $finacecompany->name;
         }
 
-        if($carpreemption->purchasetype == 0)
+        if($carpreemption->purchasetype == 0) {
             $model->down = $model->carprice - $carpreemption->discount;
-        else
+            $model->yodjud =  0;
+            $model->yodjudwithinsurancepremium = 0;
+            $model->openbill = $model->carprice - $carpreemption->discount;
+            $model->realprice = $model->carprice - $carpreemption->discount;
+            $model->payinadvanceamount = 0;
+        }
+        else {
             $model->down = $carpreemption->down;
-
-        $model->yodjud =  $model->carprice - $model->down;
-        $model->yodjudwithinsurancepremium = $model->yodjud + $model->insurancepremium;
-        $model->openbill =  $model->carprice + $carpreemption->accessories - $carpreemption->discount - $carpreemption->subdown;
-        $model->realprice = $model->carprice - $carpreemption->discount - $carpreemption->subdown;
-        $model->payinadvanceamount = $model->installmentsinadvance * $model->amountperinstallment;
+            $model->yodjud =  $model->carprice - $carpreemption->discount - $model->down + $carpreemption->accessories;
+            $model->yodjudwithinsurancepremium = $model->yodjud + $model->insurancepremium;
+            $model->openbill = $model->yodjudwithinsurancepremium + $model->down;
+            $model->realprice =  $model->yodjud + $model->down - $carpreemption->subdown;
+            $model->payinadvanceamount = $model->installmentsinadvance * $model->amountperinstallment;
+        }
         $model->accessoriesfee = $carpreemption->accessoriesfee;
 
         $insurancecompanies = InsuranceCompany::orderBy('name', 'asc')->get(['id', 'name']);
