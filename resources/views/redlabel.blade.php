@@ -118,13 +118,14 @@
                     jQuery("#"+subgrid_table_id).jqGrid({
                         url:'redlabelhistory/read?redlabelid='+row_id,
                         datatype: "json",
-                        colNames:['วันที่เบิก','รายละเอียด','วันที่คืน','หมายเหตุ'],
+                        colNames:['วันที่เบิก','ใบจอง/ลูกค้า/เซล','วันที่คืน','หมายเหตุ'],
                         colModel:[
                             {name:'issuedate',index:'issuedate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
-                                ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center',editrules:{required:true}
+                                ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
                                 ,searchrules:{required:true}
                                 ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
-                                ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
+                                ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}
+                                ,editrules:{custom: true, custom_func: check_issuedate}},
                             {name:'carpreemptionid',index:'carpreemptionid', width:500, editable: true,edittype:"select",formatter:'select',editoptions:{value: "{{$carpreemptionselectlist}}"}
                                 ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carpreemptionselectlist}}" }
                                 ,editrules:{required:true}},
@@ -164,23 +165,42 @@
 
                     $(window).triggerHandler('resize.jqGridSubGrid');
 
-                    function check_returndate(value, colname) {
+                    function check_issuedate(value, colname) {
                         if(value == null || value == '') return [true, ""];
 
-                        var issuedate = $('#issuedate').val();
-
-                        var issuedateArr = issuedate.split("-");
-                        var returndateArr = value.split("-");
+                        var issuedateArr = value.split("-");
 
                         var newissuedate = new Date(issuedateArr[1]+'-'+issuedateArr[0]+'-'+issuedateArr[2]);
-                        var newreturndate = new Date(returndateArr[1]+'-'+returndateArr[0]+'-'+returndateArr[2]);
+                        var today = new Date();
 
-                        if(newissuedate.getTime() <= newreturndate.getTime()){
+                        if(newissuedate.getTime() <= today.getTime()){
                             return [true, ""];
                         }
                         else{
+                            return [false,"วันที่เบิก ต้องน้อยกว่าหรือเท่ากับ วันที่ปัจจุบัน"];
+                        }
+                    }
+
+                    function check_returndate(value, colname) {
+                        if(value == null || value == '') return [true, ""];
+
+                        var returndateArr = value.split("-");
+                        var newreturndate = new Date(returndateArr[1]+'-'+returndateArr[0]+'-'+returndateArr[2]);
+                        var today = new Date();
+
+                        if(newreturndate.getTime() > today.getTime()){
+                            return [false,"วันที่คืน ต้องน้อยกว่าหรือเท่ากับ วันที่ปัจจุบัน"];
+                        }
+
+                        var issuedate = $('#issuedate').val();
+                        var issuedateArr = issuedate.split("-");
+                        var newissuedate = new Date(issuedateArr[1]+'-'+issuedateArr[0]+'-'+issuedateArr[2]);
+
+                        if(newissuedate.getTime() > newreturndate.getTime()){
                             return [false,"วันที่เบิก ต้องน้อยกว่า หรือเท่ากับ วันที่คืน"];
                         }
+
+                        return [true, ""];
                     }
 
                     jQuery("#"+subgrid_table_id).jqGrid('navGrid',"#"+pager_id,

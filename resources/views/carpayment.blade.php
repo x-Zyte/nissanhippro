@@ -41,11 +41,13 @@
             $(grid_selector).jqGrid({
                 url: "carpayment/read",
                 datatype: "json",
-                colNames:['การจอง เล่มที่/เลขที่','วันที่', 'รถ เลขตัวถัง/เลขเครื่อง', 'ชำระเงินรวม','รูปส่งมอบรถ'],
+                colNames:['การจอง เล่มที่/เลขที่','ส่งรถก่อนชำระเงิน','วันที่', 'รถ เลขตัวถัง/เลขเครื่อง', 'ชำระเงินรวม','รูปส่งมอบรถ'],
                 colModel:[
                     {name:'carpreemptionid',index:'carpreemptionid', width:100, formatter:'select',editoptions:{value: "{{$carpreemptionselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carpreemptionselectlist}}"}
                     },
+                    {name:'isdraft',index:'isdraft', width:100, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"1"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
                     {name:'date',index:'date', width:100,align:'left', sorttype:"date", formatter: "date",align:'center'
                         ,formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
                         ,searchrules:{required:true}

@@ -218,8 +218,11 @@ class CarPaymentController extends Controller {
             $payeeemployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
         }
 
+        $carpayment = new Carpayment;
+        $carpayment->date = date('d-m-Y');
+
         return view('carpaymentform',
-            ['oper' => 'new','pathPrefix' => '../','carpayment' => null,
+            ['oper' => 'new','pathPrefix' => '../','carpayment' => $carpayment,
                 'carpreemptionselectlist' => $carpreemptionselectlist,
                 'carselectlist' => $carselectlist,
                 'insurancecompanyselectlist' => $insurancecompanyselectlist,
@@ -243,6 +246,7 @@ class CarPaymentController extends Controller {
                 'carid' => 'required',
                 'amountperinstallment' => 'required_if:purchasetype,1',
                 'insurancepremium' => 'required_if:purchasetype,1',
+                'openbill' => 'required_if:purchasetype,0',
                 'paymentmode' => 'required_if:purchasetype,1',
                 'installmentsinadvance' => 'required_if:paymentmode,1',
                 'insurancecompanyid' => 'required_if:purchasetype,1',
@@ -258,6 +262,7 @@ class CarPaymentController extends Controller {
                 'carid.required' => 'กรุณาเลือกรถ',
                 'amountperinstallment.required_if' => 'ยอดชำระต่องวด จำเป็นต้องกรอก',
                 'insurancepremium.required_if' => 'เบี้ยประกันชีวิต จำเป็นต้องกรอก',
+                'openbill.required_if' => 'ราคาเปิดบิล จำเป็นต้องกรอก',
                 'paymentmode.required_if' => 'ชำระงวดแรก หรือ ชำระงวดล่วงหน้า จำเป็นต้องเลือก',
                 'installmentsinadvance.required_if' => 'จำนวนงวดล่วงหน้า จำเป็นต้องกรอก',
                 'insurancecompanyid.required_if' => 'เบี้ยประกันชั้น 1,3 กรุณาเลือกบริษัทประกัน',
@@ -281,6 +286,25 @@ class CarPaymentController extends Controller {
         $model->carid = $input['carid'];
         $model->amountperinstallment = $input['amountperinstallment'];
         $model->insurancepremium = $input['insurancepremium'];
+
+        $carpreemption = CarPreemption::find($model->carpreemptionid);
+        $pricelist = Pricelist::find($carpreemption->pricelistid);
+        $carprice = $pricelist->sellingpricewithaccessories;
+
+
+        if($input['purchasetype'] == 0) {
+            $openbillinput = $input['openbill'];
+            $openbill = $carprice - $carpreemption->discount;
+            if($openbillinput != $openbill)
+                $model->overrideopenbill = $openbillinput;
+            else
+                $model->overrideopenbill = null;
+        }
+        else{
+            $model->overrideopenbill = null;
+        }
+
+
         if($request->has('paymentmode')){
             $model->paymentmode = $input['paymentmode'];
             if($model->paymentmode == 0) $model->installmentsinadvance = 1;
@@ -291,10 +315,6 @@ class CarPaymentController extends Controller {
         $model->compulsorymotorinsurancecompanyid = $input['compulsorymotorinsurancecompanyid'];
         $model->totalpayments = $input['totalpayments'];
 
-        if($input['date2'] != null && $input['date2'] != '')
-            $model->date2 = date('Y-m-d', strtotime($input['date2']));
-        else
-            $model->date2 = $input['date2'];
         $model->buyerpay = $input['buyerpay'];
         $model->overdue = $input['overdue'];
         $model->overdueinterest = $input['overdueinterest'];
@@ -494,20 +514,23 @@ class CarPaymentController extends Controller {
         }
 
         if($carpreemption->purchasetype == 0) {
-            $model->down = $model->carprice - $carpreemption->discount;
+            $model->down = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
             $model->yodjud =  0;
             $model->yodjudwithinsurancepremium = 0;
-            $model->openbill = $model->carprice - $carpreemption->discount;
-            $model->realprice = $model->carprice - $carpreemption->discount;
+            if($model->overrideopenbill != null && $model->overrideopenbill != '')
+                $model->openbill = $model->overrideopenbill;
+            else
+                $model->openbill = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
+            $model->realprice = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
             $model->payinadvanceamount = 0;
         }
         else {
             $model->down = $carpreemption->down;
-            $model->yodjud =  $model->carprice - $carpreemption->discount - $model->down + $carpreemption->accessories;
-            $model->yodjudwithinsurancepremium = $model->yodjud + $model->insurancepremium;
-            $model->openbill = $model->yodjudwithinsurancepremium + $model->down;
-            $model->realprice =  $model->yodjud + $model->down - $carpreemption->subdown;
-            $model->payinadvanceamount = $model->installmentsinadvance * $model->amountperinstallment;
+            $model->yodjud =  number_format($model->carprice - $carpreemption->discount - $model->down + $carpreemption->accessories, 2, '.', '');
+            $model->yodjudwithinsurancepremium = number_format($model->yodjud + $model->insurancepremium, 2, '.', '');
+            $model->openbill = number_format($model->yodjudwithinsurancepremium + $model->down, 2, '.', '');
+            $model->realprice =  number_format($model->yodjud + $model->down - $carpreemption->subdown, 2, '.', '');
+            $model->payinadvanceamount = number_format($model->installmentsinadvance * $model->amountperinstallment, 2, '.', '');
         }
 
         $model->accessoriesfee = $carpreemption->accessoriesfee;
@@ -542,7 +565,7 @@ class CarPaymentController extends Controller {
         }
 
         $model->cashpledgeredlabel = $carpreemption->cashpledgeredlabel;
-        $model->total = $model->down + $model->payinadvanceamount + $model->accessoriesfee + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel;
+        $model->total = number_format($model->down + $model->payinadvanceamount + $model->accessoriesfee + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel, 2, '.', '');
         $model->subdown = $carpreemption->subdown;
         $model->cashpledge = $carpreemption->cashpledge;
         $model->oldcarprice = $carpreemption->oldcarprice;
@@ -571,6 +594,24 @@ class CarPaymentController extends Controller {
         foreach($payeeemployees as $item){
             $payeeemployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
         }
+
+        $model->date = date('d-m-Y', strtotime($model->date));
+        if($model->overdueinstallmentdate1 != null && $model->overdueinstallmentdate1 != '')
+            $model->overdueinstallmentdate1 = date('d-m-Y', strtotime($model->overdueinstallmentdate1));
+        if($model->overdueinstallmentdate2 != null && $model->overdueinstallmentdate2 != '')
+            $model->overdueinstallmentdate2 = date('d-m-Y', strtotime($model->overdueinstallmentdate2));
+        if($model->overdueinstallmentdate3 != null && $model->overdueinstallmentdate3 != '')
+            $model->overdueinstallmentdate3 = date('d-m-Y', strtotime($model->overdueinstallmentdate3));
+        if($model->overdueinstallmentdate4 != null && $model->overdueinstallmentdate4 != '')
+            $model->overdueinstallmentdate4 = date('d-m-Y', strtotime($model->overdueinstallmentdate4));
+        if($model->overdueinstallmentdate5 != null && $model->overdueinstallmentdate5 != '')
+            $model->overdueinstallmentdate5 = date('d-m-Y', strtotime($model->overdueinstallmentdate5));
+        if($model->overdueinstallmentdate6 != null && $model->overdueinstallmentdate6 != '')
+            $model->overdueinstallmentdate6 = date('d-m-Y', strtotime($model->overdueinstallmentdate6));
+        if($model->oldcarpaydate != null && $model->oldcarpaydate != '')
+            $model->oldcarpaydate = date('d-m-Y', strtotime($model->oldcarpaydate));
+        if($model->deliverycardate != null && $model->deliverycardate != '')
+            $model->deliverycardate = date('d-m-Y', strtotime($model->deliverycardate));
 
         return view('carpaymentform',
             ['oper' => 'edit','pathPrefix' => '../../','carpayment' => $model,
@@ -662,21 +703,25 @@ class CarPaymentController extends Controller {
         }
 
         if($carpreemption->purchasetype == 0) {
-            $model->down = $model->carprice - $carpreemption->discount;
+            $model->down = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
             $model->yodjud =  0;
             $model->yodjudwithinsurancepremium = 0;
-            $model->openbill = $model->carprice - $carpreemption->discount;
-            $model->realprice = $model->carprice - $carpreemption->discount;
+            if($model->overrideopenbill != null && $model->overrideopenbill != '')
+                $model->openbill = $model->overrideopenbill;
+            else
+                $model->openbill = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
+            $model->realprice = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
             $model->payinadvanceamount = 0;
         }
         else {
             $model->down = $carpreemption->down;
-            $model->yodjud =  $model->carprice - $carpreemption->discount - $model->down + $carpreemption->accessories;
-            $model->yodjudwithinsurancepremium = $model->yodjud + $model->insurancepremium;
-            $model->openbill = $model->yodjudwithinsurancepremium + $model->down;
-            $model->realprice =  $model->yodjud + $model->down - $carpreemption->subdown;
-            $model->payinadvanceamount = $model->installmentsinadvance * $model->amountperinstallment;
+            $model->yodjud =  number_format($model->carprice - $carpreemption->discount - $model->down + $carpreemption->accessories, 2, '.', '');
+            $model->yodjudwithinsurancepremium = number_format($model->yodjud + $model->insurancepremium, 2, '.', '');
+            $model->openbill = number_format($model->yodjudwithinsurancepremium + $model->down, 2, '.', '');
+            $model->realprice =  number_format($model->yodjud + $model->down - $carpreemption->subdown, 2, '.', '');
+            $model->payinadvanceamount = number_format($model->installmentsinadvance * $model->amountperinstallment, 2, '.', '');
         }
+
         $model->accessoriesfee = $carpreemption->accessoriesfee;
 
         $insurancecompanies = InsuranceCompany::orderBy('name', 'asc')->get(['id', 'name']);
@@ -728,6 +773,24 @@ class CarPaymentController extends Controller {
         else{
             $payeeemployeeselectlist[null] = '';
         }
+
+        $model->date = date('d-m-Y', strtotime($model->date));
+        if($model->overdueinstallmentdate1 != null && $model->overdueinstallmentdate1 != '')
+            $model->overdueinstallmentdate1 = date('d-m-Y', strtotime($model->overdueinstallmentdate1));
+        if($model->overdueinstallmentdate2 != null && $model->overdueinstallmentdate2 != '')
+            $model->overdueinstallmentdate2 = date('d-m-Y', strtotime($model->overdueinstallmentdate2));
+        if($model->overdueinstallmentdate3 != null && $model->overdueinstallmentdate3 != '')
+            $model->overdueinstallmentdate3 = date('d-m-Y', strtotime($model->overdueinstallmentdate3));
+        if($model->overdueinstallmentdate4 != null && $model->overdueinstallmentdate4 != '')
+            $model->overdueinstallmentdate4 = date('d-m-Y', strtotime($model->overdueinstallmentdate4));
+        if($model->overdueinstallmentdate5 != null && $model->overdueinstallmentdate5 != '')
+            $model->overdueinstallmentdate5 = date('d-m-Y', strtotime($model->overdueinstallmentdate5));
+        if($model->overdueinstallmentdate6 != null && $model->overdueinstallmentdate6 != '')
+            $model->overdueinstallmentdate6 = date('d-m-Y', strtotime($model->overdueinstallmentdate6));
+        if($model->oldcarpaydate != null && $model->oldcarpaydate != '')
+            $model->oldcarpaydate = date('d-m-Y', strtotime($model->oldcarpaydate));
+        if($model->deliverycardate != null && $model->deliverycardate != '')
+            $model->deliverycardate = date('d-m-Y', strtotime($model->deliverycardate));
 
         return view('carpaymentform',
             ['oper' => 'view','pathPrefix' => '../../','carpayment' => $model,

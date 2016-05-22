@@ -106,6 +106,7 @@ class CreateCarPreemptionsTable extends Migration {
             $table->integer('customertype')->comment('0:ซื้อใหม่, 1:ซื้อทดแทน');
             $table->text('remark');
 
+            $table->integer('documentstatus')->comment('0:ยังไม่ยื่นเอกสาร, 1:ทำสัญญารอผล, 2:ผ่านพร้อมส่ง')->default(0);
             $table->integer('status')->comment('0:จอง, 1:ชำระเงินแล้ว, 2:ยกเลิก')->default(0);
 
             $table->integer('createdby')->unsigned();

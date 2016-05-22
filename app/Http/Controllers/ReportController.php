@@ -16,14 +16,14 @@ class ReportController extends Controller {
      */
     public function index()
     {
-        $output = \JasperPHP::list_parameters(
+        /*$output = \JasperPHP::list_parameters(
             public_path() . '/report/test.jasper'
         )->execute();
 
         foreach($output as $parameter_description)
-            echo $parameter_description;
+            echo $parameter_description;*/
 
-        //return view('report');
+        return view('report');
     }
 
 

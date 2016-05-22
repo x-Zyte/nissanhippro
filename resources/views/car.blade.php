@@ -47,7 +47,7 @@
             $(grid_selector).jqGrid({
                 url:'car/read',
                 datatype: "json",
-                colNames:['จังหวัด','แบบ','รุ่น','ซื้อจาก','ชื่อดีลเลอร์','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'กุญแจ', 'สี','จอดอยู่ที่', 'รถสำหรับ','ใบรับรถเข้า'], //'ใบส่งรถให้ลูกค้า'],
+                colNames:['จังหวัด','แบบ','รุ่น','ซื้อจาก','ชื่อดีลเลอร์','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'เลขกุญแจ', 'สี','จอดอยู่ที่', 'รถสำหรับ','ใบรับรถเข้า'], //'ใบส่งรถให้ลูกค้า'],
                 colModel:[
                     {name:'provinceid',index:'provinceid', width:150, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
@@ -107,7 +107,8 @@
                         editrules:{required:true,custom: true, custom_func: check_AZ09},align:'left'},
                     {name:'chassisno',index:'chassisno', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},
                         editrules:{required:true,custom: true, custom_func: check_AZ09},align:'left'},
-                    {name:'keyno',index:'keyno', width:50,editable: true,editoptions:{size:"5"},editrules:{number:true,required:true},align:'center'},
+                    {name:'keyno',index:'keyno', width:50,editable: true,editoptions:{size:"5"},align:'center'
+                        ,editrules:{custom: true, custom_func: check_keyno}},
                     {name:'colorid',index:'colorid', width:180, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$colorselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }},
                     {name:'parklocation',index:'parklocation', width:100,editable: true,editoptions:{size:"20",maxlength:"50"}
@@ -153,6 +154,17 @@
                 if(receivetype == 0) return [true, ""];
                 if(value == null || value == '') return [false,"กรุณาใส่ชื่อดีลเลอร์"];
                 else return [true, ""];
+            }
+
+            function check_keyno(value, colname) {
+                var objective = $('#objective').val();
+
+                if(objective == 0 && (value == null || value == ''))
+                    return [false,"กรุณาใส่เลขกุญแจ"];
+
+                if(objective != 0) $('#keyno').val(null);
+
+                return [true, ""];
             }
 
             function check_dodate(value, colname) {

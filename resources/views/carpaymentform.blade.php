@@ -27,7 +27,7 @@
                 $("input[name=carobjectivetype][value=" + data.carobjectivetype + "]").prop('checked', true);
                 $('#carmodel').val(data.carmodel);
                 $('#carcolor').val(data.carcolor);
-                $('#carprice').val(parseFloat(data.carprice).toFixed(0));
+                $('#carprice').val(data.carprice);
 
                 $.each(data.cars, function(i, option) {
                     $('#carid').append($('<option/>').attr("value", option.id).text(option.chassisno+'/'+option.engineno));
@@ -36,55 +36,64 @@
 
                 $("input[name=purchasetype][value=" + data.purchasetype + "]").prop('checked', true);
 
+                $('#purchasetype').val(data.purchasetype);
                 if(data.purchasetype == 0){
-                    $('#down').val((parseFloat(data.carprice) - parseFloat(data.discount)).toFixed(0));
+                    $('#down').val((parseFloat(data.carprice) - parseFloat(data.discount)).toFixed(2));
                     $(".purchasetype1ib").css("display","none");
                     $(".purchasetype1b").css("display","none");
+                    $("#openbill").removeClass("input-readonly");
+                    $("#openbill").removeAttr("readonly");
                 }
                 else if(data.purchasetype == 1){
-                    $('#down').val(parseFloat(data.down).toFixed(0));
+                    $('#down').val(data.down);
                     $(".purchasetype1ib").css("display","inline-block");
                     $(".purchasetype1b").css("display","block");
+                    $("#openbill").addClass("input-readonly");
+                    $("#openbill").attr("readonly", "readonly");
                 }
 
                 $('#installments').val(data.installments);
                 $('#interest').val(data.interest);
                 $('#finacecompany').val(data.finacecompany);
 
-                $('#yodjud').val(parseFloat(data.yodjud).toFixed(0));
+                $('#yodjud').val(parseFloat(data.yodjud).toFixed(2));
 
                 var insurancepremium = $('#insurancepremium').val();
                 if(insurancepremium == null || insurancepremium == '')
                     insurancepremium = 0;
-                $('#yodjudwithinsurancepremium').val((parseFloat(data.yodjud) + parseFloat(insurancepremium)));
+                $('#yodjudwithinsurancepremium').val((parseFloat(data.yodjud) + parseFloat(insurancepremium)).toFixed(2));
 
                 if(data.down == null || data.down == '')
                     data.down = 0;
 
                 if(data.purchasetype == 0){
-                    $('#openbill').val(parseFloat(data.carprice) - parseFloat(data.discount));
+                    $('#openbill').val((parseFloat(data.carprice) - parseFloat(data.discount)).toFixed(2));
                 }
                 else if(data.purchasetype == 1){
-                    $('#openbill').val(parseFloat(data.yodjud) + parseFloat(insurancepremium) + parseFloat(data.down));
+                    $('#openbill').val((parseFloat(data.yodjud) + parseFloat(insurancepremium) + parseFloat(data.down)).toFixed(2));
                 }
 
-                $('#realprice').val(data.realprice);
+                $('#realprice').val(parseFloat(data.realprice).toFixed(2));
 
-                $('#accessoriesfee').val(parseFloat(data.accessoriesfee).toFixed(0));
-                $('#insurancefee').val(parseFloat(data.insurancefee).toFixed(0));
-                $('#compulsorymotorinsurancefee').val(parseFloat(data.compulsorymotorinsurancefee).toFixed(0));
-                $('#financingfee').val(parseFloat(data.financingfee).toFixed(0));
-                $('#transferfee').val(parseFloat(data.transferfee).toFixed(0));
-                $('#transferoperationfee').val(parseFloat(data.transferoperationfee).toFixed(0));
+                $('#accessoriesfee').val(data.accessoriesfee);
+                $('#insurancefee').val(data.insurancefee);
+                $('#compulsorymotorinsurancefee').val(data.compulsorymotorinsurancefee);
+                $('#financingfee').val(data.financingfee);
+                $('#transferfee').val(data.transferfee);
+                $('#transferoperationfee').val(data.transferoperationfee);
                 $('#registerprovince').val(data.registerprovince);
                 $("input[name=registrationtype][value=" + data.registrationtype + "]").prop('checked', true);
-                $('#registrationfee').val(parseFloat(data.registrationfee).toFixed(0));
+                $('#registrationfee').val(data.registrationfee);
                 $('#redlabel').val(data.redlabel);
-                $('#cashpledgeredlabel').val(parseFloat(data.cashpledgeredlabel).toFixed(0));
+                $('#cashpledgeredlabel').val(data.cashpledgeredlabel);
 
-                $('#subdown').val(parseFloat(data.subdown).toFixed(0));
-                $('#cashpledge').val(parseFloat(data.cashpledge).toFixed(0));
-                $('#oldcarprice').val(parseFloat(data.oldcarprice).toFixed(0));
+                $('#subdown').val(data.subdown);
+                $('#cashpledge').val(data.cashpledge);
+                $('#oldcarprice').val(data.oldcarprice);
+                if(data.oldcarprice == null || data.oldcarprice == '')
+                    $(".hasoldcar").css("display","none");
+                else
+                    $(".hasoldcar").css("display","block");
 
                 $('#salesmanemployee').val(data.salesmanemployee);
                 $('#approversemployee').val(data.approversemployee);
@@ -129,7 +138,7 @@
             if(installmentsinadvance == null || installmentsinadvance == '')
                 installmentsinadvance = 0;
 
-            $("#payinadvanceamount").val((parseFloat(amountperinstallment)*parseFloat(installmentsinadvance)));
+            $("#payinadvanceamount").val((parseFloat(amountperinstallment)*parseFloat(installmentsinadvance)).toFixed(2));
 
             CalTotalpayments();
         }
@@ -146,13 +155,13 @@
             var yodjud = $('#yodjud').val();
             if(yodjud == null || yodjud == '')
                 yodjud = 0;
-            $('#yodjudwithinsurancepremium').val((parseFloat(yodjud) + parseFloat(insurancepremium)));
+            $('#yodjudwithinsurancepremium').val((parseFloat(yodjud) + parseFloat(insurancepremium)).toFixed(2));
 
             var down = $('#down').val();
             if(down == null || down == '')
                 down = 0;
 
-            $('#openbill').val(parseFloat(yodjud) + parseFloat(insurancepremium) + parseFloat(down));
+            $('#openbill').val((parseFloat(yodjud) + parseFloat(insurancepremium) + parseFloat(down)).toFixed(2));
         }
 
         function CalTotalpayments(){
@@ -160,7 +169,7 @@
             if(down == null || down == '') down = 0;
 
             var payinadvanceamount = $('#payinadvanceamount').val();
-            if(payinadvanceamount == null || payinadvanceamount == '') payinadvanceamount = 0.00;
+            if(payinadvanceamount == null || payinadvanceamount == '') payinadvanceamount = 0;
 
             var accessoriesfee = $('#accessoriesfee').val();
             if(accessoriesfee == null || accessoriesfee == '') accessoriesfee = 0;
@@ -186,9 +195,9 @@
             var cashpledgeredlabel = $('#cashpledgeredlabel').val();
             if(cashpledgeredlabel == null || cashpledgeredlabel == '') cashpledgeredlabel = 0;
 
-            var total = parseFloat(down) + parseFloat(payinadvanceamount) + parseFloat(accessoriesfee) + parseFloat(insurancefee)
+            var total = (parseFloat(down) + parseFloat(payinadvanceamount) + parseFloat(accessoriesfee) + parseFloat(insurancefee)
                     + parseFloat(compulsorymotorinsurancefee) + parseFloat(financingfee) + parseFloat(transferfee)
-                    + parseFloat(transferoperationfee) + parseFloat(registrationfee) + parseFloat(cashpledgeredlabel);
+                    + parseFloat(transferoperationfee) + parseFloat(registrationfee) + parseFloat(cashpledgeredlabel)).toFixed(2);
 
             $('#total').val(total);
 
@@ -201,28 +210,34 @@
             var oldcarprice = $('#oldcarprice').val();
             if(oldcarprice == null || oldcarprice == '') oldcarprice = 0;
 
-            var totalpayments = parseFloat(total) - parseFloat(subdown) - parseFloat(cashpledge) - parseFloat(oldcarprice);
+            var totalpayments = (parseFloat(total) - parseFloat(subdown) - parseFloat(cashpledge) - parseFloat(oldcarprice)).toFixed(2);
             $('#totalpayments').val(totalpayments);
 
             //$.get('{{$pathPrefix}}carpayment/getbahttext/'+ totalpayments, function(data){
                 //alert(data);
             //});
+
+            CalOverdue();
         }
 
         function CalOverdue(){
+            var buyerpay = $('#buyerpay').val();
+            if(buyerpay == null || buyerpay == ''){
+                $('#overdue').val(null);
+                $('#totaloverdue').val(null);
+                return;
+            }
+
             var totalpayments = $('#totalpayments').val();
             if(totalpayments == null || totalpayments == '') totalpayments = 0;
 
-            var buyerpay = $('#buyerpay').val();
-            if(buyerpay == null || buyerpay == '') buyerpay = 0;
-
-            var overdue = parseFloat(totalpayments) - parseFloat(buyerpay);
+            var overdue = (parseFloat(totalpayments) - parseFloat(buyerpay)).toFixed(2);
             $('#overdue').val(overdue);
 
             var overdueinterest = $('#overdueinterest').val();
             if(overdueinterest == null || overdueinterest == '') overdueinterest = 0;
 
-            var totaloverdue = parseFloat(overdue) + parseFloat(overdueinterest);
+            var totaloverdue = (parseFloat(overdue) + parseFloat(overdueinterest)).toFixed(2);
             $('#totaloverdue').val(totaloverdue);
         }
 
@@ -256,6 +271,21 @@
                 $(".installment6").css("display","none");
             }
         }
+
+        function OldcarpayamountChange(){
+            var oldcarpayamount = $('#oldcarpayamount').val();
+            if(oldcarpayamount == null || oldcarpayamount == '') oldcarpayamount = 0;
+
+            var oldcarprice = $('#oldcarprice').val();
+            if(oldcarprice == null || oldcarprice == '') oldcarprice = 0;
+
+            if(oldcarpayamount > oldcarprice){
+                alert("ชำระค่ารถเก่า ต้องน้อยกว่าหรือเท่ากับ ค่ารถเก่า");
+                $('#oldcarpayamount').val(null);
+                return;
+            }
+        }
+
     </script>
 
     @if($oper == 'new')
@@ -278,7 +308,7 @@
     @endif
 
     @if($oper == 'new')
-        {!! Form::open(array('url' => 'carpayment/save', 'id'=>'form-carpayment', 'class'=>'form-horizontal', 'role'=>'form', 'files'=>true)) !!}
+        {!! Form::model($carpayment, array('url' => 'carpayment/save', 'id'=>'form-carpayment', 'class'=>'form-horizontal', 'role'=>'form', 'files'=>true)) !!}
     @elseif($oper == 'edit')
         {!! Form::model($carpayment, array('url' => 'carpayment/save', 'id'=>'form-carpayment', 'class'=>'form-horizontal', 'role'=>'form', 'files'=>true)) !!}
         {!! Form::hidden('id') !!}
@@ -296,9 +326,16 @@
                     {!! Form::hidden('carpreemptionid') !!}
                 @endif
             </div>
+
+            <label>
+                {!! Form::checkbox('isdraft', 1, false, array('class' => 'ace')) !!}
+                <span class="lbl" style="width:130px;" >  ส่งรถก่อนชำระเงิน</span>
+            </label>
         </div>
 
-        <!-- Detail 1 -->
+
+
+    <!-- Detail 1 -->
         <div class="row">
             <div class="col-xs-1 col-sm-1"></div>
             <div class="col-xs-12 col-sm-12 col-md-12">
@@ -323,7 +360,7 @@
                                     {!! Form::label('date', 'วันที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         <div class="input-group">
-                                            {!! Form::text('date', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date')) !!}
+                                            {!! Form::text('date', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date')) !!}
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -378,7 +415,7 @@
                                             {!! Form::radio('purchasetype', 1, $purchasetype1, array('class' => 'ace', 'disabled'=>'disabled')) !!}
                                             <span class="lbl">  ผ่อน</span>&nbsp;&nbsp;
                                         </label>
-
+                                        {!! Form::hidden('purchasetype',null, array('id'=>'purchasetype')) !!}
                                         <label class="purchasetype1ib">
                                             {!! Form::number('installments', null, array('style'=>'width:70px;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'installments')) !!}
                                             <span class="lbl"> งวด ๆ ละ</span>&nbsp;
@@ -571,7 +608,7 @@
                                         <label style="width:170px; text-align:right; padding-right:10px; font-weight:bold;"> รวมเงิน</label>
                                     </div>
                                     <div class="col-sm-2">
-                                        {!! Form::number('total', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'total')) !!}
+                                        {!! Form::number('total', null, array('style'=>'width:100%; border-color:black; color:black;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'total')) !!}
                                     </div>
                                 </div>
                                 <hr>
@@ -605,7 +642,7 @@
                                         <label style="width:170px; text-align:right; padding-right:10px; font-weight:bold;"> ชำระเงินรวม</label>
                                     </div>
                                     <div class="col-sm-2">
-                                        {!! Form::number('totalpayments', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'totalpayments')) !!}
+                                        {!! Form::number('totalpayments', null, array('style'=>'width:100%; border-color:black; color:black;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'totalpayments')) !!}
                                     </div>
                                 </div>
 
@@ -622,7 +659,7 @@
             <div class="col-sm-12">
                 <div class="widget-box">
                     <div class="widget-header">
-                        <h4 class="widget-title">ข้อมูลส่วนที่ 3 </h4>
+                        <h4 class="widget-title">แบ่งชำระค่ารถเป็นงวด</h4>
                         <div class="widget-toolbar">
                             <a href="form-elements.html#" data-action="collapse">
                                 <i class="ace-icon fa fa-chevron-up"></i>
@@ -632,24 +669,6 @@
                     <div class="widget-body">
                         <div class="widget-body-inner" style="display: block;">
                             <div class="widget-main">
-                                <div class="form-group" style="padding-left:20px; padding-top:10px;">
-                                    <div class="col-sm-12">
-                                        {!! Form::label('date2', 'วันที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                        <div class="col-sm-2">
-                                            <div class="input-group">
-                                                @if($carpayment != null && $carpayment->date2 != null && $carpayment->date2 != '')
-                                                    {!! Form::text('date2', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date2')) !!}
-                                                @else
-                                                    {!! Form::text('date2', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date2')) !!}
-                                                @endif
-                                                <span class="input-group-addon">
-                                                <i class="fa fa-calendar bigger-110"></i>
-                                            </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
                                 <div class="form-group" style="padding-left:20px;">
                                     <div class="col-sm-12">
                                         <label style="width:180px;">
@@ -712,11 +731,7 @@
                                         {!! Form::label('overdueinstallmentdate1', 'งวดที่ 1 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                @if($carpayment != null && $carpayment->overdueinstallmentdate1 != null && $carpayment->overdueinstallmentdate1 != '')
-                                                    {!! Form::text('overdueinstallmentdate1', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate1')) !!}
-                                                @else
-                                                    {!! Form::text('overdueinstallmentdate1', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate1')) !!}
-                                                @endif
+                                                {!! Form::text('overdueinstallmentdate1', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate1')) !!}
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -733,11 +748,7 @@
                                         {!! Form::label('overdueinstallmentdate2', 'งวดที่ 2 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                @if($carpayment != null && $carpayment->overdueinstallmentdate2 != null && $carpayment->overdueinstallmentdate2 != '')
-                                                    {!! Form::text('overdueinstallmentdate2', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate2')) !!}
-                                                @else
-                                                    {!! Form::text('overdueinstallmentdate2', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate2')) !!}
-                                                @endif
+                                                {!! Form::text('overdueinstallmentdate2', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate2')) !!}
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -754,11 +765,7 @@
                                         {!! Form::label('overdueinstallmentdate3', 'งวดที่ 3 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                @if($carpayment != null && $carpayment->overdueinstallmentdate3 != null && $carpayment->overdueinstallmentdate3 != '')
-                                                    {!! Form::text('overdueinstallmentdate3', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate3')) !!}
-                                                @else
-                                                    {!! Form::text('overdueinstallmentdate3', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate3')) !!}
-                                                @endif
+                                                {!! Form::text('overdueinstallmentdate3', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate3')) !!}
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -775,11 +782,7 @@
                                         {!! Form::label('overdueinstallmentdate4', 'งวดที่ 4 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                @if($carpayment != null && $carpayment->overdueinstallmentdate4 != null && $carpayment->overdueinstallmentdate4 != '')
-                                                    {!! Form::text('overdueinstallmentdate4', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate4')) !!}
-                                                @else
-                                                    {!! Form::text('overdueinstallmentdate4', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate4')) !!}
-                                                @endif
+                                                {!! Form::text('overdueinstallmentdate4', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate4')) !!}
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -796,11 +799,7 @@
                                         {!! Form::label('overdueinstallmentdate5', 'งวดที่ 5 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                @if($carpayment != null && $carpayment->overdueinstallmentdate5 != null && $carpayment->overdueinstallmentdate5 != '')
-                                                    {!! Form::text('overdueinstallmentdate5', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate5')) !!}
-                                                @else
-                                                    {!! Form::text('overdueinstallmentdate5', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate5')) !!}
-                                                @endif
+                                                {!! Form::text('overdueinstallmentdate5', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate5')) !!}
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -817,11 +816,7 @@
                                         {!! Form::label('overdueinstallmentdate6', 'งวดที่ 6 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                @if($carpayment != null && $carpayment->overdueinstallmentdate6 != null && $carpayment->overdueinstallmentdate6 != '')
-                                                    {!! Form::text('overdueinstallmentdate6', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate6')) !!}
-                                                @else
-                                                    {!! Form::text('overdueinstallmentdate6', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate6')) !!}
-                                                @endif
+                                                {!! Form::text('overdueinstallmentdate6', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate6')) !!}
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -862,11 +857,11 @@
 
 
         <!-- For Money Officer -->
-        <div class="row">
+        <div class="row hasoldcar">
             <div class="col-sm-12">
                 <div class="widget-box">
                     <div class="widget-header">
-                        <h4 class="widget-title">สำหรับเจ้าหน้าที่การเงิน</h4>
+                        <h4 class="widget-title">กรณีมีรถเก่า</h4>
                         <div class="widget-toolbar">
                             <a href="form-elements.html#" data-action="collapse">
                                 <i class="ace-icon fa fa-chevron-up"></i>
@@ -880,7 +875,7 @@
                                     <div class="col-sm-12">
                                         <label>
                                             <span> ชำระค่ารถเก่าจำนวน</span>&nbsp;&nbsp;
-                                            {!! Form::number('oldcarpayamount', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'oldcarpayamount')) !!}
+                                            {!! Form::number('oldcarpayamount', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'oldcarpayamount', 'onchange'=>'OldcarpayamountChange();')) !!}
                                         </label>
                                         <label>&nbsp;
                                             <span>&nbsp;&nbsp;&nbsp; โดย&nbsp;&nbsp;&nbsp;</span>
@@ -901,7 +896,7 @@
                                     <label class="col-sm-1 control-label no-padding-right" for="receivedpaymentdate">วันที่รับเงิน</label>
                                     <div class="col-sm-2">
                                         <div class="input-group">
-                                            {!! Form::text('oldcarpaydate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'oldcarpaydate')) !!}
+                                            {!! Form::text('oldcarpaydate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'oldcarpaydate', 'id'=>'oldcarpaydate')) !!}
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -918,7 +913,7 @@
                     </div>
                 </div>
             </div>
-        </div><br>
+        </div><br class="hasoldcar">
 
     <div class="row">
         <div class="col-sm-12">
@@ -953,11 +948,7 @@
                                     </div>
                                     <div class="col-sm-1" style="margin-left: -20px;">
                                         <div class="input-group">
-                                            @if($carpayment != null && $carpayment->deliverycardate != null && $carpayment->deliverycardate != '')
-                                                {!! Form::text('deliverycardate', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'deliverycardate')) !!}
-                                            @else
-                                                {!! Form::text('deliverycardate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'deliverycardate')) !!}
-                                            @endif
+                                            {!! Form::text('deliverycardate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'deliverycardate')) !!}
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
@@ -996,12 +987,6 @@
         @if($oper != 'view')
             <div class="clearfix form-actions">
                 <div class="col-md-offset-5 col-md-5">
-                    <label>
-                        {!! Form::checkbox('isdraft', 1, false, array('class' => 'ace')) !!}
-                        <span class="lbl" style="width:130px;" >  บันทึกเป็นฉบับร่าง</span>
-                    </label>
-                    &nbsp;&nbsp;
-
                     <button id="btnSubmit" class="btn btn-info" type="submit">
                         <i class="ace-icon fa fa-check bigger-110"></i>
                         Submit
@@ -1026,10 +1011,14 @@
             if(purchasetype == 0){
                 $(".purchasetype1ib").css("display","none");
                 $(".purchasetype1b").css("display","none");
+                $("#openbill").removeClass("input-readonly");
+                $("#openbill").removeAttr("readonly");
             }
             else if(purchasetype == 1){
                 $(".purchasetype1ib").css("display","inline-block");
                 $(".purchasetype1b").css("display","block");
+                $("#openbill").addClass("input-readonly");
+                $("#openbill").attr("readonly", "readonly");
             }
 
             if(carobjectivetype == 0){
@@ -1048,6 +1037,12 @@
                 $(".cashpledgeredlabel").css("display","none");
                 $(".registration").css("display","none");
             }
+
+            var oldcarprice = $('#oldcarprice').val();
+            if(oldcarprice == null || oldcarprice == '')
+                $(".hasoldcar").css("display","none");
+            else
+                $(".hasoldcar").css("display","block");
 
             PaybytypeChange();
 

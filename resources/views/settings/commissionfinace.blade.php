@@ -44,7 +44,7 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('/commissionfinace/read') }}',
                 datatype: "json",
-                colNames:['ไฟแนนซ์','ประเภทอัตราดอกเบี้ย','ชื่อ', 'วันที่เริ่ม', 'วันที่สิ้นสุด', 'ไฟแนนซ์กำไรขั้นต่ำ'],
+                colNames:['ไฟแนนซ์','ประเภทอัตราดอกเบี้ย','ชื่อ', 'วันที่เริ่ม', 'วันที่สิ้นสุด', 'ดอกเบี้ยขั้นต่ำ'],
                 colModel:[
                     {name:'finacecompanyid',index:'finacecompanyid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$finacecompanyselectlist}}",

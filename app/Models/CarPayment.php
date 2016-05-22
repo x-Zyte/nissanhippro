@@ -12,9 +12,10 @@ class CarPayment extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['provinceid','branchid','carpreemptionid', 'date', 'carid', 'amountperinstallment', 'insurancepremium', 'paymentmode','installmentsinadvance',
+    protected $fillable = ['provinceid','branchid','carpreemptionid', 'date', 'carid', 'amountperinstallment', 'insurancepremium',
+        'overrideopenbill', 'paymentmode','installmentsinadvance',
         'insurancecompanyid', 'capitalinsurance', 'compulsorymotorinsurancecompanyid', 'totalpayments',
-        'date2', 'buyerpay', 'overdue', 'overdueinterest', 'totaloverdue', 'paybytype', 'paybyotherdetails',
+        'buyerpay', 'overdue', 'overdueinterest', 'totaloverdue', 'paybytype', 'paybyotherdetails',
         'overdueinstallments', 'overdueinstallmentdate1', 'overdueinstallmentamount1',
         'overdueinstallmentdate2', 'overdueinstallmentamount2','overdueinstallmentdate3', 'overdueinstallmentamount3',
         'overdueinstallmentdate4', 'overdueinstallmentamount4','overdueinstallmentdate5', 'overdueinstallmentamount5',
@@ -34,7 +35,8 @@ class CarPayment extends Model {
             $model->provinceid = $carpreemption->provinceid;
             $model->branchid = $carpreemption->branchid;
 
-            if($model->date2 == '') $model->date2 = null;
+            if($model->	insurancecompanyid == '') $model->	insurancecompanyid = null;
+            if($model->capitalinsurance == '') $model->capitalinsurance = null;
             if($model->buyerpay == '') $model->buyerpay = null;
             if($model->overdue == '') $model->overdue = null;
             if($model->overdueinterest == '') $model->overdueinterest = null;
@@ -101,7 +103,8 @@ class CarPayment extends Model {
             $model->provinceid = $carpreemption->provinceid;
             $model->branchid = $carpreemption->branchid;
 
-            if($model->date2 == '') $model->date2 = null;
+            if($model->	insurancecompanyid == '') $model->	insurancecompanyid = null;
+            if($model->capitalinsurance == '') $model->capitalinsurance = null;
             if($model->buyerpay == '') $model->buyerpay = null;
             if($model->overdue == '') $model->overdue = null;
             if($model->overdueinterest == '') $model->overdueinterest = null;

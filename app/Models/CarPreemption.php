@@ -25,7 +25,7 @@ class CarPreemption extends Model {
         'buyercustomerid', 'salesmanemployeeid', 'salesmanteamid', 'salesmanageremployeeid', 'approversemployeeid', 'approvaldate',
 
         'place', 'showroom', 'booth', 'leaflet', 'businesscard', 'invitationcard', 'phone', 'signshowroom', 'spotradiowalkin',
-        'recommendedby', 'recommendedbyname', 'recommendedbytype', 'customertype', 'remark','status',
+        'recommendedby', 'recommendedbyname', 'recommendedbytype', 'customertype', 'remark','status','documentstatus',
 
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 

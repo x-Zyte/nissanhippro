@@ -411,8 +411,13 @@ class CarPreemptionController extends Controller {
             }
         }
 
+        $carpreemption = new Carpreemption;
+        $carpreemption->date = date('d-m-Y');
+        $carpreemption->approvaldate = date('d-m-Y');
+        $carpreemption->documentstatus = 0;
+
         return view('carpreemptionform',
-            ['oper' => 'new','pathPrefix' => '../','carpreemption' => null,
+            ['oper' => 'new','pathPrefix' => '../','carpreemption' => $carpreemption,
                 'giveawayFreeDatas' => $giveawayFreeDatas,
                 'giveawayBuyDatas' => $giveawayBuyDatas,
                 'provincebranchselectlist' => $provincebranchselectlist,
@@ -670,22 +675,46 @@ class CarPreemptionController extends Controller {
             array_push($giveawayselectlist,$ct->id.':'.$ct->name.' ('.$ct->saleprice.' บาท)');
         }
 
-        $giveawayFrees = CarPreemptionGiveaway::where('free', true)
-            ->where('carpreemptionid',$id)
-            ->get(['id','giveawayid','price']);
         $giveawayFreeDatas = array();
-        foreach($giveawayFrees as $data){
-            $obj = (object)array("giveawayid" => $data->giveawayid,"price" => $data->price);
-            array_push($giveawayFreeDatas,$obj);
+        $giveawayBuyDatas = array();
+
+        $giveawayFreeData = SupportRequest::old('giveawayFreeData');
+        $giveawayBuyData = SupportRequest::old('giveawayBuyData');
+
+        if($giveawayFreeData != null && $giveawayFreeData != ''){
+            $giveawayFreeData = json_decode($giveawayFreeData,true);
+            foreach ($giveawayFreeData as $data) {
+                $obj = (object)array("giveawayid" => $data["giveawayid"], "price" => $data["price"]);
+                array_push($giveawayFreeDatas, $obj);
+            }
+        }
+        else{
+            $giveawayFrees = CarPreemptionGiveaway::where('free', true)
+                ->where('carpreemptionid',$id)
+                ->get(['id','giveawayid','price']);
+
+            foreach($giveawayFrees as $data){
+                $obj = (object)array("giveawayid" => $data->giveawayid,"price" => $data->price);
+                array_push($giveawayFreeDatas,$obj);
+            }
         }
 
-        $giveawayBuys = CarPreemptionGiveaway::where('free', false)
-            ->where('carpreemptionid',$id)
-            ->get(['id','giveawayid']);
-        $giveawayBuyDatas = array();
-        foreach($giveawayBuys as $data){
-            $obj = (object)array("giveawayid" => $data->giveawayid);
-            array_push($giveawayBuyDatas,$obj);
+        if($giveawayBuyData != null && $giveawayBuyData != ''){
+            $giveawayBuyData = json_decode($giveawayBuyData,true);
+            foreach ($giveawayBuyData as $data) {
+                $obj = (object)array("giveawayid" => $data["giveawayid"]);
+                array_push($giveawayBuyDatas, $obj);
+            }
+        }
+        else{
+            $giveawayBuys = CarPreemptionGiveaway::where('free', false)
+                ->where('carpreemptionid',$id)
+                ->get(['id','giveawayid']);
+
+            foreach($giveawayBuys as $data){
+                $obj = (object)array("giveawayid" => $data->giveawayid);
+                array_push($giveawayBuyDatas,$obj);
+            }
         }
 
         $finacecompanies = FinaceCompany::orderBy('name', 'asc')->get(['id', 'name']);
@@ -707,6 +736,9 @@ class CarPreemptionController extends Controller {
                 $priceselectlist[$item->id] = $item->sellingpricewithaccessories;
         }
 
+        $model->date = date('d-m-Y', strtotime($model->date));
+        $model->datewantgetcar = date('d-m-Y', strtotime($model->datewantgetcar));
+        $model->approvaldate = date('d-m-Y', strtotime($model->approvaldate));
 
         return view('carpreemptionform',
             ['oper' => 'edit','pathPrefix' => '../../','carpreemption' => $model,
@@ -964,6 +996,10 @@ class CarPreemptionController extends Controller {
             $priceselectlist[$item->id] = $item->sellingpricewithaccessories.' ('.$item->promotion.')';
         else
             $priceselectlist[$item->id] = $item->sellingpricewithaccessories;
+
+        $model->date = date('d-m-Y', strtotime($model->date));
+        $model->datewantgetcar = date('d-m-Y', strtotime($model->datewantgetcar));
+        $model->approvaldate = date('d-m-Y', strtotime($model->approvaldate));
 
         return view('carpreemptionform',
             ['oper' => 'view','pathPrefix' => '../../','carpreemption' => $model,
@@ -1223,6 +1259,7 @@ class CarPreemptionController extends Controller {
         $model->recommendedbyname = $input['recommendedbyname'];
         if ($request->has('recommendedbytype')) $model->recommendedbytype = $input['recommendedbytype'];
         if ($request->has('customertype')) $model->customertype = $input['customertype'];
+        $model->documentstatus = $input['documentstatus'];
         $model->remark = $input['remark'];
 
         if($model->oldcarbrandid == '') $model->oldcarbrandid = null;

@@ -31,7 +31,7 @@ class CreateCarsTable extends Migration {
             $table->unique('engineno');
             $table->string('chassisno',50);
             $table->unique('chassisno');
-            $table->integer('keyno');
+            $table->integer('keyno')->nullable();
             $table->integer('colorid')->unsigned();
             $table->foreign('colorid')->references('id')->on('colors');
             $table->integer('objective')->comment('0:ขาย, 1:ใช้งาน, 2:ทดสอบ');

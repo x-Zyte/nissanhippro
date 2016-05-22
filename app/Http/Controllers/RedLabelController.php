@@ -106,7 +106,8 @@ class RedLabelController extends Controller {
             $buyercustomername = $buyercustomer->title.' '.$buyercustomer->firstname.' '.$buyercustomer->lastname;
             $salesmanemployee = Employee::find($item->salesmanemployeeid);
             $salesmanemployeename = $salesmanemployee->title.' '.$salesmanemployee->firstname.' '.$salesmanemployee->lastname;
-            array_push($carpreemptionselectlist,$item->id.':ใบจอง-'.$item->bookno.'/'.$item->no.' ลูกค้า-'.$buyercustomername.' เซล-'.$salesmanemployeename);
+
+            array_push($carpreemptionselectlist,$item->id.':'.str_pad($item->bookno.'/'.$item->no,strlen($item->bookno.'/'.$item->no)+15," ").str_pad($buyercustomername,strlen($buyercustomername)+15," ").$salesmanemployeename);
         }
 
         $defaultProvince = '';

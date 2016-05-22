@@ -41,6 +41,7 @@ class Car extends Model {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Add','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
             //$rs = DB::select('call running_number("'.$model->provinceid.date("Y").'","'.$model->receivetype.'")');
             //$model->no = $rs[0]->no;
+            if($model->objective == 0){
             //$min = KeySlot::where('provinceid', $model->provinceid)->where('active',true)->min('no');
             //if($min == null){
             //    $branch = Branch::where('provinceid', $model->provinceid)->where('isheadquarter', true)->first();
@@ -53,6 +54,7 @@ class Car extends Model {
             //}
             //$model->save();
             KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->update(['carid' => $model->id ,'active' => false]);
+            }
         });
 
         static::updating(function($model)

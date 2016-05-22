@@ -188,6 +188,10 @@
             $('#carsubmodelid').children('option:not(:first)').remove();
             $('#colorid').children('option:not(:first)').remove();
 
+            $('#pricelistid').children('option').remove();
+            $('#pricelistid').append($('<option/>').attr("value", '').text('เลือกราคา'));
+            $('#pricelistid').val('').trigger('chosen:updated');
+
             var registrationtype = null;
             var registrationtypes = $("input[name=registrationtype]:checked");
             if(registrationtypes.length > 0)
@@ -232,7 +236,7 @@
                 $('#pricelistid').children('option').remove();
                 if(data.count == 0){
                     $('#pricelistid').append($('<option/>').attr("value", null).text('เลือกราคา'));
-                    alert("ไม่พบข้อูลราคา กรุณาเพิ่มข้อมูล ราคา ของรถรุ่นนี้ แล้วทำการเลือกรุ่น ใหม่อีกครั้ง");
+                    alert("ไม่พบข้อมูลราคา กรุณาเพิ่มข้อมูล ราคา ของรถรุ่นนี้ แล้วทำการเลือกรุ่น ใหม่อีกครั้ง");
                 }
 
                 $.each(data.pricelists, function(i, option) {
@@ -410,6 +414,38 @@
             });
         }
 
+        function DateChange(){
+            var date = $('#date').val();
+            if(date == null || date == '') return;
+
+            var dateArr = date.split("-");
+            var newrdate = new Date(dateArr[1]+'-'+dateArr[0]+'-'+dateArr[2]);
+
+            var datewant = $('#datewantgetcar').val();
+            if(datewant != null && datewant != ''){
+                var datewantArr = datewant.split("-");
+                var newdatewant = new Date(datewantArr[1]+'-'+datewantArr[0]+'-'+datewantArr[2]);
+
+                if(newdatewant.getTime() < newrdate.getTime()){
+                    alert("วันที่ต้องการรับรถ ต้องไม่น้อยกว่า วันที่จอง");
+                    $('#datewantgetcar').val(null);
+                    return;
+                }
+            }
+
+            var dateapp = $('#approvaldate').val();
+            if(dateapp != null && dateapp != ''){
+                var dateappArr = dateapp.split("-");
+                var newdateapp = new Date(dateappArr[1]+'-'+dateappArr[0]+'-'+dateappArr[2]);
+
+                if(newdateapp.getTime() < newrdate.getTime()){
+                    alert("วันที่อนุมัติ ต้องไม่น้อยกว่า วันที่จอง");
+                    $('#approvaldate').val(null);
+                    return;
+                }
+            }
+        }
+
     </script>
 
     @if($oper == 'new')
@@ -432,7 +468,7 @@
     @endif
 
     @if($oper == 'new')
-        {!! Form::open(array('url' => 'carpreemption/save', 'id'=>'form-carpreemption', 'class'=>'form-horizontal', 'role'=>'form')) !!}
+        {!! Form::model($carpreemption, array('url' => 'carpreemption/save', 'id'=>'form-carpreemption', 'class'=>'form-horizontal', 'role'=>'form')) !!}
     @elseif($oper == 'edit')
         {!! Form::model($carpreemption, array('url' => 'carpreemption/save', 'id'=>'form-carpreemption', 'class'=>'form-horizontal', 'role'=>'form')) !!}
         {!! Form::hidden('id') !!}
@@ -452,29 +488,33 @@
             <div class="col-sm-1">
                 {!! Form::number('bookno',null,array('min' => '0','max' => '999')) !!}
             </div>
-            {!! Form::label('no', 'เลขที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+            {!! Form::label('no', 'เลขที่', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'width:50px;')) !!}
             <div class="col-sm-1">
                 {!! Form::number('no',null,array('min' => '0','max' => '9999')) !!}
             </div>
-            {!! Form::label('date', 'วันที่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+            {!! Form::label('date', 'วันที่', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'width:50px;')) !!}
             <div class="col-sm-1">
                 <div class="input-group">
-                    {!! Form::text('date', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date')) !!}
+                    {!! Form::text('date', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date', 'onchange'=>'DateChange();')) !!}
                         <span class="input-group-addon">
 						    <i class="fa fa-calendar bigger-110"></i>
 						</span>
                 </div>
             </div>
+            {!! Form::label('documentstatus', 'สถานะเอกสาร', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+            <div class="col-sm-1">
+                {!! Form::select('documentstatus', array('0' => '0 - ยังไม่ยื่นเอกสาร', '1' => '1 - ทำสัญญารอผล', '2' => '2 - ผ่านพร้อมส่ง'), null, array('style'=>'font-size:14px; padding:5px 4px 6px; height:34px;')) !!}
+            </div>
 
             @if($oper != 'new')
-                {!! Form::label('statustext', 'สถานะ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                <div class="col-sm-1">
+                <div class="col-sm-3" style="margin-left: 30px;">
+                    {!! Form::label('statustext', 'สถานะ', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'width:100px;')) !!}
                     @if($carpreemption->status == 0)
-                        {!! Form::text('statustext', 'จอง', array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                        {!! Form::label('statustext', 'จอง', array('class' => 'col-sm-1 control-label no-padding-left','style'=>'width:100px; font-weight: bold; text-align: left;margin-left: 10px;')) !!}
                     @elseif($carpreemption->status == 1)
-                        {!! Form::text('statustext', 'ชำระเงินแล้ว', array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                        {!! Form::label('statustext', 'ชำระเงินแล้ว', array('class' => 'col-sm-1 control-label no-padding-left','style'=>'width:100px; font-weight: bold; text-align: left;margin-left: 10px;')) !!}
                     @elseif($carpreemption->status == 2)
-                        {!! Form::text('statustext', 'ยกเลิก', array('style'=>'width:100px;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                        {!! Form::label('statustext', 'ยกเลิก', array('class' => 'col-sm-1 control-label no-padding-left','style'=>'width:100px; font-weight: bold; text-align: left;margin-left: 10px;')) !!}
                     @endif
                 </div>
             @endif
@@ -885,11 +925,7 @@
                                         {!! Form::label('datewantgetcar', 'วันที่ต้องการรับรถ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-2">
                                             <div class="input-group">
-                                                @if($carpreemption != null && $carpreemption->datewantgetcar != null && $carpreemption->datewantgetcar != '')
-                                                    {!! Form::text('datewantgetcar', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}
-                                                @else
-                                                    {!! Form::text('datewantgetcar', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}
-                                                @endif
+                                                {!! Form::text('datewantgetcar', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'datewantgetcar', 'onchange'=>'DateChange();')) !!}
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar bigger-110"></i>
                                                 </span>
@@ -1056,7 +1092,7 @@
                                     {!! Form::label('approvaldate', 'วันที่อนุมัติ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         <div class="input-group">
-                                            {!! Form::text('approvaldate', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy')) !!}
+                                            {!! Form::text('approvaldate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy','id'=>'approvaldate', 'onchange'=>'DateChange();')) !!}
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar bigger-110"></i>
                                             </span>
