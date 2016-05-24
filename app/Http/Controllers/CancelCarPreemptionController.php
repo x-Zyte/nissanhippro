@@ -42,16 +42,22 @@ class CancelCarPreemptionController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $carpreemptionids = CancelCarPreemption::distinct()->lists('carpreemptionid');
-        $carpreemptions = CarPreemption::whereIn('id', $carpreemptionids)->orderBy('bookno', 'asc')->orderBy('no', 'asc')
+        //$carpreemptionids = CancelCarPreemption::distinct()->lists('carpreemptionid');
+        //$carpreemptions = CarPreemption::whereIn('id', $carpreemptionids)->orderBy('bookno', 'asc')->orderBy('no', 'asc')
+        //    ->get(['id', 'bookno', 'no']);
+
+        $carpreemptions = CarPreemption::has('cancelCarPreemption')->orderBy('bookno', 'asc')->orderBy('no', 'asc')
             ->get(['id', 'bookno', 'no']);
         $carpreemptionselectlist = array();
         foreach($carpreemptions as $item){
             array_push($carpreemptionselectlist,$item->id.':'.$item->bookno.'/'.$item->no);
         }
 
-        $approversemployeeids = CancelCarPreemption::distinct()->lists('approversemployeeid');
-        $approversemployees = Employee::whereIn('id', $approversemployeeids)->orderBy('firstname', 'asc')
+        //$approversemployeeids = CancelCarPreemption::distinct()->lists('approversemployeeid');
+        //$approversemployees = Employee::whereIn('id', $approversemployeeids)->orderBy('firstname', 'asc')
+        //    ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
+
+        $approversemployees = Employee::has('approveCancelCarPreemptions')->orderBy('firstname', 'asc')
             ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
         $approversemployeeselectlist = array();
         foreach($approversemployees as $item){
@@ -81,10 +87,11 @@ class CancelCarPreemptionController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $carpreemptionids = CarPayment::distinct()->lists('carpreemptionid');
+        //$carpreemptionids = CarPayment::distinct()->lists('carpreemptionid');
         if(Auth::user()->isadmin){
             $carpreemptions = CarPreemption::where('status',0)
-                ->whereNotIn('id', $carpreemptionids)
+                //->whereNotIn('id', $carpreemptionids)
+                ->doesntHave('carPayment')
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
                 ->get(['id','bookno','no']);
@@ -92,7 +99,8 @@ class CancelCarPreemptionController extends Controller {
         else{
             $carpreemptions = CarPreemption::where('provinceid', Auth::user()->provinceid)
                 ->where('status',0)
-                ->whereNotIn('id', $carpreemptionids)
+                //->whereNotIn('id', $carpreemptionids)
+                ->doesntHave('carPayment')
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
                 ->get(['id','bookno','no']);
@@ -178,8 +186,10 @@ class CancelCarPreemptionController extends Controller {
             $accountandfinanceemployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
         }
 
+        $cancelcarpreemption = new CancelCarPreemption;
+
         return view('cancelcarpreemptionform',
-            ['oper' => 'new','pathPrefix' => '../',
+            ['oper' => 'new','pathPrefix' => '../','cancelcarpreemption' => $cancelcarpreemption,
                 'carpreemptionselectlist' => $carpreemptionselectlist,
                 'toemployeeselectlist' => $toemployeeselectlist,
                 'accountandfinanceemployeeselectlist' => $accountandfinanceemployeeselectlist,
@@ -289,7 +299,7 @@ class CancelCarPreemptionController extends Controller {
         $carsubmodel = CarSubModel::find($carpreemption->carsubmodelid);
         $model->carmodel = $carmodel->name.'/'.$carsubmodel->name;
 
-        $model->carpreemptiondate = $carpreemption->date;
+        $model->carpreemptiondate = date('d-m-Y', strtotime($carpreemption->date));
         $model->cashpledge = $carpreemption->cashpledge;
 
         $salesmanemployee = Employee::find($carpreemption->salesmanemployeeid);
@@ -333,6 +343,15 @@ class CancelCarPreemptionController extends Controller {
             $accountandfinanceemployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
         }
 
+        if($model->salesmanemployeedate != null && $model->salesmanemployeedate != '')
+            $model->salesmanemployeedate = date('d-m-Y', strtotime($model->salesmanemployeedate));
+        if($model->accountemployeedate != null && $model->accountemployeedate != '')
+            $model->accountemployeedate = date('d-m-Y', strtotime($model->accountemployeedate));
+        if($model->financeemployeedate != null && $model->financeemployeedate != '')
+            $model->financeemployeedate = date('d-m-Y', strtotime($model->financeemployeedate));
+        if($model->approversemployeedate != null && $model->approversemployeedate != '')
+            $model->approversemployeedate = date('d-m-Y', strtotime($model->approversemployeedate));
+
         return view('cancelcarpreemptionform',
             ['oper' => 'edit','pathPrefix' => '../../','cancelcarpreemption' => $model,
                 'carpreemptionselectlist' => $carpreemptionselectlist,
@@ -361,7 +380,7 @@ class CancelCarPreemptionController extends Controller {
         $carsubmodel = CarSubModel::find($carpreemption->carsubmodelid);
         $model->carmodel = $carmodel->name.'/'.$carsubmodel->name;
 
-        $model->carpreemptiondate = $carpreemption->date;
+        $model->carpreemptiondate = date('d-m-Y', strtotime($carpreemption->date));
         $model->cashpledge = $carpreemption->cashpledge;
 
         $salesmanemployee = Employee::find($carpreemption->salesmanemployeeid);
@@ -379,6 +398,14 @@ class CancelCarPreemptionController extends Controller {
         $item = Employee::find($model->financeemployeeid);
         $accountandfinanceemployeeselectlist[$item->id] = $item->title . ' ' . $item->firstname . ' ' . $item->lastname;
 
+        if($model->salesmanemployeedate != null && $model->salesmanemployeedate != '')
+            $model->salesmanemployeedate = date('d-m-Y', strtotime($model->salesmanemployeedate));
+        if($model->accountemployeedate != null && $model->accountemployeedate != '')
+            $model->accountemployeedate = date('d-m-Y', strtotime($model->accountemployeedate));
+        if($model->financeemployeedate != null && $model->financeemployeedate != '')
+            $model->financeemployeedate = date('d-m-Y', strtotime($model->financeemployeedate));
+        if($model->approversemployeedate != null && $model->approversemployeedate != '')
+            $model->approversemployeedate = date('d-m-Y', strtotime($model->approversemployeedate));
 
         return view('cancelcarpreemptionform',
             ['oper' => 'view','pathPrefix' => '../../','cancelcarpreemption' => $model,

@@ -57,6 +57,6 @@ class CarModelRegister extends Model {
 
     public function province()
     {
-        return $this->belongsTo('App\Models\Province', 'provinceid', 'id');
+        return $this->belongsTo('App\Models\SystemDatas\Province', 'provinceid', 'id');
     }
 }

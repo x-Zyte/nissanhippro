@@ -75,4 +75,9 @@ class Pricelist extends Model {
     {
         return $this->belongsTo('App\Models\CarSubModel', 'carsubmodelid', 'id');
     }
+
+    public function carPreemptions()
+    {
+        return $this->hasMany('App\Models\CarPreemption', 'pricelistid', 'id');
+    }
 }

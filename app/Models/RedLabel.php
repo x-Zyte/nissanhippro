@@ -61,4 +61,14 @@ class RedLabel extends Model {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Delete','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
         });
     }
+
+    public function customer()
+    {
+        return $this->belongsTo('App\Models\Customer', 'customerid', 'id');
+    }
+
+    public function car()
+    {
+        return $this->belongsTo('App\Models\Car', 'carid', 'id');
+    }
 }

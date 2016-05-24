@@ -43,8 +43,7 @@ class CommissionExtraController extends Controller {
             array_push($carmodelselectlist,$item->id.':'.$item->name);
         }
 
-        $carsubmodelids = CommissionExtraCar::distinct()->lists('carsubmodelid');
-        $carsubmodels = CarSubModel::whereIn('id', $carsubmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $carsubmodels = CarSubModel::has('commissionExtraCars')->orderBy('name', 'asc')->get(['id', 'name']);
         $carsubmodelselectlist = array();
         array_push($carsubmodelselectlist,'0:ทุกรุ่น');
         foreach($carsubmodels as $item){

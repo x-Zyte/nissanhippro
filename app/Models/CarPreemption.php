@@ -182,4 +182,24 @@ class CarPreemption extends Model {
     {
         return $this->belongsTo('App\Models\FinaceCompany', 'finacecompanyid', 'id');
     }
+
+    public function carPayment()
+    {
+        return $this->hasOne('App\Models\CarPayment', 'carpreemptionid', 'id');
+    }
+
+    public function cancelCarPreemption()
+    {
+        return $this->hasOne('App\Models\CancelCarPreemption', 'carpreemptionid', 'id');
+    }
+
+    public function redlabelhistories()
+    {
+        return $this->hasMany('App\Models\Redlabelhistory', 'carpreemptionid', 'id');
+    }
+
+    public function pricelist()
+    {
+        return $this->belongsTo('App\Models\Pricelist', 'pricelistid', 'id');
+    }
 }

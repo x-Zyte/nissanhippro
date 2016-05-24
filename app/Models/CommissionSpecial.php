@@ -56,4 +56,14 @@ class CommissionSpecial extends Model {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Delete','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
         });
     }
+
+    public function interestRateType()
+    {
+        return $this->belongsTo('App\Models\InterestRateType', 'interestratetypeid', 'id');
+    }
+
+    public function carSubModel()
+    {
+        return $this->belongsTo('App\Models\CarSubModel', 'carsubmodelid', 'id');
+    }
 }

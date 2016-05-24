@@ -62,4 +62,9 @@ class CarModel extends Model {
     {
         return $this->hasMany('App\Models\CarSubModel', 'carmodelid', 'id');
     }
+
+    public function carPreemptions()
+    {
+        return $this->hasMany('App\Models\CarPreemption', 'carmodelid', 'id');
+    }
 }

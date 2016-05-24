@@ -42,8 +42,10 @@ class CarPaymentController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $carpreemptionids = CarPayment::distinct()->lists('carpreemptionid');
-        $carpreemptions = CarPreemption::whereIn('id', $carpreemptionids)->orderBy('bookno', 'asc')->orderBy('no', 'asc')
+        //$carpreemptionids = CarPayment::distinct()->lists('carpreemptionid');
+        //$carpreemptions = CarPreemption::whereIn('id', $carpreemptionids)->orderBy('bookno', 'asc')->orderBy('no', 'asc')
+        //    ->get(['id', 'bookno', 'no','buyercustomerid']);
+        $carpreemptions = CarPreemption::has('carPayment')->orderBy('bookno', 'asc')->orderBy('no', 'asc')
             ->get(['id', 'bookno', 'no','buyercustomerid']);
         $carpreemptionselectlist = array();
         foreach($carpreemptions as $item){
@@ -52,8 +54,10 @@ class CarPaymentController extends Controller {
             //array_push($carpreemptionselectlist,$item->id.':'.$item->bookno.'/'.$item->no.'/'.$buyerCustomer->title.' '.$buyerCustomer->firstname.' '.$buyerCustomer->lastname);
         }
 
-        $carids = CarPayment::distinct()->lists('carid');
-        $cars = Car::whereIn('id', $carids)->orderBy('chassisno', 'asc')->orderBy('engineno', 'asc')
+        //$carids = CarPayment::distinct()->lists('carid');
+        //$cars = Car::whereIn('id', $carids)->orderBy('chassisno', 'asc')->orderBy('engineno', 'asc')
+        //    ->get(['id', 'chassisno', 'engineno']);
+        $cars = Car::has('carPayment')->orderBy('chassisno', 'asc')->orderBy('engineno', 'asc')
             ->get(['id', 'chassisno', 'engineno']);
         $carselectlist = array();
         foreach($cars as $item){
@@ -84,12 +88,15 @@ class CarPaymentController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $carpreemptionids = Redlabelhistory::whereNull('returndate')->lists('carpreemptionid');
+        //$carpreemptionids = Redlabelhistory::whereNull('returndate')->lists('carpreemptionid');
         if(Auth::user()->isadmin){
             $carpreemptions = CarPreemption::where('status',0)
-                ->where(function ($query) use ($carpreemptionids) {
+                ->where(function ($query) {
                     $query->where('carobjectivetype',1)
-                        ->orWhereIn('id', $carpreemptionids);
+                        //->orWhereIn('id', $carpreemptionids);
+                        ->orWhereHas('redlabelhistories', function($q){
+                            $q->whereNull('returndate');
+                        });
                 })
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
@@ -98,9 +105,12 @@ class CarPaymentController extends Controller {
         else{
             $carpreemptions = CarPreemption::where('provinceid', Auth::user()->provinceid)
                 ->where('status',0)
-                ->where(function ($query) use ($carpreemptionids) {
+                ->where(function ($query) {
                     $query->where('carobjectivetype',1)
-                        ->orWhereIn('id', $carpreemptionids);
+                        //->orWhereIn('id', $carpreemptionids);
+                        ->orWhereHas('redlabelhistories', function($q){
+                            $q->whereNull('returndate');
+                        });
                 })
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
@@ -164,9 +174,9 @@ class CarPaymentController extends Controller {
             }
 
             if(Auth::user()->isadmin){
-                $carsoldids = CarPayment::distinct()->lists('carid');
+                //$carsoldids = CarPayment::distinct()->lists('carid');
 
-                $cars = Car::whereNotIn('id', $carsoldids)
+                $cars = Car::doesntHave('carPayment')
                     ->where('carmodelid',$carpreemption->carmodelid)
                     ->where('carsubmodelid',$carpreemption->carsubmodelid)
                     ->where('colorid',$carpreemption->colorid)
@@ -175,11 +185,11 @@ class CarPaymentController extends Controller {
                     ->get(['id','chassisno','engineno']);
             }
             else{
-                $carsoldids = CarPayment::where('provinceid', Auth::user()->provinceid)
-                    ->distinct()->lists('carid');
+                //$carsoldids = CarPayment::where('provinceid', Auth::user()->provinceid)
+                //    ->distinct()->lists('carid');
 
                 $cars = Car::where('provinceid', Auth::user()->provinceid)
-                    ->whereNotIn('id', $carsoldids)
+                    ->doesntHave('carPayment')
                     ->where('carmodelid',$carpreemption->carmodelid)
                     ->where('carsubmodelid',$carpreemption->carsubmodelid)
                     ->where('colorid',$carpreemption->colorid)
@@ -478,25 +488,30 @@ class CarPaymentController extends Controller {
         $carselectlist = array();
         $carselectlist[null] = 'เลือกรถ';
         if(Auth::user()->isadmin){
-            $carsoldids = CarPayment::where('id','!=', $id)->distinct()->lists('carid');
-
-            $cars = Car::whereNotIn('id', $carsoldids)
+            //$carsoldids = CarPayment::where('id','!=', $id)->distinct()->lists('carid');
+            $cars = Car::doesntHave('carPayment')
                 ->where('carmodelid',$carpreemption->carmodelid)
                 ->where('carsubmodelid',$carpreemption->carsubmodelid)
                 ->where('colorid',$carpreemption->colorid)
+                ->orWhere(function ($query) use($model){
+                    $query->where('id', $model->carid);
+                })
                 ->orderBy('chassisno', 'asc')
                 ->orderBy('engineno', 'asc')
                 ->get(['id','chassisno','engineno']);
         }
         else{
-            $carsoldids = CarPayment::where('id','!=', $id)->where('provinceid', Auth::user()->provinceid)
-                ->distinct()->lists('carid');
+            //$carsoldids = CarPayment::where('id','!=', $id)->where('provinceid', Auth::user()->provinceid)
+            //    ->distinct()->lists('carid');
 
             $cars = Car::where('provinceid', Auth::user()->provinceid)
-                ->whereNotIn('id', $carsoldids)
+                ->doesntHave('carPayment')
                 ->where('carmodelid',$carpreemption->carmodelid)
                 ->where('carsubmodelid',$carpreemption->carsubmodelid)
                 ->where('colorid',$carpreemption->colorid)
+                ->orWhere(function ($query) use($model){
+                    $query->where('id', $model->carid);
+                })
                 ->orderBy('chassisno', 'asc')
                 ->orderBy('engineno', 'asc')
                 ->get(['id','chassisno','engineno']);

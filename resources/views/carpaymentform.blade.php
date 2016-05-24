@@ -946,7 +946,7 @@
                                             <span> วันที่</span>&nbsp;&nbsp;
                                         </label>
                                     </div>
-                                    <div class="col-sm-1" style="margin-left: -20px;">
+                                    <div class="col-sm-1" style="margin-left: -130px;">
                                         <div class="input-group">
                                             {!! Form::text('deliverycardate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'deliverycardate')) !!}
                                             <span class="input-group-addon">
@@ -964,15 +964,15 @@
                                 </div>
 
                                 @if($oper != 'new' && $carpayment->deliverycarfilepath != null)
-                                    <div class="col-xs-2" style="margin-left: -10px;">
+                                    <div class="col-xs-2" style="margin-left: -40px;">
                                         <a href = "{{ $carpayment->deliverycarfilepath }}" data-lightbox="' + cellvalue + '">View photo</a>
                                     </div>
 
-                                    <div class="col-xs-1" style="margin-left: -70px;">
+                                    <div class="col-xs-1" style="margin-left: -130px;">
                                         {!! Form::file('deliverycarfile','',array('id'=>'deliverycarfile')) !!}
                                     </div>
                                 @else
-                                    <div class="col-xs-1" style="margin-left: -30px;">
+                                    <div class="col-xs-1" style="margin-left: -40px;">
                                         {!! Form::file('deliverycarfile','',array('id'=>'deliverycarfile')) !!}
                                     </div>
                                 @endif

@@ -60,8 +60,7 @@ class CommissionFinaceCarController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $carsubmodelids = CommissionFinaceCar::distinct()->lists('carsubmodelid');
-        $carsubmodels = CarSubModel::whereIn('id', $carsubmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $carsubmodels = CarSubModel::has('commissionFinaceCars')->orderBy('name', 'asc')->get(['id', 'name']);
         $carsubmodelselectlist = array();
         array_push($carsubmodelselectlist,'0:ทุกรุ่น');
         foreach($carsubmodels as $item){

@@ -29,8 +29,11 @@ class RedLabelController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $provinceids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
-        $provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
+        //$provinceids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
+        //$provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $provinces = Province::whereHas('branchs', function($q){
+            $q->where('isheadquarter', true);
+        })->orderBy('name', 'asc')->get(['id', 'name']);
         $provinceselectlist = array();
         array_push($provinceselectlist,':เลือกจังหวัด');
         foreach($provinces as $item){
@@ -38,17 +41,19 @@ class RedLabelController extends Controller {
         }
 
         if(Auth::user()->isadmin){
-            $customerids = RedLabel::distinct()->lists('customerid');
-            $customers = Customer::whereIn('id', $customerids)
+            //$customerids = RedLabel::distinct()->lists('customerid');
+            //$customers = Customer::whereIn('id', $customerids)
+            $customers = Customer::has('redLabels')
                 ->orderBy('firstname', 'asc')
                 ->orderBy('lastname', 'asc')
                 ->get(['id', 'title', 'firstname', 'lastname']);
         }
         else {
-            $customerids = RedLabel::where('provinceid', Auth::user()->provinceid)
-                ->distinct()->lists('customerid');
+            //$customerids = RedLabel::where('provinceid', Auth::user()->provinceid)
+            //    ->distinct()->lists('customerid');
             $customers = Customer::where('provinceid', Auth::user()->provinceid)
-                ->whereIn('id', $customerids)
+                //->whereIn('id', $customerids)
+                ->has('redLabels')
                 ->orderBy('firstname', 'asc')
                 ->orderBy('lastname', 'asc')
                 ->get(['id', 'title', 'firstname', 'lastname']);
@@ -59,18 +64,20 @@ class RedLabelController extends Controller {
         }
 
         if(Auth::user()->isadmin){
-            $carsoldids = RedLabel::distinct()->lists('carid');
-            $cars = Car::whereIn('id', $carsoldids)
+            //$carsoldids = RedLabel::distinct()->lists('carid');
+            //$cars = Car::whereIn('id', $carsoldids)
+            $cars = Car::has('redLabel')
                 ->orderBy('chassisno', 'asc')
                 ->orderBy('engineno', 'asc')
                 ->get(['id','chassisno','engineno']);
         }
         else{
-            $carsoldids = RedLabel::where('provinceid', Auth::user()->provinceid)
-                ->distinct()->lists('carid');
+            //$carsoldids = RedLabel::where('provinceid', Auth::user()->provinceid)
+            //    ->distinct()->lists('carid');
 
             $cars = Car::where('provinceid', Auth::user()->provinceid)
-                ->whereIn('id', $carsoldids)
+                //->whereIn('id', $carsoldids)
+                ->has('redLabel')
                 ->orderBy('chassisno', 'asc')
                 ->orderBy('engineno', 'asc')
                 ->get(['id','chassisno','engineno']);
@@ -81,9 +88,10 @@ class RedLabelController extends Controller {
             array_push($carselectlist,$item->id.':'.$item->chassisno.'/'.$item->engineno);
         }
 
-        $carpreemptionids = Redlabelhistory::distinct()->lists('carpreemptionid');
+        //$carpreemptionids = Redlabelhistory::distinct()->lists('carpreemptionid');
         if(Auth::user()->isadmin){
-            $carpreemptions = CarPreemption::whereIn('id',$carpreemptionids)
+            //$carpreemptions = CarPreemption::whereIn('id',$carpreemptionids)
+            $carpreemptions = CarPreemption::has('redlabelhistories')
                 ->orWhere('status',0)
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
@@ -91,8 +99,9 @@ class RedLabelController extends Controller {
         }
         else{
             $carpreemptions = CarPreemption::where('provinceid', Auth::user()->provinceid)
-                ->where(function ($query) use($carpreemptionids) {
-                    $query->whereIn('id',$carpreemptionids)
+                ->where(function ($query) {
+                    //$query->whereIn('id',$carpreemptionids)
+                    $query->has('redlabelhistories')
                         ->orWhere('status',0);
                 })
                 ->orderBy('bookno', 'asc')
@@ -150,9 +159,13 @@ class RedLabelController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $carpreemptionids = Redlabelhistory::whereNull('returndate')->distinct()->lists('carpreemptionid');
-        $buyercustomerids = CarPreemption::whereIn('id',$carpreemptionids)->distinct()->lists('buyercustomerid');
-        $customers = Customer::whereIn('id',$buyercustomerids)
+        //$carpreemptionids = Redlabelhistory::whereNull('returndate')->distinct()->lists('carpreemptionid');
+        //$buyercustomerids = CarPreemption::whereIn('id',$carpreemptionids)->distinct()->lists('buyercustomerid');
+        //$customers = Customer::whereIn('id',$buyercustomerids)
+
+        $customers = Customer::whereHas('buyerCarPreemptions.redlabelhistories', function($q){
+                $q->whereNull('returndate');
+            })
             ->orderBy('firstname', 'asc')
             ->orderBy('lastname', 'asc')
             ->get(['id', 'title','firstname','lastname']);

@@ -34,32 +34,28 @@ class BranchController extends Controller {
             array_push($provinceselectlist,$item->id.':'.$item->name);
         }
 
-        $amphurids = Branch::distinct()->lists('amphurid');
-        $amphurs = Amphur::whereIn('id', $amphurids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $amphurs = Amphur::has('branchs')->orderBy('name', 'asc')->get(['id', 'name']);
         $amphurselectlist = array();
         array_push($amphurselectlist,':เลือกเขต/อำเภอ');
         foreach($amphurs as $item){
             array_push($amphurselectlist,$item->id.':'.$item->name);
         }
 
-        $districtids = Branch::distinct()->lists('districtid');
-        $districts = District::whereIn('id', $districtids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $districts = District::has('branchs')->orderBy('name', 'asc')->get(['id', 'name']);
         $districtselectlist = array();
         array_push($districtselectlist,':เลือกตำบล/แขวง');
         foreach($districts as $item){
             array_push($districtselectlist,$item->id.':'.$item->name);
         }
 
-        $taxamphurids = Branch::distinct()->lists('taxamphurid');
-        $taxamphurs = Amphur::whereIn('id', $taxamphurids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $taxamphurs = Amphur::has('taxBranchs')->orderBy('name', 'asc')->get(['id', 'name']);
         $taxamphurselectlist = array();
         array_push($taxamphurselectlist,':เลือกเขต/อำเภอ');
         foreach($taxamphurs as $item){
             array_push($taxamphurselectlist,$item->id.':'.$item->name);
         }
 
-        $taxdistrictids = Branch::distinct()->lists('taxdistrictid');
-        $taxdistricts = District::whereIn('id', $taxdistrictids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $taxdistricts = District::has('taxBranchs')->orderBy('name', 'asc')->get(['id', 'name']);
         $taxdistrictselectlist = array();
         array_push($taxdistrictselectlist,':เลือกตำบล/แขวง');
         foreach($taxdistricts as $item){
@@ -93,32 +89,28 @@ class BranchController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $amphurids = Branch::distinct()->lists('amphurid');
-        $amphurs = Amphur::whereIn('id', $amphurids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $amphurs = Amphur::has('branchs')->orderBy('name', 'asc')->get(['id', 'name']);
         $amphurselectlist = array();
         array_push($amphurselectlist,':เลือกเขต/อำเภอ');
         foreach($amphurs as $item){
             array_push($amphurselectlist,$item->id.':'.$item->name);
         }
 
-        $districtids = Branch::distinct()->lists('districtid');
-        $districts = District::whereIn('id', $districtids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $districts = District::has('branchs')->orderBy('name', 'asc')->get(['id', 'name']);
         $districtselectlist = array();
         array_push($districtselectlist,':เลือกตำบล/แขวง');
         foreach($districts as $item){
             array_push($districtselectlist,$item->id.':'.$item->name);
         }
 
-        $taxamphurids = Branch::distinct()->lists('taxamphurid');
-        $taxamphurs = Amphur::whereIn('id', $taxamphurids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $taxamphurs = Amphur::has('taxBranchs')->orderBy('name', 'asc')->get(['id', 'name']);
         $taxamphurselectlist = array();
         array_push($taxamphurselectlist,':เลือกเขต/อำเภอ');
         foreach($taxamphurs as $item){
             array_push($taxamphurselectlist,$item->id.':'.$item->name);
         }
 
-        $taxdistrictids = Branch::distinct()->lists('taxdistrictid');
-        $taxdistricts = District::whereIn('id', $taxdistrictids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $taxdistricts = District::has('taxBranchs')->orderBy('name', 'asc')->get(['id', 'name']);
         $taxdistrictselectlist = array();
         array_push($taxdistrictselectlist,':เลือกตำบล/แขวง');
         foreach($taxdistricts as $item){

@@ -76,11 +76,41 @@ class Customer extends Model {
 
     public function province()
     {
-        return $this->belongsTo('App\Models\Province', 'branchprovinceid', 'id');
+        return $this->belongsTo('App\Models\SystemDatas\Province', 'provinceid', 'id');
+    }
+
+    public function addProvince()
+    {
+        return $this->belongsTo('App\Models\SystemDatas\Province', 'addprovinceid', 'id');
+    }
+
+    public function amphur()
+    {
+        return $this->belongsTo('App\Models\SystemDatas\Amphur', 'amphurid', 'id');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo('App\Models\SystemDatas\District', 'districtid', 'id');
     }
 
     public function customerExpectations()
     {
         return $this->hasMany('App\Models\CustomerExpectation', 'customerid', 'id');
+    }
+
+    public function bookingCarPreemptions()
+    {
+        return $this->hasMany('App\Models\CarPreemption', 'bookingcustomerid', 'id');
+    }
+
+    public function buyerCarPreemptions()
+    {
+        return $this->hasMany('App\Models\CarPreemption', 'buyercustomerid', 'id');
+    }
+
+    public function redLabels()
+    {
+        return $this->hasMany('App\Models\RedLabel', 'customerid', 'id');
     }
 }

@@ -47,4 +47,14 @@ class InterestRateType extends Model {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Delete','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
         });
     }
+
+    public function commissionFinaces()
+    {
+        return $this->hasMany('App\Models\CommissionFinace', 'interestratetypeid', 'id');
+    }
+
+    public function commissionSpecials()
+    {
+        return $this->hasMany('App\Models\CommissionSpecial', 'interestratetypeid', 'id');
+    }
 }

@@ -52,4 +52,34 @@ class CarSubModel extends Model {
     {
         return $this->belongsTo('App\Models\CarModel', 'carmodelid', 'id');
     }
+
+    public function cars()
+    {
+        return $this->hasMany('App\Models\Car', 'carsubmodelid', 'id');
+    }
+
+    public function carPreemptions()
+    {
+        return $this->hasMany('App\Models\CarPreemption', 'carsubmodelid', 'id');
+    }
+
+    public function commissionExtraCars()
+    {
+        return $this->hasMany('App\Models\CommissionExtraCar', 'carsubmodelid', 'id');
+    }
+
+    public function commissionFinaceCars()
+    {
+        return $this->hasMany('App\Models\CommissionFinaceCar', 'carsubmodelid', 'id');
+    }
+
+    public function commissionSpecials()
+    {
+        return $this->hasMany('App\Models\CommissionSpecial', 'carsubmodelid', 'id');
+    }
+
+    public function pricelists()
+    {
+        return $this->hasMany('App\Models\Pricelist', 'carsubmodelid', 'id');
+    }
 }

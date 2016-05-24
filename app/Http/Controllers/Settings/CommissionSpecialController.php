@@ -33,8 +33,7 @@ class CommissionSpecialController extends Controller {
             array_push($finacecompanyselectlist,$model->id.':'.$model->name);
         }
 
-        $interestratetypeids = CommissionSpecial::distinct()->lists('interestratetypeid');
-        $models = InterestRateType::whereIn('id', $interestratetypeids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $models = InterestRateType::has('commissionSpecials')->orderBy('name', 'asc')->get(['id', 'name']);
         $interestratetypeselectlist = array();
         array_push($interestratetypeselectlist,':เลือกประเภทอัตราดอกเบี้ย');
         foreach($models as $model){
@@ -52,8 +51,7 @@ class CommissionSpecialController extends Controller {
             array_push($carmodelselectlist,$item->id.':'.$item->name);
         }
 
-        $carsubmodelids = CommissionSpecial::distinct()->lists('carsubmodelid');
-        $carsubmodels = CarSubModel::whereIn('id', $carsubmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $carsubmodels = CarSubModel::has('commissionSpecials')->orderBy('name', 'asc')->get(['id', 'name']);
         $carsubmodelselectlist = array();
         array_push($carsubmodelselectlist,'0:ทุกรุ่น');
         foreach($carsubmodels as $item){
@@ -85,16 +83,14 @@ class CommissionSpecialController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $interestratetypeids = CommissionSpecial::distinct()->lists('interestratetypeid');
-        $models = InterestRateType::whereIn('id', $interestratetypeids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $models = InterestRateType::has('commissionSpecials')->orderBy('name', 'asc')->get(['id', 'name']);
         $interestratetypeselectlist = array();
         array_push($interestratetypeselectlist,':เลือกประเภทอัตราดอกเบี้ย');
         foreach($models as $item){
             array_push($interestratetypeselectlist,$item->id.':'.$item->name);
         }
 
-        $carsubmodelids = CommissionSpecial::distinct()->lists('carsubmodelid');
-        $carsubmodels = CarSubModel::whereIn('id', $carsubmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $carsubmodels = CarSubModel::has('commissionSpecials')->orderBy('name', 'asc')->get(['id', 'name']);
         $carsubmodelselectlist = array();
         array_push($carsubmodelselectlist,'0:ทุกรุ่น');
         foreach($carsubmodels as $item){

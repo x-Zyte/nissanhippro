@@ -47,4 +47,19 @@ class Color extends Model {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Delete','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
         });
     }
+
+    public function cars()
+    {
+        return $this->hasMany('App\Models\Car', 'colorid', 'id');
+    }
+
+    public function carPreemptions()
+    {
+        return $this->hasMany('App\Models\CarPreemption', 'colorid', 'id');
+    }
+
+    public function carModelColors()
+    {
+        return $this->hasMany('App\Models\CarModelColor', 'colorid', 'id');
+    }
 }

@@ -39,8 +39,11 @@ class CustomerController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $provinceids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
-        $provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
+        //$provinceids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
+        //$provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $provinces = Province::whereHas('branchs', function($q){
+            $q->where('isheadquarter', true);
+        })->orderBy('name', 'asc')->get(['id', 'name']);
         $provinceselectlist = array();
         array_push($provinceselectlist,':เลือกจังหวัด');
         foreach($provinces as $item){
@@ -61,16 +64,18 @@ class CustomerController extends Controller {
             array_push($addprovinceselectlist,$item->id.':'.$item->name);
         }
 
-        $amphurids = Customer::distinct()->lists('amphurid');
-        $amphurs = Amphur::whereIn('id', $amphurids)->orderBy('name', 'asc')->get(['id', 'name']);
+        //$amphurids = Customer::distinct()->lists('amphurid');
+        //$amphurs = Amphur::whereIn('id', $amphurids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $amphurs = Amphur::has('customers')->orderBy('name', 'asc')->get(['id', 'name']);
         $amphurselectlist = array();
         array_push($amphurselectlist,':เลือกเขต/อำเภอ');
         foreach($amphurs as $item){
             array_push($amphurselectlist,$item->id.':'.$item->name);
         }
 
-        $districtids = Customer::distinct()->lists('districtid');
-        $districts = District::whereIn('id', $districtids)->orderBy('name', 'asc')->get(['id', 'name']);
+        //$districtids = Customer::distinct()->lists('districtid');
+        //$districts = District::whereIn('id', $districtids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $districts = District::has('customers')->orderBy('name', 'asc')->get(['id', 'name']);
         $districtselectlist = array();
         array_push($districtselectlist,':เลือกตำบล/แขวง');
         foreach($districts as $item){
@@ -147,16 +152,18 @@ class CustomerController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $amphurids = Customer::distinct()->lists('amphurid');
-        $amphurs = Amphur::whereIn('id', $amphurids)->orderBy('name', 'asc')->get(['id', 'name']);
+        //$amphurids = Customer::distinct()->lists('amphurid');
+        //$amphurs = Amphur::whereIn('id', $amphurids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $amphurs = Amphur::has('customers')->orderBy('name', 'asc')->get(['id', 'name']);
         $amphurselectlist = array();
         array_push($amphurselectlist,':เลือกเขต/อำเภอ');
         foreach($amphurs as $item){
             array_push($amphurselectlist,$item->id.':'.$item->name);
         }
 
-        $districtids = Customer::distinct()->lists('districtid');
-        $districts = District::whereIn('id', $districtids)->orderBy('name', 'asc')->get(['id', 'name']);
+        //$districtids = Customer::distinct()->lists('districtid');
+        //$districts = District::whereIn('id', $districtids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $districts = District::has('customers')->orderBy('name', 'asc')->get(['id', 'name']);
         $districtselectlist = array();
         array_push($districtselectlist,':เลือกตำบล/แขวง');
         foreach($districts as $item){

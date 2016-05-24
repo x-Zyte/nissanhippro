@@ -28,6 +28,8 @@ class CancelCarPreemption extends Model {
             $model->provinceid = $carpreemption->provinceid;
             $model->branchid = $carpreemption->branchid;
 
+            if($model->approvaltype == 1) $model->amountapproved = null;
+
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
             $model->modifiedby = Auth::user()->id;
@@ -48,6 +50,8 @@ class CancelCarPreemption extends Model {
             $carpreemption = CarPreemption::find($model->carpreemptionid);
             $model->provinceid = $carpreemption->provinceid;
             $model->branchid = $carpreemption->branchid;
+
+            if($model->approvaltype == 1) $model->amountapproved = null;
 
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");
@@ -71,5 +75,10 @@ class CancelCarPreemption extends Model {
     public function carpreemption()
     {
         return $this->belongsTo('App\Models\CarPreemption', 'carpreemptionid', 'id');
+    }
+
+    public function approversEmployee()
+    {
+        return $this->belongsTo('App\Models\Employee', 'approversemployeeid', 'id');
     }
 }

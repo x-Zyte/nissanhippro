@@ -53,8 +53,10 @@ class CarModelColorController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $colorids = CarModelColor::where('carmodelid',$carmodelid)->lists('colorid');
-        $colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
+        $colors = Color::whereHas('carModelColors', function($q) use($carmodelid){
+                $q->where('carmodelid', $carmodelid);
+            })
+            ->orderBy('code', 'asc')->get(['id', 'code', 'name']);
         return $colors;
     }
 

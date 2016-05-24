@@ -161,4 +161,24 @@ class Employee extends User {
     {
         return $this->hasMany('App\Models\EmployeePermission', 'employeeid', 'id');
     }
+
+    public function approveCancelCarPreemptions()
+    {
+        return $this->hasMany('App\Models\CancelCarPreemption', 'approversemployeeid', 'id');
+    }
+
+    public function salesmanCarPreemptions()
+    {
+        return $this->hasMany('App\Models\CarPreemption', 'salesmanemployeeid', 'id');
+    }
+
+    public function salesmanagerCarPreemptions()
+    {
+        return $this->hasMany('App\Models\CarPreemption', 'salesmanageremployeeid', 'id');
+    }
+
+    public function approversCarPreemptions()
+    {
+        return $this->hasMany('App\Models\CarPreemption', 'approversemployeeid', 'id');
+    }
 }

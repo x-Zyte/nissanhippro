@@ -102,4 +102,14 @@ class Car extends Model {
     {
         return $this->belongsTo('App\Models\systemdatas\Province', 'provinceid', 'id');
     }
+
+    public function carPayment()
+    {
+        return $this->hasOne('App\Models\CarPayment', 'carid', 'id');
+    }
+
+    public function redLabel()
+    {
+        return $this->hasOne('App\Models\RedLabel', 'carid', 'id');
+    }
 }

@@ -34,8 +34,7 @@ class CommissionFinaceController extends Controller {
             array_push($finacecompanyselectlist,$model->id.':'.$model->name);
         }
 
-        $interestratetypeids = CommissionFinace::distinct()->lists('interestratetypeid');
-        $models = InterestRateType::whereIn('id', $interestratetypeids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $models = InterestRateType::has('commissionFinaces')->orderBy('name', 'asc')->get(['id', 'name']);
         $interestratetypeselectlist = array();
         array_push($interestratetypeselectlist,':เลือกประเภทอัตราดอกเบี้ย');
         foreach($models as $model){
@@ -53,8 +52,7 @@ class CommissionFinaceController extends Controller {
             array_push($carmodelselectlist,$item->id.':'.$item->name);
         }
 
-        $carsubmodelids = CommissionFinaceCar::distinct()->lists('carsubmodelid');
-        $carsubmodels = CarSubModel::whereIn('id', $carsubmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $carsubmodels = CarSubModel::has('commissionFinaceCars')->orderBy('name', 'asc')->get(['id', 'name']);
         $carsubmodelselectlist = array();
         array_push($carsubmodelselectlist,'0:ทุกรุ่น');
         foreach($carsubmodels as $item){
@@ -86,8 +84,7 @@ class CommissionFinaceController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $interestratetypeids = CommissionFinace::distinct()->lists('interestratetypeid');
-        $models = InterestRateType::whereIn('id', $interestratetypeids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $models = InterestRateType::has('commissionFinaces')->orderBy('name', 'asc')->get(['id', 'name']);
         $interestratetypeselectlist = array();
         array_push($interestratetypeselectlist,':เลือกประเภทอัตราดอกเบี้ย');
         foreach($models as $item){

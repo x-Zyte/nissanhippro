@@ -91,4 +91,9 @@ class Redlabelhistory extends Model {
             }
         });
     }
+
+    public function carPreemption()
+    {
+        return $this->belongsTo('App\Models\CarPreemption', 'carpreemptionid', 'id');
+    }
 }

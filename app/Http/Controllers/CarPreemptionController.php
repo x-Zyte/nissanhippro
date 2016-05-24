@@ -50,69 +50,83 @@ class CarPreemptionController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $bookingcustomerids = CarPreemption::distinct()->lists('bookingcustomerid');
-        $bookingcustomers = Customer::whereIn('id', $bookingcustomerids)->orderBy('firstname', 'asc')
+        //$bookingcustomerids = CarPreemption::distinct()->lists('bookingcustomerid');
+        //$bookingcustomers = Customer::whereIn('id', $bookingcustomerids)->orderBy('firstname', 'asc')
+        //    ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
+        $bookingcustomers = Customer::has('bookingCarPreemptions')->orderBy('firstname', 'asc')
             ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
         $bookingcustomerselectlist = array();
         foreach($bookingcustomers as $item){
             array_push($bookingcustomerselectlist,$item->id.':'.$item->title.' '.$item->firstname.' '.$item->lastname);
         }
 
-        $carmodelids = CarPreemption::distinct()->lists('carmodelid');
-        $carmodels = CarModel::whereIn('id', $carmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
+        //$carmodelids = CarPreemption::distinct()->lists('carmodelid');
+        //$carmodels = CarModel::whereIn('id', $carmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $carmodels = CarModel::has('carPreemptions')->orderBy('name', 'asc')->get(['id', 'name']);
         $carmodelselectlist = array();
         foreach($carmodels as $item){
             array_push($carmodelselectlist,$item->id.':'.$item->name);
         }
 
-        $carsubmodelids = CarPreemption::distinct()->lists('carsubmodelid');
-        $carsubmodels = CarSubModel::whereIn('id', $carsubmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
+        //$carsubmodelids = CarPreemption::distinct()->lists('carsubmodelid');
+        //$carsubmodels = CarSubModel::whereIn('id', $carsubmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $carsubmodels = CarSubModel::has('carPreemptions')->orderBy('name', 'asc')->get(['id', 'name']);
         $carsubmodelselectlist = array();
         foreach($carsubmodels as $item){
             array_push($carsubmodelselectlist,$item->id.':'.$item->name);
         }
 
-        $colorids = CarPreemption::distinct()->lists('colorid');
-        $colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
+        //$colorids = CarPreemption::distinct()->lists('colorid');
+        //$colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
+        $colors = Color::has('carPreemptions')->orderBy('code', 'asc')->get(['id', 'code', 'name']);
         $colorselectlist = array();
         foreach($colors as $item){
             array_push($colorselectlist,$item->id.':'.$item->code.' - '.$item->name);
         }
 
-        $buyercustomerids = CarPreemption::distinct()->lists('buyercustomerid');
-        $buyercustomers = Customer::whereIn('id', $buyercustomerids)->orderBy('firstname', 'asc')
+        //$buyercustomerids = CarPreemption::distinct()->lists('buyercustomerid');
+        //$buyercustomers = Customer::whereIn('id', $buyercustomerids)->orderBy('firstname', 'asc')
+        //    ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
+        $buyercustomers = Customer::has('buyerCarPreemptions')->orderBy('firstname', 'asc')
             ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
         $buyercustomerselectlist = array();
         foreach($buyercustomers as $item){
             array_push($buyercustomerselectlist,$item->id.':'.$item->title.' '.$item->firstname.' '.$item->lastname);
         }
 
-        $salesmanemployeeids = CarPreemption::distinct()->lists('salesmanemployeeid');
-        $salesmanemployees = Employee::whereIn('id', $salesmanemployeeids)->orderBy('firstname', 'asc')
+        //$salesmanemployeeids = CarPreemption::distinct()->lists('salesmanemployeeid');
+        //$salesmanemployees = Employee::whereIn('id', $salesmanemployeeids)->orderBy('firstname', 'asc')
+        //    ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
+        $salesmanemployees = Employee::has('salesmanCarPreemptions')->orderBy('firstname', 'asc')
             ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
         $salesmanemployeeselectlist = array();
         foreach($salesmanemployees as $item){
             array_push($salesmanemployeeselectlist,$item->id.':'.$item->title.' '.$item->firstname.' '.$item->lastname);
         }
 
-        $salesmanageremployeeids = CarPreemption::distinct()->lists('salesmanageremployeeid');
-        $salesmanageremployees = Employee::whereIn('id', $salesmanageremployeeids)->orderBy('firstname', 'asc')
+        //$salesmanageremployeeids = CarPreemption::distinct()->lists('salesmanageremployeeid');
+        //$salesmanageremployees = Employee::whereIn('id', $salesmanageremployeeids)->orderBy('firstname', 'asc')
+        //    ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
+        $salesmanageremployees = Employee::has('salesmanagerCarPreemptions')->orderBy('firstname', 'asc')
             ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
         $salesmanageremployeeselectlist = array();
         foreach($salesmanageremployees as $item){
             array_push($salesmanageremployeeselectlist,$item->id.':'.$item->title.' '.$item->firstname.' '.$item->lastname);
         }
 
-        $approversemployeeids = CarPreemption::distinct()->lists('approversemployeeid');
-        $approversemployees = Employee::whereIn('id', $approversemployeeids)->orderBy('firstname', 'asc')
+        //$approversemployeeids = CarPreemption::distinct()->lists('approversemployeeid');
+        //$approversemployees = Employee::whereIn('id', $approversemployeeids)->orderBy('firstname', 'asc')
+        //    ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
+        $approversemployees = Employee::has('approversCarPreemptions')->orderBy('firstname', 'asc')
             ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
         $approversemployeeselectlist = array();
         foreach($approversemployees as $item){
             array_push($approversemployeeselectlist,$item->id.':'.$item->title.' '.$item->firstname.' '.$item->lastname);
         }
 
-        $pricelistids = CarPreemption::distinct()->lists('pricelistid');
-        $pricelists = Pricelist::whereIn('id', $pricelistids)->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories', 'promotion']);
+        //$pricelistids = CarPreemption::distinct()->lists('pricelistid');
+        //$pricelists = Pricelist::whereIn('id', $pricelistids)->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories', 'promotion']);
+        $pricelists = Pricelist::has('carPreemptions')->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories', 'promotion']);
         $priceselectlist = array();
         foreach($pricelists as $item){
             //if($item->promotion != null && $item->promotion != '')
@@ -151,8 +165,11 @@ class CarPreemptionController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $provincebranchids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
-        $provincebranchs = Province::whereIn('id', $provincebranchids)->orderBy('name', 'asc')->get(['id', 'name']);
+        //$provincebranchids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
+        //$provincebranchs = Province::whereIn('id', $provincebranchids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $provincebranchs = Province::whereHas('branchs', function($q){
+            $q->where('isheadquarter', true);
+        })->orderBy('name', 'asc')->get(['id', 'name']);
         $provincebranchselectlist = array();
         foreach($provincebranchs as $item){
             $provincebranchselectlist[$item->id] = $item->name;
@@ -351,14 +368,20 @@ class CarPreemptionController extends Controller {
                 $carsubmodelselectlist[$item->id] = $item->name;
             }
 
-            $colorids = CarModelColor::where('carmodelid', $carmodelid)->lists('colorid');
-            $colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
+            //$colorids = CarModelColor::where('carmodelid', $carmodelid)->lists('colorid');
+            //$colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
+            $colors = Color::whereHas('carModelColors', function($q) use($carmodelid){
+                    $q->where('carmodelid', $carmodelid);
+                })->orderBy('code', 'asc')->get(['id', 'code', 'name']);
             foreach($colors as $item){
                 $colorselectlist[$item->id] = $item->code.' - '.$item->name;
             }
 
-            $provinceids = CarModelRegister::where('carmodelid', $carmodelid)->lists('provinceid');
-            $provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
+            //$provinceids = CarModelRegister::where('carmodelid', $carmodelid)->lists('provinceid');
+            //$provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
+            $provinces = Province::whereHas('carModelRegisters', function($q) use($carmodelid){
+                $q->where('carmodelid', $carmodelid);
+            })->orderBy('name', 'asc')->get(['id', 'name']);
             foreach($provinces as $item){
                 $registerprovinceselectlist[$item->id] = $item->name;
             }
@@ -479,8 +502,11 @@ class CarPreemptionController extends Controller {
             $model->buyertype = 0;
         }
 
-        $provincebranchids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
-        $provincebranchs = Province::whereIn('id', $provincebranchids)->orderBy('name', 'asc')->get(['id', 'name']);
+        //$provincebranchids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
+        //$provincebranchs = Province::whereIn('id', $provincebranchids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $provincebranchs = Province::whereHas('branchs', function($q){
+            $q->where('isheadquarter', true);
+        })->orderBy('name', 'asc')->get(['id', 'name']);
         $provincebranchselectlist = array();
         foreach($provincebranchs as $item){
             $provincebranchselectlist[$item->id] = $item->name;
@@ -567,16 +593,23 @@ class CarPreemptionController extends Controller {
             $carsubmodelselectlist[$item->id] = $item->name;
         }
 
-        $colorids = CarModelColor::where('carmodelid',$model->carmodelid)->lists('colorid');
-        $colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
+        //$colorids = CarModelColor::where('carmodelid',$model->carmodelid)->lists('colorid');
+        //$colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
+        $carmodelid = $model->carmodelid;
+        $colors = Color::whereHas('carModelColors', function($q) use($carmodelid){
+            $q->where('carmodelid', $carmodelid);
+        })->orderBy('code', 'asc')->get(['id', 'code', 'name']);
         $colorselectlist = array();
         $colorselectlist[null] = 'เลือกสี';
         foreach($colors as $item){
             $colorselectlist[$item->id] = $item->code.' - '.$item->name;
         }
 
-        $provinceids = CarModelRegister::where('carmodelid', $model->carmodelid)->lists('provinceid');
-        $provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
+        //$provinceids = CarModelRegister::where('carmodelid', $model->carmodelid)->lists('provinceid');
+        //$provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $provinces = Province::whereHas('carModelRegisters', function($q) use($carmodelid){
+            $q->where('carmodelid', $carmodelid);
+        })->orderBy('name', 'asc')->get(['id', 'name']);
         $registerprovinceselectlist = array();
         $registerprovinceselectlist[null] = 'เลือกจังหวัด';
         foreach($provinces as $item){
@@ -799,8 +832,11 @@ class CarPreemptionController extends Controller {
                 $model->buyercustomerbirthdate = date('d-m-Y', strtotime($buyercustomer->birthdate));
         }
 
-        $provincebranchids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
-        $provincebranchs = Province::whereIn('id', $provincebranchids)->orderBy('name', 'asc')->get(['id', 'name']);
+        //$provincebranchids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
+        //$provincebranchs = Province::whereIn('id', $provincebranchids)->orderBy('name', 'asc')->get(['id', 'name']);
+        $provincebranchs = Province::whereHas('branchs', function($q){
+            $q->where('isheadquarter', true);
+        })->orderBy('name', 'asc')->get(['id', 'name']);
         $provincebranchselectlist = array();
         foreach($provincebranchs as $item){
             $provincebranchselectlist[$item->id] = $item->name;

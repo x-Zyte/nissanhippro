@@ -104,6 +104,16 @@ class Branch extends Model {
         return $this->belongsTo('App\Models\SystemDatas\Province', 'provinceid', 'id');
     }
 
+    public function amphur()
+    {
+        return $this->belongsTo('App\Models\SystemDatas\Amphur', 'amphurid', 'id');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo('App\Models\SystemDatas\District', 'districtid', 'id');
+    }
+
     public function taxProvince()
     {
         return $this->belongsTo('App\Models\SystemDatas\Province', 'taxprovinceid', 'id');
