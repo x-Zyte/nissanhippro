@@ -27,7 +27,7 @@
                 $("input[name=carobjectivetype][value=" + data.carobjectivetype + "]").prop('checked', true);
                 $('#carmodel').val(data.carmodel);
                 $('#carcolor').val(data.carcolor);
-                $('#carprice').val(data.carprice);
+                $('#carprice').val(data.carprice.toFixed(2));
 
                 $.each(data.cars, function(i, option) {
                     $('#carid').append($('<option/>').attr("value", option.id).text(option.chassisno+'/'+option.engineno));

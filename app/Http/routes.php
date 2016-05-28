@@ -244,8 +244,8 @@ Route::post('cancelcarpreemption/save', 'CancelCarPreemptionController@save');
 Route::get('redlabelhistory/read', 'RedlabelhistoryController@read');
 Route::post('redlabelhistory/update', 'RedlabelhistoryController@update');
 
-Route::get('reporting', 'ReportController@index');
-Route::post('reporting', 'ReportController@post');
+Route::get('report', 'ReportController@index');
+Route::post('report', 'ReportController@post');
 
 Route::get('/', 'HomeController@index');
 

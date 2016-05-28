@@ -182,6 +182,21 @@
             });
         }
 
+        var colorprices = [];
+        @foreach ($colorprices as $data)
+            colorprices["{{$data->colorid}}"] = "{{$data->price}}";
+        @endforeach
+
+        var provinceregistrationfee = [];
+        var registrationfee = [];
+        @foreach ($provinceregistrationfee as $data)
+            registrationfee = [];
+            @foreach ($data->registrationfee as $item)
+                registrationfee["{{$item->type}}"] = "{{$item->price}}";
+            @endforeach
+            provinceregistrationfee["{{$data->provinceid}}"] = registrationfee;
+        @endforeach
+
         function CarModelChange(sel) {
             var carmodelid = sel.value;
             if(carmodelid == null || carmodelid == '') return;
@@ -207,12 +222,20 @@
                 });
                 $('#carsubmodelid').val(null).trigger('chosen:updated');
 
+                colorprices = [];
+                provinceregistrationfee = [];
                 $.each(data.colors, function(i, option) {
+                    colorprices[option.id] = option.car_model_colors[0].price;
                     $('#colorid').append($('<option/>').attr("value", option.id).text(option.code + ' - ' + option.name));
                 });
                 $('#colorid').val(null).trigger('chosen:updated');
 
                 $.each(data.registerprovinces, function(i, option) {
+                    var registrationfee = [];
+                    registrationfee[0] = option.car_model_registers[0].individualregistercost;
+                    registrationfee[1] = option.car_model_registers[0].companyregistercost;
+                    registrationfee[2] = option.car_model_registers[0].governmentregistercost;
+                    provinceregistrationfee[option.id] = registrationfee;
                     $('#registerprovinceid').append($('<option/>').attr("value", option.id).text(option.name));
                 });
                 if(registerprovinceid == 0 || data.registerprovinces.length <= 0){
@@ -222,10 +245,18 @@
                     $('#registerprovinceid').val(registerprovinceid).trigger('chosen:updated');
                 }
 
-                $('#registrationfee').val(data.registercost);
+                //$('#registrationfee').val(data.registercost);
+                Calregistrationfee();
                 $('#compulsorymotorinsurancefee').val(data.actcharged);
+                $('#colorprice').val(null);
+                $('#totalcarprice').val(null);
             });
         }
+
+        var carprices = [];
+        @foreach ($carprices as $data)
+            carprices["{{$data->pricelistid}}"] = "{{$data->price}}";
+        @endforeach
 
         function GetPrice() {
             var carsubmodelid = $("#carsubmodelid").chosen().val()
@@ -234,40 +265,55 @@
 
             $.get('{{$pathPrefix}}pricelist/getprice/'+carsubmodelid+'/'+date, function(data){
                 $('#pricelistid').children('option').remove();
+                carprices = {};
                 if(data.count == 0){
                     $('#pricelistid').append($('<option/>').attr("value", null).text('เลือกราคา'));
                     alert("ไม่พบข้อมูลราคา กรุณาเพิ่มข้อมูล ราคา ของรถรุ่นนี้ แล้วทำการเลือกรุ่น ใหม่อีกครั้ง");
                 }
 
                 $.each(data.pricelists, function(i, option) {
+                    carprices[option.id] = option.sellingpricewithaccessories;
                     if(option.promotion != null && option.promotion != '')
                         $('#pricelistid').append($('<option/>').attr("value", option.id).text(option.sellingpricewithaccessories+' ('+option.promotion+')'));
                     else
                         $('#pricelistid').append($('<option/>').attr("value", option.id).text(option.sellingpricewithaccessories));
                 });
                 $('#pricelistid').trigger('chosen:updated');
+                CalColorPrice();
             });
         }
 
-        function RegistrationTypeChange(){
+        function PricelistChange() {
+            CalTransferfee();
+            CalColorPrice();
+        }
+
+        function CalColorPrice(){
+            var pricelistid = $("#pricelistid").chosen().val()
+            var carprice = carprices[pricelistid];
+            if(carprice == null || carprice == '')
+                carprice = 0;
+
+            var colorid = $("#colorid").chosen().val()
+            var colorprice = colorprices[colorid];
+            if(colorprice == null || colorprice == '')
+                colorprice = 0;
+
+            $('#colorprice').val(parseFloat(colorprice).toFixed(2));
+            $('#totalcarprice').val((parseFloat(carprice)+parseFloat(colorprice)).toFixed(2));
+        }
+
+        function Calregistrationfee(){
             var carmodelid = $("#carmodelid").chosen().val();
             if(carmodelid == null || carmodelid == '') return;
             var registerprovinceid = $("#registerprovinceid").chosen().val();
             if(registerprovinceid == null || registerprovinceid == '') return;
             var registrationtype = $("input[name=registrationtype]:checked").val();
-            $.get('{{$pathPrefix}}carmodel/getregistrationcost/'+carmodelid+'/'+registrationtype+'/'+registerprovinceid, function(data){
-                $('#registrationfee').val(data.registercost);
-            });
-        }
 
-        function RegisterProvinceChange(){
-            var carmodelid = $("#carmodelid").chosen().val();
-            if(carmodelid == null || carmodelid == '') return;
-            var registerprovinceid = $("#registerprovinceid").chosen().val();
-            var registrationtype = $("input[name=registrationtype]:checked").val();
-            $.get('{{$pathPrefix}}carmodel/getregistrationcost/'+carmodelid+'/'+registrationtype+'/'+registerprovinceid, function(data){
-                $('#registrationfee').val(data.registercost);
-            });
+            var registrationfee = provinceregistrationfee[registerprovinceid];
+            if(registrationtype == 0) $('#registrationfee').val(registrationfee[0]);
+            else if(registrationtype == 1) $('#registrationfee').val(registrationfee[1]);
+            else $('#registrationfee').val(registrationfee[2]);
         }
 
         function CarobjectivetypeChange(){
@@ -669,22 +715,30 @@
                                     </div>
                                     {!! Form::label('colorid', 'สี', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::select('colorid', $colorselectlist, null, array('id'=>'colorid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('colorid', $colorselectlist, null, array('id'=>'colorid', 'class' => 'chosen-select', 'onchange'=>'CalColorPrice()')); !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('pricelistid', 'ราคา', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-3">
-                                        {!! Form::select('pricelistid', $priceselectlist, null, array('id'=>'pricelistid', 'class' => 'chosen-select', 'onchange'=>'CalTransferfee()')); !!}
+                                    <div class="col-sm-2">
+                                        {!! Form::select('pricelistid', $priceselectlist, null, array('id'=>'pricelistid', 'class' => 'chosen-select', 'onchange'=>'PricelistChange()')); !!}
                                     </div>
+                                    {!! Form::label('colorprice', 'ค่าสี', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-2">
+                                        {!! Form::number('colorprice', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'colorprice', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                    </div>
+                                    {!! Form::label('totalcarprice', 'รวม', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-2">
+                                        {!! Form::number('totalcarprice', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'totalcarprice', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     {!! Form::label('discount', 'ส่วนลด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         {!! Form::number('discount', null, array('step' => '1', 'min' => '0' ,'placeholder' => 'บาท', 'id'=>'discount', 'onchange'=>'CalTransferfee();')) !!}
                                     </div>
-                                </div>
-                                <div class="form-group">
                                     {!! Form::label('subdown', 'Sub Down', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-2">
                                         {!! Form::number('subdown', null, array('step' => '1', 'min' => '0' ,'placeholder' => 'บาท', 'id'=>'subdown', 'onchange'=>'CalTransferfee();')) !!}
                                     </div>
                                     {!! Form::label('accessories', 'บวกอุปกรณ์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
@@ -869,19 +923,19 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('registrationtype', '4. ค่าจดทะเบียน', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-10">
-                                            {!! Form::select('registerprovinceid', $registerprovinceselectlist, null, array('id'=>'registerprovinceid', 'class' => 'chosen-select', 'onchange'=>'RegisterProvinceChange(this)')); !!}
+                                            {!! Form::select('registerprovinceid', $registerprovinceselectlist, null, array('id'=>'registerprovinceid', 'class' => 'chosen-select', 'onchange'=>'Calregistrationfee()')); !!}
                                             &nbsp;&nbsp;
                                             <label>
-                                                {!! Form::radio('registrationtype', 0, true, array('class' => 'ace', 'onchange'=>'RegistrationTypeChange();')) !!}
+                                                {!! Form::radio('registrationtype', 0, true, array('class' => 'ace', 'onchange'=>'Calregistrationfee();')) !!}
                                                 <span class="lbl">  บุคคล</span>
                                             </label>
                                             &nbsp;
                                             <label>
-                                                {!! Form::radio('registrationtype', 1, false, array('class' => 'ace', 'onchange'=>'RegistrationTypeChange();')) !!}
+                                                {!! Form::radio('registrationtype', 1, false, array('class' => 'ace', 'onchange'=>'Calregistrationfee();')) !!}
                                                 <span class="lbl">  นิติบุคคล</span>&nbsp;&nbsp;
                                             </label>
                                             <label>
-                                                {!! Form::radio('registrationtype', 2, false, array('class' => 'ace', 'onchange'=>'RegistrationTypeChange();')) !!}
+                                                {!! Form::radio('registrationtype', 2, false, array('class' => 'ace', 'onchange'=>'Calregistrationfee();')) !!}
                                                 <span class="lbl">  ราชการ</span>&nbsp;&nbsp;
                                                 {!! Form::number('registrationfee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id' => 'registrationfee', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                             </label>

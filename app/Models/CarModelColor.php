@@ -11,7 +11,7 @@ class CarModelColor extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['carmodelid','colorid', 'active',
+    protected $fillable = ['carmodelid','colorid', 'active', 'price',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

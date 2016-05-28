@@ -42,9 +42,6 @@ class CarPaymentController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        //$carpreemptionids = CarPayment::distinct()->lists('carpreemptionid');
-        //$carpreemptions = CarPreemption::whereIn('id', $carpreemptionids)->orderBy('bookno', 'asc')->orderBy('no', 'asc')
-        //    ->get(['id', 'bookno', 'no','buyercustomerid']);
         $carpreemptions = CarPreemption::has('carPayment')->orderBy('bookno', 'asc')->orderBy('no', 'asc')
             ->get(['id', 'bookno', 'no','buyercustomerid']);
         $carpreemptionselectlist = array();
@@ -54,9 +51,6 @@ class CarPaymentController extends Controller {
             //array_push($carpreemptionselectlist,$item->id.':'.$item->bookno.'/'.$item->no.'/'.$buyerCustomer->title.' '.$buyerCustomer->firstname.' '.$buyerCustomer->lastname);
         }
 
-        //$carids = CarPayment::distinct()->lists('carid');
-        //$cars = Car::whereIn('id', $carids)->orderBy('chassisno', 'asc')->orderBy('engineno', 'asc')
-        //    ->get(['id', 'chassisno', 'engineno']);
         $cars = Car::has('carPayment')->orderBy('chassisno', 'asc')->orderBy('engineno', 'asc')
             ->get(['id', 'chassisno', 'engineno']);
         $carselectlist = array();
@@ -88,12 +82,10 @@ class CarPaymentController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        //$carpreemptionids = Redlabelhistory::whereNull('returndate')->lists('carpreemptionid');
         if(Auth::user()->isadmin){
             $carpreemptions = CarPreemption::where('status',0)
                 ->where(function ($query) {
                     $query->where('carobjectivetype',1)
-                        //->orWhereIn('id', $carpreemptionids);
                         ->orWhereHas('redlabelhistories', function($q){
                             $q->whereNull('returndate');
                         });
@@ -107,7 +99,6 @@ class CarPaymentController extends Controller {
                 ->where('status',0)
                 ->where(function ($query) {
                     $query->where('carobjectivetype',1)
-                        //->orWhereIn('id', $carpreemptionids);
                         ->orWhereHas('redlabelhistories', function($q){
                             $q->whereNull('returndate');
                         });
@@ -174,8 +165,6 @@ class CarPaymentController extends Controller {
             }
 
             if(Auth::user()->isadmin){
-                //$carsoldids = CarPayment::distinct()->lists('carid');
-
                 $cars = Car::doesntHave('carPayment')
                     ->where('carmodelid',$carpreemption->carmodelid)
                     ->where('carsubmodelid',$carpreemption->carsubmodelid)
@@ -185,9 +174,6 @@ class CarPaymentController extends Controller {
                     ->get(['id','chassisno','engineno']);
             }
             else{
-                //$carsoldids = CarPayment::where('provinceid', Auth::user()->provinceid)
-                //    ->distinct()->lists('carid');
-
                 $cars = Car::where('provinceid', Auth::user()->provinceid)
                     ->doesntHave('carPayment')
                     ->where('carmodelid',$carpreemption->carmodelid)
@@ -299,7 +285,7 @@ class CarPaymentController extends Controller {
 
         $carpreemption = CarPreemption::find($model->carpreemptionid);
         $pricelist = Pricelist::find($carpreemption->pricelistid);
-        $carprice = $pricelist->sellingpricewithaccessories;
+        $carprice = $pricelist->sellingpricewithaccessories + $carpreemption->colorprice;
 
 
         if($input['purchasetype'] == 0) {
@@ -483,12 +469,11 @@ class CarPaymentController extends Controller {
         $model->carcolor = $color->code.' - '.$color->name;
 
         $pricelist = Pricelist::find($carpreemption->pricelistid);
-        $model->carprice = $pricelist->sellingpricewithaccessories;
+        $model->carprice = $pricelist->sellingpricewithaccessories + $carpreemption->colorprice;
 
         $carselectlist = array();
         $carselectlist[null] = 'เลือกรถ';
         if(Auth::user()->isadmin){
-            //$carsoldids = CarPayment::where('id','!=', $id)->distinct()->lists('carid');
             $cars = Car::doesntHave('carPayment')
                 ->where('carmodelid',$carpreemption->carmodelid)
                 ->where('carsubmodelid',$carpreemption->carsubmodelid)
@@ -501,9 +486,6 @@ class CarPaymentController extends Controller {
                 ->get(['id','chassisno','engineno']);
         }
         else{
-            //$carsoldids = CarPayment::where('id','!=', $id)->where('provinceid', Auth::user()->provinceid)
-            //    ->distinct()->lists('carid');
-
             $cars = Car::where('provinceid', Auth::user()->provinceid)
                 ->doesntHave('carPayment')
                 ->where('carmodelid',$carpreemption->carmodelid)
@@ -703,7 +685,7 @@ class CarPaymentController extends Controller {
         $model->carcolor = $color->code.' - '.$color->name;
 
         $pricelist = Pricelist::find($carpreemption->pricelistid);
-        $model->carprice = $pricelist->sellingpricewithaccessories;
+        $model->carprice = $pricelist->sellingpricewithaccessories + $carpreemption->colorprice;
 
         $carselectlist = array();
         $item = Car::find($model->carid);

@@ -107,13 +107,17 @@ class CarModelController extends Controller {
 
         $carsubmodels = CarSubModel::where('carmodelid',$id)->orderBy('name', 'asc')->get(['id', 'name']);
 
-        $colors = Color::whereHas('carModelColors', function($q) use($id){
-            $q->where('carmodelid', $id);
-        })->orderBy('code', 'asc')->get(['id', 'code', 'name']);
+        $colors = Color::with(['carModelColors' => function ($query) use($id){
+                $query->where('carmodelid', $id);
+            }])->whereHas('carModelColors', function($q) use($id){
+                $q->where('carmodelid', $id);
+            })->orderBy('code', 'asc')->get(['id', 'code', 'name']);
 
-        $provinces = Province::whereHas('carModelRegisters', function($q) use($id){
-            $q->where('carmodelid', $id);
-        })->orderBy('name', 'asc')->get(['id', 'name']);
+        $provinces = Province::with(['carModelRegisters' => function ($query) use($id){
+                $query->where('carmodelid', $id);
+            }])->whereHas('carModelRegisters', function($q) use($id){
+                $q->where('carmodelid', $id);
+            })->orderBy('name', 'asc')->get(['id', 'name']);
 
         return ['carsubmodels'=>$carsubmodels,'colors'=>$colors,'actcharged'=>$actcharged,'registercost'=>$registercost, 'registerprovinces' => $provinces];
     }

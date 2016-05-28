@@ -146,7 +146,7 @@ return [
 		'App\Providers\RouteServiceProvider',
 
         'Collective\Html\HtmlServiceProvider',
-        'JasperPHP\JasperPHPServiceProvider',
+        'Maatwebsite\Excel\ExcelServiceProvider',
 	],
 
 	/*
@@ -197,6 +197,7 @@ return [
 
         'Form' => 'Collective\Html\FormFacade',
         'Html' => 'Collective\Html\HtmlFacade',
+        'Excel' => 'Maatwebsite\Excel\Facades\Excel',
 	],
 
 ];

@@ -18,7 +18,7 @@ class CarPreemptionRepository extends EloquentRepositoryAbstract
         $this->orderBy = array(array('id', 'asc'));
         $this->crudFields = array('oper', 'id', 'bookno', 'no', 'date', 'bookingcustomerid',
             'carobjectivetype', 'carmodelid', 'carsubmodelid','colorid',
-            'pricelistid', 'discount', 'subdown', 'accessories',
+            'pricelistid', 'colorprice','totalcarprice', 'discount', 'subdown', 'accessories',
 
             'oldcarbrandid', 'oldcarmodelid', 'oldcargear', 'oldcarcolor', 'oldcarenginesize', 'oldcarlicenseplate',
             'oldcaryear', 'oldcarprice', 'oldcarbuyername', 'oldcarother',

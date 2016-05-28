@@ -16,7 +16,7 @@ class CarModelColorRepository extends EloquentRepositoryAbstract
     {
         $this->Database = new CarModelColor;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id', 'carmodelid','colorid');
+        $this->crudFields = array('oper', 'id', 'carmodelid','colorid','price');
         $this->uniqueKeySingles = array();
         $this->uniqueKeyMultiples = array(array('field'=>'carmodelid','showInMsg'=>false,'label'=>'แบบรถ'),
             array('field'=>'colorid','showInMsg'=>true,'label'=>'แบบรถนี้ รหัสสี'));

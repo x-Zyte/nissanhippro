@@ -13,7 +13,7 @@ class CarPreemption extends Model {
 
     protected $fillable = ['provinceid','branchid','bookno', 'no', 'date', 'bookingcustomerid',
         'carobjectivetype', 'carmodelid', 'carsubmodelid','colorid',
-        'pricelistid', 'discount', 'subdown', 'accessories',
+        'pricelistid', 'colorprice','totalcarprice', 'discount', 'subdown', 'accessories',
 
         'oldcarbrandid', 'oldcarmodelid', 'oldcargear', 'oldcarcolor', 'oldcarenginesize', 'oldcarlicenseplate', 'oldcaryear',
         'oldcarprice', 'oldcarbuyername', 'oldcarother',

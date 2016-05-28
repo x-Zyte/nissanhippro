@@ -8,7 +8,7 @@
                     <div class="panel-heading">Report</div>
 
                     <div class="panel-body">
-                        <form class="form-horizontal" role="form" method="POST" action="{{ url('/reporting') }}">
+                        <form class="form-horizontal" role="form" method="POST" action="{{ url('/report') }}">
                             <input type="hidden" name="_token" value="{{{ csrf_token() }}}" />
                             <div class="form-group">
                                 <div class="col-sm-offset-3 col-sm-5">

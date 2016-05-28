@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Redirect;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller {
 
@@ -16,48 +17,36 @@ class ReportController extends Controller {
      */
     public function index()
     {
-        /*$output = \JasperPHP::list_parameters(
-            public_path() . '/report/test.jasper'
-        )->execute();
-
-        foreach($output as $parameter_description)
-            echo $parameter_description;*/
-
         return view('report');
     }
 
 
     public function post()
     {
+        Excel::create('testfile', function($excel) {
+            // Set the title
+            $excel->setTitle('no title');
+            $excel->setCreator('no no creator')->setCompany('no company');
+            $excel->setDescription('report file');
 
-        $database = \Config::get('database.connections.mysql');
-        $output = public_path() . '/report/'.time().'_test';
+            $excel->sheet('sheet1', function($sheet) {
+                $data = array(
+                    array('header1', 'header2','header3','header4','header5','header6','header7'),
+                    array('data1', 'data2', 300, 400, 500, 0, 100),
+                    array('data1', 'data2', 300, 400, 500, 0, 100),
+                    array('data1', 'data2', 300, 400, 500, 0, 100),
+                    array('data1', 'data2', 300, 400, 500, 0, 100),
+                    array('data1', 'data2', 300, 400, 500, 0, 100),
+                    array('data1', 'data2', 300, 400, 500, 0, 100)
+                );
+                $sheet->fromArray($data, null, 'A1', false, false);
+                $sheet->cells('A1:G1', function($cells) {
+                    $cells->setBackground('#AAAAFF');
 
-        $ext = "xls";
-
-        \JasperPHP::process(
-            public_path() . '/report/test.jasper',
-            $output,
-            array($ext),
-            array(),
-            $database,
-            false,
-            false
-        )->execute();
-
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename='.time().'_test.'.$ext);
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($output.'.'.$ext));
-        flush();
-        readfile($output.'.'.$ext);
-        unlink($output.'.'.$ext); // deletes the temporary file
-
-        return Redirect::to('/reporting');
+                });
+            });
+        })->download('xlsx');
+        //return Redirect::to('/reporting');
     }
 
 }

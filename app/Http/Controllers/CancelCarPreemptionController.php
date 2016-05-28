@@ -42,20 +42,12 @@ class CancelCarPreemptionController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        //$carpreemptionids = CancelCarPreemption::distinct()->lists('carpreemptionid');
-        //$carpreemptions = CarPreemption::whereIn('id', $carpreemptionids)->orderBy('bookno', 'asc')->orderBy('no', 'asc')
-        //    ->get(['id', 'bookno', 'no']);
-
         $carpreemptions = CarPreemption::has('cancelCarPreemption')->orderBy('bookno', 'asc')->orderBy('no', 'asc')
             ->get(['id', 'bookno', 'no']);
         $carpreemptionselectlist = array();
         foreach($carpreemptions as $item){
             array_push($carpreemptionselectlist,$item->id.':'.$item->bookno.'/'.$item->no);
         }
-
-        //$approversemployeeids = CancelCarPreemption::distinct()->lists('approversemployeeid');
-        //$approversemployees = Employee::whereIn('id', $approversemployeeids)->orderBy('firstname', 'asc')
-        //    ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
 
         $approversemployees = Employee::has('approveCancelCarPreemptions')->orderBy('firstname', 'asc')
             ->orderBy('lastname', 'asc')->get(['id', 'title', 'firstname', 'lastname']);
@@ -87,10 +79,8 @@ class CancelCarPreemptionController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        //$carpreemptionids = CarPayment::distinct()->lists('carpreemptionid');
         if(Auth::user()->isadmin){
             $carpreemptions = CarPreemption::where('status',0)
-                //->whereNotIn('id', $carpreemptionids)
                 ->doesntHave('carPayment')
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
@@ -99,7 +89,6 @@ class CancelCarPreemptionController extends Controller {
         else{
             $carpreemptions = CarPreemption::where('provinceid', Auth::user()->provinceid)
                 ->where('status',0)
-                //->whereNotIn('id', $carpreemptionids)
                 ->doesntHave('carPayment')
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')

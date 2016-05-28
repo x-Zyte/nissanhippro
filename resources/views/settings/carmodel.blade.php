@@ -18,6 +18,12 @@
         var $path_base = "..";//this will be used for editurl parameter
     </script>
 
+    <style type="text/css">
+        .grid-td-last {
+            padding-right: 20px !important;
+        }
+    </style>
+
     <!-- inline scripts related to this page -->
     <script type="text/javascript">
         $(document).ready(function() {
@@ -570,11 +576,14 @@
                     jQuery("#"+subgrid_table_id2).jqGrid({
                         url:'carmodelcolor/read?carmodelid='+row_id,
                         datatype: "json",
-                        colNames:['สี'],
+                        colNames:['สี','ราคา'],
                         colModel:[
-                            {name:'colorid',index:'colorid', width:600, editable: true,edittype:"select",formatter:'select',editoptions:{value:'{{$colorselectlist}}'},align:'left'
+                            {name:'colorid',index:'colorid', width:300, editable: true,edittype:"select",formatter:'select',editoptions:{value:'{{$colorselectlist}}'},align:'left'
                                 ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}" }
-                                ,editrules:{required:true,custom: true, custom_func: check_color}}
+                                ,editrules:{required:true,custom: true, custom_func: check_color}},
+                            {name:'price',index:'price', width:300,editable: true,
+                                editrules:{required:true, number:true},align:'right', classes:"grid-td-last",formatter:'number',
+                                formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}}
                         ],
                         viewrecords : true,
                         rowNum:10,

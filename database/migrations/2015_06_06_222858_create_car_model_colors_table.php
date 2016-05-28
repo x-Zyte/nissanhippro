@@ -19,6 +19,7 @@ class CreateCarModelColorsTable extends Migration {
             $table->foreign('carmodelid')->references('id')->on('car_models');
             $table->integer('colorid')->unsigned();
             $table->foreign('colorid')->references('id')->on('colors');
+            $table->decimal('price', 10, 2)->default(0);
             $table->boolean('active')->default(true);
 
             $table->integer('createdby')->unsigned();

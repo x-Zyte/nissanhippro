@@ -34,8 +34,6 @@ class CarController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        //$provinceids = Branch::where('isheadquarter',true)->distinct()->lists('provinceid');
-        //$provinces = Province::whereIn('id', $provinceids)->orderBy('name', 'asc')->get(['id', 'name']);
         $provinces = Province::whereHas('branchs', function($q){
             $q->where('isheadquarter', true);
         })->orderBy('name', 'asc')->get(['id', 'name']);
@@ -56,8 +54,6 @@ class CarController extends Controller {
             array_push($carmodelselectlist,$item->id.':'.$item->name);
         }
 
-        //$carsubmodelids = Car::distinct()->lists('carsubmodelid');
-        //$carsubmodels = CarSubModel::whereIn('id', $carsubmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
         $carsubmodels = CarSubModel::has('cars')->orderBy('name', 'asc')->get(['id', 'name']);
         $carsubmodelselectlist = array();
         array_push($carsubmodelselectlist,':เลือกรุ่น');
@@ -65,8 +61,6 @@ class CarController extends Controller {
             array_push($carsubmodelselectlist,$item->id.':'.$item->name);
         }
 
-        //$colorids = Car::distinct()->lists('colorid');
-        //$colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
         $colors = Color::has('cars')->orderBy('code', 'asc')->get(['id', 'code', 'name']);
         $colorselectlist = array();
         array_push($colorselectlist,':เลือกสี');
@@ -134,8 +128,6 @@ class CarController extends Controller {
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        //$carsubmodelids = Car::distinct()->lists('carsubmodelid');
-        //$carsubmodels = CarSubModel::whereIn('id', $carsubmodelids)->orderBy('name', 'asc')->get(['id', 'name']);
         $carsubmodels = CarSubModel::has('cars')->orderBy('name', 'asc')->get(['id', 'name']);
         $carsubmodelselectlist = array();
         array_push($carsubmodelselectlist,':เลือกรุ่น');
@@ -143,8 +135,6 @@ class CarController extends Controller {
             array_push($carsubmodelselectlist,$item->id.':'.$item->name);
         }
 
-        //$colorids = Car::distinct()->lists('colorid');
-        //$colors = Color::whereIn('id', $colorids)->orderBy('code', 'asc')->get(['id', 'code', 'name']);
         $colors = Color::has('cars')->orderBy('code', 'asc')->get(['id', 'code', 'name']);
         $colorselectlist = array();
         array_push($colorselectlist,':เลือกสี');

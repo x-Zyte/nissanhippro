@@ -41,7 +41,7 @@
             $(grid_selector).jqGrid({
                 url: "carpreemption/read",
                 datatype: "json",
-                colNames:['เล่มที่', 'เลขที่', 'วันที่', 'ชื่อผู้จอง', 'แบบ', 'รุ่น', 'สี', 'ราคา', 'ส่วนลด','สถานะเอกสาร', 'สถานะ'], //'ชื่อผู้ซื้อ', 'พนักงานขาย', 'ผู้จัดการฝ่ายขาย', 'ผู้อนุมัติ', 'วันที่อนุมัติ'],
+                colNames:['เล่มที่', 'เลขที่', 'วันที่', 'ชื่อผู้จอง', 'แบบ', 'รุ่น', 'สี', 'ราคา', 'ค่าสี', 'รวมราคา','สถานะเอกสาร', 'สถานะ'], //'ชื่อผู้ซื้อ', 'พนักงานขาย', 'ผู้จัดการฝ่ายขาย', 'ผู้อนุมัติ', 'วันที่อนุมัติ'],
                 colModel:[
                     {name:'bookno',index:'bookno', width:50,align:'center'},
                     {name:'no',index:'no', width:50,align:'center'},
@@ -66,7 +66,10 @@
                     {name:'pricelistid',index:'pricelistid', width:100,align:'right', formatter:'select',editoptions:{value: "{{$priceselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$priceselectlist}}"}
                     },
-                    {name:'discount',index:'discount', width:100,align:'right',formatter:'number'
+                    {name:'colorprice',index:'colorprice', width:100,align:'right',formatter:'number'
+                        ,formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}
+                    },
+                    {name:'totalcarprice',index:'totalcarprice', width:100,align:'right',formatter:'number'
                         ,formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}
                     },
                     {name:'documentstatus',index:'documentstatus', width:120, editable: true,edittype:"select",formatter:'select',align:'center'

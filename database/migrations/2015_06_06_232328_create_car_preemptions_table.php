@@ -35,6 +35,8 @@ class CreateCarPreemptionsTable extends Migration {
             $table->foreign('colorid')->references('id')->on('colors');
             $table->integer('pricelistid')->unsigned();
             $table->foreign('pricelistid')->references('id')->on('pricelists');
+            $table->decimal('colorprice', 10, 2);
+            $table->decimal('totalcarprice', 10, 2);
             $table->decimal('discount', 10, 2);
             $table->decimal('subdown', 10, 2);
             $table->decimal('accessories', 10, 2);
