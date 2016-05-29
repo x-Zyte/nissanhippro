@@ -78,7 +78,7 @@ class Car extends Model {
                 KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->whereNull('carid')->update(['carid' => $model->id ,'active' => false]);
             }
             else{
-                KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->where('carid',$model->id)->update(['carid' => null ,'active' => true]);
+                KeySlot::where('provinceid', $model->provinceid)->where('carid',$model->id)->update(['carid' => null ,'active' => true]);
             }
         });
 

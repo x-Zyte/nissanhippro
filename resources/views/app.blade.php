@@ -303,6 +303,15 @@
                 <b class="arrow"></b>
             </li>
 
+            <li class="@yield('menu-report-class')" @if(!Auth::user()->isadmin && !in_array("รายงาน", $employeeMenus)) style="display: none" @endif>
+                <a href="{{ url('/report') }}">
+                    <i class="menu-icon fa fa-file-text-o"></i>
+                    <span class="menu-text"> รายงาน </span>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
             <li class="@yield('menu-settings-class')" @if(!Auth::user()->isadmin && !in_array("การตั้งค่าทั่วไป", $employeeMenus) && !in_array("การตั้งค่ารถ", $employeeMenus) && !in_array("การตั้งค่าการขาย", $employeeMenus)) style="display: none" @endif>
                 <a href="javascript:void(0)" class="dropdown-toggle">
                     <i class="menu-icon fa fa-cogs"></i>

@@ -245,7 +245,7 @@ Route::get('redlabelhistory/read', 'RedlabelhistoryController@read');
 Route::post('redlabelhistory/update', 'RedlabelhistoryController@update');
 
 Route::get('report', 'ReportController@index');
-Route::post('report', 'ReportController@post');
+Route::post('report/carstock', 'ReportController@carstock');
 
 Route::get('/', 'HomeController@index');
 
