@@ -77,8 +77,8 @@
                         editoptions:{value: "0:0 - ยังไม่ยื่นเอกสาร;1:1 - ทำสัญญารอผล;2:2 - ผ่านพร้อมส่ง"}
                     },
                     {name:'status',index:'status', width:100, editable: true,edittype:"select",formatter:'select',align:'center'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:จอง;1:ชำระเงินแล้ว;2:ยกเลิก" },
-                        editoptions:{value: "0:จอง;1:ชำระเงินแล้ว;2:ยกเลิก"}
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:จอง;1:ชำระเงินแล้ว;2:ยกเลิก;3:ส่งรถก่อนชำระเงิน" },
+                        editoptions:{value: "0:จอง;1:ชำระเงินแล้ว;2:ยกเลิก;3:ส่งรถก่อนชำระเงิน"}
                     }
                     /*{name:'buyercustomerid',index:'buyercustomerid', width:150, formatter:'select',editoptions:{value: "{{$buyercustomerselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$buyercustomerselectlist}}"}

@@ -86,15 +86,19 @@ class CarPayment extends Model {
                 $redlabel->save();
             }
 
-            if(!$model->isdraft) {
+            if($model->isdraft)
+                $carpreemption->status = 3;
+            else
                 $carpreemption->status = 1;
-                $carpreemption->save();
-            }
+            $carpreemption->save();
 
+            $car = Car::find($model->carid);
+            $car->issold = true;
             if($model->deliverycarbookno != null && $model->deliverycarbookno != ''){
-                $car = Car::find($model->carid);
+                $car->isdelivered = true;
                 KeySlot::where('provinceid', $car->provinceid)->where('no',$car->keyno)->update(['carid' => null ,'active' => true]);
             }
+            $car->save();
         });
 
         static::updating(function($model)
@@ -144,15 +148,21 @@ class CarPayment extends Model {
 
             $carpreemption = CarPreemption::find($model->carpreemptionid);
             if($model->isdraft)
-                $carpreemption->status = 0;
+                $carpreemption->status = 3;
             else
                 $carpreemption->status = 1;
             $carpreemption->save();
 
+            $car = Car::find($model->carid);
             if($model->deliverycarbookno != null && $model->deliverycarbookno != ''){
-                $car = Car::find($model->carid);
+                $car->isdelivered = true;
                 KeySlot::where('provinceid', $car->provinceid)->where('no',$car->keyno)->where('carid',$car->id)->update(['carid' => null ,'active' => true]);
             }
+            else{
+                $car->isdelivered = false;
+                KeySlot::where('provinceid', $car->provinceid)->where('no',$car->keyno)->whereNull('carid')->update(['carid' => $car->id ,'active' => false]);
+            }
+            $car->save();
         });
 
         static::deleted(function($model)
@@ -169,6 +179,11 @@ class CarPayment extends Model {
 
             $carpreemption->status = 0;
             $carpreemption->save();
+
+            $car = Car::find($model->carid);
+            $car->issold= false;
+            $car->isdelivered = false;
+            KeySlot::where('provinceid', $car->provinceid)->where('no',$car->keyno)->whereNull('carid')->update(['carid' => $car->id ,'active' => false]);
         });
     }
 

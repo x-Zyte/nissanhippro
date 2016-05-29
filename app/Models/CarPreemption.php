@@ -74,17 +74,6 @@ class CarPreemption extends Model {
                     $query->where('customerid', $bookingcustomerid)
                         ->orWhere('customerid', $buyercustomerid);
                 })->update(['active' => false]);
-
-            //$customer = Customer::find($model->bookingcustomerid);
-            //$customer->statusexpect = 6;
-            //$customer->save();
-
-            //$customer = Customer::find($model->buyercustomerid);
-            //$customer->statusexpect = 6;
-            //$customer->save();
-
-            //CustomerExpectation::where('customerid', $model->bookingcustomerid)->where('active',true)->update(['active' => false]);
-            //CustomerExpectation::where('customerid', $model->buyercustomerid)->where('active',true)->update(['active' => false]);
         });
 
         static::updating(function($model)

@@ -561,6 +561,8 @@
                         {!! Form::label('statustext', 'ชำระเงินแล้ว', array('class' => 'col-sm-1 control-label no-padding-left','style'=>'width:100px; font-weight: bold; text-align: left;margin-left: 10px;')) !!}
                     @elseif($carpreemption->status == 2)
                         {!! Form::label('statustext', 'ยกเลิก', array('class' => 'col-sm-1 control-label no-padding-left','style'=>'width:100px; font-weight: bold; text-align: left;margin-left: 10px;')) !!}
+                    @elseif($carpreemption->status == 3)
+                        {!! Form::label('statustext', 'ส่งรถก่อนชำระเงิน', array('class' => 'col-sm-1 control-label no-padding-left','style'=>'width:100px; font-weight: bold; text-align: left;margin-left: 10px;')) !!}
                     @endif
                 </div>
             @endif

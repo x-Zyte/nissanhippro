@@ -1390,23 +1390,50 @@ class CarPreemptionController extends Controller {
         $model->carprice = $pricelist->sellingpricewithaccessories + $model->colorprice;
 
         if(Auth::user()->isadmin){
-            $cars = Car::doesntHave('carPayment')
-                ->where('carmodelid',$model->carmodelid)
-                ->where('carsubmodelid',$model->carsubmodelid)
-                ->where('colorid',$model->colorid)
-                ->orderBy('chassisno', 'asc')
-                ->orderBy('engineno', 'asc')
-                ->get(['id','chassisno','engineno']);
+            if($model->carobjectivetype == 0){
+                $cars = Car::doesntHave('carPayment')
+                    ->where('objective',0)
+                    ->where('carmodelid',$model->carmodelid)
+                    ->where('carsubmodelid',$model->carsubmodelid)
+                    ->where('colorid',$model->colorid)
+                    ->orderBy('chassisno', 'asc')
+                    ->orderBy('engineno', 'asc')
+                    ->get(['id','chassisno','engineno']);
+            }
+            else{
+                $cars = Car::doesntHave('carPayment')
+                    ->where('objective','!=',0)
+                    ->where('carmodelid',$model->carmodelid)
+                    ->where('carsubmodelid',$model->carsubmodelid)
+                    ->where('colorid',$model->colorid)
+                    ->orderBy('chassisno', 'asc')
+                    ->orderBy('engineno', 'asc')
+                    ->get(['id','chassisno','engineno']);
+            }
         }
         else{
-            $cars = Car::where('provinceid', Auth::user()->provinceid)
-                ->doesntHave('carPayment')
-                ->where('carmodelid',$model->carmodelid)
-                ->where('carsubmodelid',$model->carsubmodelid)
-                ->where('colorid',$model->colorid)
-                ->orderBy('chassisno', 'asc')
-                ->orderBy('engineno', 'asc')
-                ->get(['id','chassisno','engineno']);
+            if($model->carobjectivetype == 0){
+                $cars = Car::where('provinceid', Auth::user()->provinceid)
+                    ->doesntHave('carPayment')
+                    ->where('objective',0)
+                    ->where('carmodelid',$model->carmodelid)
+                    ->where('carsubmodelid',$model->carsubmodelid)
+                    ->where('colorid',$model->colorid)
+                    ->orderBy('chassisno', 'asc')
+                    ->orderBy('engineno', 'asc')
+                    ->get(['id','chassisno','engineno']);
+            }
+            else{
+                $cars = Car::where('provinceid', Auth::user()->provinceid)
+                    ->doesntHave('carPayment')
+                    ->where('objective','!=',0)
+                    ->where('carmodelid',$model->carmodelid)
+                    ->where('carsubmodelid',$model->carsubmodelid)
+                    ->where('colorid',$model->colorid)
+                    ->orderBy('chassisno', 'asc')
+                    ->orderBy('engineno', 'asc')
+                    ->get(['id','chassisno','engineno']);
+            }
         }
         $model->cars = $cars;
 

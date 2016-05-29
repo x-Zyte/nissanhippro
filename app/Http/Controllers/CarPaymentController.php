@@ -165,23 +165,50 @@ class CarPaymentController extends Controller {
             }
 
             if(Auth::user()->isadmin){
-                $cars = Car::doesntHave('carPayment')
-                    ->where('carmodelid',$carpreemption->carmodelid)
-                    ->where('carsubmodelid',$carpreemption->carsubmodelid)
-                    ->where('colorid',$carpreemption->colorid)
-                    ->orderBy('chassisno', 'asc')
-                    ->orderBy('engineno', 'asc')
-                    ->get(['id','chassisno','engineno']);
+                if($carpreemption->carobjectivetype == 0){
+                    $cars = Car::doesntHave('carPayment')
+                        ->where('objective',0)
+                        ->where('carmodelid',$carpreemption->carmodelid)
+                        ->where('carsubmodelid',$carpreemption->carsubmodelid)
+                        ->where('colorid',$carpreemption->colorid)
+                        ->orderBy('chassisno', 'asc')
+                        ->orderBy('engineno', 'asc')
+                        ->get(['id','chassisno','engineno']);
+                }
+                else{
+                    $cars = Car::doesntHave('carPayment')
+                        ->where('objective','!=',0)
+                        ->where('carmodelid',$carpreemption->carmodelid)
+                        ->where('carsubmodelid',$carpreemption->carsubmodelid)
+                        ->where('colorid',$carpreemption->colorid)
+                        ->orderBy('chassisno', 'asc')
+                        ->orderBy('engineno', 'asc')
+                        ->get(['id','chassisno','engineno']);
+                }
             }
             else{
-                $cars = Car::where('provinceid', Auth::user()->provinceid)
-                    ->doesntHave('carPayment')
-                    ->where('carmodelid',$carpreemption->carmodelid)
-                    ->where('carsubmodelid',$carpreemption->carsubmodelid)
-                    ->where('colorid',$carpreemption->colorid)
-                    ->orderBy('chassisno', 'asc')
-                    ->orderBy('engineno', 'asc')
-                    ->get(['id','chassisno','engineno']);
+                if($carpreemption->carobjectivetype == 0){
+                    $cars = Car::where('provinceid', Auth::user()->provinceid)
+                        ->doesntHave('carPayment')
+                        ->where('objective',0)
+                        ->where('carmodelid',$carpreemption->carmodelid)
+                        ->where('carsubmodelid',$carpreemption->carsubmodelid)
+                        ->where('colorid',$carpreemption->colorid)
+                        ->orderBy('chassisno', 'asc')
+                        ->orderBy('engineno', 'asc')
+                        ->get(['id','chassisno','engineno']);
+                }
+                else{
+                    $cars = Car::where('provinceid', Auth::user()->provinceid)
+                        ->doesntHave('carPayment')
+                        ->where('objective','!=',0)
+                        ->where('carmodelid',$carpreemption->carmodelid)
+                        ->where('carsubmodelid',$carpreemption->carsubmodelid)
+                        ->where('colorid',$carpreemption->colorid)
+                        ->orderBy('chassisno', 'asc')
+                        ->orderBy('engineno', 'asc')
+                        ->get(['id','chassisno','engineno']);
+                }
             }
             foreach($cars as $item){
                 $carselectlist[$item->id] = $item->chassisno.'/'.$item->engineno;

@@ -70,6 +70,14 @@ class Car extends Model {
         static::updated(function($model)
         {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Update','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
+
+            if($model->objective == 0) {
+                KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->where('carid',$model->id)->update(['carid' => null ,'active' => true]);
+                KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->whereNull('carid')->update(['carid' => $model->id ,'active' => false]);
+            }
+            else{
+                KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->where('carid',$model->id)->update(['carid' => null ,'active' => true]);
+            }
         });
 
         static::deleted(function($model)
