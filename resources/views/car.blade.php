@@ -47,7 +47,7 @@
             $(grid_selector).jqGrid({
                 url:'car/read',
                 datatype: "json",
-                colNames:['จังหวัด','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'เลขกุญแจ','แบบ','รุ่น', 'สี','ซื้อจาก','ชื่อดีลเลอร์','จอดอยู่ที่', 'รถสำหรับ','ใบรับรถเข้า'], //'ใบส่งรถให้ลูกค้า'],
+                colNames:['จังหวัด','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'เลขกุญแจ','แบบ','รุ่น', 'สี','ซื้อจาก','ชื่อดีลเลอร์','จอดอยู่ที่', 'รถสำหรับ','ใบรับรถเข้า','ขายแล้ว','ส่งรถแล้ว'], //'ใบส่งรถให้ลูกค้า'],
                 colModel:[
                     {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},

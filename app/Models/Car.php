@@ -27,6 +27,7 @@ class Car extends Model {
             $model->isdelivered = false;
 
             if($model->receivetype == 0) $model->dealername = null;
+            if($model->objective != 0) $model->keyno = null;
 
             $model->dodate = date('Y-m-d', strtotime($model->dodate));
             $model->receiveddate = date('Y-m-d', strtotime($model->receiveddate));
@@ -60,6 +61,7 @@ class Car extends Model {
         static::updating(function($model)
         {
             if($model->receivetype == 0) $model->dealername = null;
+            if($model->objective != 0) $model->keyno = null;
 
             $model->dodate = date('Y-m-d', strtotime($model->dodate));
             $model->receiveddate = date('Y-m-d', strtotime($model->receiveddate));
