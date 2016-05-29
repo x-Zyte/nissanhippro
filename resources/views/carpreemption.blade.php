@@ -41,7 +41,7 @@
             $(grid_selector).jqGrid({
                 url: "carpreemption/read",
                 datatype: "json",
-                colNames:['เล่มที่', 'เลขที่', 'วันที่', 'ชื่อผู้จอง', 'แบบ', 'รุ่น', 'สี', 'ราคา', 'ค่าสี', 'รวมราคา','สถานะเอกสาร', 'สถานะ'], //'ชื่อผู้ซื้อ', 'พนักงานขาย', 'ผู้จัดการฝ่ายขาย', 'ผู้อนุมัติ', 'วันที่อนุมัติ'],
+                colNames:['เล่มที่', 'เลขที่', 'วันที่', 'ชื่อผู้จอง', 'แบบ', 'รุ่น', 'สี', 'รถใหม่/บริษัท', 'สถานะเอกสาร', 'สถานะ'], //'ราคา', 'ค่าสี', 'รวมราคา','ชื่อผู้ซื้อ', 'พนักงานขาย', 'ผู้จัดการฝ่ายขาย', 'ผู้อนุมัติ', 'วันที่อนุมัติ'],
                 colModel:[
                     {name:'bookno',index:'bookno', width:50,align:'center'},
                     {name:'no',index:'no', width:50,align:'center'},
@@ -63,7 +63,11 @@
                     {name:'colorid',index:'colorid', width:100, formatter:'select',editoptions:{value: "{{$colorselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$colorselectlist}}"}
                     },
-                    {name:'pricelistid',index:'pricelistid', width:100,align:'right', formatter:'select',editoptions:{value: "{{$priceselectlist}}"}
+                    {name:'carobjectivetype',index:'carobjectivetype', width:120, editable: true,edittype:"select",formatter:'select',align:'center'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:รถใหม่;1:รถบริษัท" },
+                        editoptions:{value: "0:รถใหม่;1:รถบริษัท"}
+                    },
+                    /*{name:'pricelistid',index:'pricelistid', width:100,align:'right', formatter:'select',editoptions:{value: "{{$priceselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$priceselectlist}}"}
                     },
                     {name:'colorprice',index:'colorprice', width:100,align:'right',formatter:'number'
@@ -71,7 +75,7 @@
                     },
                     {name:'totalcarprice',index:'totalcarprice', width:100,align:'right',formatter:'number'
                         ,formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}
-                    },
+                    },*/
                     {name:'documentstatus',index:'documentstatus', width:120, editable: true,edittype:"select",formatter:'select',align:'center'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:0 - ยังไม่ยื่นเอกสาร;1:1 - ทำสัญญารอผล;2:2 - ผ่านพร้อมส่ง" },
                         editoptions:{value: "0:0 - ยังไม่ยื่นเอกสาร;1:1 - ทำสัญญารอผล;2:2 - ผ่านพร้อมส่ง"}
