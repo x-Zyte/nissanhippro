@@ -111,6 +111,8 @@ class CreateCarPreemptionsTable extends Migration {
             $table->integer('documentstatus')->comment('0:ยังไม่ยื่นเอกสาร, 1:ทำสัญญารอผล, 2:ผ่านพร้อมส่ง')->default(0);
             $table->integer('status')->comment('0:จอง, 1:ชำระเงินแล้ว, 2:ยกเลิก, 3:ส่งรถก่อนชำระเงิน')->default(0);
 
+            $table->dateTime('contractdate')->nullable();
+
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');
             $table->dateTime('createddate');

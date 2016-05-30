@@ -25,7 +25,7 @@ class CarPreemption extends Model {
         'buyercustomerid', 'salesmanemployeeid', 'salesmanteamid', 'salesmanageremployeeid', 'approversemployeeid', 'approvaldate',
 
         'place', 'showroom', 'booth', 'leaflet', 'businesscard', 'invitationcard', 'phone', 'signshowroom', 'spotradiowalkin',
-        'recommendedby', 'recommendedbyname', 'recommendedbytype', 'customertype', 'remark','status','documentstatus',
+        'recommendedby', 'recommendedbyname', 'recommendedbytype', 'customertype', 'remark','status','documentstatus','contractdate',
 
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
@@ -53,6 +53,8 @@ class CarPreemption extends Model {
                 $model->registrationtype = null;
                 $model->registrationfee = null;
             }
+
+            if($model->contractdate == '') $model->contractdate = null;
 
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
@@ -89,6 +91,8 @@ class CarPreemption extends Model {
                 $model->registrationtype = null;
                 $model->registrationfee = null;
             }
+
+            if($model->contractdate == '') $model->contractdate = null;
 
             $model->carPreemptionGiveaways()->delete();
 

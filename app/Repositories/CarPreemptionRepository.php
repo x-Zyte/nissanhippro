@@ -30,7 +30,7 @@ class CarPreemptionRepository extends EloquentRepositoryAbstract
             'buyercustomerid', 'salesmanemployeeid', 'salesmanteamid', 'salesmanageremployeeid', 'approversemployeeid', 'approvaldate',
 
             'place', 'showroom', 'booth', 'leaflet', 'businesscard', 'invitationcard', 'phone', 'signshowroom', 'spotradiowalkin',
-            'recommendedby', 'recommendedbyname', 'recommendedbytype', 'customertype', 'remark', 'status','documentstatus');
+            'recommendedby', 'recommendedbyname', 'recommendedbytype', 'customertype', 'remark', 'status','documentstatus','contractdate');
 
         $this->uniqueKeySingles = array();
         $this->uniqueKeyMultiples = array(array('field'=>'bookno','showInMsg'=>true,'label'=>'เล่มที่'),

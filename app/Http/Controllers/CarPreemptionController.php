@@ -8,12 +8,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Branch;
 use App\Models\Car;
 use App\Models\CarBrand;
-use App\Models\CarModelColor;
-use App\Models\CarModelRegister;
-use App\Models\CarPayment;
 use App\Models\CarPreemption;
 use App\Models\CarPreemptionGiveaway;
 use App\Models\Color;
@@ -784,6 +780,8 @@ class CarPreemptionController extends Controller {
         $model->date = date('d-m-Y', strtotime($model->date));
         $model->datewantgetcar = date('d-m-Y', strtotime($model->datewantgetcar));
         $model->approvaldate = date('d-m-Y', strtotime($model->approvaldate));
+        if($model->contractdate != null && $model->contractdate != '')
+            $model->contractdate = date('d-m-Y', strtotime($model->contractdate));
 
         return view('carpreemptionform',
             ['oper' => 'edit','pathPrefix' => '../../','carpreemption' => $model,
@@ -1049,6 +1047,8 @@ class CarPreemptionController extends Controller {
         $model->date = date('d-m-Y', strtotime($model->date));
         $model->datewantgetcar = date('d-m-Y', strtotime($model->datewantgetcar));
         $model->approvaldate = date('d-m-Y', strtotime($model->approvaldate));
+        if($model->contractdate != null && $model->contractdate != '')
+            $model->contractdate = date('d-m-Y', strtotime($model->contractdate));
 
         return view('carpreemptionform',
             ['oper' => 'view','pathPrefix' => '../../','carpreemption' => $model,
@@ -1337,6 +1337,11 @@ class CarPreemptionController extends Controller {
             $model->recommendedbyname = null;
             $model->recommendedbytype = null;
         }
+
+        if($input['contractdate'] != null && $input['contractdate'] != '')
+            $model->contractdate = date('Y-m-d', strtotime($input['contractdate']));
+        else
+            $model->contractdate = $input['contractdate'];
 
         if($model->save()) {
             $giveawayFreeData = $request->giveawayFreeData;

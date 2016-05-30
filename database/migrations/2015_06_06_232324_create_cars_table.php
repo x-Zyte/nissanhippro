@@ -40,6 +40,7 @@ class CreateCarsTable extends Migration {
             $table->boolean('issold')->default(false);
             $table->boolean('isregistered')->default(false);
             $table->boolean('isdelivered')->default(false);
+            $table->dateTime('notifysolddate')->nullable();
 
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');

@@ -25,6 +25,8 @@ class CreatePricelistsTable extends Migration {
             $table->decimal('accessoriesprice', 10, 2)->default(0);
             $table->decimal('sellingpricewithaccessories', 10, 2)->comment('sellingprice + accessoriesprice');
             $table->decimal('margin', 10, 2)->default(0);
+            $table->decimal('ws', 10, 2)->default(0);
+            $table->decimal('dms', 10, 2)->default(0);
             $table->decimal('execusiveinternal', 10, 2)->default(0);
             $table->decimal('execusivecampaing', 10, 2)->default(0);
             $table->decimal('execusivetotalcampaing', 10, 2)->comment('execusiveinternal + execusivecampaing');

@@ -3,9 +3,25 @@
 @if($oper == 'new')
     @section('title','เพิ่มการจองใหม่')
 @elseif($oper == 'edit')
-    @section('title','แก้ไขการจอง '.$carpreemption->bookno.'/'.$carpreemption->no)
+    @if($carpreemption->status == 0)
+        @section('title','แก้ไขการจอง '.$carpreemption->bookno.'/'.$carpreemption->no.' (จอง)')
+    @elseif($carpreemption->status == 1)
+        @section('title','แก้ไขการจอง '.$carpreemption->bookno.'/'.$carpreemption->no.' (ชำระเงินแล้ว)')
+    @elseif($carpreemption->status == 2)
+        @section('title','แก้ไขการจอง '.$carpreemption->bookno.'/'.$carpreemption->no.' (ยกเลิก)')
+    @elseif($carpreemption->status == 3)
+        @section('title','แก้ไขการจอง '.$carpreemption->bookno.'/'.$carpreemption->no.' (ส่งรถก่อนชำระเงิน)')
+    @endif
 @elseif($oper == 'view')
-    @section('title','ดูข้อมูลการจอง '.$carpreemption->bookno.'/'.$carpreemption->no)
+    @if($carpreemption->status == 0)
+        @section('title','ดูข้อมูลการจอง '.$carpreemption->bookno.'/'.$carpreemption->no.' (จอง)')
+    @elseif($carpreemption->status == 1)
+        @section('title','ดูข้อมูลการจอง '.$carpreemption->bookno.'/'.$carpreemption->no.' (ชำระเงินแล้ว)')
+    @elseif($carpreemption->status == 2)
+        @section('title','ดูข้อมูลการจอง '.$carpreemption->bookno.'/'.$carpreemption->no.' (ยกเลิก)')
+    @elseif($carpreemption->status == 3)
+        @section('title','ดูข้อมูลการจอง '.$carpreemption->bookno.'/'.$carpreemption->no.' (ส่งรถก่อนชำระเงิน)')
+    @endif
 @endif
 
 @section('menu-selling-class','active hsub open')
@@ -497,9 +513,25 @@
     @if($oper == 'new')
         <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> เพิ่มการจองใหม่</h3>
     @elseif($oper == 'edit')
-        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> แก้ไขการจอง</h3>
+        @if($carpreemption->status == 0)
+            <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> แก้ไขการจอง (จอง)</h3>
+        @elseif($carpreemption->status == 1)
+            <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> แก้ไขการจอง (ชำระเงินแล้ว)</h3>
+        @elseif($carpreemption->status == 2)
+            <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> แก้ไขการจอง (ยกเลิก)</h3>
+        @elseif($carpreemption->status == 3)
+            <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> แก้ไขการจอง (ส่งรถก่อนชำระเงิน)</h3>
+        @endif
     @elseif($oper == 'view')
-        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> ดูข้อมูลการจอง</h3>
+        @if($carpreemption->status == 0)
+            <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> ดูข้อมูลการจอง (จอง)</h3>
+        @elseif($carpreemption->status == 1)
+            <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> ดูข้อมูลการจอง (ชำระเงินแล้ว)</h3>
+        @elseif($carpreemption->status == 2)
+            <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> ดูข้อมูลการจอง (ยกเลิก)</h3>
+        @elseif($carpreemption->status == 3)
+            <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> ดูข้อมูลการจอง (ส่งรถก่อนชำระเงิน)</h3>
+        @endif
     @endif
 
     @if (count($errors) > 0)
@@ -551,21 +583,15 @@
             <div class="col-sm-1">
                 {!! Form::select('documentstatus', array('0' => '0 - ยังไม่ยื่นเอกสาร', '1' => '1 - ทำสัญญารอผล', '2' => '2 - ผ่านพร้อมส่ง'), null, array('style'=>'font-size:14px; padding:5px 4px 6px; height:34px;')) !!}
             </div>
-
-            @if($oper != 'new')
-                <div class="col-sm-3" style="margin-left: 30px;">
-                    {!! Form::label('statustext', 'สถานะ', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'width:100px;')) !!}
-                    @if($carpreemption->status == 0)
-                        {!! Form::label('statustext', 'จอง', array('class' => 'col-sm-1 control-label no-padding-left','style'=>'width:100px; font-weight: bold; text-align: left;margin-left: 10px;')) !!}
-                    @elseif($carpreemption->status == 1)
-                        {!! Form::label('statustext', 'ชำระเงินแล้ว', array('class' => 'col-sm-1 control-label no-padding-left','style'=>'width:100px; font-weight: bold; text-align: left;margin-left: 10px;')) !!}
-                    @elseif($carpreemption->status == 2)
-                        {!! Form::label('statustext', 'ยกเลิก', array('class' => 'col-sm-1 control-label no-padding-left','style'=>'width:100px; font-weight: bold; text-align: left;margin-left: 10px;')) !!}
-                    @elseif($carpreemption->status == 3)
-                        {!! Form::label('statustext', 'ส่งรถก่อนชำระเงิน', array('class' => 'col-sm-1 control-label no-padding-left','style'=>'width:100px; font-weight: bold; text-align: left;margin-left: 10px;')) !!}
-                    @endif
+            {!! Form::label('contractdate', 'วันทำสัญญา', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'width:160px;')) !!}
+            <div class="col-sm-2">
+                <div class="input-group">
+                    {!! Form::text('contractdate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'contractdate')) !!}
+                        <span class="input-group-addon">
+						    <i class="fa fa-calendar bigger-110"></i>
+						</span>
                 </div>
-            @endif
+            </div>
         </div>
 
         <!-- Customer Details -->

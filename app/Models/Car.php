@@ -13,7 +13,7 @@ class Car extends Model {
     protected $guarded = ['id'];
 
     protected $fillable = ['provinceid', 'carmodelid', 'carsubmodelid', 'no', 'dodate', 'receiveddate','dealername', 'engineno', 'chassisno', 'keyno',
-        'colorid', 'objective', 'receivetype', 'receivecarfilepath', 'issold', 'isregistered', 'isdelivered','parklocation',
+        'colorid', 'objective', 'receivetype', 'receivecarfilepath', 'issold', 'isregistered', 'isdelivered','parklocation','notifysolddate',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()
@@ -31,6 +31,9 @@ class Car extends Model {
 
             $model->dodate = date('Y-m-d', strtotime($model->dodate));
             $model->receiveddate = date('Y-m-d', strtotime($model->receiveddate));
+            if($model->notifysolddate == '') $model->notifysolddate = null;
+            else $model->notifysolddate = date('Y-m-d', strtotime($model->notifysolddate));
+
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
             $model->modifiedby = Auth::user()->id;
@@ -65,6 +68,9 @@ class Car extends Model {
 
             $model->dodate = date('Y-m-d', strtotime($model->dodate));
             $model->receiveddate = date('Y-m-d', strtotime($model->receiveddate));
+            if($model->notifysolddate == '') $model->notifysolddate = null;
+            else $model->notifysolddate = date('Y-m-d', strtotime($model->notifysolddate));
+
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");
         });

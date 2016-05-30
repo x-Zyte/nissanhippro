@@ -1,6 +1,8 @@
 @extends('app')
+@section('title','รายงาน')
 
 @section('content')
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> รายงาน</h3>
     <!-- สต็อครถ -->
     <div class="row">
         <div class="col-xs-1 col-sm-1"></div>
@@ -18,18 +20,39 @@
                 <div class="widget-body">
                     <div class="widget-body-inner" style="display: block;">
                         <div class="widget-main">
-                            <form class="form-horizontal" role="form" method="POST" action="{{ url('/report/carstock') }}">
-                                <input type="hidden" name="_token" value="{{{ csrf_token() }}}" />
+                            {!! Form::open(array('url' => 'report/carstock', 'id'=>'report-carstock', 'class'=>'form-horizontal', 'role'=>'form')) !!}
                                 <div class="form-group">
-                                    <div class="col-sm-offset-5 col-sm-5">
-                                        <button type="submit" class="btn btn-primary">Generate</button>
+                                    {!! Form::label('provinceid', 'จังหวัด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-2" style="width: 200px;">
+                                        {!! Form::select('provinceid', $provincebranchselectlist, null, array('class' => 'chosen-select')); !!}
+                                    </div>
+                                    {!! Form::label('orderbytype', 'เรียงตาม', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    <div class="col-sm-2"  style="width: 200px;">
+                                        {!! Form::select('orderbytype', array('1' => 'วันที่รับรถ', '2' => 'แบบ/รุ่นและวันที่รับรถ'), null, array('class' => 'chosen-select')); !!}
+                                    </div>
+
+                                    <div class="col-sm-1" style="margin-left: 20px;">
+                                        <button id="btnSubmit" class="btn btn-sm btn-primary" type="submit">
+                                            Generate
+                                        </button>
                                     </div>
                                 </div>
-                            </form>
+                            {!! Form::close() !!}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div><br>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.chosen-select').chosen({allow_single_deselect:true});
+            //resize the chosen on window resize
+            $(window).on('resize.chosen', function() {
+                var w = $('.chosen-select').parent().width();
+                $('.chosen-select').next().css({'width':180});
+            }).trigger('resize.chosen');
+        });
+    </script>
 @endsection

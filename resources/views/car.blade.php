@@ -47,7 +47,7 @@
             $(grid_selector).jqGrid({
                 url:'car/read',
                 datatype: "json",
-                colNames:['จังหวัด','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'เลขกุญแจ','แบบ','รุ่น', 'สี','ซื้อจาก','ชื่อดีลเลอร์','จอดอยู่ที่', 'รถสำหรับ','ใบรับรถเข้า','ขายแล้ว','ส่งรถแล้ว'], //'ใบส่งรถให้ลูกค้า'],
+                colNames:['จังหวัด','คันที่', 'วันที่ออก Do', 'วันที่รับรถเข้า', 'เลขเครื่อง', 'เลขตัวถัง', 'เลขกุญแจ','แบบ','รุ่น', 'สี','ซื้อจาก','ชื่อดีลเลอร์','จอดอยู่ที่', 'รถสำหรับ','ใบรับรถเข้า','วันที่แจ้งขาย','ขายแล้ว','ส่งรถแล้ว'], //'ใบส่งรถให้ลูกค้า'],
                 colModel:[
                     {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
@@ -116,6 +116,12 @@
                     {name:'objective',index:'objective', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:ขาย;1:ใช้งาน;2:ทดสอบ"},align:'center'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:ขาย;1:ใช้งาน;2:ทดสอบ" }},
                     {name:'receivecarfilepath',index:'receivecarfilepath',width:100,editable: true,edittype:'file',editoptions:{enctype:"multipart/form-data"},formatter:imageLinkFormatter,search:false,align:'center'},
+                    {name:'notifysolddate',index:'notifysolddate',width:100, editable:true, sorttype:"date", formatter: "date", formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
+                        ,editoptions:{size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}}, align:'center'
+                        ,searchrules:{required:true}
+                        ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
+                        ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}
+                        },
                     {name:'issold',index:'issold', width:100, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
                     {name:'isdelivered',index:'isdelivered', width:100, editable: true,edittype:"checkbox",editoptions: {value:"1:0", defaultValue:"0"},formatter: booleanFormatter,unformat: aceSwitch,align:'center'

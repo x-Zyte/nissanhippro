@@ -1,8 +1,10 @@
 <?php namespace App\Http\Controllers;
 
+use App\Models\SystemDatas\Province;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 
 class ReportController extends Controller {
 
@@ -18,22 +20,48 @@ class ReportController extends Controller {
      */
     public function index()
     {
-        return view('report');
+        $provincebranchs = Province::whereHas('branchs', function($q){
+            $q->where('isheadquarter', true);
+        })->orderBy('name', 'asc')->get(['id', 'name']);
+        $provincebranchselectlist = array();
+        foreach($provincebranchs as $item){
+            $provincebranchselectlist[$item->id] = $item->name;
+        }
+
+        return view('report',['provincebranchselectlist' => $provincebranchselectlist]);
     }
 
 
-    public function carstock()
+    public function carstock(Request $request)
     {
-        Excel::create('สต็อครถ_'.date("d/m/Y"), function($excel) {
+        $input = $request->all();
+        $provinceid = $input['provinceid'];
+        $orderbytype = $input['orderbytype'];
+
+        $province = Province::find($provinceid);
+        if($orderbytype == 1)
+            $orderbytext = 'วันที่รับรถ';
+        else
+            $orderbytext = 'แบบ/รุ่นและวันที่รับรถ';
+
+        $filename = 'สต็อครถ'.$province->name.'_เรียงตาม'.$orderbytext.'_'.date("d/m/Y");
+
+        Excel::create($filename, function($excel) use($province,$orderbytype,$orderbytext){
             // Set the title
             $excel->setTitle('no title');
             $excel->setCreator('no no creator')->setCompany('no company');
             $excel->setDescription('report file');
 
-            $excel->sheet('sheet1', function($sheet) {
-                $results = DB::select('select * from report_carstock');
-                $carpreemptions = DB::select('select * from report_carstock_carpreemptions');
-                $carRequired = DB::select('select * from report_carstock_carrequired');
+            $excel->sheet('sheet1', function($sheet) use($province,$orderbytype,$orderbytext){
+
+                if($orderbytype == 1)
+                    $orderby = 'dodate';
+                else
+                    $orderby = 'model,submodel,dodate';
+
+                $results = DB::select('select * from report_carstock where provinceid = '.$province->id.' order by '.$orderby);
+                $carpreemptions = DB::select('select * from report_carstock_carpreemptions where provinceid = '.$province->id);
+                $carRequired = DB::select('select * from report_carstock_carrequired where provinceid = '.$province->id.' order by model,submodel');
 
                 $rsCount = count($results);
                 $carpreemptionsCount = count($carpreemptions);
@@ -48,7 +76,7 @@ class ReportController extends Controller {
                     $cells->setFontSize(14);
                 });
                 $sheet->mergeCells('A'.$rowIndex.':R'.$rowIndex);
-                $sheet->row($rowIndex, array('บริษัทสยามนิสสัน'));
+                $sheet->row($rowIndex, array('บริษัทสยามนิสสัน'.$province->name));
 
                 $rowIndex++;
                 $sheet->cells('A'.$rowIndex.':R'.$rowIndex, function($cells) {
@@ -64,7 +92,7 @@ class ReportController extends Controller {
                     $cells->setFontSize(14);
                 });
                 $sheet->mergeCells('A'.$rowIndex.':R'.$rowIndex);
-                $sheet->row($rowIndex, array('เรียงตามวันที่รับรถ'));
+                $sheet->row($rowIndex, array('เรียงตาม'.$orderbytext));
 
                 $rowIndex++;
                 $sheet->mergeCells('A'.$rowIndex.':R'.$rowIndex);
@@ -81,16 +109,32 @@ class ReportController extends Controller {
                 $sheet->setBorder('A'.$rowIndex.':R'.$rowIndex, 'thin');
 
                 $rowNum = 1;
+                $modelGroup = '';
                 foreach($results as $item){
+
+                    if($orderbytype == 2 && $item->model != $modelGroup) {
+                        $modelGroup = $item->model;
+                        $rowIndex++;
+                        $sheet->cells('A'.$rowIndex.':R'.$rowIndex, function($cells) {
+                            $cells->setFontWeight('bold');
+                        });
+                        $sheet->mergeCells('A'.$rowIndex.':R'.$rowIndex);
+                        $sheet->row($rowIndex, array($modelGroup));
+
+                    }
+
                     $rowIndex++;
 
                     if($item->datewantgetcar != null && $item->datewantgetcar != '')
                         $item->datewantgetcar = date('d/m/Y', strtotime($item->datewantgetcar));
 
+                    if($item->notifysolddate != null && $item->notifysolddate != '')
+                        $item->notifysolddate = date('d/m/Y', strtotime($item->notifysolddate));
+
                     $sheet->row($rowIndex, array(
                         $rowNum, $item->no, date('d/m/Y', strtotime($item->dodate)),date('d/m/Y', strtotime($item->receiveddate)),
                         $item->days,$item->engineno,$item->chassisno, $item->keyno,$item->model,$item->submodel,$item->color,
-                        $item->parklocation,null,$item->custname,$item->empname,$item->fn,$item->documentstatus,$item->datewantgetcar
+                        $item->parklocation,$item->notifysolddate,$item->custname,$item->empname,$item->fn,$item->documentstatus,$item->datewantgetcar
                     ));
 
                     $sheet->cells('A'.$rowIndex.':H'.$rowIndex, function($cells) {
@@ -98,17 +142,17 @@ class ReportController extends Controller {
                     });
 
                     if($item->days > 360){
-                        $sheet->cell('K'.$rowIndex, function($cell) {
+                        $sheet->cell('E'.$rowIndex, function($cell) {
                             $cell->setBackground('#ff99ff');
                         });
                     }
                     elseif($item->days > 180 && $item->days <= 360){
-                        $sheet->cell('K'.$rowIndex, function($cell) {
+                        $sheet->cell('E'.$rowIndex, function($cell) {
                             $cell->setBackground('#00ff00');
                         });
                     }
                     elseif($item->days >= 90 && $item->days <= 180){
-                        $sheet->cell('K'.$rowIndex, function($cell) {
+                        $sheet->cell('E'.$rowIndex, function($cell) {
                             $cell->setBackground('#ffff66');
                         });
                     }
@@ -222,9 +266,12 @@ class ReportController extends Controller {
                 foreach($carRequired as $item){
                     $rowIndex++;
 
+                    if($item->contractdate != null && $item->contractdate != '')
+                        $item->contractdate = date('d/m/Y', strtotime($item->contractdate));
+
                     $sheet->row($rowIndex, array(
                         $rowNum, $item->model,null,$item->submodel,$item->color,$item->custname,$item->empname,$item->fn,
-                            $item->documentstatus,null,date('d/m/Y', strtotime($item->datewantgetcar)),$item->remark
+                            $item->documentstatus,$item->contractdate,date('d/m/Y', strtotime($item->datewantgetcar)),$item->remark
                     ));
 
                     $sheet->mergeCells('B'.$rowIndex.':C'.$rowIndex);
