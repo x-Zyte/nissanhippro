@@ -611,30 +611,44 @@
                     <div class="widget-body">
                         <div class="widget-body-inner" style="display: block;">
                             <div class="widget-main">
-                                <div class="form-group">
-                                    <label class="col-sm-1 control-label no-padding-right " >ผู้สั่งจอง</label>
-                                    <div class="col-sm-11" >
-                                        <label>
-                                            {!! Form::radio('customer-type',0, true, array('class' => 'ace', 'onchange'=>'NewCustomer("n")')) !!}
-                                            <span class="lbl"> มีชื่อในระบบ</span>&nbsp;&nbsp;
-                                            <div class="old-customer" style="display:inline-block">
-                                                {!! Form::select('bookingcustomerid', $customerselectlist, null, array('id'=>'bookingcustomerid', 'class' => 'chosen-select', 'style'=>'width:20%', 'onchange'=>'BookingCustomerChange(this)')); !!}
-                                            </div>
-                                        </label>
+                                @if($oper == 'new')
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label no-padding-right " >ผู้สั่งจอง</label>
+                                        <div class="col-sm-11" >
+                                            <label>
+                                                {!! Form::radio('customer-type',0, true, array('class' => 'ace', 'onchange'=>'NewCustomer("n")')) !!}
+                                                <span class="lbl"> มีชื่อในระบบ</span>&nbsp;&nbsp;
+                                                <div class="old-customer" style="display:inline-block">
+                                                    {!! Form::select('bookingcustomerid', $customerselectlist, null, array('id'=>'bookingcustomerid', 'class' => 'chosen-select', 'style'=>'width:20%', 'onchange'=>'BookingCustomerChange(this)')); !!}
+                                                </div>
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-1 control-label no-padding-right " ></label>
-                                    <div class="col-sm-11">
-                                        <label>
-                                            {!! Form::radio('customer-type',1, false, array('class' => 'ace', 'onchange'=>'NewCustomer("y")')) !!}
-                                            <span class="lbl"> ลูกค้าใหม่</span>&nbsp;&nbsp;
-                                            {!! Form::select('bookingcustomertitle', array('นาย' => 'นาย', 'นาง' => 'นาง', 'นางสาว' => 'นางสาว'), 'นาย', array('class' => 'new-customer', 'style'=>'font-size:14px; padding:5px 4px 6px; height:34px; display:none;')) !!}
-                                            {!! Form::text('bookingcustomerfirstname', null, array('id'=>'bookingcustomerfirstname', 'class' => 'new-customer', 'style'=>'display:none;', 'placeholder'=>'ชื่อ')) !!}
-                                            {!! Form::text('bookingcustomerlastname', null, array('id'=>'bookingcustomerlastname', 'class' => 'new-customer', 'style'=>'display:none;', 'placeholder'=>'นามสกุล')) !!}
-                                        </label>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label no-padding-right " ></label>
+                                        <div class="col-sm-11">
+                                            <label>
+                                                {!! Form::radio('customer-type',1, false, array('class' => 'ace', 'onchange'=>'NewCustomer("y")')) !!}
+                                                <span class="lbl"> ลูกค้าใหม่</span>&nbsp;&nbsp;
+                                                {!! Form::select('bookingcustomertitle', array('นาย' => 'นาย', 'นาง' => 'นาง', 'นางสาว' => 'นางสาว'), 'นาย', array('class' => 'new-customer', 'style'=>'font-size:14px; padding:5px 4px 6px; height:34px; display:none;')) !!}
+                                                {!! Form::text('bookingcustomerfirstname', null, array('id'=>'bookingcustomerfirstname', 'class' => 'new-customer', 'style'=>'display:none;', 'placeholder'=>'ชื่อ')) !!}
+                                                {!! Form::text('bookingcustomerlastname', null, array('id'=>'bookingcustomerlastname', 'class' => 'new-customer', 'style'=>'display:none;', 'placeholder'=>'นามสกุล')) !!}
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
+                                @else
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label no-padding-right " >ผู้สั่งจอง</label>
+                                        <div class="col-sm-11" >
+                                            <label>
+                                                {!! Form::text('bookingcustomername', null, array('id'=>'bookingcustomername','style'=>'width:300px;')) !!}
+                                                {!! Form::hidden('customer-type',0) !!}
+                                                {!! Form::hidden('bookingcustomerid') !!}
+                                            </label>
+                                        </div>
+                                    </div>
+                                @endif
                                 <div class="form-group">
                                     {!! Form::label('bookingcustomeraddress', 'ที่อยู่', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-11">
@@ -1964,6 +1978,8 @@
             @if($oper == 'view')
                 $("#form-carpreemption :input").prop("disabled", true);
                 $(".chosen-select").attr('disabled', true).trigger("chosen:updated");
+            @elseif($oper == 'edit')
+                $("#bookingcustomername").prop("disabled", true);
             @endif
 
         })

@@ -1077,6 +1077,24 @@
         });
 
         $('#form-carpayment').submit(function(){ //listen for submit event
+
+            var paybytype = $("input[name=paybytype]:checked").val();
+            var overdueinstallments = $("#overdueinstallments").val();
+            var totaloverdue = $("#totaloverdue").val();
+            var totalamount = 0;
+            if((paybytype == 1 || paybytype == 2) && overdueinstallments != null && overdueinstallments != '' && overdueinstallments != 0){
+                for (i = 1; i <= overdueinstallments; i++) {
+                    var amount = $("#overdueinstallmentamount"+i).val();
+                    if(amount == null || amount == '') amount = 0;
+                    totalamount = parseFloat(totalamount) + parseFloat(amount);
+                }
+
+                if(parseFloat(totaloverdue) != parseFloat(totalamount)){
+                    alert("จำนวนเงินรวมของทุกงวด ต้องเท่ากับ จำนวนเงินรวมค้างชำระทั้งสิ้น");
+                    return false;
+                }
+            }
+
             return true;
         });
     </script>

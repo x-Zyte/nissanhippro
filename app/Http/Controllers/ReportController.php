@@ -62,10 +62,17 @@ class ReportController extends Controller {
                 $results = DB::select('select * from report_carstock where provinceid = '.$province->id.' order by '.$orderby);
                 $carpreemptions = DB::select('select * from report_carstock_carpreemptions where provinceid = '.$province->id);
                 $carRequired = DB::select('select * from report_carstock_carrequired where provinceid = '.$province->id.' order by model,submodel');
+                $carTestDrives = DB::select('select * from car_test_drive where provinceid = '.$province->id);
+                $carTestUses = DB::select('select * from car_test_use where provinceid = '.$province->id);
 
                 $rsCount = count($results);
                 $carpreemptionsCount = count($carpreemptions);
                 $carRequiredCount = count($carRequired);
+                $carTestDriveCount = count($carTestDrives);
+                $carTestUseCount = count($carTestUses);
+                $maxRowCarTest = $carTestDriveCount;
+                if($carTestUseCount > $carTestDriveCount)
+                    $maxRowCarTest = $carTestUseCount;
 
                 $sheet->setAutoSize(true);
                 $rowIndex = 0;
@@ -169,6 +176,51 @@ class ReportController extends Controller {
                     $rowNum++;
                 }
 
+                //car test
+                $rowIndex+=2;
+                $sheet->row($rowIndex, array(null,'ลำดับ','รถ TEST DRIVE',null,null,null,null,null,null,null,'ลำดับ','รถ TEST ใช้งาน'));
+                $sheet->mergeCells('C'.$rowIndex.':G'.$rowIndex);
+                $sheet->mergeCells('L'.$rowIndex.':Q'.$rowIndex);
+                $sheet->cells('A'.$rowIndex.':R'.$rowIndex, function($cells) {
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+                $sheet->setBorder('B'.$rowIndex.':G'.$rowIndex, 'thin');
+                $sheet->setBorder('K'.$rowIndex.':Q'.$rowIndex, 'thin');
+
+                $rowNum = 0;
+                for ($i = 0; $i < $maxRowCarTest; $i++) {
+                    $rowIndex++;
+                    $rowNum++;
+
+                    if($rowNum <= count($carTestDrives) && $rowNum <= count($carTestUses)) {
+                        $carTestDrive = $carTestDrives[$i];
+                        $carTestUse = $carTestUses[$i];
+                        $sheet->row($rowIndex, array(null, $rowNum, $carTestDrive->model, null, $carTestDrive->submodel, $carTestDrive->color
+                            , null, null, null, null, $rowNum, $carTestUse->model, null, null, $carTestUse->submodel, $carTestUse->color));
+                        $sheet->setBorder('B'.$rowIndex.':G'.$rowIndex, 'thin');
+                        $sheet->mergeCells('C'.$rowIndex.':D'.$rowIndex);
+                        $sheet->setBorder('K'.$rowIndex.':Q'.$rowIndex, 'thin');
+                        $sheet->mergeCells('L'.$rowIndex.':N'.$rowIndex);
+                    }
+                    elseif($rowNum <= count($carTestDrives)){
+                        $carTestDrive = $carTestDrives[$i];
+                        $sheet->row($rowIndex, array(null, $rowNum, $carTestDrive->model, null, $carTestDrive->submodel, $carTestDrive->color));
+                        $sheet->setBorder('B'.$rowIndex.':G'.$rowIndex, 'thin');
+                        $sheet->mergeCells('C'.$rowIndex.':D'.$rowIndex);
+                    }
+                    else{
+                        $carTestUse = $carTestUses[$i];
+                        $sheet->row($rowIndex, array(null, null, null, null, null, null
+                        , null, null, null, null, $rowNum, $carTestUse->model, null, null, $carTestUse->submodel, $carTestUse->color));
+                        $sheet->setBorder('K'.$rowIndex.':Q'.$rowIndex, 'thin');
+                        $sheet->mergeCells('L'.$rowIndex.':N'.$rowIndex);
+                    }
+                    $sheet->cells('A' . $rowIndex . ':R' . $rowIndex, function ($cells) {
+                        $cells->setAlignment('center');
+                    });
+                }
+
                 $rowIndex+=2;
                 $sheet->row($rowIndex, array(null,null,null,null,null,null,null,null,'สีชมพู คือ เกิน 1ปีขึ้นไป'));
                 $sheet->cell('i'.$rowIndex, function($cell) {
@@ -262,9 +314,10 @@ class ReportController extends Controller {
                 });
                 $sheet->setBorder('A'.$rowIndex.':N'.$rowIndex, 'thin');
 
-                $rowNum = 1;
+                $rowNum = 0;
                 foreach($carRequired as $item){
                     $rowIndex++;
+                    $rowNum++;
 
                     if($item->contractdate != null && $item->contractdate != '')
                         $item->contractdate = date('d/m/Y', strtotime($item->contractdate));
@@ -285,8 +338,6 @@ class ReportController extends Controller {
                     });
 
                     $sheet->setBorder('A'.$rowIndex.':N'.$rowIndex, 'thin');
-
-                    $rowNum++;
                 }
 
                 /*$data = array(

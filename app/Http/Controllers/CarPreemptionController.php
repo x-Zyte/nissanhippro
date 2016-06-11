@@ -466,6 +466,7 @@ class CarPreemptionController extends Controller {
         $model = CarPreemption::find($id);
         
         $bookingcustomer = Customer::find($model->bookingcustomerid);
+        $model->bookingcustomername = $bookingcustomer->title.' '.$bookingcustomer->firstname.' '.$bookingcustomer->lastname;
         $model->provincebranchid = $bookingcustomer->provinceid;
         $model->bookingcustomeraddress = $bookingcustomer->address;
         $model->bookingcustomerprovinceid = $bookingcustomer->addprovinceid;
@@ -819,6 +820,7 @@ class CarPreemptionController extends Controller {
         $model = CarPreemption::find($id);
 
         $bookingcustomer = Customer::find($model->bookingcustomerid);
+        $model->bookingcustomername = $bookingcustomer->title.' '.$bookingcustomer->firstname.' '.$bookingcustomer->lastname;
         $model->provincebranchid = $bookingcustomer->provinceid;
         $model->bookingcustomeraddress = $bookingcustomer->address;
         $model->bookingcustomerprovinceid = $bookingcustomer->addprovinceid;
