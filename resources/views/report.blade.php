@@ -3,6 +3,18 @@
 
 @section('content')
     <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> รายงาน</h3>
+
+    @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <strong>ขออภัย!</strong> มีปัญหาบางอย่างกับการป้อนข้อมูลของคุณ<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
     <!-- สต็อครถ -->
     <div class="row">
         <div class="col-xs-1 col-sm-1"></div>
@@ -21,22 +33,32 @@
                     <div class="widget-body-inner" style="display: block;">
                         <div class="widget-main">
                             {!! Form::open(array('url' => 'report/carstock', 'id'=>'report-carstock', 'class'=>'form-horizontal', 'role'=>'form')) !!}
-                                <div class="form-group">
-                                    {!! Form::label('provinceid', 'จังหวัด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2" style="width: 200px;">
+                                <table>
+                                <tr>
+                                    <td>จังหวัด</td>
+                                    <td style="padding-left: 10px;">
                                         {!! Form::select('provinceid', $provincebranchselectlist, null, array('class' => 'chosen-select')); !!}
-                                    </div>
-                                    {!! Form::label('orderbytype', 'เรียงตาม', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
-                                    <div class="col-sm-2"  style="width: 200px;">
+                                    </td>
+                                    <td style="padding-left: 10px;">เรียงตาม</td>
+                                    <td style="padding-left: 10px;">
                                         {!! Form::select('orderbytype', array('1' => 'วันที่รับรถ', '2' => 'แบบ/รุ่นและวันที่รับรถ'), null, array('class' => 'chosen-select')); !!}
-                                    </div>
-
-                                    <div class="col-sm-1" style="margin-left: 20px;">
+                                    </td>
+                                    <td style="padding-left: 10px;">วันที่</td>
+                                    <td style="padding-left: 10px;">
+                                        <div class="input-group">
+                                            {!! Form::text('date', date("d-m-Y"), array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date', 'onchange'=>'DateChange();')) !!}
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar bigger-110"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td style="padding-left: 20px;">
                                         <button id="btnSubmit" class="btn btn-sm btn-primary" type="submit">
                                             Generate
                                         </button>
-                                    </div>
-                                </div>
+                                    </td>
+                                </tr>
+                                </table>
                             {!! Form::close() !!}
                         </div>
                     </div>
@@ -47,6 +69,14 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
+            $('.date-picker').datepicker({
+                autoclose: true,
+                todayHighlight: true
+            })
+
+            $('.date-picker').parent().width(140);
+            $('.date-picker').width(90);
+
             $('.chosen-select').chosen({allow_single_deselect:true});
             //resize the chosen on window resize
             $(window).on('resize.chosen', function() {

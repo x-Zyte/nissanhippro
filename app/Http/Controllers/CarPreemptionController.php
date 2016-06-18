@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use App\Models\CarBrand;
+use App\Models\CarPayment;
 use App\Models\CarPreemption;
 use App\Models\CarPreemptionGiveaway;
 use App\Models\Color;
@@ -464,6 +465,10 @@ class CarPreemptionController extends Controller {
         if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
         $model = CarPreemption::find($id);
+
+        $carPayment = CarPayment::where('carpreemptionid',$id)->first();
+        if(!Auth::user()->isadmin && $carPayment != null && $carPayment->deliverycarbookno != null && $carPayment->deliverycarbookno != '')
+            return "ไม่สามารถแก้ไขข้อมูลการจองได้ เนื่องจากมีการส่งรถแล้ว!!";
         
         $bookingcustomer = Customer::find($model->bookingcustomerid);
         $model->bookingcustomername = $bookingcustomer->title.' '.$bookingcustomer->firstname.' '.$bookingcustomer->lastname;

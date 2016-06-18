@@ -27,8 +27,10 @@ class CreateCarPaymentsTable extends Migration {
             $table->decimal('amountperinstallment', 10, 2);
             $table->decimal('insurancepremium', 10, 2);
             $table->decimal('overrideopenbill', 10, 2)->nullable();
-            $table->integer('paymentmode')->nullable()->comment('0:ชำระงวดแรก, 1:ชำระงวดล่วงหน้า');
+            //$table->integer('paymentmode')->nullable()->comment('0:ชำระงวดแรก, 1:ชำระงวดล่วงหน้า');
+            $table->decimal('payfirstinstallment', 10, 2)->nullable();
             $table->integer('installmentsinadvance')->nullable();
+            $table->decimal('payinstallmentsinadvance', 10, 2)->nullable();
             $table->integer('insurancecompanyid')->unsigned()->nullable();
             $table->foreign('insurancecompanyid')->references('id')->on('insurance_companies');
             $table->decimal('capitalinsurance', 10, 2)->nullable();

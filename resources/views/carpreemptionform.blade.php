@@ -261,9 +261,8 @@
                     $('#registerprovinceid').val(registerprovinceid).trigger('chosen:updated');
                 }
 
-                //$('#registrationfee').val(data.registercost);
-                Calregistrationfee();
                 $('#compulsorymotorinsurancefee').val(data.actcharged);
+                Calregistrationfee();
                 $('#colorprice').val(null);
                 $('#totalcarprice').val(null);
             });
@@ -330,6 +329,8 @@
             if(registrationtype == 0) $('#registrationfee').val(registrationfee[0]);
             else if(registrationtype == 1) $('#registrationfee').val(registrationfee[1]);
             else $('#registrationfee').val(registrationfee[2]);
+
+            CalTotalFree();
         }
 
         function CarobjectivetypeChange(){
@@ -507,7 +508,6 @@
                 }
             }
         }
-
     </script>
 
     @if($oper == 'new')
@@ -783,7 +783,7 @@
                                     <div class="col-sm-2">
                                         {!! Form::number('subdown', null, array('step' => '1', 'min' => '0' ,'placeholder' => 'บาท', 'id'=>'subdown', 'onchange'=>'CalTransferfee();')) !!}
                                     </div>
-                                    {!! Form::label('accessories', 'บวกอุปกรณ์', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
+                                    {!! Form::label('accessories', 'บวกอุปกรณ์หลอก', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
                                         {!! Form::number('accessories', null, array('step' => '1', 'min' => '0' ,'placeholder' => 'บาท')) !!}
                                     </div>
@@ -981,6 +981,11 @@
                                                 <span class="lbl">  ราชการ</span>&nbsp;&nbsp;
                                                 {!! Form::number('registrationfee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id' => 'registrationfee', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                             </label>
+                                            &nbsp;&nbsp;
+                                            <label>
+                                                {!! Form::checkbox('registrationfeefree', 1, false, array('class' => 'ace', 'onchange'=>'CalTotalFree();', 'id' => 'registrationfeefree')) !!}
+                                                <span class="lbl" style="width:80px;" >  แถม</span>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -995,8 +1000,15 @@
                                 <div class="form-group">
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('compulsorymotorinsurancefee', '6. ค่า พ.ร.บ.', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
-                                        <div class="col-sm-3">
-                                            {!! Form::number('compulsorymotorinsurancefee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                        <div class="col-sm-5">
+                                            <label>
+                                            {!! Form::number('compulsorymotorinsurancefee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:226.31px;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                            </label>
+                                            &nbsp;&nbsp;
+                                            <label>
+                                                {!! Form::checkbox('compulsorymotorinsurancefeefree', 1, false, array('class' => 'ace', 'onchange'=>'CalTotalFree();', 'id' => 'compulsorymotorinsurancefeefree')) !!}
+                                                <span class="lbl" style="width:80px;" >  แถม</span>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -1013,6 +1025,29 @@
                                         {!! Form::label('otherfee', '8. ค่าอื่นๆ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
                                             {!! Form::number('otherfee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;')) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-9 no-padding-left">
+                                        {!! Form::label('subsidise', '9. SUBSIDISE(หักค่าชดชเยดอกเบี้ยรถยนต์)', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                        <div class="col-sm-3">
+                                            {!! Form::number('subsidise', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'id'=>'subsidise', 'onchange'=>'CalTotalFree();')) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-9 no-padding-left">
+                                        {!! Form::label('implementfee', '10. ค่าดำเนินการ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                        <div class="col-sm-5">
+                                            <label>
+                                            {!! Form::number('implementfee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:226.31px;', 'id'=>'implementfee', 'onchange'=>'CalTotalFree();')) !!}
+                                            </label>
+                                            &nbsp;&nbsp;
+                                            <label>
+                                                {!! Form::checkbox('implementfeefree', 1, false, array('class' => 'ace', 'onchange'=>'CalTotalFree();', 'id' => 'implementfeefree')) !!}
+                                                <span class="lbl" style="width:80px;" >  แถม</span>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -1059,7 +1094,13 @@
                                 <div class="form-group">
                                     {!! Form::label('giveawayadditionalcharges', 'ลูกค้าจ่ายเพิ่มเติ่มค่าของแถม', array('class' => 'col-sm-3 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::number('giveawayadditionalcharges', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'onchange'=>'CalculateAccessoriesFee();')) !!}
+                                        {!! Form::number('giveawayadditionalcharges', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'onchange'=>'GiveawayadditionalchargesChange();')) !!}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {!! Form::label('totalfree', 'รวมแถมทั้งหมด', array('class' => 'col-sm-3 control-label no-padding-right')) !!}
+                                    <div class="col-sm-2">
+                                        {!! Form::number('totalfree', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'id'=>'totalfree', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                     </div>
                                 </div>
 
@@ -1376,6 +1417,54 @@
             @endforeach
         ];
 
+        function GiveawayadditionalchargesChange(){
+            CalTotalFree();
+            CalculateAccessoriesFee();
+        }
+
+        function CalTotalFree(){
+            var totalfree = 0;
+            var datas = $("#grid-table-in-form").jqGrid('getGridParam', 'data');
+            if(datas.length > 0) {
+                datas.forEach(function (arrayItem) {
+                    totalfree = parseFloat(totalfree) + parseFloat(arrayItem.price);
+                });
+            }
+
+            var giveawayadditionalcharges = $('#giveawayadditionalcharges').val();
+            if(giveawayadditionalcharges == null || giveawayadditionalcharges == '')
+                giveawayadditionalcharges = 0;
+            totalfree = parseFloat(totalfree) - parseFloat(giveawayadditionalcharges);
+
+            if($('#registrationfeefree').is(':checked')){
+                var registrationfee = $('#registrationfee').val();
+                if(registrationfee == null || registrationfee == '')
+                    registrationfee = 0;
+                totalfree = parseFloat(totalfree) + parseFloat(registrationfee);
+            }
+
+            if($('#compulsorymotorinsurancefeefree').is(':checked')){
+                var compulsorymotorinsurancefee = $('#compulsorymotorinsurancefee').val();
+                if(compulsorymotorinsurancefee == null || compulsorymotorinsurancefee == '')
+                    compulsorymotorinsurancefee = 0;
+                totalfree = parseFloat(totalfree) + parseFloat(compulsorymotorinsurancefee);
+            }
+
+            var subsidise = $('#subsidise').val();
+            if(subsidise == null || subsidise == '')
+                subsidise = 0;
+            totalfree = parseFloat(totalfree) + parseFloat(subsidise);
+
+            if($('#implementfeefree').is(':checked')){
+                var implementfee = $('#implementfee').val();
+                if(implementfee == null || implementfee == '')
+                    implementfee = 0;
+                totalfree = parseFloat(totalfree) + parseFloat(implementfee);
+            }
+
+            $('#totalfree').val(parseFloat(totalfree).toFixed(2));
+        }
+
         function CalculateAccessoriesFee(){
             var datas = $("#grid-table-in-form2").jqGrid('getGridParam', 'data');
 
@@ -1483,6 +1572,9 @@
             // !!! the most important step: skip ajax request to the server
             options.processing = true;
 
+            if(this.id == "grid-table-in-form"){
+                CalTotalFree();
+            }
             if(this.id == "grid-table-in-form2"){
                 CalculateAccessoriesFee();
             }
@@ -1616,7 +1708,7 @@
             function check_giveawaysaleprice(value, colname) {
                 var giveawayid = $('#giveawayid').val();
                 $.ajax({
-                    url: '../../giveaway/check_saleprice',
+                    url: window.location.origin+'/giveaway/check_saleprice',
                     data: { id:giveawayid,saleprice:value, _token: "{{ csrf_token() }}" },
                     type: 'POST',
                     async: false,
@@ -1744,7 +1836,7 @@
                             // reload grid to make the row from the next page visable.
                             $this.trigger("reloadGrid", [{page: newPage}]);
                         }
-
+                        CalTotalFree();
                         return true;
                     },
                     processing: true

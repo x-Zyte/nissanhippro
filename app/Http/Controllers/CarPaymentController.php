@@ -442,6 +442,9 @@ class CarPaymentController extends Controller {
 
         $model = CarPayment::find($id);
 
+        if(!Auth::user()->isadmin && $model->deliverycarbookno != null && $model->deliverycarbookno != '')
+            return "ไม่สามารถแก้ไขข้อมูลการชำระเงินได้ เนื่องจากมีการส่งรถแล้ว!!";
+
         $carpreemption = CarPreemption::find($model->carpreemptionid);
 
         $carpreemptionselectlist = array();

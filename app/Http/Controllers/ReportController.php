@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Models\SystemDatas\Province;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Facades\Excel;
@@ -20,9 +21,18 @@ class ReportController extends Controller {
      */
     public function index()
     {
-        $provincebranchs = Province::whereHas('branchs', function($q){
-            $q->where('isheadquarter', true);
-        })->orderBy('name', 'asc')->get(['id', 'name']);
+        if(Auth::user()->isadmin){
+            $provincebranchs = Province::whereHas('branchs', function($q){
+                $q->where('isheadquarter', true);
+            })->orderBy('name', 'asc')->get(['id', 'name']);
+        }
+        else{
+            $provincebranchs = Province::where('id', Auth::user()->provinceid)
+                ->whereHas('branchs', function($q){
+                    $q->where('isheadquarter', true);
+                })
+                ->orderBy('name', 'asc')->get(['id', 'name']);
+        }
         $provincebranchselectlist = array();
         foreach($provincebranchs as $item){
             $provincebranchselectlist[$item->id] = $item->name;
@@ -34,9 +44,18 @@ class ReportController extends Controller {
 
     public function carstock(Request $request)
     {
+        $this->validate($request, [
+                'date' => 'required'
+            ],
+            [
+                'date.required' => 'รายงาน สต็อครถ - วันที่ จำเป็นต้องเลือก'
+            ]
+        );
+
         $input = $request->all();
         $provinceid = $input['provinceid'];
         $orderbytype = $input['orderbytype'];
+        $date = date('Y-m-d', strtotime($input['date']));
 
         $province = Province::find($provinceid);
         if($orderbytype == 1)
@@ -46,27 +65,21 @@ class ReportController extends Controller {
 
         $filename = 'สต็อครถ'.$province->name.'_เรียงตาม'.$orderbytext.'_'.date("d/m/Y");
 
-        Excel::create($filename, function($excel) use($province,$orderbytype,$orderbytext){
+        Excel::create($filename, function($excel) use($province,$orderbytype,$orderbytext,$date){
             // Set the title
             $excel->setTitle('no title');
             $excel->setCreator('no no creator')->setCompany('no company');
             $excel->setDescription('report file');
 
-            $excel->sheet('sheet1', function($sheet) use($province,$orderbytype,$orderbytext){
+            $excel->sheet('sheet1', function($sheet) use($province,$orderbytype,$orderbytext,$date){
 
-                if($orderbytype == 1)
-                    $orderby = 'dodate';
-                else
-                    $orderby = 'model,submodel,dodate';
-
-                $results = DB::select('select * from report_carstock where provinceid = '.$province->id.' order by '.$orderby);
-                $carpreemptions = DB::select('select * from report_carstock_carpreemptions where provinceid = '.$province->id);
-                $carRequired = DB::select('select * from report_carstock_carrequired where provinceid = '.$province->id.' order by model,submodel');
-                $carTestDrives = DB::select('select * from car_test_drive where provinceid = '.$province->id);
-                $carTestUses = DB::select('select * from car_test_use where provinceid = '.$province->id);
+                $results = DB::select('CALL report_carstock('.$province->id.','."'".$date."'".','.$orderbytype.')');
+                $carRequired = DB::select('CALL report_carstock_carrequired('.$province->id.','."'".$date."'".')');
+                $carTestDrives = DB::select('select * from car_test_drive where provinceid = '.$province->id.' and dodate <= '."'".$date."'");
+                $carTestUses = DB::select('select * from car_test_use where provinceid = '.$province->id.' and dodate <= '."'".$date."'");
 
                 $rsCount = count($results);
-                $carpreemptionsCount = count($carpreemptions);
+                $matchedCount = 0;
                 $carRequiredCount = count($carRequired);
                 $carTestDriveCount = count($carTestDrives);
                 $carTestUseCount = count($carTestUses);
@@ -118,6 +131,7 @@ class ReportController extends Controller {
                 $rowNum = 1;
                 $modelGroup = '';
                 foreach($results as $item){
+                    if($item->custname != null && $item->custname != '') $matchedCount++;
 
                     if($orderbytype == 2 && $item->model != $modelGroup) {
                         $modelGroup = $item->model;
@@ -131,6 +145,8 @@ class ReportController extends Controller {
                     }
 
                     $rowIndex++;
+                    if($item->receiveddate != null && $item->receiveddate != '')
+                        $item->receiveddate = date('d/m/Y', strtotime($item->receiveddate));
 
                     if($item->datewantgetcar != null && $item->datewantgetcar != '')
                         $item->datewantgetcar = date('d/m/Y', strtotime($item->datewantgetcar));
@@ -139,7 +155,7 @@ class ReportController extends Controller {
                         $item->notifysolddate = date('d/m/Y', strtotime($item->notifysolddate));
 
                     $sheet->row($rowIndex, array(
-                        $rowNum, $item->no, date('d/m/Y', strtotime($item->dodate)),date('d/m/Y', strtotime($item->receiveddate)),
+                        $rowNum, $item->no, date('d/m/Y', strtotime($item->dodate)),$item->receiveddate,
                         $item->days,$item->engineno,$item->chassisno, $item->keyno,$item->model,$item->submodel,$item->color,
                         $item->parklocation,$item->notifysolddate,$item->custname,$item->empname,$item->fn,$item->documentstatus,$item->datewantgetcar
                     ));
@@ -242,7 +258,7 @@ class ReportController extends Controller {
 
 
                 $rowIndex+=2;
-                $sheet->row($rowIndex, array(null,null,null,null,'STOCK',$rsCount,null,null,'จับคู่',null,$carpreemptionsCount-$carRequiredCount));
+                $sheet->row($rowIndex, array(null,null,null,null,'STOCK',$rsCount,null,null,'จับคู่',null,$matchedCount));
                 $sheet->cells('E'.$rowIndex.':F'.$rowIndex, function($cells) {
                     $cells->setFontWeight('bold');
                     $cells->setFontSize(14);
@@ -258,7 +274,7 @@ class ReportController extends Controller {
                     $cell->setAlignment('center');
                 });
                 $rowIndex++;
-                $sheet->row($rowIndex, array(null,null,null,null,'ฝากจอด',0,null,null,'ว่าง',null,$rsCount-($carpreemptionsCount-$carRequiredCount)));
+                $sheet->row($rowIndex, array(null,null,null,null,'ฝากจอด',0,null,null,'ว่าง',null,$rsCount-$matchedCount));
                 $sheet->cells('E'.$rowIndex.':F'.$rowIndex, function($cells) {
                     $cells->setFontWeight('bold');
                     $cells->setFontSize(14);

@@ -18,6 +18,7 @@ class CreateCarsTable extends Migration {
 
             $table->integer('provinceid')->unsigned();
             $table->foreign('provinceid')->references('id')->on('provinces');
+            $table->integer('datatype')->comment('0:ข้อมูลเก่า, 1:ข้อมูลปัจจุบัน');
             $table->integer('carmodelid')->unsigned();
             $table->foreign('carmodelid')->references('id')->on('car_models');
             $table->integer('carsubmodelid')->unsigned();
@@ -26,9 +27,10 @@ class CreateCarsTable extends Migration {
             $table->string('dealername',100)->nullable();
             $table->string('no',10);
             $table->dateTime('dodate');
-            $table->dateTime('receiveddate');
-            $table->string('engineno',50);
-            $table->unique('engineno');
+            $table->string('dono',20);
+            $table->dateTime('receiveddate')->nullable();
+            $table->string('engineno',50)->nullable();
+            $table->unique('engineno')->nullable();
             $table->string('chassisno',50);
             $table->unique('chassisno');
             $table->integer('keyno')->nullable();

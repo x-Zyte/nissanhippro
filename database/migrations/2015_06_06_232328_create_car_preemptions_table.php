@@ -69,17 +69,22 @@ class CreateCarPreemptionsTable extends Migration {
             $table->foreign('registerprovinceid')->references('id')->on('provinces');
             $table->integer('registrationtype')->nullable()->comment('0:บุคคล, 1:นิติบุคคล, 2:ราชการ');
             $table->decimal('registrationfee', 10, 2)->nullable();
-
+            $table->boolean('registrationfeefree')->default(false);
             $table->decimal('transferfee', 10, 2)->nullable()->comment('ค่าโอน กรณีซื้อรถบริษัท - 0.75% ของราคาขายจริง');
             $table->decimal('transferoperationfee', 10, 2)->nullable()->comment('ค่าดำเนินการโอน กรณีซื้อรถบริษัท - 2000');
 
             $table->decimal('insurancefee', 10, 2);
             $table->decimal('compulsorymotorinsurancefee', 10, 2);
+            $table->boolean('compulsorymotorinsurancefeefree')->default(false);
             $table->decimal('accessoriesfee', 10, 2);
             $table->decimal('otherfee', 10, 2);
+            $table->decimal('subsidise', 10, 2);
+            $table->decimal('implementfee', 10, 2);
+            $table->boolean('implementfeefree')->default(false);
             $table->dateTime('datewantgetcar');
 
             $table->decimal('giveawayadditionalcharges', 10, 2);
+            $table->decimal('totalfree', 10, 2);
 
             $table->integer('buyercustomerid')->unsigned();
             $table->foreign('buyercustomerid')->references('id')->on('customers');

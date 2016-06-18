@@ -12,7 +12,7 @@ class Car extends Model {
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['provinceid', 'carmodelid', 'carsubmodelid', 'no', 'dodate', 'receiveddate','dealername', 'engineno', 'chassisno', 'keyno',
+    protected $fillable = ['provinceid','datatype', 'carmodelid', 'carsubmodelid', 'no', 'dodate', 'dono','receiveddate','dealername', 'engineno', 'chassisno', 'keyno',
         'colorid', 'objective', 'receivetype', 'receivecarfilepath', 'issold', 'isregistered', 'isdelivered','parklocation','notifysolddate',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
@@ -26,11 +26,13 @@ class Car extends Model {
             $model->isregistered = false;
             $model->isdelivered = false;
 
+            if($model->datatype == 1) $model->no = '';
             if($model->receivetype == 0) $model->dealername = null;
             if($model->objective != 0) $model->keyno = null;
 
             $model->dodate = date('Y-m-d', strtotime($model->dodate));
-            $model->receiveddate = date('Y-m-d', strtotime($model->receiveddate));
+            if($model->receiveddate == '') $model->receiveddate = null;
+            else $model->receiveddate = date('Y-m-d', strtotime($model->receiveddate));
             if($model->notifysolddate == '') $model->notifysolddate = null;
             else $model->notifysolddate = date('Y-m-d', strtotime($model->notifysolddate));
 
@@ -43,21 +45,28 @@ class Car extends Model {
         static::created(function($model)
         {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Add','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
-            //$rs = DB::select('call running_number("'.$model->provinceid.date("Y").'","'.$model->receivetype.'")');
-            //$model->no = $rs[0]->no;
-            if($model->objective == 0){
-            //$min = KeySlot::where('provinceid', $model->provinceid)->where('active',true)->min('no');
-            //if($min == null){
-            //    $branch = Branch::where('provinceid', $model->provinceid)->where('isheadquarter', true)->first();
-            //    $branch->keyslot = $branch->keyslot+1;
-            //    $branch->save();
-            //    $model->keyno = $branch->keyslot;
-            //}
-            //else{
-            //    $model->keyno = $min;
-            //}
-            //$model->save();
-            KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->update(['carid' => $model->id ,'active' => false]);
+            if($model->datatype == 1){
+                $rs = DB::select('call running_number("'.$model->provinceid.date("Y").'","'.$model->receivetype.'")');
+                $model->no = $rs[0]->no;
+                if($model->objective == 0){
+                    $min = KeySlot::where('provinceid', $model->provinceid)->where('active',true)->min('no');
+                    if($min == null){
+                        $branch = Branch::where('provinceid', $model->provinceid)->where('isheadquarter', true)->first();
+                        $branch->keyslot = $branch->keyslot+1;
+                        $branch->save();
+                        $model->keyno = $branch->keyslot;
+                    }
+                    else{
+                        $model->keyno = $min;
+                    }
+                    $model->save();
+                    KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->update(['carid' => $model->id ,'active' => false]);
+                }
+            }
+            else{
+                if($model->objective == 0){
+                    KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->update(['carid' => $model->id ,'active' => false]);
+                }
             }
         });
 

@@ -62,6 +62,8 @@ function pickDate( cellvalue, options, cell ) {
 }
 
 function check_AZ09(value, colname) {
+    if(value == null || value == '') return [true, ""];
+
     var re = new RegExp("^[A-Z0-9]+$");
     return [re.test(value), value + " ต้องเป็นภาษาอังกฤษตัวพิมพ์ใหญ่ ตัวเลข เท่านั้น"];
 }

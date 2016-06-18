@@ -56,8 +56,8 @@
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
                     {name:'statusexpect',index:'statusexpect', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:ไม่มีการติดตาม;1:กำลังติดตามอยู่;2:ยกเลิก - ไปซื้อดีลเลอร์อื่น;3:ยกเลิก - ไปซื้อยี่ห้ออื่น;4:ยกเลิก - เปลี่ยนใจไม่ซื้อแล้ว;5:ยกเลิก - ติดต่อไม่ได้"},align:'center'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:ไม่มีการติดตาม;1:กำลังติดตามอยู่;2:ยกเลิก - ไปซื้อดีลเลอร์อื่น;3:ยกเลิก - ไปซื้อยี่ห้ออื่น;4:ยกเลิก - เปลี่ยนใจไม่ซื้อแล้ว;5:ยกเลิก - ติดต่อไม่ได้" }},
-                    {name:'title',index:'title', width:70, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว"},align:'left'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว" }},
+                    {name:'title',index:'title', width:70, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว;บริษัท:บริษัท"},align:'left'
+                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว;บริษัท:บริษัท" }},
                     {name:'firstname',index:'firstname', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'lastname',index:'lastname', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},align:'left'},
                     {name:'phone1',index:'phone1', width:100,editable: true,editrules:{required:true},editoptions:{size:"20",maxlength:"20"},align:'left'},
