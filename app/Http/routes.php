@@ -243,6 +243,8 @@ Route::post('cancelcarpreemption/save', 'CancelCarPreemptionController@save');
 //Redlabelhistory
 Route::get('redlabelhistory/read', 'RedlabelhistoryController@read');
 Route::post('redlabelhistory/update', 'RedlabelhistoryController@update');
+Route::get('redlabelhistory/readCarPreemptionSelectlist/{carpreemptionid}', 'RedlabelhistoryController@readCarPreemptionSelectlist');
+Route::get('redlabelhistory/readCarPreemptionSelectlistForDisplayInGrid/{redlabelid}', 'RedlabelhistoryController@readCarPreemptionSelectlistForDisplayInGrid');
 
 Route::get('report', 'ReportController@index');
 Route::post('report/carstock', 'ReportController@carstock');

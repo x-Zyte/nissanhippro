@@ -77,17 +77,13 @@ class RedLabelController extends Controller {
 
         if(Auth::user()->isadmin){
             $carpreemptions = CarPreemption::has('redlabelhistories')
-                ->orWhere('status',0)
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
                 ->get(['id','bookno','no','buyercustomerid','salesmanemployeeid']);
         }
         else{
             $carpreemptions = CarPreemption::where('provinceid', Auth::user()->provinceid)
-                ->where(function ($query) {
-                    $query->has('redlabelhistories')
-                        ->orWhere('status',0);
-                })
+                ->has('redlabelhistories')
                 ->orderBy('bookno', 'asc')
                 ->orderBy('no', 'asc')
                 ->get(['id','bookno','no','buyercustomerid','salesmanemployeeid']);

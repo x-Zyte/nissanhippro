@@ -102,6 +102,10 @@
                         }
                     });
 
+                    $.get('redlabelhistory/readCarPreemptionSelectlistForDisplayInGrid/'+row_id, function(data){
+                        $("#"+subgrid_table_id).setColProp('carpreemptionid', { editoptions: { value: data.carpreemptionselectlist } });
+                    });
+
                     //resize to fit page size
                     $(window).on('resize.jqGridSubGrid', function () {
                         resizeSubGrid(subgrid_table_id);
@@ -229,6 +233,16 @@
                                     form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
                                     style_edit_form(form);
 
+                                    var carpreemptionid = $('#carpreemptionid').val();
+
+                                    $.get('redlabelhistory/readCarPreemptionSelectlist/'+carpreemptionid, function(data){
+                                        $('#carpreemptionid').children('option:not(:first)').remove();
+                                        $.each(data, function(i, option) {
+                                            $('#carpreemptionid').append($('<option/>').attr("value", option.id).text(option.text));
+                                        });
+                                        $('#carpreemptionid').val(carpreemptionid);
+                                    });
+
                                     var dlgDiv = $("#editmod" + jQuery("#"+subgrid_table_id)[0].id);
                                     centerGridForm(dlgDiv);
                                 },
@@ -280,6 +294,13 @@
                                     style_edit_form(form);
 
                                     $('#tr_returndate').hide();
+
+                                    $.get('redlabelhistory/readCarPreemptionSelectlist/0', function(data){
+                                        $('#carpreemptionid').children('option:not(:first)').remove();
+                                        $.each(data, function(i, option) {
+                                            $('#carpreemptionid').append($('<option/>').attr("value", option.id).text(option.text));
+                                        });
+                                    });
 
                                     var dlgDiv = $("#editmod" + jQuery("#"+subgrid_table_id)[0].id);
                                     centerGridForm(dlgDiv);
