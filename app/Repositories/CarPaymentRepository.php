@@ -16,7 +16,9 @@ class CarPaymentRepository extends EloquentRepositoryAbstract
     {
         $this->Database = new CarPayment;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id','carpreemptionid', 'date', 'carid', 'amountperinstallment', 'insurancepremium', 'paymentmode','installmentsinadvance',
+        $this->crudFields = array('oper', 'id','carpreemptionid', 'date', 'carid', 'amountperinstallment', 'insurancepremium',
+            'overrideopenbill','firstinstallmentpay','installmentsinadvance',
+            'accessoriesfeeactuallypaid','accessoriesfeeincludeinyodjud',
             'insurancecompanyid', 'capitalinsurance', 'compulsorymotorinsurancecompanyid', 'totalpayments',
             'buyerpay', 'overdue', 'overdueinterest', 'totaloverdue', 'paybytype', 'paybyotherdetails',
             'overdueinstallments', 'overdueinstallmentdate1', 'overdueinstallmentamount1',

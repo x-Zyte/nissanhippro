@@ -228,8 +228,11 @@ class CancelCarPreemptionController extends Controller {
 
         $input = $request->all();
 
-        if ($request->has('id'))
+        if ($request->has('id')){
             $model = CancelCarPreemption::find($input['id']);
+            if($model == null)
+                return "ขออภัย!! ไม่พบข้อมูลที่จะทำการแก้ไขในระบบ เนื่องจากอาจถูกลบไปแล้ว";
+        }
         else
             $model = new CancelCarPreemption;
 

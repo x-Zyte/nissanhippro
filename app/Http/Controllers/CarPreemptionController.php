@@ -1121,6 +1121,8 @@ class CarPreemptionController extends Controller {
                 'compulsorymotorinsurancefee' => 'required',
                 'accessoriesfee' => 'required',
                 'otherfee' => 'required',
+                'subsidise' => 'required',
+                'implementfee' => 'required',
                 'datewantgetcar' => 'required',
                 'giveawayadditionalcharges' => 'required',
 
@@ -1166,6 +1168,8 @@ class CarPreemptionController extends Controller {
                 'compulsorymotorinsurancefee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่า พ.ร.บ. จำเป็นต้องกรอก',
                 'accessoriesfee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าอุปกรณ์ จำเป็นต้องกรอก',
                 'otherfee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าอื่นๆ จำเป็นต้องกรอก',
+                'subsidise.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน SUBSIDISE จำเป็นต้องกรอก',
+                'implementfee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าดำเนินการ จำเป็นต้องกรอก',
                 'datewantgetcar.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน วันที่ต้องการรับรถ จำเป็นต้องกรอก',
                 'giveawayadditionalcharges.required' => 'รายละเอียดอื่นๆ ลูกค้าจ่ายเพิ่มเติ่มค่าของแถม จำเป็นต้องกรอก',
 
@@ -1184,8 +1188,11 @@ class CarPreemptionController extends Controller {
 
         $input = $request->all();
 
-        if ($request->has('id'))
+        if ($request->has('id')){
             $model = CarPreemption::find($input['id']);
+            if($model == null)
+                return "ขออภัย!! ไม่พบข้อมูลที่จะทำการแก้ไขในระบบ เนื่องจากอาจถูกลบไปแล้ว";
+        }
         else
             $model = new CarPreemption;
 
@@ -1259,12 +1266,21 @@ class CarPreemptionController extends Controller {
         $model->registerprovinceid = $input['registerprovinceid'];
         $model->registrationtype = $input['registrationtype'];
         $model->registrationfee = $input['registrationfee'];
+        if ($request->has('registrationfeefree')) $model->registrationfeefree = $input['registrationfeefree'];
+        else $model->registrationfeefree = 0;
         $model->insurancefee = $input['insurancefee'];
         $model->compulsorymotorinsurancefee = $input['compulsorymotorinsurancefee'];
+        if ($request->has('compulsorymotorinsurancefeefree')) $model->compulsorymotorinsurancefeefree = $input['compulsorymotorinsurancefeefree'];
+        else $model->compulsorymotorinsurancefeefree = 0;
         $model->accessoriesfee = $input['accessoriesfee'];
         $model->otherfee = $input['otherfee'];
+        $model->subsidise = $input['subsidise'];
+        $model->implementfee = $input['implementfee'];
+        if ($request->has('implementfeefree')) $model->implementfeefree = $input['implementfeefree'];
+        else $model->implementfeefree = 0;
         $model->datewantgetcar = date('Y-m-d', strtotime($input['datewantgetcar']));
         $model->giveawayadditionalcharges = $input['giveawayadditionalcharges'];
+        $model->totalfree = $input['totalfree'];
 
         if($input['buyertype'] == 0){
             $model->buyercustomerid = $model->bookingcustomerid;
@@ -1460,7 +1476,7 @@ class CarPreemptionController extends Controller {
         }
         else{
             $model->yodjud =  $model->carprice - $model->discount - $model->down + $model->accessories;
-            $model->realprice =  $model->yodjud + $model->down - $model->subdown;
+            $model->realprice =  $model->carprice - $model->discount - $model->subdown;
         }
 
         $salesmanemployee = Employee::find($model->salesmanemployeeid);
@@ -1474,8 +1490,13 @@ class CarPreemptionController extends Controller {
             $model->registerprovince = $registerprovince->name;
 
             $redlabelhistory = Redlabelhistory::where('carpreemptionid',$id)->first();
-            $redlabel = Redlabel::find($redlabelhistory->redlabelid);
-            $model->redlabel = $redlabel->no;
+            if($redlabelhistory != null){
+                $redlabel = Redlabel::find($redlabelhistory->redlabelid);
+                $model->redlabel = $redlabel->no;
+            }
+            else{
+                $model->redlabel = "ไม่มีป้าย";
+            }
         }
         else{
             $model->redlabel = null;

@@ -13,7 +13,8 @@ class CarPayment extends Model {
     protected $guarded = ['id'];
 
     protected $fillable = ['provinceid','branchid','carpreemptionid', 'date', 'carid', 'amountperinstallment', 'insurancepremium',
-        'overrideopenbill', 'paymentmode','installmentsinadvance',
+        'overrideopenbill','firstinstallmentpay','installmentsinadvance',
+        'accessoriesfeeactuallypaid','accessoriesfeeincludeinyodjud',
         'insurancecompanyid', 'capitalinsurance', 'compulsorymotorinsurancecompanyid', 'totalpayments',
         'buyerpay', 'overdue', 'overdueinterest', 'totaloverdue', 'paybytype', 'paybyotherdetails',
         'overdueinstallments', 'overdueinstallmentdate1', 'overdueinstallmentamount1',
@@ -107,7 +108,7 @@ class CarPayment extends Model {
             $model->provinceid = $carpreemption->provinceid;
             $model->branchid = $carpreemption->branchid;
 
-            if($model->	insurancecompanyid == '') $model->	insurancecompanyid = null;
+            if($model->insurancecompanyid == '') $model->insurancecompanyid = null;
             if($model->capitalinsurance == '') $model->capitalinsurance = null;
             if($model->buyerpay == '') $model->buyerpay = null;
             if($model->overdue == '') $model->overdue = null;

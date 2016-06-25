@@ -979,12 +979,12 @@
                                             <label>
                                                 {!! Form::radio('registrationtype', 2, false, array('class' => 'ace', 'onchange'=>'Calregistrationfee();')) !!}
                                                 <span class="lbl">  ราชการ</span>&nbsp;&nbsp;
-                                                {!! Form::number('registrationfee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id' => 'registrationfee', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                                {!! Form::number('registrationfee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100px;', 'id' => 'registrationfee', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                             </label>
                                             &nbsp;&nbsp;
                                             <label>
                                                 {!! Form::checkbox('registrationfeefree', 1, false, array('class' => 'ace', 'onchange'=>'CalTotalFree();', 'id' => 'registrationfeefree')) !!}
-                                                <span class="lbl" style="width:80px;" >  แถม</span>
+                                                <span class="lbl" style="width:50px;" >  แถม</span>
                                             </label>
                                         </div>
                                     </div>
@@ -1002,7 +1002,7 @@
                                         {!! Form::label('compulsorymotorinsurancefee', '6. ค่า พ.ร.บ.', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-5">
                                             <label>
-                                            {!! Form::number('compulsorymotorinsurancefee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:226.31px;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
+                                            {!! Form::number('compulsorymotorinsurancefee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly')) !!}
                                             </label>
                                             &nbsp;&nbsp;
                                             <label>
@@ -1030,10 +1030,11 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-9 no-padding-left">
-                                        {!! Form::label('subsidise', '9. SUBSIDISE(หักค่าชดชเยดอกเบี้ยรถยนต์)', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                        {!! Form::label('subsidise', '9. SUBSIDISE', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-3">
                                             {!! Form::number('subsidise', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'id'=>'subsidise', 'onchange'=>'CalTotalFree();')) !!}
                                         </div>
+                                        <label><span class="lbl">  (หักค่าชดชเยดอกเบี้ยรถยนต์)</span></label>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -1041,7 +1042,7 @@
                                         {!! Form::label('implementfee', '10. ค่าดำเนินการ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-5">
                                             <label>
-                                            {!! Form::number('implementfee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:226.31px;', 'id'=>'implementfee', 'onchange'=>'CalTotalFree();')) !!}
+                                            {!! Form::number('implementfee', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'style'=>'width:100%;', 'id'=>'implementfee', 'onchange'=>'CalTotalFree();')) !!}
                                             </label>
                                             &nbsp;&nbsp;
                                             <label>

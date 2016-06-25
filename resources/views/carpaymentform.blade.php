@@ -70,7 +70,7 @@
                     $('#openbill').val((parseFloat(data.carprice) - parseFloat(data.discount)).toFixed(2));
                 }
                 else if(data.purchasetype == 1){
-                    $('#openbill').val((parseFloat(data.yodjud) + parseFloat(insurancepremium) + parseFloat(data.down)).toFixed(2));
+                    $('#openbill').val((parseFloat(data.yodjud) + parseFloat(data.down)).toFixed(2));
                 }
 
                 $('#realprice').val(parseFloat(data.realprice).toFixed(2));
@@ -136,15 +136,75 @@
 
             var installmentsinadvance = $('#installmentsinadvance').val();
             if(installmentsinadvance == null || installmentsinadvance == '')
-                installmentsinadvance = 0;
-
-            $("#payinadvanceamount").val((parseFloat(amountperinstallment)*parseFloat(installmentsinadvance)).toFixed(2));
+                $("#payinadvanceamount").val(null);
+            else
+                $("#payinadvanceamount").val((parseFloat(amountperinstallment)*parseFloat(installmentsinadvance)).toFixed(2));
 
             CalTotalpayments();
         }
 
         function InstallmentsinadvanceChange(){
             AmountperinstallmentChange();
+        }
+
+        function FirstinstallmentpayChange(){
+            if($('#firstinstallmentpay').is(':checked')){
+                var amountperinstallment = $('#amountperinstallment').val();
+                if(amountperinstallment == null || amountperinstallment == '')
+                    amountperinstallment = 0;
+
+                $("#firstinstallmentpayamount").val(parseFloat(amountperinstallment).toFixed(2));
+            }
+            else
+                $("#firstinstallmentpayamount").val(null);
+
+            CalTotalpayments();
+        }
+
+        function AccessoriesfeeactuallypaidChange(){
+            var accessoriesfee = $('#accessoriesfee').val();
+            if(accessoriesfee == null || accessoriesfee == '')
+                accessoriesfee = 0;
+
+            var oldaccessoriesfeeincludeinyodjud = $('#accessoriesfeeincludeinyodjud').val();
+            if(oldaccessoriesfeeincludeinyodjud == null || oldaccessoriesfeeincludeinyodjud == '')
+                oldaccessoriesfeeincludeinyodjud = 0;
+
+            var newaccessoriesfeeincludeinyodjud = 0;
+
+            var accessoriesfeeactuallypaid = $('#accessoriesfeeactuallypaid').val();
+            if(accessoriesfeeactuallypaid == null || accessoriesfeeactuallypaid == ''){
+                $('#accessoriesfeeincludeinyodjud').val(null);
+            }
+            else{
+                if(parseFloat(accessoriesfeeactuallypaid) > parseFloat(accessoriesfee)){
+                    accessoriesfeeactuallypaid = accessoriesfee;
+                    $('#accessoriesfeeactuallypaid').val(parseFloat(accessoriesfeeactuallypaid).toFixed(2));
+                }
+
+                newaccessoriesfeeincludeinyodjud = parseFloat(accessoriesfee) - parseFloat(accessoriesfeeactuallypaid);
+                $('#accessoriesfeeincludeinyodjud').val(parseFloat(newaccessoriesfeeincludeinyodjud).toFixed(2));
+            }
+
+            var yodjud = $('#yodjud').val();
+            if(yodjud == null || yodjud == '')
+                yodjud = 0;
+            yodjud = parseFloat(yodjud) - parseFloat(oldaccessoriesfeeincludeinyodjud) + parseFloat(newaccessoriesfeeincludeinyodjud);
+            $('#yodjud').val(parseFloat(yodjud).toFixed(2));
+
+            var insurancepremium = $('#insurancepremium').val();
+            if(insurancepremium == null || insurancepremium == '')
+                insurancepremium = 0;
+
+            $('#yodjudwithinsurancepremium').val((parseFloat(yodjud) + parseFloat(insurancepremium)).toFixed(2));
+
+            var openbill = $('#openbill').val();
+            if(openbill == null || openbill == '')
+                openbill = 0;
+            openbill = parseFloat(openbill) - parseFloat(oldaccessoriesfeeincludeinyodjud) + parseFloat(newaccessoriesfeeincludeinyodjud);
+            $('#openbill').val(parseFloat(openbill).toFixed(2));
+
+            CalTotalpayments();
         }
 
         function InsurancepremiumChange(){
@@ -156,23 +216,20 @@
             if(yodjud == null || yodjud == '')
                 yodjud = 0;
             $('#yodjudwithinsurancepremium').val((parseFloat(yodjud) + parseFloat(insurancepremium)).toFixed(2));
-
-            var down = $('#down').val();
-            if(down == null || down == '')
-                down = 0;
-
-            $('#openbill').val((parseFloat(yodjud) + parseFloat(insurancepremium) + parseFloat(down)).toFixed(2));
         }
 
         function CalTotalpayments(){
             var down = $('#down').val();
             if(down == null || down == '') down = 0;
 
+            var firstinstallmentpayamount = $('#firstinstallmentpayamount').val();
+            if(firstinstallmentpayamount == null || firstinstallmentpayamount == '') firstinstallmentpayamount = 0;
+
             var payinadvanceamount = $('#payinadvanceamount').val();
             if(payinadvanceamount == null || payinadvanceamount == '') payinadvanceamount = 0;
 
-            var accessoriesfee = $('#accessoriesfee').val();
-            if(accessoriesfee == null || accessoriesfee == '') accessoriesfee = 0;
+            var accessoriesfeeactuallypaid = $('#accessoriesfeeactuallypaid').val();
+            if(accessoriesfeeactuallypaid == null || accessoriesfeeactuallypaid == '') accessoriesfeeactuallypaid = 0;
 
             var insurancefee = $('#insurancefee').val();
             if(insurancefee == null || insurancefee == '') insurancefee = 0;
@@ -195,7 +252,8 @@
             var cashpledgeredlabel = $('#cashpledgeredlabel').val();
             if(cashpledgeredlabel == null || cashpledgeredlabel == '') cashpledgeredlabel = 0;
 
-            var total = (parseFloat(down) + parseFloat(payinadvanceamount) + parseFloat(accessoriesfee) + parseFloat(insurancefee)
+            var total = (parseFloat(down) + parseFloat(firstinstallmentpayamount)
+                    + parseFloat(payinadvanceamount) + parseFloat(accessoriesfeeactuallypaid) + parseFloat(insurancefee)
                     + parseFloat(compulsorymotorinsurancefee) + parseFloat(financingfee) + parseFloat(transferfee)
                     + parseFloat(transferoperationfee) + parseFloat(registrationfee) + parseFloat(cashpledgeredlabel)).toFixed(2);
 
@@ -492,18 +550,18 @@
                                 <div class="form-group purchasetype1b" style="padding-left:20px;">
                                     <div class="col-sm-7">
                                         <label>
-                                            {!! Form::radio('paymentmode', 0, false, array('class' => 'ace', 'onchange'=>'PaymentmodeChange();')) !!}
-                                            <span class="lbl">  ชำระงวดแรก</span>
+                                        {!! Form::checkbox('firstinstallmentpay', 1, false, array('class' => 'ace', 'onchange'=>'FirstinstallmentpayChange();', 'id' => 'firstinstallmentpay')) !!}
+                                        <span class="lbl" style="width:100px;" >  ชำระงวดแรก</span>
                                         </label>
-                                        &nbsp;
-                                        <label>
-                                            {!! Form::radio('paymentmode', 1, false, array('class' => 'ace', 'onchange'=>'PaymentmodeChange();')) !!}
-                                            <span class="lbl">  ชำระงวดล่วงหน้า</span>&nbsp;&nbsp;
-                                        </label>
-
-                                        <label> ( จำนวนงวด</label>
-                                        {!! Form::number('installmentsinadvance', null, array('style'=>'width:60px;','step' => '1', 'min' => '1', 'id'=>'installmentsinadvance', 'onchange'=>'InstallmentsinadvanceChange();')) !!}
-                                        <label> )</label>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        {!! Form::number('firstinstallmentpayamount', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'firstinstallmentpayamount')) !!}
+                                    </div>
+                                </div>
+                                <div class="form-group purchasetype1b" style="padding-left:20px;">
+                                    <div class="col-sm-7">
+                                        <label> จำนวนงวดชำระล่วงหน้า</label>
+                                        {!! Form::number('installmentsinadvance', null, array('style'=>'width:60px;','step' => '1', 'min' => '0', 'id'=>'installmentsinadvance', 'onchange'=>'InstallmentsinadvanceChange();')) !!}
                                     </div>
                                     <div class="col-sm-2">
                                         {!! Form::number('payinadvanceamount', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'payinadvanceamount')) !!}
@@ -515,6 +573,24 @@
                                     </div>
                                     <div class="col-sm-2">
                                         {!! Form::number('accessoriesfee', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'accessoriesfee')) !!}
+                                    </div>
+                                </div>
+                                <div class="form-group purchasetype1b" style="padding-left:20px;">
+                                    <div class="col-sm-7">
+                                        <label style="width:105px;"></label>
+                                        <label style="width:120px;"> จ่ายจริง</label>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        {!! Form::number('accessoriesfeeactuallypaid', null, array('style'=>'width:100%;','step' => '1', 'min' => '0','id'=>'accessoriesfeeactuallypaid', 'onchange'=>'AccessoriesfeeactuallypaidChange();')) !!}
+                                    </div>
+                                </div>
+                                <div class="form-group purchasetype1b" style="padding-left:20px;">
+                                    <div class="col-sm-7">
+                                        <label style="width:105px;"></label>
+                                        <label style="width:120px;"> เหลือรวมเข้ายอดจัด</label>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        {!! Form::number('accessoriesfeeincludeinyodjud', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'accessoriesfeeincludeinyodjud')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left:20px;">
@@ -614,7 +690,7 @@
                                 <hr>
                                 <div class="form-group" style="padding-left:20px;">
                                     <div class="col-sm-7">
-                                        <label style="width:180px;"> <span style=" text-decoration:underline;">หัก</span> Sub ดาวน์</label>
+                                        <label style="width:180px;"> <span style=" text-decoration:underline;">หัก</span> Sub ดาวน์ ทั้งหมด (Sub Down + บวกอุปกรณ์หลอก)</label>
                                     </div>
                                     <div class="col-sm-2">
                                         {!! Form::number('subdown', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'subdown')) !!}
@@ -946,7 +1022,7 @@
                                             <span> วันที่</span>&nbsp;&nbsp;
                                         </label>
                                     </div>
-                                    <div class="col-sm-1" style="margin-left: -130px;">
+                                    <div class="col-sm-1" style="margin-left: -30px;">
                                         <div class="input-group">
                                             {!! Form::text('deliverycardate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'deliverycardate')) !!}
                                             <span class="input-group-addon">
@@ -964,15 +1040,15 @@
                                 </div>
 
                                 @if($oper != 'new' && $carpayment->deliverycarfilepath != null)
-                                    <div class="col-xs-2" style="margin-left: -40px;">
+                                    <div class="col-xs-2" style="margin-left: -30px;">
                                         <a href = "{{ $carpayment->deliverycarfilepath }}" data-lightbox="' + cellvalue + '">View photo</a>
                                     </div>
 
-                                    <div class="col-xs-1" style="margin-left: -130px;">
+                                    <div class="col-xs-1" style="margin-left: -90px;">
                                         {!! Form::file('deliverycarfile','',array('id'=>'deliverycarfile')) !!}
                                     </div>
                                 @else
-                                    <div class="col-xs-1" style="margin-left: -40px;">
+                                    <div class="col-xs-1" style="margin-left: -30px;">
                                         {!! Form::file('deliverycarfile','',array('id'=>'deliverycarfile')) !!}
                                     </div>
                                 @endif

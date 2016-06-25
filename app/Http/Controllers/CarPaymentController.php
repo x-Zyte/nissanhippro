@@ -261,6 +261,7 @@ class CarPaymentController extends Controller {
 
     public function save(Request $request)
     {
+        //TODO controller and form
         if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
         $this->validate($request, [
@@ -270,8 +271,8 @@ class CarPaymentController extends Controller {
                 'amountperinstallment' => 'required_if:purchasetype,1',
                 'insurancepremium' => 'required_if:purchasetype,1',
                 'openbill' => 'required_if:purchasetype,0',
-                'paymentmode' => 'required_if:purchasetype,1',
-                'installmentsinadvance' => 'required_if:paymentmode,1',
+                'installmentsinadvance' => 'required_if:purchasetype,1',
+                'accessoriesfeeactuallypaid' => 'required',
                 'insurancecompanyid' => 'required_if:purchasetype,1',
                 'capitalinsurance' => 'required_if:purchasetype,1',
                 'compulsorymotorinsurancecompanyid' => 'required',
@@ -286,8 +287,8 @@ class CarPaymentController extends Controller {
                 'amountperinstallment.required_if' => 'ยอดชำระต่องวด จำเป็นต้องกรอก',
                 'insurancepremium.required_if' => 'เบี้ยประกันชีวิต จำเป็นต้องกรอก',
                 'openbill.required_if' => 'ราคาเปิดบิล จำเป็นต้องกรอก',
-                'paymentmode.required_if' => 'ชำระงวดแรก หรือ ชำระงวดล่วงหน้า จำเป็นต้องเลือก',
-                'installmentsinadvance.required_if' => 'จำนวนงวดล่วงหน้า จำเป็นต้องกรอก',
+                'installmentsinadvance.required_if' => 'จำนวนงวดชำระล่วงหน้า จำเป็นต้องกรอก',
+                'accessoriesfeeactuallypaid.required' => 'อุปกรณ์รวมจ่ายจริง จำเป็นต้องกรอก',
                 'insurancecompanyid.required_if' => 'เบี้ยประกันชั้น 1,3 กรุณาเลือกบริษัทประกัน',
                 'capitalinsurance.required_if' => 'ทุนประกัน จำเป็นต้องกรอก',
                 'compulsorymotorinsurancecompanyid.required' => 'เบี้ย พ.ร.บ. กรุณาเลือกบริษัทประกัน',
@@ -299,8 +300,11 @@ class CarPaymentController extends Controller {
 
         $input = $request->all();
 
-        if ($request->has('id'))
+        if ($request->has('id')) {
             $model = CarPayment::find($input['id']);
+            if($model == null)
+                return "ขออภัย!! ไม่พบข้อมูลที่จะทำการแก้ไขในระบบ เนื่องจากอาจถูกลบไปแล้ว";
+        }
         else
             $model = new CarPayment;
 
@@ -322,17 +326,18 @@ class CarPaymentController extends Controller {
                 $model->overrideopenbill = $openbillinput;
             else
                 $model->overrideopenbill = null;
+
+            $model->firstinstallmentpay = 0;
+            $model->installmentsinadvance = 0;
         }
         else{
             $model->overrideopenbill = null;
-        }
 
-
-        if($request->has('paymentmode')){
-            $model->paymentmode = $input['paymentmode'];
-            if($model->paymentmode == 0) $model->installmentsinadvance = 1;
-            else $model->installmentsinadvance = $input['installmentsinadvance'];
+            if ($request->has('firstinstallmentpay')) $model->firstinstallmentpay = $input['firstinstallmentpay']; else $model->firstinstallmentpay = 0;
+            $model->installmentsinadvance = $input['installmentsinadvance'];
         }
+        $model->accessoriesfeeactuallypaid = $input['accessoriesfeeactuallypaid'];
+        $model->accessoriesfeeincludeinyodjud = $input['accessoriesfeeincludeinyodjud'];
         $model->insurancecompanyid = $input['insurancecompanyid'];
         $model->capitalinsurance = $input['capitalinsurance'];
         $model->compulsorymotorinsurancecompanyid = $input['compulsorymotorinsurancecompanyid'];
@@ -453,6 +458,7 @@ class CarPaymentController extends Controller {
         $model->bookno = $carpreemption->bookno;
         $model->no = $carpreemption->no;
 
+        $model->purchasetype = $carpreemption->purchasetype;
         if($carpreemption->purchasetype == 0){
             $purchasetype0 = true;
             $purchasetype1 = false;
@@ -553,10 +559,14 @@ class CarPaymentController extends Controller {
         }
         else {
             $model->down = $carpreemption->down;
-            $model->yodjud =  number_format($model->carprice - $carpreemption->discount - $model->down + $carpreemption->accessories, 2, '.', '');
+            $model->yodjud =  number_format($model->carprice - $carpreemption->discount - $model->down + $carpreemption->accessories + $model->accessoriesfeeincludeinyodjud, 2, '.', '');
             $model->yodjudwithinsurancepremium = number_format($model->yodjud + $model->insurancepremium, 2, '.', '');
-            $model->openbill = number_format($model->yodjudwithinsurancepremium + $model->down, 2, '.', '');
-            $model->realprice =  number_format($model->yodjud + $model->down - $carpreemption->subdown, 2, '.', '');
+            $model->openbill = number_format($model->yodjud + $model->down, 2, '.', '');
+            $model->realprice =  number_format($model->carprice - $carpreemption->discount - $carpreemption->subdown, 2, '.', '');
+            if($model->firstinstallmentpay)
+                $model->firstinstallmentpayamount = number_format($model->amountperinstallment, 2, '.', '');
+            else
+                $model->firstinstallmentpayamount = number_format(0, 2, '.', '');
             $model->payinadvanceamount = number_format($model->installmentsinadvance * $model->amountperinstallment, 2, '.', '');
         }
 
@@ -584,15 +594,23 @@ class CarPaymentController extends Controller {
 
         if($carpreemption->carobjectivetype == 0) {
             $redlabelhistory = Redlabelhistory::where('carpreemptionid', $carpreemption->id)->first();
-            $redlabel = Redlabel::find($redlabelhistory->redlabelid);
-            $model->redlabel = $redlabel->no;
+            if($redlabelhistory != null){
+                $redlabel = Redlabel::find($redlabelhistory->redlabelid);
+                $model->redlabel = $redlabel->no;
+            }
+            else{
+                $model->redlabel = "ไม่มีป้าย";
+            }
         }
         else{
             $model->redlabel = null;
         }
 
         $model->cashpledgeredlabel = $carpreemption->cashpledgeredlabel;
-        $model->total = number_format($model->down + $model->payinadvanceamount + $model->accessoriesfee + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel, 2, '.', '');
+        if($model->firstinstallmentpay)
+            $model->total = number_format($model->down + $model->amountperinstallment + $model->payinadvanceamount + $model->accessoriesfeeactuallypaid + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel, 2, '.', '');
+        else
+            $model->total = number_format($model->down + $model->payinadvanceamount + $model->accessoriesfeeactuallypaid + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel, 2, '.', '');
         $model->subdown = $carpreemption->subdown;
         $model->cashpledge = $carpreemption->cashpledge;
         $model->oldcarprice = $carpreemption->oldcarprice;
@@ -669,6 +687,7 @@ class CarPaymentController extends Controller {
         $model->bookno = $carpreemption->bookno;
         $model->no = $carpreemption->no;
 
+        $model->purchasetype = $carpreemption->purchasetype;
         if($carpreemption->purchasetype == 0){
             $purchasetype0 = true;
             $purchasetype1 = false;
@@ -742,10 +761,14 @@ class CarPaymentController extends Controller {
         }
         else {
             $model->down = $carpreemption->down;
-            $model->yodjud =  number_format($model->carprice - $carpreemption->discount - $model->down + $carpreemption->accessories, 2, '.', '');
+            $model->yodjud =  number_format($model->carprice - $carpreemption->discount - $model->down + $carpreemption->accessories + $model->accessoriesfeeincludeinyodjud, 2, '.', '');
             $model->yodjudwithinsurancepremium = number_format($model->yodjud + $model->insurancepremium, 2, '.', '');
-            $model->openbill = number_format($model->yodjudwithinsurancepremium + $model->down, 2, '.', '');
-            $model->realprice =  number_format($model->yodjud + $model->down - $carpreemption->subdown, 2, '.', '');
+            $model->openbill = number_format($model->yodjud + $model->down, 2, '.', '');
+            $model->realprice =  number_format($model->carprice - $carpreemption->discount - $carpreemption->subdown, 2, '.', '');
+            if($model->firstinstallmentpay)
+                $model->firstinstallmentpayamount = number_format($model->amountperinstallment, 2, '.', '');
+            else
+                $model->firstinstallmentpayamount = number_format(0, 2, '.', '');
             $model->payinadvanceamount = number_format($model->installmentsinadvance * $model->amountperinstallment, 2, '.', '');
         }
 
@@ -773,15 +796,23 @@ class CarPaymentController extends Controller {
 
         if($carpreemption->carobjectivetype == 0) {
             $redlabelhistory = Redlabelhistory::where('carpreemptionid', $carpreemption->id)->first();
-            $redlabel = Redlabel::find($redlabelhistory->redlabelid);
-            $model->redlabel = $redlabel->no;
+            if($redlabelhistory != null){
+                $redlabel = Redlabel::find($redlabelhistory->redlabelid);
+                $model->redlabel = $redlabel->no;
+            }
+            else{
+                $model->redlabel = "ไม่มีป้าย";
+            }
         }
         else{
             $model->redlabel = null;
         }
 
         $model->cashpledgeredlabel = $carpreemption->cashpledgeredlabel;
-        $model->total = $model->down + $model->payinadvanceamount + $model->accessoriesfee + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel;
+        if($model->firstinstallmentpay)
+            $model->total = number_format($model->down + $model->amountperinstallment + $model->payinadvanceamount + $model->accessoriesfeeactuallypaid + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel, 2, '.', '');
+        else
+            $model->total = number_format($model->down + $model->payinadvanceamount + $model->accessoriesfeeactuallypaid + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel, 2, '.', '');
         $model->subdown = $carpreemption->subdown;
         $model->cashpledge = $carpreemption->cashpledge;
         $model->oldcarprice = $carpreemption->oldcarprice;
