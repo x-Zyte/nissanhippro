@@ -245,44 +245,34 @@
                 <b class="arrow"></b>
             </li>
 
-            <li class="@yield('menu-selling-class')" @if(!Auth::user()->isadmin && !in_array("การขาย", $employeeMenus)) style="display: none" @endif>
-                <a href="javascript:void(0)" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-btc"></i>
-                    <span class="menu-text"> การขาย </span>
-
-                    <b class="arrow fa fa-angle-down"></b>
+            <li class="@yield('menu-carpreemption-class')"
+                @if(!Auth::user()->isadmin && !in_array("การจอง", $employeeMenus)) style="display: none" @endif>
+                <a href="{{ url('/carpreemption') }}">
+                    <i class="menu-icon fa fa-file-text-o"></i>
+                    <span class="menu-text"> การจอง </span>
                 </a>
 
                 <b class="arrow"></b>
+            </li>
 
-                <ul class="submenu">
-                    <li class="@yield('menu-carpreemption-class')">
-                        <a href="{{ url('/carpreemption') }}">
-                            <i class="menu-icon fa fa-minus"></i>
-                            <span class="menu-text"> การจอง </span>
+            <li class="@yield('menu-carcancelpreemption-class')"
+                @if(!Auth::user()->isadmin && !in_array("ยกเลิกการจอง", $employeeMenus)) style="display: none" @endif>
+                <a href="{{ url('/cancelcarpreemption') }}">
+                    <i class="menu-icon fa fa-ban"></i>
+                    <span class="menu-text"> ยกเลิกการจอง </span>
+                </a>
 
-                            <b class="arrow"></b>
-                        </a>
-                    </li>
+                <b class="arrow"></b>
+            </li>
 
-                    <li class="@yield('menu-carpayment-class')">
-                        <a href="{{ url('/carpayment') }}">
-                            <i class="menu-icon fa fa-minus"></i>
-                            <span class="menu-text"> การชำระเงิน </span>
+            <li class="@yield('menu-carpayment-class')"
+                @if(!Auth::user()->isadmin && !in_array("การชำระเงิน", $employeeMenus)) style="display: none" @endif>
+                <a href="{{ url('/carpayment') }}">
+                    <i class="menu-icon fa fa-btc"></i>
+                    <span class="menu-text"> การชำระเงิน </span>
+                </a>
 
-                            <b class="arrow"></b>
-                        </a>
-                    </li>
-
-                    <li class="@yield('menu-carcancelpreemption-class')">
-                        <a href="{{ url('/cancelcarpreemption') }}">
-                            <i class="menu-icon fa fa-minus"></i>
-                            <span class="menu-text"> ยกเลิกการจอง </span>
-
-                            <b class="arrow"></b>
-                        </a>
-                    </li>
-                </ul>
+                <b class="arrow"></b>
             </li>
 
             <li class="@yield('menu-redlabel-class')" @if(!Auth::user()->isadmin && !in_array("ป้ายแดง", $employeeMenus)) style="display: none" @endif>
@@ -305,7 +295,7 @@
 
             <li class="@yield('menu-report-class')" @if(!Auth::user()->isadmin && !in_array("รายงาน", $employeeMenus)) style="display: none" @endif>
                 <a href="{{ url('/report') }}">
-                    <i class="menu-icon fa fa-file-text-o"></i>
+                    <i class="menu-icon fa fa-file-excel-o"></i>
                     <span class="menu-text"> รายงาน </span>
                 </a>
 

@@ -8,7 +8,6 @@
     @section('title','ดูข้อมูลการชำระเงิน ของรายการจอง '.$carpayment->bookno.'/'.$carpayment->no)
 @endif
 
-@section('menu-selling-class','active hsub open')
 @section('menu-carpayment-class','active')
 @section('pathPrefix',$pathPrefix)
 
@@ -340,7 +339,7 @@
             if(oldcarpayamount > oldcarprice){
                 alert("ชำระค่ารถเก่า ต้องน้อยกว่าหรือเท่ากับ ค่ารถเก่า");
                 $('#oldcarpayamount').val(null);
-                return;
+
             }
         }
 

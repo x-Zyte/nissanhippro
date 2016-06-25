@@ -8,7 +8,6 @@
     @section('title','ดูข้อมูลยกเลิกการจอง '.$cancelcarpreemption->bookno.'/'.$cancelcarpreemption->no)
 @endif
 
-@section('menu-selling-class','active hsub open')
 @section('menu-cancelcarpreemption-class','active')
 @section('pathPrefix',$pathPrefix)
 
@@ -331,7 +330,7 @@
                 $(".chosen-select").attr('disabled', true).trigger("chosen:updated");
             @endif
 
-        })
+        });
 
 
 

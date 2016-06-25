@@ -86,8 +86,11 @@ class CarPaymentController extends Controller {
             $carpreemptions = CarPreemption::where('status',0)
                 ->where(function ($query) {
                     $query->where('carobjectivetype',1)
-                        ->orWhereHas('redlabelhistories', function($q){
-                            $q->whereNull('returndate');
+                        ->orWhere(function ($query) {
+                            $query->where('cashpledgeredlabel',0)
+                                ->orWhereHas('redlabelhistories', function($q){
+                                    $q->whereNull('returndate');
+                                });
                         });
                 })
                 ->orderBy('bookno', 'asc')
@@ -99,8 +102,11 @@ class CarPaymentController extends Controller {
                 ->where('status',0)
                 ->where(function ($query) {
                     $query->where('carobjectivetype',1)
-                        ->orWhereHas('redlabelhistories', function($q){
-                            $q->whereNull('returndate');
+                        ->orWhere(function ($query) {
+                            $query->where('cashpledgeredlabel',0)
+                                ->orWhereHas('redlabelhistories', function($q){
+                                    $q->whereNull('returndate');
+                                });
                         });
                 })
                 ->orderBy('bookno', 'asc')

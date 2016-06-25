@@ -24,7 +24,6 @@
     @endif
 @endif
 
-@section('menu-selling-class','active hsub open')
 @section('menu-carpreemption-class','active')
 @section('pathPrefix',$pathPrefix)
 
@@ -274,7 +273,7 @@
         @endforeach
 
         function GetPrice() {
-            var carsubmodelid = $("#carsubmodelid").chosen().val()
+            var carsubmodelid = $("#carsubmodelid").chosen().val();
             var date = $('#date').val();
             if(carsubmodelid == null || carsubmodelid == '' || date == null || date == '') return;
 
@@ -304,12 +303,12 @@
         }
 
         function CalColorPrice(){
-            var pricelistid = $("#pricelistid").chosen().val()
+            var pricelistid = $("#pricelistid").chosen().val();
             var carprice = carprices[pricelistid];
             if(carprice == null || carprice == '')
                 carprice = 0;
 
-            var colorid = $("#colorid").chosen().val()
+            var colorid = $("#colorid").chosen().val();
             var colorprice = colorprices[colorid];
             if(colorprice == null || colorprice == '')
                 colorprice = 0;
@@ -460,7 +459,7 @@
             var carobjectivetype = $("input[name=carobjectivetype]:checked").val();
             if(carobjectivetype != 1) return;
 
-            var pricelistid = $("#pricelistid").chosen().val()
+            var pricelistid = $("#pricelistid").chosen().val();
             if(pricelistid == null || pricelistid == '') return;
 
             $.get('{{$pathPrefix}}carpreemption/getprice/'+pricelistid, function(data){
@@ -504,7 +503,7 @@
                 if(newdateapp.getTime() < newrdate.getTime()){
                     alert("วันที่อนุมัติ ต้องไม่น้อยกว่า วันที่จอง");
                     $('#approvaldate').val(null);
-                    return;
+
                 }
             }
         }
@@ -1581,7 +1580,7 @@
             }
 
             return {};
-        }
+        };
 
         $(document).ready(function() {
             var grid_selector = "#grid-table-in-form";
@@ -1593,21 +1592,21 @@
             $(window).on('resize.jqGrid', function () {
                 resizeGridInForm('grid-table-in-form');
                 resizeGridInForm('grid-table-in-form2');
-            })
+            });
             //resize on sidebar collapse/expand
             var parent_column = $(grid_selector).closest('[class*="col-"]');
             $(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
                 if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
                     $(grid_selector).jqGrid( 'setGridWidth', parent_column.width() );
                 }
-            })
+            });
 
             var parent_column2 = $(grid_selector2).closest('[class*="col-"]');
             $(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
                 if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
                     $(grid_selector2).jqGrid( 'setGridWidth', parent_column2.width() );
                 }
-            })
+            });
 
             $(grid_selector).jqGrid({
                 datatype: "local",
@@ -1718,7 +1717,7 @@
                         if (!data) result = [true, ""];
                         else result = [false,"มูลค่าที่แถมห้ามต่ำกว่า "+data];
                     }
-                })
+                });
                 return result;
             }
 
@@ -1755,7 +1754,7 @@
                     viewPagerButtons: false,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                         style_edit_form(form);
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
@@ -1775,7 +1774,7 @@
                     beforeShowForm : function(e) {
                         jQuery(grid_selector).jqGrid('resetSelection');
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                         style_edit_form(form);
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
@@ -1793,7 +1792,7 @@
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
                         if(!form.data('styled')) {
-                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                             style_delete_form(form);
 
                             form.data('styled', true);
@@ -1842,7 +1841,7 @@
                     },
                     processing: true
                 }
-            )
+            );
 
             $(grid_selector2).jqGrid("navGrid", pager_selector2,
                     { 	//navbar options
@@ -1869,7 +1868,7 @@
                         viewPagerButtons: false,
                         beforeShowForm : function(e) {
                             var form = $(e[0]);
-                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                             style_edit_form(form);
 
                             var dlgDiv = $("#editmod" + jQuery(grid_selector2)[0].id);
@@ -1889,7 +1888,7 @@
                         beforeShowForm : function(e) {
                             jQuery(grid_selector2).jqGrid('resetSelection');
                             var form = $(e[0]);
-                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                             style_edit_form(form);
 
                             var dlgDiv = $("#editmod" + jQuery(grid_selector2)[0].id);
@@ -1907,7 +1906,7 @@
                         beforeShowForm : function(e) {
                             var form = $(e[0]);
                             if(!form.data('styled')) {
-                                form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                                 style_delete_form(form);
 
                                 form.data('styled', true);
@@ -1956,7 +1955,7 @@
                         },
                         processing: true
                     }
-            )
+            );
 
             var customertype = jQuery( 'input[name=customer-type]:checked' ).val();
             if(customertype == 0){
@@ -2075,7 +2074,7 @@
                 $("#bookingcustomername").prop("disabled", true);
             @endif
 
-        })
+        });
 
 
 
