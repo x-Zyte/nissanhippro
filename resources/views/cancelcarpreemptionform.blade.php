@@ -54,11 +54,11 @@
     </script>
 
     @if($oper == 'new')
-        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> เพิ่มยกเลิกการจองใหม่</h3>
+        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-ban"></i> เพิ่มยกเลิกการจองใหม่</h3>
     @elseif($oper == 'edit')
-        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> แก้ไขยกเลิกการจอง</h3>
+        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-ban"></i> แก้ไขยกเลิกการจอง</h3>
     @elseif($oper == 'view')
-        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> ดูข้อมูลยกเลิกการจอง</h3>
+        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-ban"></i> ดูข้อมูลยกเลิกการจอง</h3>
     @endif
 
     @if (count($errors) > 0)

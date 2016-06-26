@@ -23,11 +23,14 @@
     </script>
 
     @if($oper == 'new')
-        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-btc"></i> เพิ่มรายละเอียดบันทึกบัญชีใหม่</h3>
+        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-info-circle"></i>
+            เพิ่มรายละเอียดบันทึกบัญชีใหม่</h3>
     @elseif($oper == 'edit')
-        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-btc"></i> แก้ไขรายละเอียดบันทึกบัญชี</h3>
+        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-info-circle"></i> แก้ไขรายละเอียดบันทึกบัญชี
+        </h3>
     @elseif($oper == 'view')
-        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-btc"></i> ดูข้อมูลรายละเอียดบันทึกบัญชี</h3>
+        <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-info-circle"></i> ดูข้อมูลรายละเอียดบันทึกบัญชี
+        </h3>
     @endif
 
     @if (count($errors) > 0)

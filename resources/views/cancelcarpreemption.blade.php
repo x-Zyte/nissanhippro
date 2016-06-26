@@ -4,7 +4,7 @@
 
 @section('content')
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-file-text-o"></i> การยกเลิกการจอง</h3>
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-ban"></i> การยกเลิกการจอง</h3>
 
     <table id="grid-table"></table>
 
