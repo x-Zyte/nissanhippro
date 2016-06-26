@@ -252,7 +252,7 @@ Route::get('accountingdetail', 'AccountingDetailController@index');
 Route::get('accountingdetail/read', 'AccountingDetailController@read');
 Route::post('accountingdetail/update', 'AccountingDetailController@update');
 
-Route::get('accountingdetail/newaccountingdetail', 'AccountingDetailController@newcarpayment');
+Route::get('accountingdetail/newaccountingdetail', 'AccountingDetailController@newaccountingdetail');
 Route::get('accountingdetail/edit/{id}', 'AccountingDetailController@edit');
 Route::get('accountingdetail/view/{id}', 'AccountingDetailController@view');
 Route::post('accountingdetail/save', 'AccountingDetailController@save');

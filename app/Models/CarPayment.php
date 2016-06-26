@@ -2,14 +2,11 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class CarPayment extends Model {
 
-    protected $table = 'car_payments';
-
     public $timestamps = false;
-
+    protected $table = 'car_payments';
     protected $guarded = ['id'];
 
     protected $fillable = ['provinceid','branchid','carpreemptionid', 'date', 'carid', 'amountperinstallment', 'insurancepremium',
@@ -196,5 +193,10 @@ class CarPayment extends Model {
     public function car()
     {
         return $this->belongsTo('App\Models\Car', 'carid', 'id');
+    }
+
+    public function accountingDetail()
+    {
+        return $this->hasOne('App\Models\AccountingDetail', 'carpaymentid', 'id');
     }
 }
