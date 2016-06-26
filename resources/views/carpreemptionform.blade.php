@@ -556,7 +556,7 @@
         <div class="form-group" style="margin-top:10px; @if(!Auth::user()->isadmin ) display: none; @endif" >
             {!! Form::label('provincebranchid', 'จังหวัด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
             <div class="col-sm-3">
-                {!! Form::select('provincebranchid', $provincebranchselectlist, null, array('id'=>'provinceid', 'class' => 'chosen-select')); !!}
+                {!! Form::select('provincebranchid', $provincebranchselectlist, null, array('id'=>'provinceid', 'class' => 'chosen-select')) !!}
             </div>
         </div>
 
@@ -618,7 +618,7 @@
                                                 {!! Form::radio('customer-type',0, true, array('class' => 'ace', 'onchange'=>'NewCustomer("n")')) !!}
                                                 <span class="lbl"> มีชื่อในระบบ</span>&nbsp;&nbsp;
                                                 <div class="old-customer" style="display:inline-block">
-                                                    {!! Form::select('bookingcustomerid', $customerselectlist, null, array('id'=>'bookingcustomerid', 'class' => 'chosen-select', 'style'=>'width:20%', 'onchange'=>'BookingCustomerChange(this)')); !!}
+                                                    {!! Form::select('bookingcustomerid', $customerselectlist, null, array('id'=>'bookingcustomerid', 'class' => 'chosen-select', 'style'=>'width:20%', 'onchange'=>'BookingCustomerChange(this)')) !!}
                                                 </div>
                                             </label>
                                         </div>
@@ -657,15 +657,15 @@
                                 <div class="form-group">
                                     {!! Form::label('bookingcustomerprovinceid', 'จังหวัด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('bookingcustomerprovinceid', $provinceselectlist, null, array('id'=>'bookingcustomerprovinceid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerProvinceChange(this)')); !!}
+                                        {!! Form::select('bookingcustomerprovinceid', $provinceselectlist, null, array('id'=>'bookingcustomerprovinceid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerProvinceChange(this)')) !!}
                                     </div>
                                     {!! Form::label('bookingcustomeramphurid', 'เขต/อำเภอ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('bookingcustomeramphurid', $bookingcustomeramphurselectlist, null, array('id'=>'bookingcustomeramphurid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerAmphurChange(this)')); !!}
+                                        {!! Form::select('bookingcustomeramphurid', $bookingcustomeramphurselectlist, null, array('id'=>'bookingcustomeramphurid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerAmphurChange(this)')) !!}
                                     </div>
                                     {!! Form::label('bookingcustomerdistrictid', 'แขวง/ตำบล', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('bookingcustomerdistrictid', $bookingcustomerdistrictselectlist, null, array('id'=>'bookingcustomerdistrictid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerDistrictChange(this)')); !!}
+                                        {!! Form::select('bookingcustomerdistrictid', $bookingcustomerdistrictselectlist, null, array('id'=>'bookingcustomerdistrictid', 'class' => 'chosen-select', 'onchange'=>'BookingCustomerDistrictChange(this)')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -695,7 +695,7 @@
                                 <div class="form-group">
                                     {!! Form::label('bookingcustomeroccupationid', 'อาชีพ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('bookingcustomeroccupationid', $occupationselectlist, null, array('id'=>'bookingcustomeroccupationid', 'class' => 'chosen-select', 'style'=>'width:15%;')); !!}
+                                        {!! Form::select('bookingcustomeroccupationid', $occupationselectlist, null, array('id'=>'bookingcustomeroccupationid', 'class' => 'chosen-select', 'style'=>'width:15%;')) !!}
                                     </div>
                                     {!! Form::label('bookingcustomerbirthdate', 'วันเกิด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
@@ -746,23 +746,23 @@
 
                                     {!! Form::label('carmodelid', 'รถนิสสัน แบบ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-4">
-                                        {!! Form::select('carmodelid', $carmodelselectlist, null, array('id'=>'carmodelid', 'class' => 'chosen-select', 'onchange'=>'CarModelChange(this)', 'style'=>'width:150px;')); !!}
+                                        {!! Form::select('carmodelid', $carmodelselectlist, null, array('id'=>'carmodelid', 'class' => 'chosen-select', 'onchange'=>'CarModelChange(this)', 'style'=>'width:150px;')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('carsubmodelid', 'รุ่น', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('carsubmodelid', $carsubmodelselectlist, null, array('id'=>'carsubmodelid', 'class' => 'chosen-select', 'onchange'=>'GetPrice()')); !!}
+                                        {!! Form::select('carsubmodelid', $carsubmodelselectlist, null, array('id'=>'carsubmodelid', 'class' => 'chosen-select', 'onchange'=>'GetPrice()')) !!}
                                     </div>
                                     {!! Form::label('colorid', 'สี', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::select('colorid', $colorselectlist, null, array('id'=>'colorid', 'class' => 'chosen-select', 'onchange'=>'CalColorPrice()')); !!}
+                                        {!! Form::select('colorid', $colorselectlist, null, array('id'=>'colorid', 'class' => 'chosen-select', 'onchange'=>'CalColorPrice()')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('pricelistid', 'ราคา', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::select('pricelistid', $priceselectlist, null, array('id'=>'pricelistid', 'class' => 'chosen-select', 'onchange'=>'PricelistChange()')); !!}
+                                        {!! Form::select('pricelistid', $priceselectlist, null, array('id'=>'pricelistid', 'class' => 'chosen-select', 'onchange'=>'PricelistChange()')) !!}
                                     </div>
                                     {!! Form::label('colorprice', 'ค่าสี', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
@@ -812,11 +812,11 @@
                                 <div class="form-group" style="padding-top:5px;">
                                     {!! Form::label('oldcarbrandid', 'ยี่ห้อ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::select('oldcarbrandid', $oldcarbrandselectlist, null, array('id'=>'oldcarbrandid', 'class' => 'chosen-select', 'onchange'=>'OldCarBrandChange(this)')); !!}
+                                        {!! Form::select('oldcarbrandid', $oldcarbrandselectlist, null, array('id'=>'oldcarbrandid', 'class' => 'chosen-select', 'onchange'=>'OldCarBrandChange(this)')) !!}
                                     </div>
                                     {!! Form::label('oldcarmodelid', 'แบบ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
-                                        {!! Form::select('oldcarmodelid', $oldcarmodelselectlist, null, array('id'=>'oldcarmodelid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('oldcarmodelid', $oldcarmodelselectlist, null, array('id'=>'oldcarmodelid', 'class' => 'chosen-select')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -904,7 +904,7 @@
                                                 {!! Form::radio('purchasetype', 1, false, array('class' => 'ace', 'onchange'=>'PurchasetypeChange();')) !!}
                                                 <span class="lbl">  เช่าซื้อกับบริษัท</span>&nbsp;&nbsp;
                                                 <div class="purchasetype1">
-                                                {!! Form::select('finacecompanyid', $finacecompanyselectlist, null, array('id'=>'finacecompanyid', 'class' => 'chosen-select')); !!}
+                                                    {!! Form::select('finacecompanyid', $finacecompanyselectlist, null, array('id'=>'finacecompanyid', 'class' => 'chosen-select')) !!}
                                                 </div>
                                             </label>
                                         </div>
@@ -964,7 +964,7 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('registrationtype', '4. ค่าจดทะเบียน', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-10">
-                                            {!! Form::select('registerprovinceid', $registerprovinceselectlist, null, array('id'=>'registerprovinceid', 'class' => 'chosen-select', 'onchange'=>'Calregistrationfee()')); !!}
+                                            {!! Form::select('registerprovinceid', $registerprovinceselectlist, null, array('id'=>'registerprovinceid', 'class' => 'chosen-select', 'onchange'=>'Calregistrationfee()')) !!}
                                             &nbsp;&nbsp;
                                             <label>
                                                 {!! Form::radio('registrationtype', 0, true, array('class' => 'ace', 'onchange'=>'Calregistrationfee();')) !!}
@@ -1130,7 +1130,7 @@
                                                 {!! Form::radio('buyertype', 1, false, array('class' => 'ace', 'onchange'=>'BuyCustomerType("insystem");')) !!}
                                                 <span class="lbl"> มีชื่อในระบบ</span>&nbsp;&nbsp;
                                                 <div class="insystem-customer" style="display:none;">
-                                                    {!! Form::select('buyercustomerid', $customerselectlist, null, array('id'=>'buyercustomerid', 'class' => 'chosen-select', 'style'=>'width:25%', 'onchange'=>'BuyerCustomerChange(this)')); !!}
+                                                    {!! Form::select('buyercustomerid', $customerselectlist, null, array('id'=>'buyercustomerid', 'class' => 'chosen-select', 'style'=>'width:25%', 'onchange'=>'BuyerCustomerChange(this)')) !!}
                                                 </div>
                                             </label>
                                         </div>
@@ -1159,15 +1159,15 @@
                                 <div class="form-group same-customer" style="display:none;" >
                                     {!! Form::label('buyercustomerprovinceid', 'จังหวัด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('buyercustomerprovinceid', $provinceselectlist, null, array('id'=>'buyercustomerprovinceid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerProvinceChange(this)')); !!}
+                                        {!! Form::select('buyercustomerprovinceid', $provinceselectlist, null, array('id'=>'buyercustomerprovinceid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerProvinceChange(this)')) !!}
                                     </div>
                                     {!! Form::label('buyercustomeramphurid', 'เขต/อำเภอ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('buyercustomeramphurid', $buyercustomeramphurselectlist, null, array('id'=>'buyercustomeramphurid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerAmphurChange(this)')); !!}
+                                        {!! Form::select('buyercustomeramphurid', $buyercustomeramphurselectlist, null, array('id'=>'buyercustomeramphurid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerAmphurChange(this)')) !!}
                                     </div>
                                     {!! Form::label('buyercustomerdistrictid', 'แขวง/ตำบล', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('buyercustomerdistrictid', $buyercustomerdistrictselectlist, null, array('id'=>'buyercustomerdistrictid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerDistrictChange(this)')); !!}
+                                        {!! Form::select('buyercustomerdistrictid', $buyercustomerdistrictselectlist, null, array('id'=>'buyercustomerdistrictid', 'class' => 'chosen-select', 'onchange'=>'BuyerCustomerDistrictChange(this)')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group same-customer" style="display:none;">
@@ -1197,7 +1197,7 @@
                                 <div class="form-group same-customer" style="display:none;">
                                     {!! Form::label('buyercustomeroccupationid', 'อาชีพ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('buyercustomeroccupationid', $occupationselectlist, null, array('id'=>'buyercustomeroccupationid', 'class' => 'chosen-select', 'style'=>'width:15%;')); !!}
+                                        {!! Form::select('buyercustomeroccupationid', $occupationselectlist, null, array('id'=>'buyercustomeroccupationid', 'class' => 'chosen-select', 'style'=>'width:15%;')) !!}
                                     </div>
                                     {!! Form::label('buyercustomerbirthdate', 'วันเกิด', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">
@@ -1214,17 +1214,17 @@
                                 <div class="form-group">
                                     {!! Form::label('salesmanemployeeid', 'พนักงานขาย', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('salesmanemployeeid', $saleemployeeselectlist, null, array('id'=>'salesmanemployeeid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('salesmanemployeeid', $saleemployeeselectlist, null, array('id'=>'salesmanemployeeid', 'class' => 'chosen-select')) !!}
                                     </div>
                                     {!! Form::label('salesmanageremployeeid', 'ผู้จัดการฝ่ายขาย', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('salesmanageremployeeid', $salemanageremployeeselectlist, null, array('id'=>'salesmanageremployeeid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('salesmanageremployeeid', $salemanageremployeeselectlist, null, array('id'=>'salesmanageremployeeid', 'class' => 'chosen-select')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('approversemployeeid', 'ผู้อนุมัติ', array('class' => 'col-sm-1 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('approversemployeeid', $approveremployeeselectlist, null, array('id'=>'approversemployeeid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('approversemployeeid', $approveremployeeselectlist, null, array('id'=>'approversemployeeid', 'class' => 'chosen-select')) !!}
                                     </div>
                                     {!! Form::label('approvaldate', 'วันที่อนุมัติ', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-2">

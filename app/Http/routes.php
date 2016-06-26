@@ -224,6 +224,7 @@ Route::get('carpayment', 'CarPaymentController@index');
 Route::get('carpayment/read', 'CarPaymentController@read');
 Route::post('carpayment/update', 'CarPaymentController@update');
 Route::get('carpayment/getbahttext/{amount}', 'CarPaymentController@getbahttext');
+Route::get('carpayment/getforaccountingdetailbyid/{id}', 'CarPaymentController@getforaccountingdetailbyid');
 
 Route::get('carpayment/newcarpayment', 'CarPaymentController@newcarpayment');
 Route::get('carpayment/edit/{id}', 'CarPaymentController@edit');
@@ -245,6 +246,16 @@ Route::get('redlabelhistory/read', 'RedlabelhistoryController@read');
 Route::post('redlabelhistory/update', 'RedlabelhistoryController@update');
 Route::get('redlabelhistory/readCarPreemptionSelectlist/{carpreemptionid}', 'RedlabelhistoryController@readCarPreemptionSelectlist');
 Route::get('redlabelhistory/readCarPreemptionSelectlistForDisplayInGrid/{redlabelid}', 'RedlabelhistoryController@readCarPreemptionSelectlistForDisplayInGrid');
+
+//AccountingDetail
+Route::get('accountingdetail', 'AccountingDetailController@index');
+Route::get('accountingdetail/read', 'AccountingDetailController@read');
+Route::post('accountingdetail/update', 'AccountingDetailController@update');
+
+Route::get('accountingdetail/newaccountingdetail', 'AccountingDetailController@newcarpayment');
+Route::get('accountingdetail/edit/{id}', 'AccountingDetailController@edit');
+Route::get('accountingdetail/view/{id}', 'AccountingDetailController@view');
+Route::post('accountingdetail/save', 'AccountingDetailController@save');
 
 Route::get('report', 'ReportController@index');
 Route::post('report/carstock', 'ReportController@carstock');

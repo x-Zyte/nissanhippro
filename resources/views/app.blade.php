@@ -275,6 +275,16 @@
                 <b class="arrow"></b>
             </li>
 
+            <li class="@yield('menu-accountingdetail-class')"
+                @if(!Auth::user()->isadmin && !in_array("รายละเอียดบันทึกบัญชี", $employeeMenus)) style="display: none" @endif>
+                <a href="{{ url('/accountingdetail/newaccountingdetail') }}">
+                    <i class="menu-icon fa fa-info-circle"></i>
+                    <span class="menu-text"> รายละเอียดบันทึกบัญชี </span>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
             <li class="@yield('menu-redlabel-class')" @if(!Auth::user()->isadmin && !in_array("ป้ายแดง", $employeeMenus)) style="display: none" @endif>
                 <a href="{{ url('/redlabel') }}">
                     <i class="menu-icon fa fa-ticket"></i>

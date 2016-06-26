@@ -85,9 +85,9 @@
         {!! Form::label('carpreemptionid', 'ยกเลิกการจอง เล่มที่/เลขที่', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
         <div class="col-sm-3">
             @if($oper == 'new')
-                {!! Form::select('carpreemptionid', $carpreemptionselectlist, null, array('id'=>'carpreemptionid', 'class' => 'chosen-select', 'onchange'=>'CarpreemptionChange(this)')); !!}
+                {!! Form::select('carpreemptionid', $carpreemptionselectlist, null, array('id'=>'carpreemptionid', 'class' => 'chosen-select', 'onchange'=>'CarpreemptionChange(this)')) !!}
             @else
-                {!! Form::select('carpreemptionid', $carpreemptionselectlist, null, array('id'=>'carpreemptionid', 'class' => 'chosen-select', 'onchange'=>'CarpreemptionChange(this)', 'disabled'=>'disabled')); !!}
+                {!! Form::select('carpreemptionid', $carpreemptionselectlist, null, array('id'=>'carpreemptionid', 'class' => 'chosen-select', 'onchange'=>'CarpreemptionChange(this)', 'disabled'=>'disabled')) !!}
                 {!! Form::hidden('carpreemptionid') !!}
             @endif
         </div>
@@ -110,7 +110,7 @@
                             <div class="form-group" style="padding-top:5px;">
                                 {!! Form::label('toemployeeid', 'เรียน', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                 <div class="col-sm-3">
-                                    {!! Form::select('toemployeeid', $toemployeeselectlist, null, array('id'=>'toemployeeid', 'class' => 'chosen-select')); !!}
+                                    {!! Form::select('toemployeeid', $toemployeeselectlist, null, array('id'=>'toemployeeid', 'class' => 'chosen-select')) !!}
                                 </div>
                             </div>
                             <div class="clear"></div>
@@ -215,7 +215,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label no-padding-right" for="account_employee">พนักงานบัญชี</label>
                                 <div class="col-sm-3">
-                                    {!! Form::select('accountemployeeid', $accountandfinanceemployeeselectlist, null, array('id'=>'accountemployeeid', 'class' => 'chosen-select')); !!}
+                                    {!! Form::select('accountemployeeid', $accountandfinanceemployeeselectlist, null, array('id'=>'accountemployeeid', 'class' => 'chosen-select')) !!}
                                 </div>
                                 <label class="col-sm-1 control-label no-padding-right" for="account_date" >วันที่</label>
                                 <div class="col-sm-2">
@@ -231,7 +231,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label no-padding-right" for="finance_employee">พนักงานการเงิน</label>
                                 <div class="col-sm-3">
-                                    {!! Form::select('financeemployeeid', $accountandfinanceemployeeselectlist, null, array('id'=>'financeemployeeid', 'class' => 'chosen-select')); !!}
+                                    {!! Form::select('financeemployeeid', $accountandfinanceemployeeselectlist, null, array('id'=>'financeemployeeid', 'class' => 'chosen-select')) !!}
                                 </div>
                                 <label class="col-sm-1 control-label no-padding-right" for="finance_date" >วันที่</label>
                                 <div class="col-sm-2">
@@ -247,7 +247,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label no-padding-right" for="customerbuy">ผู้อนุมัติ</label>
                                 <div class="col-sm-3">
-                                    {!! Form::select('approversemployeeid', $toemployeeselectlist, null, array('id'=>'approversemployeeid', 'class' => 'chosen-select')); !!}
+                                    {!! Form::select('approversemployeeid', $toemployeeselectlist, null, array('id'=>'approversemployeeid', 'class' => 'chosen-select')) !!}
                                 </div>
                                 <label class="col-sm-1 control-label no-padding-right" for="approve_date" >วันที่</label>
                                 <div class="col-sm-2">

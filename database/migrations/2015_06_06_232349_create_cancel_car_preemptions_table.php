@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateCancelCarPreemptionsTable extends Migration {
 
@@ -19,7 +19,7 @@ class CreateCancelCarPreemptionsTable extends Migration {
             $table->foreign('carpreemptionid')->references('id')->on('car_preemptions');
             $table->integer('provinceid')->unsigned();
             $table->foreign('provinceid')->references('id')->on('provinces');
-            $table->integer('branchid')->unsigned()->nullable();
+            $table->integer('branchid')->unsigned();
             $table->foreign('branchid')->references('id')->on('branchs');
             $table->integer('toemployeeid')->unsigned();
             $table->foreign('toemployeeid')->references('id')->on('employees');

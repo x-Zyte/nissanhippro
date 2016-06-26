@@ -8,13 +8,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\GridEncoder;
 use App\Models\Car;
+use App\Models\CarModel;
 use App\Models\CarPayment;
 use App\Models\CarPreemption;
-use App\Models\Color;
-use App\Models\CarModel;
 use App\Models\CarSubModel;
-use App\Facades\GridEncoder;
+use App\Models\Color;
 use App\Models\Customer;
 use App\Models\Employee;
 use App\Models\FinaceCompany;
@@ -25,13 +25,13 @@ use App\Models\Redlabelhistory;
 use App\Models\SystemDatas\Province;
 use App\Repositories\CarPaymentRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Request as SupportRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request as SupportRequest;
 
 class CarPaymentController extends Controller {
 
-    protected $menuPermissionName = "การขาย";
+    protected $menuPermissionName = "การชำระเงิน";
 
     public function __construct()
     {
@@ -247,7 +247,7 @@ class CarPaymentController extends Controller {
             $payeeemployeeselectlist[$item->id] = $item->title.' '.$item->firstname.' '.$item->lastname;
         }
 
-        $carpayment = new Carpayment;
+        $carpayment = new CarPayment();
         $carpayment->date = date('d-m-Y');
 
         return view('carpaymentform',
@@ -953,5 +953,12 @@ class CarPaymentController extends Controller {
             $text = ($number . $digit) . $text;
         }
         return $text;
+    }
+
+    public function getforaccountingdetailbyid($id)
+    {
+        if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
+
+        $model = CarPayment::find($id);
     }
 }

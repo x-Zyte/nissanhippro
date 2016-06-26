@@ -8,30 +8,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CancelCarPreemption;
-use App\Models\Car;
-use App\Models\CarPayment;
-use App\Models\CarPreemption;
-use App\Models\Color;
-use App\Models\CarModel;
-use App\Models\CarSubModel;
 use App\Facades\GridEncoder;
+use App\Models\CancelCarPreemption;
+use App\Models\CarModel;
+use App\Models\CarPreemption;
+use App\Models\CarSubModel;
 use App\Models\Customer;
 use App\Models\Employee;
-use App\Models\FinaceCompany;
-use App\Models\InsuranceCompany;
-use App\Models\Pricelist;
-use App\Models\RedLabel;
 use App\Repositories\CancelCarPreemptionRepository;
-use App\Repositories\CarPaymentRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Request as SupportRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request as SupportRequest;
 
 class CancelCarPreemptionController extends Controller {
 
-    protected $menuPermissionName = "การขาย";
+    protected $menuPermissionName = "ยกเลิกการจอง";
 
     public function __construct()
     {

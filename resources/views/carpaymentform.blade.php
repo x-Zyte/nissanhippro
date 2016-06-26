@@ -377,9 +377,9 @@
             {!! Form::label('carpreemptionid', 'ชำระเงินการจอง เล่มที่/เลขที่', array('class' => 'col-sm-3 control-label no-padding-right')) !!}
             <div class="col-sm-3">
                 @if($oper == 'new')
-                    {!! Form::select('carpreemptionid', $carpreemptionselectlist, null, array('id'=>'carpreemptionid', 'class' => 'chosen-select', 'onchange'=>'CarpreemptionChange(this)')); !!}
+                    {!! Form::select('carpreemptionid', $carpreemptionselectlist, null, array('id'=>'carpreemptionid', 'class' => 'chosen-select', 'onchange'=>'CarpreemptionChange(this)')) !!}
                 @else
-                    {!! Form::select('carpreemptionid', $carpreemptionselectlist, null, array('id'=>'carpreemptionid', 'class' => 'chosen-select', 'onchange'=>'CarpreemptionChange(this)', 'disabled'=>'disabled')); !!}
+                    {!! Form::select('carpreemptionid', $carpreemptionselectlist, null, array('id'=>'carpreemptionid', 'class' => 'chosen-select', 'onchange'=>'CarpreemptionChange(this)', 'disabled'=>'disabled')) !!}
                     {!! Form::hidden('carpreemptionid') !!}
                 @endif
             </div>
@@ -457,7 +457,7 @@
 
                                     {!! Form::label('carid', 'รถ เลขตัวถัง/เลขเครื่อง', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                     <div class="col-sm-3">
-                                        {!! Form::select('carid', $carselectlist, null, array('id'=>'carid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('carid', $carselectlist, null, array('id'=>'carid', 'class' => 'chosen-select')) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -596,7 +596,7 @@
                                     <div class="col-sm-7">
                                         <label style="width:180px;"> เบี้ยประกันชั้น 1,3</label>
                                         <label style="width:45px;"> บริษัท</label>
-                                        {!! Form::select('insurancecompanyid', $insurancecompanyselectlist, null, array('id'=>'insurancecompanyid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('insurancecompanyid', $insurancecompanyselectlist, null, array('id'=>'insurancecompanyid', 'class' => 'chosen-select')) !!}
                                     </div>
                                     <div class="col-sm-2">
                                         {!! Form::number('insurancefee', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'insurancefee')) !!}
@@ -614,7 +614,7 @@
                                     <div class="col-sm-7">
                                         <label style="width:180px;"> เบี้ย พ.ร.บ.</label>
                                         <label style="width:45px;"> บริษัท</label>
-                                        {!! Form::select('compulsorymotorinsurancecompanyid', $insurancecompanyselectlist, null, array('id'=>'compulsorymotorinsurancecompanyid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('compulsorymotorinsurancecompanyid', $insurancecompanyselectlist, null, array('id'=>'compulsorymotorinsurancecompanyid', 'class' => 'chosen-select')) !!}
                                     </div>
                                     <div class="col-sm-2">
                                         {!! Form::number('compulsorymotorinsurancefee', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'compulsorymotorinsurancefee')) !!}
@@ -980,7 +980,7 @@
 
                                     <label class="col-sm-1 control-label no-padding-right" for="receivedpaymentby">ผู้รับเงิน</label>
                                     <div class="col-sm-3">
-                                        {!! Form::select('payeeemployeeid', $payeeemployeeselectlist, null, array('id'=>'payeeemployeeid', 'class' => 'chosen-select')); !!}
+                                        {!! Form::select('payeeemployeeid', $payeeemployeeselectlist, null, array('id'=>'payeeemployeeid', 'class' => 'chosen-select')) !!}
                                     </div>
                                 </div>
                             </div>

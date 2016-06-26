@@ -8,15 +8,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\GridEncoder;
 use App\Models\Car;
 use App\Models\CarBrand;
+use App\Models\CarModel;
 use App\Models\CarPayment;
 use App\Models\CarPreemption;
 use App\Models\CarPreemptionGiveaway;
-use App\Models\Color;
-use App\Models\CarModel;
 use App\Models\CarSubModel;
-use App\Facades\GridEncoder;
+use App\Models\Color;
 use App\Models\Customer;
 use App\Models\Employee;
 use App\Models\FinaceCompany;
@@ -30,13 +30,13 @@ use App\Models\SystemDatas\Occupation;
 use App\Models\SystemDatas\Province;
 use App\Repositories\CarPreemptionRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Request as SupportRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request as SupportRequest;
 
 class CarPreemptionController extends Controller {
 
-    protected $menuPermissionName = "การขาย";
+    protected $menuPermissionName = "การจอง";
 
     public function __construct()
     {
