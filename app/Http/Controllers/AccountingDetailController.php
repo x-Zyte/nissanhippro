@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Input;
 class AccountingDetailController extends Controller
 {
 
-    protected $menuPermissionName = "รายละเอียดบันทึกบัญชี";
+    protected $menuPermissionName = "รายละเอียดเพื่อการบันทึกบัญชี";
 
     public function __construct()
     {
@@ -78,6 +78,24 @@ class AccountingDetailController extends Controller
         }
 
         $accountingdetail = new AccountingDetail();
+        $accountingdetail->branchname = null;
+        $accountingdetail->customername = null;
+        $accountingdetail->openbill = null;
+        $accountingdetail->finalopenbill = null;
+        $accountingdetail->realsalesprice = null;
+        $accountingdetail->carpriceinpricelist = null;
+        $accountingdetail->colorprice = null;
+        $accountingdetail->carwithcolorprice = null;
+        $accountingdetail->vatoffinalopenbill = null;
+        $accountingdetail->accessoriesfeeincludeinyodjud = null;
+        $accountingdetail->finalopenbillwithoutvat = null;
+        $accountingdetail->fakeaccessories = null;
+        $accountingdetail->realsalespricewithoutvat = null;
+        $accountingdetail->discount = null;
+        $accountingdetail->subdown = null;
+        $accountingdetail->accessoriesfeeactuallypaid = null;
+        $accountingdetail->finalopenbill = null;
+        $accountingdetail->finalopenbill = null;
 
         return view('accountingdetailform',
             ['oper' => 'new', 'pathPrefix' => '../', 'accountingdetail' => $accountingdetail,

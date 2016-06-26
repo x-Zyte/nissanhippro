@@ -276,10 +276,10 @@
             </li>
 
             <li class="@yield('menu-accountingdetail-class')"
-                @if(!Auth::user()->isadmin && !in_array("รายละเอียดบันทึกบัญชี", $employeeMenus)) style="display: none" @endif>
+                @if(!Auth::user()->isadmin && !in_array("รายละเอียดเพื่อการบันทึกบัญชี", $employeeMenus)) style="display: none" @endif>
                 <a href="{{ url('/accountingdetail/newaccountingdetail') }}">
                     <i class="menu-icon fa fa-info-circle"></i>
-                    <span class="menu-text"> รายละเอียดบันทึกบัญชี </span>
+                    <span class="menu-text"> รายละเอียดเพื่อการบันทึกบัญชี </span>
                 </a>
 
                 <b class="arrow"></b>

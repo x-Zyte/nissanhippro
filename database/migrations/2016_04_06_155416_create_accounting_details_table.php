@@ -21,6 +21,9 @@ class CreateAccountingDetailsTable extends Migration
             $table->foreign('provinceid')->references('id')->on('provinces');
             $table->integer('branchid')->unsigned();
             $table->foreign('branchid')->references('id')->on('branchs');
+            $table->string('invoiceno', 50);
+            $table->dateTime('date');
+            $table->decimal('additionalopenbill', 10, 2)->default(0);
 
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');

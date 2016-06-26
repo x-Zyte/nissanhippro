@@ -9,6 +9,8 @@
 namespace App\Http\Controllers;
 
 use App\Facades\GridEncoder;
+use App\Models\AccountingDetail;
+use App\Models\Branch;
 use App\Models\Car;
 use App\Models\CarModel;
 use App\Models\CarPayment;
@@ -959,6 +961,61 @@ class CarPaymentController extends Controller {
     {
         if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $model = CarPayment::find($id);
+        $accountingdetail = new AccountingDetail();
+        $carpayment = CarPayment::find($id);
+        $branch = Branch::find($carpayment->branchid);
+        $accountingdetail->branchname = $branch->name;
+
+        $carpreemption = CarPreemption::find($carpayment->carpreemptionid);
+        $customer = Customer::find($carpreemption->buyercustomerid);
+        $accountingdetail->customername = $customer->title . ' ' . $customer->firstname . ' ' . $customer->lastname;
+
+        if ($carpayment->deliverycardate != null && $carpayment->deliverycardate != '')
+            $accountingdetail->date = date('d-m-Y', strtotime($carpayment->deliverycardate));
+        else $accountingdetail->date = null;
+
+        $pricelist = Pricelist::find($carpreemption->pricelistid);
+        $accountingdetail->carpriceinpricelist = $pricelist->sellingpricewithaccessories;
+        $accountingdetail->colorprice = $carpreemption->colorprice;
+        $accountingdetail->carwithcolorprice = $pricelist->sellingpricewithaccessories + $carpreemption->colorprice;
+
+        if ($carpreemption->purchasetype == 0) {
+            $accountingdetail->openbill = number_format($accountingdetail->carwithcolorprice - $carpreemption->discount, 2, '.', '');
+        } else {
+            $accountingdetail->openbill = number_format($accountingdetail->carwithcolorprice - $carpreemption->discount + $carpreemption->accessories + $carpayment->accessoriesfeeincludeinyodjud, 2, '.', '');
+        }
+
+        $accountingdetail->accessoriesfeeincludeinyodjud = $carpayment->accessoriesfeeincludeinyodjud;
+        $accountingdetail->fakeaccessories = $carpreemption->accessories;
+        $accountingdetail->discount = $carpreemption->discount;
+        $accountingdetail->subdown = $carpreemption->subdown;
+        $accountingdetail->realsalesprice = $accountingdetail->carwithcolorprice + $accountingdetail->accessoriesfeeincludeinyodjud - $accountingdetail->discount - $accountingdetail->subdown;
+        $accountingdetail->accessoriesfeeactuallypaid = $carpayment->accessoriesfeeactuallypaid;
+
+        return $accountingdetail;
+
+        /*if($carpreemption->purchasetype == 0) {
+            $model->down = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
+            $model->yodjud =  0;
+            $model->yodjudwithinsurancepremium = 0;
+            if($model->overrideopenbill != null && $model->overrideopenbill != '')
+                $model->openbill = $model->overrideopenbill;
+            else
+                $model->openbill = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
+            $model->realprice = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
+            $model->payinadvanceamount = 0;
+        }
+        else {
+            $model->down = $carpreemption->down;
+            $model->yodjud =  number_format($model->carprice - $carpreemption->discount - $model->down + $carpreemption->accessories + $model->accessoriesfeeincludeinyodjud, 2, '.', '');
+            $model->yodjudwithinsurancepremium = number_format($model->yodjud + $model->insurancepremium, 2, '.', '');
+            $model->openbill = number_format($model->yodjud + $model->down, 2, '.', '');
+            $model->realprice =  number_format($model->carprice - $carpreemption->discount - $carpreemption->subdown, 2, '.', '');
+            if($model->firstinstallmentpay)
+                $model->firstinstallmentpayamount = number_format($model->amountperinstallment, 2, '.', '');
+            else
+                $model->firstinstallmentpayamount = number_format(0, 2, '.', '');
+            $model->payinadvanceamount = number_format($model->installmentsinadvance * $model->amountperinstallment, 2, '.', '');
+        }*/
     }
 }

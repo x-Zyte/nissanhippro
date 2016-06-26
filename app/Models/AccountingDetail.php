@@ -10,7 +10,8 @@ class AccountingDetail extends Model
     protected $table = 'accounting_details';
     protected $guarded = ['id'];
 
-    protected $fillable = ['provinceid', 'branchid', 'carpaymentid',
+    protected $fillable = ['provinceid', 'branchid', 'carpaymentid', 'invoiceno', 'date',
+        'additionalopenbill',
 
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
