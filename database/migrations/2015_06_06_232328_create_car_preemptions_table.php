@@ -55,6 +55,10 @@ class CreateCarPreemptionsTable extends Migration {
             $table->text('oldcarother')->nullable();
 
             $table->decimal('cashpledge', 10, 2);
+            $table->integer('cashpledgepaymenttype')->comment('0:เงินสด, 1:บัตรเครดิต');
+            $table->decimal('cashpledgechargepercent', 10, 2)->nullable();
+            $table->decimal('cashpledgechargeamount', 10, 2)->nullable();
+            $table->boolean('cashpledgechargefree')->default(false);
             $table->integer('purchasetype')->comment('0:เงินสด, 1:เช่าซื้อกับบริษัท');
             $table->integer('finacecompanyid')->unsigned()->nullable();
             $table->foreign('finacecompanyid')->references('id')->on('finace_companies');
@@ -74,13 +78,21 @@ class CreateCarPreemptionsTable extends Migration {
             $table->decimal('transferoperationfee', 10, 2)->nullable()->comment('ค่าดำเนินการโอน กรณีซื้อรถบริษัท - 2000');
 
             $table->decimal('insurancefee', 10, 2);
+            $table->boolean('insurancefeefree')->default(false);
             $table->decimal('compulsorymotorinsurancefee', 10, 2);
             $table->boolean('compulsorymotorinsurancefeefree')->default(false);
             $table->decimal('accessoriesfee', 10, 2);
-            $table->decimal('otherfee', 10, 2);
-            $table->decimal('subsidise', 10, 2);
             $table->decimal('implementfee', 10, 2);
             $table->boolean('implementfeefree')->default(false);
+            $table->decimal('giveawaywithholdingtax', 10, 2);
+            $table->decimal('otherfee', 10, 2);
+            $table->string('otherfeedetail', 200)->nullable();
+            $table->decimal('otherfee2', 10, 2);
+            $table->string('otherfeedetail2', 200)->nullable();
+            $table->decimal('otherfee3', 10, 2);
+            $table->string('otherfeedetail3', 200)->nullable();
+            $table->decimal('subsidise', 10, 2)->nullable();
+            $table->boolean('subsidisefree')->default(false);
             $table->dateTime('datewantgetcar');
 
             $table->decimal('giveawayadditionalcharges', 10, 2);

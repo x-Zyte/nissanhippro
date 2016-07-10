@@ -1109,10 +1109,13 @@ class CarPreemptionController extends Controller {
                 'accessories' => 'required',
 
                 'cashpledge' => 'required',
+            'cashpledgepaymenttype' => 'required',
+            'cashpledgechargepercent' => 'required_if:cashpledgepaymenttype,1',
                 'purchasetype' => 'required',
                 'finacecompanyid' => 'required_if:purchasetype,1',
                 'interest' => 'required_if:purchasetype,1',
                 'down' => 'required_if:purchasetype,1',
+            'subsidise' => 'required_if:purchasetype,1',
                 'installments' => 'required_if:purchasetype,1',
                 'cashpledgeredlabel' => 'required_if:carobjectivetype,0',
                 'registrationtype' => 'required_if:carobjectivetype,0',
@@ -1120,8 +1123,10 @@ class CarPreemptionController extends Controller {
                 'insurancefee' => 'required',
                 'compulsorymotorinsurancefee' => 'required',
                 'accessoriesfee' => 'required',
+            'giveawaywithholdingtax' => 'required',
                 'otherfee' => 'required',
-                'subsidise' => 'required',
+            'otherfee2' => 'required',
+            'otherfee3' => 'required',
                 'implementfee' => 'required',
                 'datewantgetcar' => 'required',
                 'giveawayadditionalcharges' => 'required',
@@ -1156,6 +1161,8 @@ class CarPreemptionController extends Controller {
                 'accessories.required' => 'รายละเอียดรถยนตร์ใหม่ บวกอุปกรณ์ จำเป็นต้องกรอก',
 
                 'cashpledge.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน เงินมัดจำ จำเป็นต้องกรอก',
+                'cashpledgepaymenttype.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ประเภทการจ่ายเงินมัดจำ จำเป็นต้องเลือก',
+                'cashpledgechargepercent.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน % ค่าธรรมเนียม จำเป็นต้องเลือก',
                 'purchasetype.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ประเภทซื้อรถยนต์ จำเป็นต้องเลือก',
                 'finacecompanyid.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ชื่อบริษัทเช่าซื้อ จำเป็นต้องกรอก',
                 'interest.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ดอกเบี้ย จำเป็นต้องกรอก',
@@ -1167,8 +1174,11 @@ class CarPreemptionController extends Controller {
                 'insurancefee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าประกันภัย จำเป็นต้องกรอก',
                 'compulsorymotorinsurancefee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่า พ.ร.บ. จำเป็นต้องกรอก',
                 'accessoriesfee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าอุปกรณ์ จำเป็นต้องกรอก',
-                'otherfee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าอื่นๆ จำเป็นต้องกรอก',
-                'subsidise.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน SUBSIDISE จำเป็นต้องกรอก',
+                'giveawaywithholdingtax.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ภาษีหัก ณ ที่จ่าย (กรณีลูกค้าได้รับของแถม เช่น ทอง) จำเป็นต้องกรอก',
+                'otherfee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าอื่นๆ (1) จำเป็นต้องกรอก',
+                'otherfee2.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าอื่นๆ (2) จำเป็นต้องกรอก',
+                'otherfee3.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าอื่นๆ (3) จำเป็นต้องกรอก',
+                'subsidise.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน SUBSIDISE จำเป็นต้องกรอก',
                 'implementfee.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ค่าดำเนินการ จำเป็นต้องกรอก',
                 'datewantgetcar.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน วันที่ต้องการรับรถ จำเป็นต้องกรอก',
                 'giveawayadditionalcharges.required' => 'รายละเอียดอื่นๆ ลูกค้าจ่ายเพิ่มเติ่มค่าของแถม จำเป็นต้องกรอก',
@@ -1254,6 +1264,11 @@ class CarPreemptionController extends Controller {
         $model->oldcarother = $input['oldcarother'];
 
         $model->cashpledge = $input['cashpledge'];
+        $model->cashpledgepaymenttype = $input['cashpledgepaymenttype'];
+        $model->cashpledgechargepercent = $input['cashpledgechargepercent'];
+        $model->cashpledgechargeamount = $input['cashpledgechargeamount'];
+        if ($request->has('cashpledgechargefree')) $model->cashpledgechargefree = $input['cashpledgechargefree'];
+        else $model->cashpledgechargefree = 0;
         $model->purchasetype = $input['purchasetype'];
         $model->finacecompanyid = $input['finacecompanyid'];
         $model->interest = $input['interest'];
@@ -1269,12 +1284,22 @@ class CarPreemptionController extends Controller {
         if ($request->has('registrationfeefree')) $model->registrationfeefree = $input['registrationfeefree'];
         else $model->registrationfeefree = 0;
         $model->insurancefee = $input['insurancefee'];
+        if ($request->has('insurancefeefree')) $model->insurancefeefree = $input['insurancefeefree'];
+        else $model->insurancefeefree = 0;
         $model->compulsorymotorinsurancefee = $input['compulsorymotorinsurancefee'];
         if ($request->has('compulsorymotorinsurancefeefree')) $model->compulsorymotorinsurancefeefree = $input['compulsorymotorinsurancefeefree'];
         else $model->compulsorymotorinsurancefeefree = 0;
         $model->accessoriesfee = $input['accessoriesfee'];
+        $model->giveawaywithholdingtax = $input['giveawaywithholdingtax'];
         $model->otherfee = $input['otherfee'];
+        $model->otherfeedetail = $input['otherfeedetail'];
+        $model->otherfee2 = $input['otherfee2'];
+        $model->otherfeedetail2 = $input['otherfeedetail2'];
+        $model->otherfee3 = $input['otherfee3'];
+        $model->otherfeedetail3 = $input['otherfeedetail3'];
         $model->subsidise = $input['subsidise'];
+        if ($request->has('subsidisefree')) $model->subsidisefree = $input['subsidisefree'];
+        else $model->subsidisefree = 0;
         $model->implementfee = $input['implementfee'];
         if ($request->has('implementfeefree')) $model->implementfeefree = $input['implementfeefree'];
         else $model->implementfeefree = 0;
@@ -1350,11 +1375,16 @@ class CarPreemptionController extends Controller {
         if($model->oldcarbuyername == '') $model->oldcarbuyername = null;
         if($model->oldcarother == '') $model->oldcarother = null;
 
+        if ($model->cashpledgepaymenttype == 0) {
+            $model->cashpledgechargepercent = null;
+            $model->cashpledgechargeamount = null;
+        }
         if($model->purchasetype == 0){
             $model->finacecompanyid = null;
             $model->interest = null;
             $model->down = null;
             $model->installments = null;
+            $model->subsidise = null;
         }
         if($model->recommendedby == false){
             $model->recommendedbyname = null;
@@ -1398,7 +1428,7 @@ class CarPreemptionController extends Controller {
         }
     }
 
-    public function getbyid($id)
+    public function getbyid($id)//find for new car payment
     {
         if(!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 

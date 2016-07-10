@@ -349,7 +349,6 @@ class CarPaymentController extends Controller {
         $model->insurancecompanyid = $input['insurancecompanyid'];
         $model->capitalinsurance = $input['capitalinsurance'];
         $model->compulsorymotorinsurancecompanyid = $input['compulsorymotorinsurancecompanyid'];
-        $model->totalpayments = $input['totalpayments'];
 
         $model->buyerpay = $input['buyerpay'];
         $model->overdue = $input['overdue'];
@@ -556,14 +555,14 @@ class CarPaymentController extends Controller {
 
         if($carpreemption->purchasetype == 0) {
             $model->down = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
-            $model->yodjud =  0;
-            $model->yodjudwithinsurancepremium = 0;
+            $model->yodjud = number_format(0, 2, '.', '');
+            $model->yodjudwithinsurancepremium = number_format(0, 2, '.', '');
             if($model->overrideopenbill != null && $model->overrideopenbill != '')
                 $model->openbill = $model->overrideopenbill;
             else
                 $model->openbill = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
             $model->realprice = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
-            $model->payinadvanceamount = 0;
+            $model->payinadvanceamount = number_format(0, 2, '.', '');
         }
         else {
             $model->down = $carpreemption->down;
@@ -576,6 +575,9 @@ class CarPaymentController extends Controller {
             else
                 $model->firstinstallmentpayamount = number_format(0, 2, '.', '');
             $model->payinadvanceamount = number_format($model->installmentsinadvance * $model->amountperinstallment, 2, '.', '');
+
+            if ($carpreemption->subsidisefree) $model->subsidise = number_format(0, 2, '.', '');
+            else $model->subsidise = $carpreemption->subsidise;
         }
 
         $model->accessoriesfee = $carpreemption->accessoriesfee;
@@ -587,8 +589,11 @@ class CarPaymentController extends Controller {
             $insurancecompanyselectlist[$item->id] = $item->name;
         }
 
-        $model->insurancefee = $carpreemption->insurancefee;
-        $model->compulsorymotorinsurancefee = $carpreemption->compulsorymotorinsurancefee;
+        if ($carpreemption->insurancefeefree) $model->insurancefee = number_format(0, 2, '.', '');
+        else $model->insurancefee = $carpreemption->insurancefee;
+
+        if ($carpreemption->compulsorymotorinsurancefeefree) $model->compulsorymotorinsurancefee = number_format(0, 2, '.', '');
+        else $model->compulsorymotorinsurancefee = $carpreemption->compulsorymotorinsurancefee;
 
         if($carpreemption->carobjectivetype == 0) {
             $registerprovince = Province::find($carpreemption->registerprovinceid);
@@ -598,7 +603,9 @@ class CarPaymentController extends Controller {
             $model->registerprovince = null;
         }
         $model->registrationtype = $carpreemption->registrationtype;
-        $model->registrationfee = $carpreemption->registrationfee;
+
+        if ($carpreemption->registrationfeefree) $model->registrationfee = number_format(0, 2, '.', '');
+        else $model->registrationfee = $carpreemption->registrationfee;
 
         if($carpreemption->carobjectivetype == 0) {
             $redlabelhistory = Redlabelhistory::where('carpreemptionid', $carpreemption->id)->first();
@@ -615,13 +622,36 @@ class CarPaymentController extends Controller {
         }
 
         $model->cashpledgeredlabel = $carpreemption->cashpledgeredlabel;
-        if($model->firstinstallmentpay)
-            $model->total = number_format($model->down + $model->amountperinstallment + $model->payinadvanceamount + $model->accessoriesfeeactuallypaid + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel, 2, '.', '');
-        else
-            $model->total = number_format($model->down + $model->payinadvanceamount + $model->accessoriesfeeactuallypaid + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel, 2, '.', '');
+
+        if ($carpreemption->implementfeefree) $model->implementfee = number_format(0, 2, '.', '');
+        else $model->implementfee = $carpreemption->implementfee;
+
+        $model->giveawaywithholdingtax = $carpreemption->giveawaywithholdingtax;
+
+        $model->otherfee = $carpreemption->otherfee;
+        $model->otherfeedetail = $carpreemption->otherfeedetail;
+        $model->otherfee2 = $carpreemption->otherfee2;
+        $model->otherfeedetail2 = $carpreemption->otherfeedetail2;
+        $model->otherfee3 = $carpreemption->otherfee3;
+        $model->otherfeedetail3 = $carpreemption->otherfeedetail3;
+
+        if ($model->firstinstallmentpay) {
+            $model->total = number_format($model->down + $model->amountperinstallment + $model->payinadvanceamount
+                + $model->accessoriesfeeactuallypaid + $model->insurancefee + $model->compulsorymotorinsurancefee
+                + $model->registrationfee + $model->cashpledgeredlabel + $model->implementfee
+                + $model->giveawaywithholdingtax + $model->otherfee + $model->otherfee2 + $model->otherfee3
+                , 2, '.', '');
+        } else {
+            $model->total = number_format($model->down + $model->payinadvanceamount + $model->accessoriesfeeactuallypaid
+                + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee
+                + $model->cashpledgeredlabel + $model->implementfee
+                + $model->giveawaywithholdingtax + $model->otherfee + $model->otherfee2 + $model->otherfee3
+                , 2, '.', '');
+        }
         $model->subdown = $carpreemption->subdown;
         $model->cashpledge = $carpreemption->cashpledge;
         $model->oldcarprice = $carpreemption->oldcarprice;
+        $model->totalpayments = number_format($model->total - $model->subdown - $model->cashpledge - $model->oldcarprice, 2, '.', '');
 
         $salesmanemployee = Employee::find($carpreemption->salesmanemployeeid);
         $model->salesmanemployee = $salesmanemployee->title.' '.$salesmanemployee->firstname.' '.$salesmanemployee->lastname;
@@ -758,14 +788,14 @@ class CarPaymentController extends Controller {
 
         if($carpreemption->purchasetype == 0) {
             $model->down = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
-            $model->yodjud =  0;
-            $model->yodjudwithinsurancepremium = 0;
+            $model->yodjud = number_format(0, 2, '.', '');
+            $model->yodjudwithinsurancepremium = number_format(0, 2, '.', '');
             if($model->overrideopenbill != null && $model->overrideopenbill != '')
                 $model->openbill = $model->overrideopenbill;
             else
                 $model->openbill = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
             $model->realprice = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
-            $model->payinadvanceamount = 0;
+            $model->payinadvanceamount = number_format(0, 2, '.', '');
         }
         else {
             $model->down = $carpreemption->down;
@@ -778,6 +808,9 @@ class CarPaymentController extends Controller {
             else
                 $model->firstinstallmentpayamount = number_format(0, 2, '.', '');
             $model->payinadvanceamount = number_format($model->installmentsinadvance * $model->amountperinstallment, 2, '.', '');
+
+            if ($carpreemption->subsidisefree) $model->subsidise = number_format(0, 2, '.', '');
+            else $model->subsidise = $carpreemption->subsidise;
         }
 
         $model->accessoriesfee = $carpreemption->accessoriesfee;
@@ -789,8 +822,11 @@ class CarPaymentController extends Controller {
             $insurancecompanyselectlist[$item->id] = $item->name;
         }
 
-        $model->insurancefee = $carpreemption->insurancefee;
-        $model->compulsorymotorinsurancefee = $carpreemption->compulsorymotorinsurancefee;
+        if ($carpreemption->insurancefeefree) $model->insurancefee = number_format(0, 2, '.', '');
+        else $model->insurancefee = $carpreemption->insurancefee;
+
+        if ($carpreemption->compulsorymotorinsurancefeefree) $model->compulsorymotorinsurancefee = number_format(0, 2, '.', '');
+        else $model->compulsorymotorinsurancefee = $carpreemption->compulsorymotorinsurancefee;
 
         if($carpreemption->carobjectivetype == 0) {
             $registerprovince = Province::find($carpreemption->registerprovinceid);
@@ -800,7 +836,9 @@ class CarPaymentController extends Controller {
             $model->registerprovince = null;
         }
         $model->registrationtype = $carpreemption->registrationtype;
-        $model->registrationfee = $carpreemption->registrationfee;
+
+        if ($carpreemption->registrationfeefree) $model->registrationfee = number_format(0, 2, '.', '');
+        else $model->registrationfee = $carpreemption->registrationfee;
 
         if($carpreemption->carobjectivetype == 0) {
             $redlabelhistory = Redlabelhistory::where('carpreemptionid', $carpreemption->id)->first();
@@ -817,13 +855,36 @@ class CarPaymentController extends Controller {
         }
 
         $model->cashpledgeredlabel = $carpreemption->cashpledgeredlabel;
-        if($model->firstinstallmentpay)
-            $model->total = number_format($model->down + $model->amountperinstallment + $model->payinadvanceamount + $model->accessoriesfeeactuallypaid + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel, 2, '.', '');
-        else
-            $model->total = number_format($model->down + $model->payinadvanceamount + $model->accessoriesfeeactuallypaid + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee + $model->cashpledgeredlabel, 2, '.', '');
+
+        if ($carpreemption->implementfeefree) $model->implementfee = number_format(0, 2, '.', '');
+        else $model->implementfee = $carpreemption->implementfee;
+
+        $model->giveawaywithholdingtax = $carpreemption->giveawaywithholdingtax;
+
+        $model->otherfee = $carpreemption->otherfee;
+        $model->otherfeedetail = $carpreemption->otherfeedetail;
+        $model->otherfee2 = $carpreemption->otherfee2;
+        $model->otherfeedetail2 = $carpreemption->otherfeedetail2;
+        $model->otherfee3 = $carpreemption->otherfee3;
+        $model->otherfeedetail3 = $carpreemption->otherfeedetail3;
+
+        if ($model->firstinstallmentpay) {
+            $model->total = number_format($model->down + $model->amountperinstallment + $model->payinadvanceamount
+                + $model->accessoriesfeeactuallypaid + $model->insurancefee + $model->compulsorymotorinsurancefee
+                + $model->registrationfee + $model->cashpledgeredlabel + $model->implementfee
+                + $model->giveawaywithholdingtax + $model->otherfee + $model->otherfee2 + $model->otherfee3
+                , 2, '.', '');
+        } else {
+            $model->total = number_format($model->down + $model->payinadvanceamount + $model->accessoriesfeeactuallypaid
+                + $model->insurancefee + $model->compulsorymotorinsurancefee + $model->registrationfee
+                + $model->cashpledgeredlabel + $model->implementfee
+                + $model->giveawaywithholdingtax + $model->otherfee + $model->otherfee2 + $model->otherfee3
+                , 2, '.', '');
+        }
         $model->subdown = $carpreemption->subdown;
         $model->cashpledge = $carpreemption->cashpledge;
         $model->oldcarprice = $carpreemption->oldcarprice;
+        $model->totalpayments = number_format($model->total - $model->subdown - $model->cashpledge - $model->oldcarprice, 2, '.', '');
 
         $salesmanemployee = Employee::find($carpreemption->salesmanemployeeid);
         $model->salesmanemployee = $salesmanemployee->title.' '.$salesmanemployee->firstname.' '.$salesmanemployee->lastname;
@@ -980,9 +1041,9 @@ class CarPaymentController extends Controller {
         $accountingdetail->carwithcolorprice = $pricelist->sellingpricewithaccessories + $carpreemption->colorprice;
 
         if ($carpreemption->purchasetype == 0) {
-            $accountingdetail->openbill = number_format($accountingdetail->carwithcolorprice - $carpreemption->discount, 2, '.', '');
+            $accountingdetail->openbill = $accountingdetail->carwithcolorprice - $carpreemption->discount;
         } else {
-            $accountingdetail->openbill = number_format($accountingdetail->carwithcolorprice - $carpreemption->discount + $carpreemption->accessories + $carpayment->accessoriesfeeincludeinyodjud, 2, '.', '');
+            $accountingdetail->openbill = $accountingdetail->carwithcolorprice - $carpreemption->discount + $carpreemption->accessories + $carpayment->accessoriesfeeincludeinyodjud;
         }
 
         $accountingdetail->accessoriesfeeincludeinyodjud = $carpayment->accessoriesfeeincludeinyodjud;
@@ -991,6 +1052,54 @@ class CarPaymentController extends Controller {
         $accountingdetail->subdown = $carpreemption->subdown;
         $accountingdetail->realsalesprice = $accountingdetail->carwithcolorprice + $accountingdetail->accessoriesfeeincludeinyodjud - $accountingdetail->discount - $accountingdetail->subdown;
         $accountingdetail->accessoriesfeeactuallypaid = $carpayment->accessoriesfeeactuallypaid;
+
+        if ($carpreemption->registrationfeefree) $accountingdetail->registrationfee = 0;
+        else $accountingdetail->registrationfee = $carpreemption->registrationfee;
+
+        if ($carpreemption->purchasetype == 0) {
+            if ($carpreemption->compulsorymotorinsurancefeefree) $accountingdetail->compulsorymotorinsurancefeecash = 0;
+            else $accountingdetail->compulsorymotorinsurancefeecash = $carpreemption->compulsorymotorinsurancefee;
+            if ($carpreemption->insurancefeefree) $accountingdetail->insurancefeecash = 0;
+            else $accountingdetail->insurancefeecash = $carpreemption->insurancefee;
+
+            $accountingdetail->compulsorymotorinsurancefeefn = 0;
+            $accountingdetail->insurancefeefn = 0;
+        } else {
+            if ($carpreemption->compulsorymotorinsurancefeefree) $accountingdetail->compulsorymotorinsurancefeefn = 0;
+            else $accountingdetail->compulsorymotorinsurancefeefn = $carpreemption->compulsorymotorinsurancefee;
+            if ($carpreemption->insurancefeefree) $accountingdetail->insurancefeefn = 0;
+            else $accountingdetail->insurancefeefn = $carpreemption->insurancefee;
+
+            $accountingdetail->compulsorymotorinsurancefeecash = 0;
+            $accountingdetail->insurancefeecash = 0;
+        }
+
+        if ($carpreemption->implementfeefree) $accountingdetail->implementfee = 0;
+        else $accountingdetail->implementfee = $carpreemption->implementfee;
+
+        $accountingdetail->otherfee = $carpreemption->otherfee;
+
+        $accountingdetail->totalotherfees = $accountingdetail->accessoriesfeeactuallypaid + $accountingdetail->registrationfee
+            + $accountingdetail->compulsorymotorinsurancefeecash + $accountingdetail->insurancefeecash + $accountingdetail->implementfee
+            + $accountingdetail->otherfee;
+
+        $carmodel = CarModel::find($carpreemption->carmodelid);
+        $carsubmodel = CarSubModel::find($carpreemption->carsubmodelid);
+        $accountingdetail->submodel = $carmodel->name . '/' . $carsubmodel->name;
+
+        $car = Car::find($carpayment->carid);
+        $accountingdetail->carno = $car->no;
+        $accountingdetail->engineno = $car->engineno;
+        $accountingdetail->chassisno = $car->chassisno;
+
+        $color = Color::find($car->colorid);
+        $accountingdetail->color = $color->code;
+
+        if ($carpreemption->purchasetype == 0) $accountingdetail->purchasetype = "C";
+        else $accountingdetail->purchasetype = "F";
+
+        if ($carpreemption->down == null) $accountingdetail->down = 0;
+        else $accountingdetail->down = $carpreemption->down;
 
         return $accountingdetail;
 

@@ -36,7 +36,6 @@ class CreateCarPaymentsTable extends Migration {
             $table->decimal('capitalinsurance', 10, 2)->nullable();
             $table->integer('compulsorymotorinsurancecompanyid')->unsigned();
             $table->foreign('compulsorymotorinsurancecompanyid')->references('id')->on('insurance_companies');
-            $table->decimal('totalpayments', 10, 2);
 
             $table->decimal('buyerpay', 10, 2)->nullable();
             $table->decimal('overdue', 10, 2)->nullable();

@@ -74,17 +74,41 @@
 
                 $('#realprice').val(parseFloat(data.realprice).toFixed(2));
 
+                if (data.subsidisefree == 1) $('#subsidise').val((0).toFixed(2));
+                else $('#subsidise').val(data.subsidise);
+
                 $('#accessoriesfee').val(data.accessoriesfee);
-                $('#insurancefee').val(data.insurancefee);
-                $('#compulsorymotorinsurancefee').val(data.compulsorymotorinsurancefee);
+                if (data.purchasetype == 0) {
+                    $('#accessoriesfeeactuallypaid').val(data.accessoriesfee);
+                }
+
+                if (data.insurancefeefree == 1) $('#insurancefee').val((0).toFixed(2));
+                else $('#insurancefee').val(data.insurancefee);
+
+                if (data.compulsorymotorinsurancefeefree == 1) $('#compulsorymotorinsurancefee').val((0).toFixed(2));
+                else $('#compulsorymotorinsurancefee').val(data.compulsorymotorinsurancefee);
+
                 $('#financingfee').val(data.financingfee);
                 $('#transferfee').val(data.transferfee);
                 $('#transferoperationfee').val(data.transferoperationfee);
                 $('#registerprovince').val(data.registerprovince);
                 $("input[name=registrationtype][value=" + data.registrationtype + "]").prop('checked', true);
-                $('#registrationfee').val(data.registrationfee);
+
+                if (data.registrationfeefree == 1) $('#registrationfee').val((0).toFixed(2));
+                else $('#registrationfee').val(data.registrationfee);
+
                 $('#redlabel').val(data.redlabel);
                 $('#cashpledgeredlabel').val(data.cashpledgeredlabel);
+
+                if (data.implementfeefree == 1) $('#implementfee').val((0).toFixed(2));
+                else $('#implementfee').val(data.implementfee);
+                $('#giveawaywithholdingtax').val(data.giveawaywithholdingtax);
+                $('#otherfee').val(data.otherfee);
+                $('#otherfeedetail').val(data.otherfeedetail);
+                $('#otherfee2').val(data.otherfee2);
+                $('#otherfeedetail2').val(data.otherfeedetail2);
+                $('#otherfee3').val(data.otherfee3);
+                $('#otherfeedetail3').val(data.otherfeedetail3);
 
                 $('#subdown').val(data.subdown);
                 $('#cashpledge').val(data.cashpledge);
@@ -227,6 +251,9 @@
             var payinadvanceamount = $('#payinadvanceamount').val();
             if(payinadvanceamount == null || payinadvanceamount == '') payinadvanceamount = 0;
 
+            var subsidise = $('#subsidise').val();
+            if (subsidise == null || subsidise == '') subsidise = 0;
+
             var accessoriesfeeactuallypaid = $('#accessoriesfeeactuallypaid').val();
             if(accessoriesfeeactuallypaid == null || accessoriesfeeactuallypaid == '') accessoriesfeeactuallypaid = 0;
 
@@ -251,10 +278,28 @@
             var cashpledgeredlabel = $('#cashpledgeredlabel').val();
             if(cashpledgeredlabel == null || cashpledgeredlabel == '') cashpledgeredlabel = 0;
 
+            var implementfee = $('#implementfee').val();
+            if (implementfee == null || implementfee == '') implementfee = 0;
+
+            var giveawaywithholdingtax = $('#giveawaywithholdingtax').val();
+            if (giveawaywithholdingtax == null || giveawaywithholdingtax == '') giveawaywithholdingtax = 0;
+
+            var otherfee = $('#otherfee').val();
+            if (otherfee == null || otherfee == '') otherfee = 0;
+
+            var otherfee2 = $('#otherfee2').val();
+            if (otherfee2 == null || otherfee2 == '') otherfee2 = 0;
+
+            var otherfee3 = $('#otherfee3').val();
+            if (otherfee3 == null || otherfee3 == '') otherfee3 = 0;
+
             var total = (parseFloat(down) + parseFloat(firstinstallmentpayamount)
-                    + parseFloat(payinadvanceamount) + parseFloat(accessoriesfeeactuallypaid) + parseFloat(insurancefee)
+            + parseFloat(payinadvanceamount) + parseFloat(subsidise)
+            + parseFloat(accessoriesfeeactuallypaid) + parseFloat(insurancefee)
                     + parseFloat(compulsorymotorinsurancefee) + parseFloat(financingfee) + parseFloat(transferfee)
-                    + parseFloat(transferoperationfee) + parseFloat(registrationfee) + parseFloat(cashpledgeredlabel)).toFixed(2);
+            + parseFloat(transferoperationfee) + parseFloat(registrationfee) + parseFloat(cashpledgeredlabel)
+            + parseFloat(implementfee) + parseFloat(giveawaywithholdingtax) + parseFloat(otherfee)
+            + parseFloat(otherfee2) + parseFloat(otherfee3)).toFixed(2);
 
             $('#total').val(total);
 
@@ -566,6 +611,14 @@
                                         {!! Form::number('payinadvanceamount', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly', 'id'=>'payinadvanceamount')) !!}
                                     </div>
                                 </div>
+                                <div class="form-group purchasetype1b" style="padding-left:20px;">
+                                    <div class="col-sm-7">
+                                        <label style="width:180px;"> SUBSIDISE</label>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        {!! Form::number('subsidise', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'subsidise')) !!}
+                                    </div>
+                                </div>
                                 <div class="form-group" style="padding-left:20px;">
                                     <div class="col-sm-7">
                                         <label style="width:180px;"> อุปกรณ์รวม</label>
@@ -675,6 +728,50 @@
                                     </div>
                                     <div class="col-sm-2">
                                         {!! Form::number('cashpledgeredlabel', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'cashpledgeredlabel')) !!}
+                                    </div>
+                                </div>
+                                <div class="form-group" style="padding-left:20px;">
+                                    <div class="col-sm-7">
+                                        <label style="width:180px;"> ค่าดำเนินการ</label>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        {!! Form::number('implementfee', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'implementfee')) !!}
+                                    </div>
+                                </div>
+                                <div class="form-group" style="padding-left:20px;">
+                                    <div class="col-sm-7">
+                                        <label style="width:350px;"> ภาษีหัก ณ ที่จ่าย (กรณีลูกค้าได้รับของแถม เช่น
+                                            ทอง)</label>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        {!! Form::number('giveawaywithholdingtax', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'giveawaywithholdingtax')) !!}
+                                    </div>
+                                </div>
+                                <div class="form-group" style="padding-left:20px;">
+                                    <div class="col-sm-7">
+                                        <label style="width:80px;"> ค่าอื่นๆ (1)</label>
+                                        {!! Form::text('otherfeedetail', null, array('style'=>'width:450px;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'otherfeedetail')) !!}
+                                    </div>
+                                    <div class="col-sm-2">
+                                        {!! Form::number('otherfee', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'otherfee')) !!}
+                                    </div>
+                                </div>
+                                <div class="form-group" style="padding-left:20px;">
+                                    <div class="col-sm-7">
+                                        <label style="width:80px;"> ค่าอื่นๆ (2)</label>
+                                        {!! Form::text('otherfeedetail2', null, array('style'=>'width:450px;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'otherfeedetail2')) !!}
+                                    </div>
+                                    <div class="col-sm-2">
+                                        {!! Form::number('otherfee2', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'otherfee2')) !!}
+                                    </div>
+                                </div>
+                                <div class="form-group" style="padding-left:20px;">
+                                    <div class="col-sm-7">
+                                        <label style="width:80px;"> ค่าอื่นๆ (3)</label>
+                                        {!! Form::text('otherfeedetail3', null, array('style'=>'width:450px;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'otherfeedetail3')) !!}
+                                    </div>
+                                    <div class="col-sm-2">
+                                        {!! Form::number('otherfee3', null, array('style'=>'width:100%;', 'class' => 'input-readonly', 'readonly'=>'readonly','id'=>'otherfee3')) !!}
                                     </div>
                                 </div>
                                 <hr>

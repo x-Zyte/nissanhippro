@@ -40,7 +40,7 @@
             $(grid_selector).jqGrid({
                 url: "carpayment/read",
                 datatype: "json",
-                colNames:['การจอง เล่มที่/เลขที่','ส่งรถก่อนชำระเงิน','วันที่', 'รถ เลขตัวถัง/เลขเครื่อง', 'ชำระเงินรวม','รูปส่งมอบรถ'],
+                colNames: ['การจอง เล่มที่/เลขที่', 'ส่งรถก่อนชำระเงิน', 'วันที่', 'รถ เลขตัวถัง/เลขเครื่อง', 'รูปส่งมอบรถ'],
                 colModel:[
                     {name:'carpreemptionid',index:'carpreemptionid', width:100, formatter:'select',editoptions:{value: "{{$carpreemptionselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carpreemptionselectlist}}"}
@@ -55,9 +55,6 @@
                     },
                     {name:'carid',index:'carid', width:150, formatter:'select',editoptions:{value: "{{$carselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carselectlist}}"}
-                    },
-                    {name:'totalpayments',index:'totalpayments', width:100,align:'right',formatter:'number'
-                        ,formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}
                     },
                     {name:'deliverycarfilepath',index:'deliverycarfilepath',width:100,editable: true,edittype:'file',editoptions:{enctype:"multipart/form-data"},formatter:imageLinkFormatter,search:false,align:'center'}
                 ],
