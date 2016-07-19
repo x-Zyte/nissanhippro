@@ -1028,6 +1028,7 @@ class CarPaymentController extends Controller {
         if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
         $accountingdetail = new AccountingDetail();
+        $accountingdetail->carpaymentid = $id;
         $carpayment = CarPayment::find($id);
         $branch = Branch::find($carpayment->branchid);
         $accountingdetail->branchname = $branch->name;
@@ -1043,90 +1044,109 @@ class CarPaymentController extends Controller {
         $pricelist = Pricelist::find($carpreemption->pricelistid);
         $accountingdetail->carpriceinpricelist = $pricelist->sellingpricewithaccessories;
         $accountingdetail->colorprice = $carpreemption->colorprice;
-        $accountingdetail->carwithcolorprice = $pricelist->sellingpricewithaccessories + $carpreemption->colorprice;
+        $carwithcolorprice = $pricelist->sellingpricewithaccessories + $carpreemption->colorprice;
+        $accountingdetail->carwithcolorprice = $carwithcolorprice == 0 ? '-' : number_format($carwithcolorprice, 2, '.', '');
+
+        $accountingdetail->purchasetype = $carpreemption->purchasetype;
+        if ($carpreemption->purchasetype == 0) {
+            $openbill = $accountingdetail->carwithcolorprice - $carpreemption->discount;
+        } else {
+            $openbill = $accountingdetail->carwithcolorprice - $carpreemption->discount + $carpreemption->accessories + $carpayment->accessoriesfeeincludeinyodjud;
+        }
+        $accountingdetail->openbill = $openbill == 0 ? '-' : number_format($openbill, 2, '.', '');
+
+        $accountingdetail->accessoriesfeeincludeinyodjud = $carpayment->accessoriesfeeincludeinyodjud == 0 ? '-' : number_format($carpayment->accessoriesfeeincludeinyodjud, 2, '.', '');
+        $accountingdetail->fakeaccessories = $carpreemption->accessories == 0 ? '-' : number_format($carpreemption->accessories, 2, '.', '');
+        $accountingdetail->discount = $carpreemption->discount == 0 ? '-' : number_format($carpreemption->discount, 2, '.', '');
+        $accountingdetail->subdown = $carpreemption->subdown == 0 ? '-' : number_format($carpreemption->subdown, 2, '.', '');
+        $realsalesprice = $carwithcolorprice + $carpayment->accessoriesfeeincludeinyodjud - $carpreemption->discount - $carpreemption->subdown;
+        $accountingdetail->realsalesprice = $realsalesprice == 0 ? '-' : number_format($realsalesprice, 2, '.', '');
+        $accountingdetail->accessoriesfeeactuallypaid = $carpayment->accessoriesfeeactuallypaid == 0 ? '-' : number_format($carpayment->accessoriesfeeactuallypaid, 2, '.', '');
+
+        $registrationfee = $carpreemption->registrationfeefree ? 0 : $carpreemption->registrationfee;
+        $accountingdetail->registrationfee = $registrationfee == 0 ? '-' : number_format($registrationfee, 2, '.', '');
 
         if ($carpreemption->purchasetype == 0) {
-            $accountingdetail->openbill = $accountingdetail->carwithcolorprice - $carpreemption->discount;
+            $compulsorymotorinsurancefeecash = $carpreemption->compulsorymotorinsurancefeefree ? 0 : $carpreemption->compulsorymotorinsurancefee;
+            $conditioncompulsorymotorinsurancefeecustomerpaid = $compulsorymotorinsurancefeecash;
+            $accountingdetail->compulsorymotorinsurancefeecash = $compulsorymotorinsurancefeecash == 0 ? '-' : number_format($compulsorymotorinsurancefeecash, 2, '.', '');
+
+            $insurancefeecash = $carpreemption->insurancefeefree ? 0 : $carpreemption->insurancefee;
+            $accountingdetail->insurancefeecash = $insurancefeecash == 0 ? '-' : number_format($insurancefeecash, 2, '.', '');
+
+            $accountingdetail->compulsorymotorinsurancefeefn = '-';
+            $compulsorymotorinsurancefeefn = 0;
+            $accountingdetail->insurancefeefn = '-';
+            $insurancefeefn = 0;
+            $accountingdetail->firstinstallmentpayamount = '-';
+            $firstinstallmentpayamount = 0;
+            $accountingdetail->installmentsinadvance = '-';
+            $accountingdetail->amountperinstallment = '-';
+            $accountingdetail->payinadvanceamount = '-';
+            $payinadvanceamount = 0;
+            $accountingdetail->insurancepremium = '-';
+            $accountingdetail->totalinadvancefees = '-';
+            $totalinadvancefees = 0;
+
+            $accountingdetail->conditioninsurancefee = $carpreemption->insurancefee == 0 ? '-' : number_format($carpreemption->insurancefee, 2, '.', '');
+            $accountingdetail->conditioninsurancefeecustomerpaid = $insurancefeecash == 0 ? '-' : number_format($insurancefeecash, 2, '.', '');
+            $conditioninsurancefeecompanypaid = $carpreemption->insurancefee - $insurancefeecash;
+            $accountingdetail->conditioninsurancefeecompanypaid = $conditioninsurancefeecompanypaid == 0 ? '-' : number_format($conditioninsurancefeecompanypaid, 2, '.', '');
+            $accountingdetail->conditioncompulsorymotorinsurancefeecustomerpaid = $compulsorymotorinsurancefeecash == 0 ? '-' : number_format($compulsorymotorinsurancefeecash, 2, '.', '');
         } else {
-            $accountingdetail->openbill = $accountingdetail->carwithcolorprice - $carpreemption->discount + $carpreemption->accessories + $carpayment->accessoriesfeeincludeinyodjud;
+            $compulsorymotorinsurancefeecash = 0;
+            $insurancefeecash = 0;
+            $compulsorymotorinsurancefeefn = $carpreemption->compulsorymotorinsurancefeefree ? 0 : $carpreemption->compulsorymotorinsurancefee;
+            $conditioncompulsorymotorinsurancefeecustomerpaid = $compulsorymotorinsurancefeefn;
+            $accountingdetail->compulsorymotorinsurancefeefn = $compulsorymotorinsurancefeefn == 0 ? '-' : number_format($compulsorymotorinsurancefeefn, 2, '.', '');
+
+            $insurancefeefn = $carpreemption->insurancefeefree ? 0 : $carpreemption->insurancefee;
+            $accountingdetail->insurancefeefn = $insurancefeefn == 0 ? '-' : number_format($insurancefeefn, 2, '.', '');
+
+            $firstinstallmentpayamount = $carpayment->firstinstallmentpay ? $carpayment->amountperinstallment : 0;
+            $accountingdetail->firstinstallmentpayamount = $firstinstallmentpayamount == 0 ? '-' : number_format($firstinstallmentpayamount, 2, '.', '');
+
+            $accountingdetail->installmentsinadvance = $carpayment->installmentsinadvance == 0 ? '-' : $carpayment->installmentsinadvance;
+            $accountingdetail->amountperinstallment = $carpayment->amountperinstallment == 0 ? '-' : number_format($carpayment->amountperinstallment, 2, '.', '');
+            $payinadvanceamount = $carpayment->installmentsinadvance * $carpayment->amountperinstallment;
+            $accountingdetail->payinadvanceamount = $payinadvanceamount == 0 ? '-' : number_format($payinadvanceamount, 2, '.', '');
+            $accountingdetail->insurancepremium = $carpayment->insurancepremium == 0 ? '-' : number_format($carpayment->insurancepremium, 2, '.', '');
+            $totalinadvancefees = $insurancefeefn + $compulsorymotorinsurancefeefn + $firstinstallmentpayamount
+                + $payinadvanceamount + $carpayment->insurancepremium;
+            $accountingdetail->totalinadvancefees = $totalinadvancefees == 0 ? '-' : number_format($totalinadvancefees, 2, '.', '');
+
+            $accountingdetail->compulsorymotorinsurancefeecash = '-';
+            $accountingdetail->insurancefeecash = '-';
+
+            $accountingdetail->conditioninsurancefee = $carpreemption->insurancefee == 0 ? '-' : number_format($carpreemption->insurancefee, 2, '.', '');
+            $accountingdetail->conditioninsurancefeecustomerpaid = $insurancefeefn == 0 ? '-' : number_format($insurancefeefn, 2, '.', '');
+            $conditioninsurancefeecompanypaid = $carpreemption->insurancefee - $insurancefeefn;
+            $accountingdetail->conditioninsurancefeecompanypaid = $conditioninsurancefeecompanypaid == 0 ? '-' : number_format($conditioninsurancefeecompanypaid, 2, '.', '');
+            $accountingdetail->conditioncompulsorymotorinsurancefeecustomerpaid = $compulsorymotorinsurancefeefn == 0 ? '-' : number_format($compulsorymotorinsurancefeefn, 2, '.', '');
         }
 
-        $accountingdetail->accessoriesfeeincludeinyodjud = $carpayment->accessoriesfeeincludeinyodjud;
-        $accountingdetail->fakeaccessories = $carpreemption->accessories;
-        $accountingdetail->discount = $carpreemption->discount;
-        $accountingdetail->subdown = $carpreemption->subdown;
-        $accountingdetail->realsalesprice = $accountingdetail->carwithcolorprice + $accountingdetail->accessoriesfeeincludeinyodjud - $accountingdetail->discount - $accountingdetail->subdown;
-        $accountingdetail->accessoriesfeeactuallypaid = $carpayment->accessoriesfeeactuallypaid;
+        $implementfee = $carpreemption->implementfeefree ? 0 : $carpreemption->implementfee;
+        $accountingdetail->implementfee = $implementfee == 0 ? '-' : number_format($implementfee, 2, '.', '');
 
-        if ($carpreemption->registrationfeefree) $accountingdetail->registrationfee = 0;
-        else $accountingdetail->registrationfee = $carpreemption->registrationfee;
+        $subsidise = $carpreemption->subsidisefree ? 0 : $carpreemption->subsidise;
+        $accountingdetail->subsidise = $subsidise == 0 ? '-' : number_format($subsidise, 2, '.', '');
 
-        if ($carpreemption->purchasetype == 0) {
-            if ($carpreemption->compulsorymotorinsurancefeefree) $accountingdetail->compulsorymotorinsurancefeecash = 0;
-            else $accountingdetail->compulsorymotorinsurancefeecash = $carpreemption->compulsorymotorinsurancefee;
-            if ($carpreemption->insurancefeefree) $accountingdetail->insurancefeecash = 0;
-            else $accountingdetail->insurancefeecash = $carpreemption->insurancefee;
+        $accountingdetail->giveawaywithholdingtax = $carpreemption->giveawaywithholdingtax == 0 ? '-' : number_format($carpreemption->giveawaywithholdingtax, 2, '.', '');
 
-            $accountingdetail->compulsorymotorinsurancefeefn = 0;
-            $accountingdetail->insurancefeefn = 0;
-            $accountingdetail->firstinstallmentpayamount = 0;
-            $accountingdetail->installmentsinadvance = 0;
-            $accountingdetail->amountperinstallment = 0;
-            $accountingdetail->payinadvanceamount = 0;
-            $accountingdetail->insurancepremium = 0;
-            $accountingdetail->totalinadvancefees = 0;
+        $accountingdetail->otherfee = $carpreemption->otherfee == 0 ? '-' : number_format($carpreemption->otherfee, 2, '.', '');
+        $accountingdetail->otherfeedetail = ($carpreemption->otherfeedetail == null || $carpreemption->otherfeedetail == '') ? '-' : $carpreemption->otherfeedetail;
+        $accountingdetail->otherfee2 = $carpreemption->otherfee2 == 0 ? '-' : number_format($carpreemption->otherfee2, 2, '.', '');
+        $accountingdetail->otherfeedetail2 = ($carpreemption->otherfeedetail2 == null || $carpreemption->otherfeedetail2 == '') ? '-' : $carpreemption->otherfeedetail2;
+        $accountingdetail->otherfee3 = $carpreemption->otherfee3 == 0 ? '-' : number_format($carpreemption->otherfee3, 2, '.', '');
+        $accountingdetail->otherfeedetail3 = ($carpreemption->otherfeedetail3 == null || $carpreemption->otherfeedetail3 == '') ? '-' : $carpreemption->otherfeedetail3;
 
-            $accountingdetail->conditioninsurancefee = $carpreemption->insurancefee;
-            $accountingdetail->conditioninsurancefeecustomerpaid = $accountingdetail->insurancefeecash;
-            $accountingdetail->conditioninsurancefeecompanypaid = $accountingdetail->conditioninsurancefee - $accountingdetail->conditioninsurancefeecustomerpaid;
-            $accountingdetail->conditioncompulsorymotorinsurancefeecustomerpaid = $accountingdetail->compulsorymotorinsurancefeecash;
-        } else {
-            if ($carpreemption->compulsorymotorinsurancefeefree) $accountingdetail->compulsorymotorinsurancefeefn = 0;
-            else $accountingdetail->compulsorymotorinsurancefeefn = $carpreemption->compulsorymotorinsurancefee;
-            if ($carpreemption->insurancefeefree) $accountingdetail->insurancefeefn = 0;
-            else $accountingdetail->insurancefeefn = $carpreemption->insurancefee;
+        $totalotherfee = $subsidise + $carpreemption->giveawaywithholdingtax
+            + $carpreemption->otherfee + $carpreemption->otherfee2 + $carpreemption->otherfee3;
+        $accountingdetail->totalotherfee = $totalotherfee == 0 ? '-' : number_format($totalotherfee, 2, '.', '');
 
-            if ($carpayment->firstinstallmentpay) $accountingdetail->firstinstallmentpayamount = $carpayment->amountperinstallment;
-            else $accountingdetail->firstinstallmentpayamount = 0;
-
-            $accountingdetail->installmentsinadvance = $carpayment->installmentsinadvance;
-            $accountingdetail->amountperinstallment = $carpayment->amountperinstallment;
-            $accountingdetail->payinadvanceamount = $carpayment->installmentsinadvance * $carpayment->amountperinstallment;
-            $accountingdetail->insurancepremium = $carpayment->insurancepremium;
-            $accountingdetail->totalinadvancefees = $accountingdetail->insurancefeefn + $accountingdetail->compulsorymotorinsurancefeefn
-                + $accountingdetail->firstinstallmentpayamount + $accountingdetail->payinadvanceamount
-                + $accountingdetail->insurancepremium;
-
-            $accountingdetail->compulsorymotorinsurancefeecash = 0;
-            $accountingdetail->insurancefeecash = 0;
-
-            $accountingdetail->conditioninsurancefee = $carpreemption->insurancefee;
-            $accountingdetail->conditioninsurancefeecustomerpaid = $accountingdetail->insurancefeefn;
-            $accountingdetail->conditioninsurancefeecompanypaid = $accountingdetail->conditioninsurancefee - $accountingdetail->conditioninsurancefeecustomerpaid;
-            $accountingdetail->conditioncompulsorymotorinsurancefeecustomerpaid = $accountingdetail->compulsorymotorinsurancefeefn;
-        }
-
-        if ($carpreemption->implementfeefree) $accountingdetail->implementfee = 0;
-        else $accountingdetail->implementfee = $carpreemption->implementfee;
-
-        if ($carpreemption->subsidisefree) $accountingdetail->subsidise = 0;
-        else $accountingdetail->subsidise = $carpreemption->subsidise;
-
-        $accountingdetail->giveawaywithholdingtax = $carpreemption->giveawaywithholdingtax;
-
-        $accountingdetail->otherfee = $carpreemption->otherfee;
-        $accountingdetail->otherfeedetail = $carpreemption->otherfeedetail;
-        $accountingdetail->otherfee2 = $carpreemption->otherfee2;
-        $accountingdetail->otherfeedetail2 = $carpreemption->otherfeedetail2;
-        $accountingdetail->otherfee3 = $carpreemption->otherfee3;
-        $accountingdetail->otherfeedetail3 = $carpreemption->otherfeedetail3;
-
-        $accountingdetail->totalotherfee = $accountingdetail->subsidise + $accountingdetail->giveawaywithholdingtax
-            + $accountingdetail->otherfee + $accountingdetail->otherfee2 + $accountingdetail->otherfee3;
-
-        $accountingdetail->totalotherfees = $accountingdetail->accessoriesfeeactuallypaid + $accountingdetail->registrationfee
-            + $accountingdetail->compulsorymotorinsurancefeecash + $accountingdetail->insurancefeecash + $accountingdetail->implementfee
-            + $accountingdetail->totalotherfee;
+        $totalotherfees = $carpayment->accessoriesfeeactuallypaid + $registrationfee + $compulsorymotorinsurancefeecash
+            + $insurancefeecash + $implementfee + $totalotherfee;
+        $accountingdetail->totalotherfees = $totalotherfees == 0 ? '-' : number_format($totalotherfees, 2, '.', '');
 
         $carmodel = CarModel::find($carpreemption->carmodelid);
         $carsubmodel = CarSubModel::find($carpreemption->carsubmodelid);
@@ -1140,65 +1160,71 @@ class CarPaymentController extends Controller {
         $color = Color::find($car->colorid);
         $accountingdetail->color = $color->code;
 
-        if ($carpreemption->purchasetype == 0) $accountingdetail->purchasetype = "C";
-        else $accountingdetail->purchasetype = "F";
+        $accountingdetail->purchasetypetext = $carpreemption->purchasetype == 0 ? "C" : "F";
 
-        if ($carpreemption->down == null) $accountingdetail->down = 0;
-        else $accountingdetail->down = $carpreemption->down;
+        $accountingdetail->down = ($carpreemption->down == null || $carpreemption->down == 0) ? '-' : number_format($carpreemption->down, 2, '.', '');
 
         $insurancecompany = InsuranceCompany::find($carpayment->insurancecompanyid);
         if ($insurancecompany != null) $accountingdetail->insurancecompany = $insurancecompany->name;
-        else $accountingdetail->insurancecompany = null;
+        else $accountingdetail->insurancecompany = '-';
 
-        if ($carpayment->capitalinsurance == null) $accountingdetail->capitalinsurance = 0;
-        else $accountingdetail->capitalinsurance = $carpayment->capitalinsurance;
+        $accountingdetail->capitalinsurance = ($carpayment->capitalinsurance == null || $carpayment->capitalinsurance == 0) ? '-' : number_format($carpayment->capitalinsurance, 2, '.', '');
 
         $compulsorymotorinsurancecompany = InsuranceCompany::find($carpayment->compulsorymotorinsurancecompanyid);
         if ($compulsorymotorinsurancecompany != null) $accountingdetail->compulsorymotorinsurancecompany = $compulsorymotorinsurancecompany->name;
-        else $accountingdetail->compulsorymotorinsurancecompany = null;
+        else $accountingdetail->compulsorymotorinsurancecompany = '-';
 
         $cartype = CarType::find($carmodel->cartypeid);
-        $accountingdetail->conditioncompulsorymotorinsurancefee = $cartype->actpaidincludevat;
-        $accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid = $accountingdetail->conditioncompulsorymotorinsurancefee - $accountingdetail->conditioncompulsorymotorinsurancefeecustomerpaid;
+        $accountingdetail->conditioncompulsorymotorinsurancefee = $cartype->actpaidincludevat == 0 ? '-' : number_format($cartype->actpaidincludevat, 2, '.', '');
+        $accountingdetail->hascompulsorymotorinsurancefee = $cartype->actpaidincludevat == 0 ? 0 : 1;
+        $conditioncompulsorymotorinsurancefeecompanypaid = $cartype->actpaidincludevat - $conditioncompulsorymotorinsurancefeecustomerpaid;
+        $accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid = $conditioncompulsorymotorinsurancefeecompanypaid == 0 ? '-' : number_format($conditioncompulsorymotorinsurancefeecompanypaid, 2, '.', '');
 
-        $accountingdetail->note1insurancefee = ($accountingdetail->conditioninsurancefee * 100) / 107.00;
-        $accountingdetail->note1insurancefeeincludevat = $accountingdetail->conditioninsurancefee;
-        $accountingdetail->note1insurancefeevat = $accountingdetail->note1insurancefeeincludevat - $accountingdetail->note1insurancefee;
+        $note1insurancefee = ($carpreemption->insurancefee * 100) / 107.00;
+        $accountingdetail->note1insurancefee = $note1insurancefee == 0 ? '-' : number_format($note1insurancefee, 2, '.', '');
+        $accountingdetail->note1insurancefeeincludevat = $carpreemption->insurancefee == 0 ? '-' : number_format($carpreemption->insurancefee, 2, '.', '');
+        $note1insurancefeevat = $carpreemption->insurancefee - $note1insurancefee;
+        $accountingdetail->note1insurancefeevat = $note1insurancefeevat == 0 ? '-' : number_format($note1insurancefeevat, 2, '.', '');
 
-        $accountingdetail->note1compulsorymotorinsurancefee = $cartype->actpaid;
-        $accountingdetail->note1compulsorymotorinsurancefeevat = $cartype->actpaidincludevat - $cartype->actpaid;
-        $accountingdetail->note1compulsorymotorinsurancefeeincludevat = $cartype->actpaidincludevat;
+        $accountingdetail->note1compulsorymotorinsurancefee = $cartype->actpaid == 0 ? '-' : number_format($cartype->actpaid, 2, '.', '');
+        $accountingdetail->note1compulsorymotorinsurancefeevat = ($cartype->actpaidincludevat - $cartype->actpaid) == 0 ? '-' : number_format(($cartype->actpaidincludevat - $cartype->actpaid), 2, '.', '');
+        $accountingdetail->note1compulsorymotorinsurancefeeincludevat = $cartype->actpaidincludevat == 0 ? '-' : number_format($cartype->actpaidincludevat, 2, '.', '');
 
-        $accountingdetail->note1totalfee = $accountingdetail->note1insurancefee + $accountingdetail->note1compulsorymotorinsurancefee;
-        $accountingdetail->note1totalfeevat = $accountingdetail->note1insurancefeevat + $accountingdetail->note1compulsorymotorinsurancefeevat;
-        $accountingdetail->note1totalfeeincludevat = $accountingdetail->note1insurancefeeincludevat + $accountingdetail->note1compulsorymotorinsurancefeeincludevat;
+        $note1totalfee = $note1insurancefee + $cartype->actpaid;
+        $accountingdetail->note1totalfee = $note1totalfee == 0 ? '-' : number_format($note1totalfee, 2, '.', '');
+        $note1totalfeevat = $note1insurancefeevat + ($cartype->actpaidincludevat - $cartype->actpaid);
+        $accountingdetail->note1totalfeevat = $note1totalfeevat == 0 ? '-' : number_format($note1totalfeevat, 2, '.', '');
+        $note1totalfeeincludevat = $carpreemption->insurancefee + $cartype->actpaidincludevat;
+        $accountingdetail->note1totalfeeincludevat = $note1totalfeeincludevat == 0 ? '-' : number_format($note1totalfeeincludevat, 2, '.', '');
 
-        if ($carpreemption->cashpledgeredlabel == null) $accountingdetail->cashpledgeredlabel = 0;
-        else $accountingdetail->cashpledgeredlabel = $carpreemption->cashpledgeredlabel;
+        $cashpledgeredlabel = $carpreemption->cashpledgeredlabel == null ? 0 : $carpreemption->cashpledgeredlabel;
+        $accountingdetail->cashpledgeredlabel = $cashpledgeredlabel == 0 ? '-' : number_format($cashpledgeredlabel, 2, '.', '');
 
-        if ($carpreemption->cashpledge == null) $accountingdetail->cashpledge = 0;
-        else $accountingdetail->cashpledge = $carpreemption->cashpledge;
+        $cashpledge = $carpreemption->cashpledge == null ? 0 : $carpreemption->cashpledge;
+        $accountingdetail->cashpledge = $cashpledge == 0 ? '-' : number_format($cashpledge, 2, '.', '');
 
-        $accountingdetail->totalcashpledge = $accountingdetail->cashpledgeredlabel + $accountingdetail->cashpledge;
-        $accountingdetail->totalcash = $accountingdetail->realsalesprice + $accountingdetail->totalotherfees
-            + $accountingdetail->totalinadvancefees - $accountingdetail->totalcashpledge;
+        $totalcashpledge = $cashpledgeredlabel + $cashpledge;
+        $accountingdetail->totalcashpledge = $totalcashpledge == 0 ? '-' : number_format($totalcashpledge, 2, '.', '');
+        $totalcash = $realsalesprice + $totalotherfees + $totalinadvancefees - $totalcashpledge;
+        $accountingdetail->totalcash = $totalcash == 0 ? '-' : number_format($totalcash, 2, '.', '');
 
         $finacecompany = FinaceCompany::find($carpreemption->finacecompanyid);
         if ($finacecompany != null) $accountingdetail->finacecompany = $finacecompany->name;
-        else $accountingdetail->finacecompany = null;
+        else $accountingdetail->finacecompany = '-';
 
         $accountingdetail->incasefinace = $carpreemption->purchasetype;
         if ($carpreemption->purchasetype == 1) {
-            $accountingdetail->interest = $carpreemption->interest;
-            $accountingdetail->installments = $carpreemption->installments;
+            $accountingdetail->interest = ($carpreemption->interest == null || $carpreemption->interest == 0) ? '-' : number_format($carpreemption->interest, 2, '.', '');
+            $accountingdetail->installments = ($carpreemption->installments == null || $carpreemption->installments == 0) ? '-' : $carpreemption->installments;
 
             $pricelist = Pricelist::find($carpreemption->pricelistid);
             $carprice = $pricelist->sellingpricewithaccessories + $carpreemption->colorprice;
             $yodjud = $carprice - $carpreemption->discount - $carpreemption->down + $carpreemption->accessories + $carpayment->accessoriesfeeincludeinyodjud;
             $yodjudwithinsurancepremium = $yodjud + $carpayment->insurancepremium;
-            $accountingdetail->yodjud = $yodjudwithinsurancepremium;
-            $accountingdetail->yodjudwithinterest = ($yodjudwithinsurancepremium * ($carpreemption->interest + 100)) / 100.00;
-            $finaceprofit = $accountingdetail->yodjudwithinterest - $yodjudwithinsurancepremium;
+            $accountingdetail->yodjud = $yodjudwithinsurancepremium == 0 ? '-' : number_format($yodjudwithinsurancepremium, 2, '.', '');
+            $yodjudwithinterest = ($yodjudwithinsurancepremium * ($carpreemption->interest + 100)) / 100.00;
+            $accountingdetail->yodjudwithinterest = $yodjudwithinterest == 0 ? '-' : number_format($yodjudwithinterest, 2, '.', '');
+            $finaceprofit = $yodjudwithinterest - $yodjudwithinsurancepremium;
 
             $commissionfinace = CommissionFinace::where('finacecompanyid', $carpreemption->finacecompanyid)
                 ->where('interestratetypeid', $carpreemption->interestratetypeid)->where('finaceminimumprofit', '<=', $finaceprofit)
@@ -1212,10 +1238,13 @@ class CarPaymentController extends Controller {
                 })->first();
 
             $percentdown = ($carpreemption->down * 100.00) / ($carprice - $carpreemption->discount + $carpreemption->accessories);
-            $accountingdetail->comfinpercent = null;
-            $accountingdetail->comfinyear = null;
+            $accountingdetail->comfinpercent = '-';
+            $comfinpercent = 0;
+            $accountingdetail->comfinyear = '-';
+            $comfinyear = 0;
             if ($commissionfinace != null) {
                 $accountingdetail->comfinyear = $commissionfinace->years;
+                $comfinyear = $commissionfinace->years;
 
                 $commissionfinaceinterest = CommissionFinaceInterest::where('commissionfinaceid', $commissionfinace->id)
                     ->where('downfrom', '<=', $percentdown)->where('downto', '>=', $percentdown)->first();
@@ -1253,80 +1282,91 @@ class CarPaymentController extends Controller {
 
                         if ($carpreemption->interest == $currentstepinterest) {
                             $accountingdetail->comfinpercent = $item->com;
+                            $comfinpercent = $item->com;
                             break;
                         } else if ($carpreemption->interest < $currentstepinterest) {
-                            if ($previousstepcom != null)
+                            if ($previousstepcom != null) {
                                 $accountingdetail->comfinpercent = $previousstepcom;
-                            else
-                                $accountingdetail->comfinpercent = 0;
+                                $comfinpercent = $previousstepcom;
+                            } else {
+                                $accountingdetail->comfinpercent = '-';
+                                $comfinpercent = 0;
+                            }
                             break;
                         } else if ($carpreemption->interest > $currentstepinterest) {
                             $previousstepcom = $item->com;
                         }
                     }
 
-                    if ($accountingdetail->comfinpercent == null) {
-                        if ($previousstepcom == null) $accountingdetail->comfinpercent = 0;
-                        else $accountingdetail->comfinpercent = $previousstepcom;
+                    if ($accountingdetail->comfinpercent == '-') {
+                        if ($previousstepcom != null) {
+                            $accountingdetail->comfinpercent = $previousstepcom;
+                            $comfinpercent = $previousstepcom;
+                        }
                     }
                 }
-            } else {
-                $accountingdetail->comfinpercent = 0;
-                $accountingdetail->comfinyear = 0;
             }
 
             $employee = Employee::find($carpreemption->salesmanemployeeid);
             $accountingdetail->salename = $employee->title . $employee->firstname . ' ' . $employee->lastname;
 
-            $accountingdetail->incasefinaceinsurancefee = $accountingdetail->note1insurancefeeincludevat;
-            $accountingdetail->note2insurancefeewhtax = $accountingdetail->note1insurancefee / 100.00;
-            $accountingdetail->note2insurancefee = $accountingdetail->insurancefeefn;
-            if ($accountingdetail->conditioninsurancefeecompanypaid > 0) $accountingdetail->note2insurancefeeexpense = $accountingdetail->conditioninsurancefeecompanypaid;
-            else $accountingdetail->note2insurancefeeexpense = 0;
-            if ($accountingdetail->conditioninsurancefeecompanypaid < 0) $accountingdetail->note2insurancefeeincome = $accountingdetail->conditioninsurancefeecompanypaid * -1;
-            else $accountingdetail->note2insurancefeeincome = 0;
+            $accountingdetail->incasefinaceinsurancefee = $carpreemption->insurancefee == 0 ? '-' : number_format($carpreemption->insurancefee, 2, '.', '');
+            $accountingdetail->note2insurancefeewhtax = ($note1insurancefee / 100.00) == 0 ? '-' : number_format(($note1insurancefee / 100.00), 2, '.', '');
+            $accountingdetail->note2insurancefee = $insurancefeefn == 0 ? '-' : number_format($insurancefeefn, 2, '.', '');
 
-            $accountingdetail->incasefinacecompulsorymotorinsurancefee = $accountingdetail->note1compulsorymotorinsurancefeeincludevat;
-            $accountingdetail->note2compulsorymotorinsurancefeewhtax = $accountingdetail->note1compulsorymotorinsurancefee / 100.00;
-            $accountingdetail->note2compulsorymotorinsurancefee = $accountingdetail->compulsorymotorinsurancefeefn;
-            if ($accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid > 0) $accountingdetail->note2compulsorymotorinsurancefeeexpense = $accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid;
-            else $accountingdetail->note2compulsorymotorinsurancefeeexpense = 0;
-            if ($accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid < 0) $accountingdetail->note2compulsorymotorinsurancefeeincome = $accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid * -1;
-            else $accountingdetail->note2compulsorymotorinsurancefeeincome = 0;
+            $note2insurancefeeexpense = $conditioninsurancefeecompanypaid > 0 ? $conditioninsurancefeecompanypaid : 0;
+            $accountingdetail->note2insurancefeeexpense = $note2insurancefeeexpense == 0 ? '-' : number_format($note2insurancefeeexpense, 2, '.', '');
+            $note2insurancefeeincome = $conditioninsurancefeecompanypaid < 0 ? ($conditioninsurancefeecompanypaid * -1) : 0;
+            $accountingdetail->note2insurancefeeincome = $note2insurancefeeincome == 0 ? '-' : number_format($note2insurancefeeincome, 2, '.', '');
 
-            $accountingdetail->incasefinacefirstinstallmentpayamount = $accountingdetail->firstinstallmentpayamount;
-            $accountingdetail->note2firstinstallmentpayamount = $accountingdetail->firstinstallmentpayamount;
-            $accountingdetail->incasefinacepayinadvanceamount = $accountingdetail->payinadvanceamount;
-            $accountingdetail->note2payinadvanceamount = $accountingdetail->payinadvanceamount;
-            $accountingdetail->incasefinaceinsurancepremium = $accountingdetail->insurancepremium;
-            $accountingdetail->note2insurancepremium = $accountingdetail->insurancepremium;
-            $accountingdetail->totalincasefinace = $accountingdetail->incasefinaceinsurancefee
-                + $accountingdetail->incasefinacecompulsorymotorinsurancefee + $accountingdetail->incasefinacefirstinstallmentpayamount
-                + $accountingdetail->incasefinacepayinadvanceamount + $accountingdetail->incasefinaceinsurancepremium;
+            $accountingdetail->incasefinacecompulsorymotorinsurancefee = $cartype->actpaidincludevat == 0 ? '-' : number_format($cartype->actpaidincludevat, 2, '.', '');
+            $accountingdetail->note2compulsorymotorinsurancefeewhtax = ($cartype->actpaid / 100.00) == 0 ? '-' : number_format(($cartype->actpaid / 100.00), 2, '.', '');
+            $accountingdetail->note2compulsorymotorinsurancefee = $compulsorymotorinsurancefeefn == 0 ? '-' : number_format($compulsorymotorinsurancefeefn, 2, '.', '');
 
-            $accountingdetail->incasefinacereceivedcash = $accountingdetail->yodjud - $accountingdetail->totalincasefinace;
-            $accountingdetail->note2total1 = $accountingdetail->note2insurancefee + $accountingdetail->note2compulsorymotorinsurancefee
-                + $accountingdetail->note2firstinstallmentpayamount + $accountingdetail->note2payinadvanceamount
-                + $accountingdetail->note2insurancepremium;
-            $accountingdetail->note2total2 = $accountingdetail->note2insurancefeeexpense + $accountingdetail->note2compulsorymotorinsurancefeeexpense;
-            $accountingdetail->note2total3 = $accountingdetail->note2insurancefeeincome + $accountingdetail->note2compulsorymotorinsurancefeeincome;
+            $note2compulsorymotorinsurancefeeexpense = $conditioncompulsorymotorinsurancefeecompanypaid > 0 ? $conditioncompulsorymotorinsurancefeecompanypaid : 0;
+            $accountingdetail->note2compulsorymotorinsurancefeeexpense = $note2compulsorymotorinsurancefeeexpense == 0 ? '-' : number_format($note2compulsorymotorinsurancefeeexpense, 2, '.', '');
+            $note2compulsorymotorinsurancefeeincome = $conditioncompulsorymotorinsurancefeecompanypaid < 0 ? ($conditioncompulsorymotorinsurancefeecompanypaid * -1) : 0;
+            $accountingdetail->note2compulsorymotorinsurancefeeincome = $note2compulsorymotorinsurancefeeincome == 0 ? '-' : number_format($note2compulsorymotorinsurancefeeincome, 2, '.', '');
 
-            $accountingdetail->incasefinacesubsidise = $carpreemption->subsidise;
-            $accountingdetail->incasefinacesubsidisevat = $carpreemption->subsidise * 0.07;
-            $accountingdetail->incasefinacesubsidisewithvat = $carpreemption->subsidise + ($carpreemption->subsidise * 0.07);
-            $accountingdetail->note2subsidisewhtax = $carpreemption->subsidise * 0.03;;
-            $accountingdetail->note2subsidisetotal = $accountingdetail->incasefinacesubsidisewithvat - $accountingdetail->note2subsidisewhtax;
+            $accountingdetail->incasefinacefirstinstallmentpayamount = $firstinstallmentpayamount == 0 ? '-' : number_format($firstinstallmentpayamount, 2, '.', '');
+            $accountingdetail->note2firstinstallmentpayamount = $firstinstallmentpayamount == 0 ? '-' : number_format($firstinstallmentpayamount, 2, '.', '');
+            $accountingdetail->incasefinacepayinadvanceamount = $payinadvanceamount == 0 ? '-' : number_format($payinadvanceamount, 2, '.', '');
+            $accountingdetail->note2payinadvanceamount = $payinadvanceamount == 0 ? '-' : number_format($payinadvanceamount, 2, '.', '');
+            $accountingdetail->incasefinaceinsurancepremium = $carpayment->insurancepremium == 0 ? '-' : number_format($carpayment->insurancepremium, 2, '.', '');
+            $accountingdetail->note2insurancepremium = $carpayment->insurancepremium == 0 ? '-' : number_format($carpayment->insurancepremium, 2, '.', '');
+            $totalincasefinace = $carpreemption->insurancefee + $cartype->actpaidincludevat + $firstinstallmentpayamount + $payinadvanceamount + $carpayment->insurancepremium;
+            $accountingdetail->totalincasefinace = $totalincasefinace == 0 ? '-' : number_format($totalincasefinace, 2, '.', '');
 
-            $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacereceivedcash - $accountingdetail->incasefinacesubsidisewithvat;
-            $accountingdetail->note2totalwhtax = $accountingdetail->note2insurancefeewhtax + $accountingdetail->note2compulsorymotorinsurancefeewhtax
-                + $accountingdetail->note2subsidisewhtax;
+            $accountingdetail->incasefinacereceivedcash = ($yodjud - $totalincasefinace) == 0 ? '-' : number_format(($yodjud - $totalincasefinace), 2, '.', '');
+            $note2total1 = $insurancefeefn + $compulsorymotorinsurancefeefn + $firstinstallmentpayamount + $payinadvanceamount + $carpayment->insurancepremium;
+            $accountingdetail->note2total1 = $note2total1 == 0 ? '-' : number_format($note2total1, 2, '.', '');
+            $note2total2 = $note2insurancefeeexpense + $note2compulsorymotorinsurancefeeexpense;
+            $accountingdetail->note2total2 = $note2total2 == 0 ? '-' : number_format($note2total2, 2, '.', '');
+            $note2total3 = $note2insurancefeeincome + $note2compulsorymotorinsurancefeeincome;
+            $accountingdetail->note2total3 = $note2total3 == 0 ? '-' : number_format($note2total3, 2, '.', '');
 
-            $accountingdetail->incasefinacecomfinamount = ($accountingdetail->yodjud / 1.07) * ($accountingdetail->interest / 100.00)
-                * $accountingdetail->comfinyear * ($accountingdetail->comfinpercent / 100.00);
-            $accountingdetail->incasefinacecomfinvat = $accountingdetail->incasefinacecomfinamount * 0.07;
-            $accountingdetail->incasefinacecomfinamountwithvat = $accountingdetail->incasefinacecomfinamount + $accountingdetail->incasefinacecomfinvat;
-            $accountingdetail->incasefinacecomfinwhtax = $accountingdetail->incasefinacecomfinamount * 0.03;
-            $accountingdetail->incasefinacecomfintotal = $accountingdetail->incasefinacecomfinamountwithvat - $accountingdetail->incasefinacecomfinwhtax;
+            $accountingdetail->incasefinacesubsidise = $carpreemption->subsidise == 0 ? '-' : number_format($carpreemption->subsidise, 2, '.', '');
+            $accountingdetail->incasefinacesubsidisevat = ($carpreemption->subsidise * 0.07) == 0 ? '-' : number_format(($carpreemption->subsidise * 0.07), 2, '.', '');
+            $incasefinacesubsidisewithvat = $carpreemption->subsidise + ($carpreemption->subsidise * 0.07);
+            $accountingdetail->incasefinacesubsidisewithvat = $incasefinacesubsidisewithvat == 0 ? '-' : number_format($incasefinacesubsidisewithvat, 2, '.', '');
+            $accountingdetail->note2subsidisewhtax = ($carpreemption->subsidise * 0.03) == 0 ? '-' : number_format(($carpreemption->subsidise * 0.03), 2, '.', '');
+            $note2subsidisetotal = ($carpreemption->subsidise + ($carpreemption->subsidise * 0.07)) - ($carpreemption->subsidise * 0.03);
+            $accountingdetail->note2subsidisetotal = $note2subsidisetotal == 0 ? '-' : number_format($note2subsidisetotal, 2, '.', '');
+
+            $incasefinacehassubsidisereceivedcash = ($yodjud - $totalincasefinace) - $incasefinacesubsidisewithvat;
+            $accountingdetail->incasefinacehassubsidisereceivedcash = $incasefinacehassubsidisereceivedcash == 0 ? '-' : number_format($incasefinacehassubsidisereceivedcash, 2, '.', '');
+            $note2totalwhtax = ($note1insurancefee / 100.00) + ($cartype->actpaid / 100.00) + ($carpreemption->subsidise * 0.03);
+            $accountingdetail->note2totalwhtax = $note2totalwhtax == 0 ? '-' : number_format($note2totalwhtax, 2, '.', '');
+
+            $incasefinacecomfinamount = ($yodjud / 1.07) * ($carpreemption->interest / 100.00) * $comfinyear * ($comfinpercent / 100.00);
+            $accountingdetail->incasefinacecomfinamount = $incasefinacecomfinamount == 0 ? '-' : number_format($incasefinacecomfinamount, 2, '.', '');
+            $accountingdetail->incasefinacecomfinvat = ($incasefinacecomfinamount * 0.07) == 0 ? '-' : number_format(($incasefinacecomfinamount * 0.07), 2, '.', '');
+
+            $incasefinacecomfinamountwithvat = $incasefinacecomfinamount + ($incasefinacecomfinamount * 0.07);
+            $accountingdetail->incasefinacecomfinamountwithvat = $incasefinacecomfinamountwithvat == 0 ? '-' : number_format($incasefinacecomfinamountwithvat, 2, '.', '');
+            $accountingdetail->incasefinacecomfinwhtax = ($incasefinacecomfinamount * 0.03) == 0 ? '-' : number_format(($incasefinacecomfinamount * 0.03), 2, '.', '');
+            $incasefinacecomfintotal = $incasefinacecomfinamountwithvat - ($incasefinacecomfinamount * 0.03);
+            $accountingdetail->incasefinacecomfintotal = $incasefinacecomfintotal == 0 ? '-' : number_format($incasefinacecomfintotal, 2, '.', '');
 
             $commissionextra = CommissionExtra::where('finacecompanyid', $carpreemption->finacecompanyid)
                 ->where('effectivefrom', '<=', $carpreemption->date)->where('effectiveto', '>=', $carpreemption->date)
@@ -1339,17 +1379,26 @@ class CarPaymentController extends Controller {
                 })->first();
 
             if ($commissionfinace != null) {
-                $accountingdetail->incasefinacecomextraamount = $commissionextra->amount;
-                $accountingdetail->incasefinacecomextravat = $commissionextra->amount * 0.07;
-                $accountingdetail->incasefinacecomextraamountwithvat = $accountingdetail->incasefinacecomextraamount + $accountingdetail->incasefinacecomextravat;
-                $accountingdetail->incasefinacecomextrawhtax = $commissionextra->amount * 0.03;
-                $accountingdetail->incasefinacecomextratotal = $accountingdetail->incasefinacecomextraamountwithvat - $accountingdetail->incasefinacecomextrawhtax;
+                $accountingdetail->incasefinacecomextraamount = $commissionextra->amount == 0 ? '-' : number_format($commissionextra->amount, 2, '.', '');
+                $incasefinacecomextraamount = $commissionextra->amount;
+                $accountingdetail->incasefinacecomextravat = ($commissionextra->amount * 0.07) == 0 ? '-' : number_format(($commissionextra->amount * 0.07), 2, '.', '');
+                $incasefinacecomextravat = ($commissionextra->amount * 0.07);
+                $incasefinacecomextraamountwithvat = $commissionextra->amount + ($commissionextra->amount * 0.07);
+                $accountingdetail->incasefinacecomextraamountwithvat = $incasefinacecomextraamountwithvat == 0 ? '-' : number_format($incasefinacecomextraamountwithvat, 2, '.', '');
+                $accountingdetail->incasefinacecomextrawhtax = ($commissionextra->amount * 0.03) == 0 ? '-' : number_format(($commissionextra->amount * 0.03), 2, '.', '');
+                $incasefinacecomextrawhtax = ($commissionextra->amount * 0.03);
+                $incasefinacecomextratotal = $incasefinacecomextraamountwithvat - ($commissionextra->amount * 0.03);
+                $accountingdetail->incasefinacecomextratotal = $incasefinacecomextratotal == 0 ? '-' : number_format($incasefinacecomextratotal, 2, '.', '');
             } else {
-                $accountingdetail->incasefinacecomextraamount = 0;
-                $accountingdetail->incasefinacecomextravat = 0;
-                $accountingdetail->incasefinacecomextraamountwithvat = 0;
-                $accountingdetail->incasefinacecomextrawhtax = 0;
-                $accountingdetail->incasefinacecomextratotal = 0;
+                $accountingdetail->incasefinacecomextraamount = '-';
+                $incasefinacecomextraamount = 0;
+                $accountingdetail->incasefinacecomextravat = '-';
+                $incasefinacecomextravat = 0;
+                $accountingdetail->incasefinacecomextraamountwithvat = '-';
+                $accountingdetail->incasefinacecomextrawhtax = '-';
+                $incasefinacecomextrawhtax = 0;
+                $accountingdetail->incasefinacecomextratotal = '-';
+                $incasefinacecomextratotal = 0;
             }
 
             if ($carpayment->insurancepremium > 0) {
@@ -1358,39 +1407,68 @@ class CarPaymentController extends Controller {
                     ->first();
 
                 if ($commissionpa != null) {
-                    $accountingdetail->incasefinacecompaamount = $commissionpa->amount;
-                    $accountingdetail->incasefinacecompavat = $commissionpa->amount * 0.07;
-                    $accountingdetail->incasefinacecompaamountwithvat = $accountingdetail->incasefinacecomextraamount + $accountingdetail->incasefinacecomextravat;
-                    $accountingdetail->incasefinacecompawhtax = $commissionpa->amount * 0.03;
-                    $accountingdetail->incasefinacecompatotal = $accountingdetail->incasefinacecomextraamountwithvat - $accountingdetail->incasefinacecomextrawhtax;
+                    $accountingdetail->incasefinacecompaamount = $commissionpa->amount == 0 ? '-' : number_format($commissionpa->amount, 2, '.', '');
+                    $incasefinacecompaamount = $commissionpa->amount;
+                    $accountingdetail->incasefinacecompavat = ($commissionpa->amount * 0.07) == 0 ? '-' : number_format(($commissionpa->amount * 0.07), 2, '.', '');
+                    $incasefinacecompavat = ($commissionpa->amount * 0.07);
+                    $incasefinacecompaamountwithvat = $commissionpa->amount + ($commissionpa->amount * 0.07);
+                    $accountingdetail->incasefinacecompaamountwithvat = $incasefinacecompaamountwithvat == 0 ? '-' : number_format($incasefinacecompaamountwithvat, 2, '.', '');
+                    $accountingdetail->incasefinacecompawhtax = ($commissionpa->amount * 0.03) == 0 ? '-' : number_format(($commissionpa->amount * 0.03), 2, '.', '');
+                    $incasefinacecompawhtax = ($commissionpa->amount * 0.03);
+                    $incasefinacecompatotal = $incasefinacecompaamountwithvat - ($commissionpa->amount * 0.03);
+                    $accountingdetail->incasefinacecompatotal = $incasefinacecompatotal == 0 ? '-' : number_format($incasefinacecompatotal, 2, '.', '');
                 } else {
-                    $accountingdetail->incasefinacecompaamount = 0;
-                    $accountingdetail->incasefinacecompavat = 0;
-                    $accountingdetail->incasefinacecompaamountwithvat = 0;
-                    $accountingdetail->incasefinacecompawhtax = 0;
-                    $accountingdetail->incasefinacecompatotal = 0;
+                    $accountingdetail->incasefinacecompaamount = '-';
+                    $incasefinacecompaamount = 0;
+                    $accountingdetail->incasefinacecompavat = '-';
+                    $incasefinacecompavat = 0;
+                    $accountingdetail->incasefinacecompaamountwithvat = '-';
+                    $accountingdetail->incasefinacecompawhtax = '-';
+                    $incasefinacecompawhtax = 0;
+                    $accountingdetail->incasefinacecompatotal = '-';
+                    $incasefinacecompatotal = 0;
                 }
             } else {
-                $accountingdetail->incasefinacecompaamount = 0;
-                $accountingdetail->incasefinacecompavat = 0;
-                $accountingdetail->incasefinacecompaamountwithvat = 0;
-                $accountingdetail->incasefinacecompawhtax = 0;
-                $accountingdetail->incasefinacecompatotal = 0;
+                $accountingdetail->incasefinacecompaamount = '-';
+                $incasefinacecompaamount = 0;
+                $accountingdetail->incasefinacecompavat = '-';
+                $incasefinacecompavat = 0;
+                $accountingdetail->incasefinacecompaamountwithvat = '-';
+                $accountingdetail->incasefinacecompawhtax = '-';
+                $incasefinacecompawhtax = 0;
+                $accountingdetail->incasefinacecompatotal = '-';
+                $incasefinacecompatotal = 0;
             }
 
-            $accountingdetail->incasefinacetotalcomamount = $accountingdetail->incasefinacecomfinamount + $accountingdetail->incasefinacecomextraamount
-                + $accountingdetail->incasefinacecompaamount;
-            $accountingdetail->incasefinacetotalcomvat = $accountingdetail->incasefinacecomfinvat + $accountingdetail->incasefinacecomextravat
-                + $accountingdetail->incasefinacecompavat;
-            $accountingdetail->incasefinacetotalcomwhtax = $accountingdetail->incasefinacecomfinwhtax + $accountingdetail->incasefinacecomextrawhtax
-                + $accountingdetail->incasefinacecompawhtax;
-            $accountingdetail->incasefinacetotalcomtotal = $accountingdetail->incasefinacecomfintotal + $accountingdetail->incasefinacecomextratotal
-                + $accountingdetail->incasefinacecompatotal;
+            $incasefinacetotalcomamount = $incasefinacecomfinamount + $incasefinacecomextraamount + $incasefinacecompaamount;
+            $accountingdetail->incasefinacetotalcomamount = $incasefinacetotalcomamount == 0 ? '-' : number_format($incasefinacetotalcomamount, 2, '.', '');
+            $incasefinacetotalcomvat = ($incasefinacecomfinamount * 0.07) + $incasefinacecomextravat + $incasefinacecompavat;
+            $accountingdetail->incasefinacetotalcomvat = $incasefinacetotalcomvat == 0 ? '-' : number_format($incasefinacetotalcomvat, 2, '.', '');
+            $incasefinacetotalcomwhtax = ($incasefinacecomfinamount * 0.03) + $incasefinacecomextrawhtax + $incasefinacecompawhtax;
+            $accountingdetail->incasefinacetotalcomwhtax = $incasefinacetotalcomwhtax == 0 ? '-' : number_format($incasefinacetotalcomwhtax, 2, '.', '');
+            $incasefinacetotalcomtotal = $incasefinacecomfintotal + $incasefinacecomextratotal + $incasefinacecompatotal;
+            $accountingdetail->incasefinacetotalcomtotal = $incasefinacetotalcomtotal == 0 ? '-' : number_format($incasefinacetotalcomtotal, 2, '.', '');
 
-            $accountingdetail->receivedcashfromfinace = $accountingdetail->incasefinacehassubsidisereceivedcash + $accountingdetail->note2totalwhtax
-                + $accountingdetail->incasefinacetotalcomtotal;
-            $accountingdetail->receivedcashfromfinace2 = $accountingdetail->receivedcashfromfinace;
+            $receivedcashfromfinace = $incasefinacehassubsidisereceivedcash + $note2totalwhtax + $incasefinacetotalcomtotal;
+            $accountingdetail->receivedcashfromfinace = $receivedcashfromfinace == 0 ? '-' : number_format($receivedcashfromfinace, 2, '.', '');
+            $accountingdetail->receivedcashfromfinace2 = $receivedcashfromfinace == 0 ? '-' : number_format($receivedcashfromfinace, 2, '.', '');
+        } else {
+            $yodjud = 0;
+            $accountingdetail->incasefinacereceivedcash = 0;
         }
+
+        $tradereceivableaccount2amount = $totalcash - $yodjud;
+        $accountingdetail->tradereceivableaccount2amount = $tradereceivableaccount2amount == 0 ? '-' : number_format($tradereceivableaccount2amount, 2, '.', '');;
+        $oldcarprice = $carpreemption->oldcarprice == null ? 0 : $carpreemption->oldcarprice;
+        $accountingdetail->oldcarprice = $oldcarprice == 0 ? '-' : number_format($oldcarprice, 2, '.', '');
+        $overdue = $carpayment->overdue == null ? 0 : $carpayment->overdue;
+        $accountingdetail->overdue = $overdue == 0 ? '-' : number_format($overdue, 2, '.', '');
+        $tradereceivableaccount2remainingamount = $tradereceivableaccount2amount - $oldcarprice - $overdue;
+        $accountingdetail->tradereceivableaccount2remainingamount = $tradereceivableaccount2remainingamount == 0 ? '-' : number_format($tradereceivableaccount2remainingamount, 2, '.', '');
+
+        $accountingdetail->ins = $carpreemption->insurancefeefree ? ($carpreemption->insurancefee == 0 ? '-' : number_format($carpreemption->insurancefee, 2, '.', '')) : '-';
+        $accountingdetail->prb = $carpreemption->compulsorymotorinsurancefeefree ? ($carpreemption->compulsorymotorinsurancefee == 0 ? '-' : number_format($carpreemption->compulsorymotorinsurancefee, 2, '.', '')) : '-';
+        $accountingdetail->dc = ($carpreemption->accessories + $carpreemption->subdown) == 0 ? '-' : number_format(($carpreemption->accessories + $carpreemption->subdown), 2, '.', '');
 
         return $accountingdetail;
     }

@@ -16,6 +16,7 @@ use App\Repositories\AccountingDetailRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request as SupportRequest;
 
 class AccountingDetailController extends Controller
 {
@@ -86,6 +87,41 @@ class AccountingDetailController extends Controller
         }
 
         $accountingdetail = new AccountingDetail();
+        $carpaymentid = SupportRequest::old('carpaymentid');
+        if ($carpaymentid != null && $carpaymentid > 0) {
+            $accountingdetail = (new CarPaymentController)->getforaccountingdetailbyid($carpaymentid);
+            $additionalopenbill = SupportRequest::old('additionalopenbill');
+
+            $finalopenbill = $accountingdetail->openbill == '-' ? 0 : $accountingdetail->openbill;
+            if ($additionalopenbill != null && $additionalopenbill > 0) {
+                $finalopenbill = $finalopenbill + $additionalopenbill;
+            }
+
+            if ($finalopenbill == 0) {
+                $accountingdetail->finalopenbill = '-';
+                $accountingdetail->vatoffinalopenbill = '-';
+                $accountingdetail->finalopenbillwithoutvat = '-';
+                $accountingdetail->realsalespricewithoutvat = $accountingdetail->realsalesprice;
+            } else {
+                $accountingdetail->finalopenbill = number_format($finalopenbill, 2, '.', '');
+                $vat = $finalopenbill * 0.07;
+                $accountingdetail->vatoffinalopenbill = number_format($vat, 2, '.', '');
+                $accountingdetail->finalopenbillwithoutvat = number_format(($finalopenbill - $vat), 2, '.', '');
+                $accountingdetail->realsalespricewithoutvat = $accountingdetail->realsalesprice;
+            }
+
+            $incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash == '-' ? 0 : $accountingdetail->incasefinacereceivedcash;
+            $tradereceivableaccount1amount = $finalopenbill - $incasefinacereceivedcash;
+            $accountingdetail->tradereceivableaccount1amount = $tradereceivableaccount1amount == 0 ? '-' : number_format($tradereceivableaccount1amount, 2, '.', '');
+            $accountingdetail->ar = $tradereceivableaccount1amount == 0 ? '-' : number_format($tradereceivableaccount1amount, 2, '.', '');
+
+            $adj = SupportRequest::old('adj');
+            $cash = $tradereceivableaccount1amount - ($accountingdetail->ins == '-' ? 0 : $accountingdetail->ins)
+                - ($accountingdetail->prb == '-' ? 0 : $accountingdetail->prb)
+                - ($accountingdetail->dc == '-' ? 0 : $accountingdetail->dc)
+                + ($adj == null ? 0 : $adj);
+            $accountingdetail->cash = $cash == 0 ? '-' : number_format($cash, 2, '.', '');
+        }
 
         return view('accountingdetailform',
             ['oper' => 'new', 'pathPrefix' => '../', 'accountingdetail' => $accountingdetail,
@@ -108,7 +144,9 @@ class AccountingDetailController extends Controller
             'cashpledgereceiptno' => 'required',
             'cashpledgereceiptdate' => 'required',
             'receivedcashfromfinacedate' => 'required_if:purchasetype,1',
-            'receivedcashfromfinacebankid' => 'required_if:purchasetype,1'
+            'receivedcashfromfinacebankid' => 'required_if:purchasetype,1',
+            'oldcarcomamount' => 'required',
+            'adj' => 'required'
         ],
             [
                 'carpaymentid.required' => 'กรุณาเลือกการจอง',
@@ -121,7 +159,9 @@ class AccountingDetailController extends Controller
                 'cashpledgereceiptno.required' => 'ใบรับเงิน เลขที่ จำเป็นต้องกรอก',
                 'cashpledgereceiptdate.required' => 'ใบรับเงิน วันที่ จำเป็นต้องกรอก',
                 'receivedcashfromfinacedate.required_if' => 'วันที่ ที่รับเงินจากไฟแนนซ์ จำเป็นต้องกรอก',
-                'receivedcashfromfinacebankid.required_if' => 'Bank ที่รับเงินจากไฟแนนซ์ จำเป็นต้องเลือก'
+                'receivedcashfromfinacebankid.required_if' => 'Bank ที่รับเงินจากไฟแนนซ์ จำเป็นต้องเลือก',
+                'oldcarcomamount.required' => 'รับเงินค่าคอมรถเก่า จำเป็นต้องกรอก',
+                'adj.required' => 'ADJ. จำเป็นต้องกรอก'
             ]
         );
 
@@ -160,6 +200,9 @@ class AccountingDetailController extends Controller
             $model->receivedcashfromfinacedate = null;
             $model->receivedcashfromfinacebankid = null;
         }
+
+        $model->oldcarcomamount = $input['oldcarcomamount'];
+        $model->adj = $input['adj'];
     }
 
     public function edit($id)

@@ -70,8 +70,7 @@
                 $("#customername").text(data.customername);
                 $("#date").text(data.date);
 
-                if (data.openbill == 0) $("#openbill").text("-");
-                else $("#openbill").text(parseFloat(data.openbill).toFixed(2));
+                $("#openbill").text(data.openbill);
 
                 var additionalopenbill = $('#additionalopenbill').val();
                 if (additionalopenbill == null || additionalopenbill == '')
@@ -80,41 +79,19 @@
                 if (finalopenbill == 0) $("#finalopenbill").text("-");
                 else $("#finalopenbill").text(parseFloat(finalopenbill).toFixed(2));
 
-                if (data.carpriceinpricelist == 0) $("#carpriceinpricelist").text("-");
-                else $("#carpriceinpricelist").text(parseFloat(data.carpriceinpricelist).toFixed(2));
+                $("#carpriceinpricelist").text(data.carpriceinpricelist);
+                $("#colorprice").text(data.colorprice);
+                $("#carwithcolorprice").text(data.carwithcolorprice);
+                $("#accessoriesfeeincludeinyodjud").text(data.accessoriesfeeincludeinyodjud);
 
-                if (data.colorprice == 0) $("#colorprice").text("-");
-                else $("#colorprice").text(parseFloat(data.colorprice).toFixed(2));
+                $("#plusfakeaccessories").text(data.fakeaccessories);
+                $("#minusfakeaccessories").text(data.fakeaccessories);
 
-                if (data.carwithcolorprice == 0) $("#carwithcolorprice").text("-");
-                else $("#carwithcolorprice").text(parseFloat(data.carwithcolorprice).toFixed(2));
+                $("#discount").text(data.discount);
+                $("#subdown").text(data.subdown);
 
-                if (data.accessoriesfeeincludeinyodjud == 0) $("#accessoriesfeeincludeinyodjud").text("-");
-                else $("#accessoriesfeeincludeinyodjud").text(parseFloat(data.accessoriesfeeincludeinyodjud).toFixed(2));
-
-                if (data.fakeaccessories == 0) {
-                    $("#plusfakeaccessories").text("-");
-                    $("#minusfakeaccessories").text("-");
-                }
-                else {
-                    $("#plusfakeaccessories").text(parseFloat(data.fakeaccessories).toFixed(2));
-                    $("#minusfakeaccessories").text(parseFloat(data.fakeaccessories).toFixed(2));
-                }
-
-                if (data.discount == 0) $("#discount").text("-");
-                else $("#discount").text(parseFloat(data.discount).toFixed(2));
-
-                if (data.subdown == 0) $("#subdown").text("-");
-                else $("#subdown").text(parseFloat(data.subdown).toFixed(2));
-
-                if (data.realsalesprice == 0) {
-                    $("#realsalesprice").text("-");
-                    $("#realsalesprice2").text("-");
-                }
-                else {
-                    $("#realsalesprice").text(parseFloat(data.realsalesprice).toFixed(2));
-                    $("#realsalesprice2").text(parseFloat(data.realsalesprice).toFixed(2));
-                }
+                $("#realsalesprice").text(data.realsalesprice);
+                $("#realsalesprice2").text(data.realsalesprice);
 
                 var vat;
                 if (finalopenbill == 0) vat = 0;
@@ -127,356 +104,169 @@
                 if (finalopenbillwithoutvat == 0) $("#finalopenbillwithoutvat").text("-");
                 else $("#finalopenbillwithoutvat").text(parseFloat(finalopenbillwithoutvat).toFixed(2));
 
-                var realsalespricewithoutvat = parseFloat(data.realsalesprice) - parseFloat(vat);
+                var realsalesprice = data.realsalesprice == '-' ? 0 : data.realsalesprice;
+                var realsalespricewithoutvat = parseFloat(realsalesprice) - parseFloat(vat);
                 if (realsalespricewithoutvat == 0) $("#realsalespricewithoutvat").text("-");
                 else $("#realsalespricewithoutvat").text(parseFloat(realsalespricewithoutvat).toFixed(2));
 
-                if (data.accessoriesfeeactuallypaid == 0) $("#accessoriesfeeactuallypaid").text("-");
-                else $("#accessoriesfeeactuallypaid").text(parseFloat(data.accessoriesfeeactuallypaid).toFixed(2));
-
-                if (data.registrationfee == 0) $("#registrationfee").text("-");
-                else $("#registrationfee").text(parseFloat(data.registrationfee).toFixed(2));
-
-                if (data.compulsorymotorinsurancefeecash == 0) $("#compulsorymotorinsurancefeecash").text("-");
-                else $("#compulsorymotorinsurancefeecash").text(parseFloat(data.compulsorymotorinsurancefeecash).toFixed(2));
-
-                if (data.insurancefeecash == 0) $("#insurancefeecash").text("-");
-                else $("#insurancefeecash").text(parseFloat(data.insurancefeecash).toFixed(2));
-
-                if (data.implementfee == 0) $("#implementfee").text("-");
-                else $("#implementfee").text(parseFloat(data.implementfee).toFixed(2));
-
-                if (data.totalotherfee == 0) $("#totalotherfee").text("-");
-                else $("#totalotherfee").text(parseFloat(data.totalotherfee).toFixed(2));
-
-                if (data.subsidise == 0) $("#subsidise").text("-");
-                else $("#subsidise").text(parseFloat(data.subsidise).toFixed(2));
-
-                if (data.giveawaywithholdingtax == 0) $("#giveawaywithholdingtax").text("-");
-                else $("#giveawaywithholdingtax").text(parseFloat(data.giveawaywithholdingtax).toFixed(2));
-
-                if (data.otherfee == 0) $("#otherfee").text("-");
-                else $("#otherfee").text(parseFloat(data.otherfee).toFixed(2));
-
-                if (data.otherfeedetail == null || data.otherfeedetail == '') $("#otherfeedetail").text("-");
-                else $("#otherfeedetail").text(data.otherfeedetail);
-
-                if (data.otherfee2 == 0) $("#otherfee2").text("-");
-                else $("#otherfee2").text(parseFloat(data.otherfee2).toFixed(2));
-
-                if (data.otherfeedetail2 == null || data.otherfeedetail2 == '') $("#otherfeedetail2").text("-");
-                else $("#otherfeedetail2").text(data.otherfeedetail2);
-
-                if (data.otherfee3 == 0) $("#otherfee3").text("-");
-                else $("#otherfee3").text(parseFloat(data.otherfee3).toFixed(2));
-
-                if (data.otherfeedetail3 == null || data.otherfeedetail3 == '') $("#otherfeedetail3").text("-");
-                else $("#otherfeedetail3").text(data.otherfeedetail3);
-
-                if (data.totalotherfees == 0) $("#totalotherfees").text("-");
-                else $("#totalotherfees").text(parseFloat(data.totalotherfees).toFixed(2));
+                $("#accessoriesfeeactuallypaid").text(data.accessoriesfeeactuallypaid);
+                $("#registrationfee").text(data.registrationfee);
+                $("#compulsorymotorinsurancefeecash").text(data.compulsorymotorinsurancefeecash);
+                $("#insurancefeecash").text(data.insurancefeecash);
+                $("#implementfee").text(data.implementfee);
+                $("#totalotherfee").text(data.totalotherfee);
+                $("#subsidise").text(data.subsidise);
+                $("#giveawaywithholdingtax").text(data.giveawaywithholdingtax);
+                $("#otherfee").text(data.otherfee);
+                $("#otherfeedetail").text(data.otherfeedetail);
+                $("#otherfee2").text(data.otherfee2);
+                $("#otherfeedetail2").text(data.otherfeedetail2);
+                $("#otherfee3").text(data.otherfee3);
+                $("#otherfeedetail3").text(data.otherfeedetail3);
+                $("#totalotherfees").text(data.totalotherfees);
 
                 $("#submodel").text(data.submodel);
                 $("#carno").text(data.carno);
                 $("#engineno").text(data.engineno);
                 $("#chassisno").text(data.chassisno);
                 $("#color").text(data.color);
-                $("#purchasetype").text(data.purchasetype);
+                $("#purchasetypetext").text(data.purchasetypetext);
 
-                if (data.down == 0) $("#down").text("-");
-                else $("#down").text(parseFloat(data.down).toFixed(2));
+                $("#down").text(data.down);
+                $("#compulsorymotorinsurancefeefn").text(data.compulsorymotorinsurancefeefn);
+                $("#insurancefeefn").text(data.insurancefeefn);
+                $("#firstinstallmentpayamount").text(data.firstinstallmentpayamount);
+                $("#installmentsinadvance").text(data.installmentsinadvance);
+                $("#amountperinstallment").text(data.amountperinstallment);
+                $("#payinadvanceamount").text(data.payinadvanceamount);
+                $("#insurancepremium").text(data.insurancepremium);
+                $("#totalinadvancefees").text(data.totalinadvancefees);
 
-                if (data.compulsorymotorinsurancefeefn == 0) $("#compulsorymotorinsurancefeefn").text("-");
-                else $("#compulsorymotorinsurancefeefn").text(parseFloat(data.compulsorymotorinsurancefeefn).toFixed(2));
-
-                if (data.insurancefeefn == 0) $("#insurancefeefn").text("-");
-                else $("#insurancefeefn").text(parseFloat(data.insurancefeefn).toFixed(2));
-
-                if (data.firstinstallmentpayamount == 0) $("#firstinstallmentpayamount").text("-");
-                else $("#firstinstallmentpayamount").text(parseFloat(data.firstinstallmentpayamount).toFixed(2));
-
-                if (data.installmentsinadvance == 0) $("#installmentsinadvance").text("-");
-                else $("#installmentsinadvance").text(parseFloat(data.installmentsinadvance).toFixed(2));
-
-                if (data.amountperinstallment == 0) $("#amountperinstallment").text("-");
-                else $("#amountperinstallment").text(parseFloat(data.amountperinstallment).toFixed(2));
-
-                if (data.payinadvanceamount == 0) $("#payinadvanceamount").text("-");
-                else $("#payinadvanceamount").text(parseFloat(data.payinadvanceamount).toFixed(2));
-
-                if (data.insurancepremium == 0) $("#insurancepremium").text("-");
-                else $("#insurancepremium").text(parseFloat(data.insurancepremium).toFixed(2));
-
-                if (data.totalinadvancefees == 0) $("#totalinadvancefees").text("-");
-                else $("#totalinadvancefees").text(parseFloat(data.totalinadvancefees).toFixed(2));
-
-                if (data.conditioninsurancefee == 0) {
-                    $("#conditioninsurancefee").text("-");
+                $("#conditioninsurancefee").text(data.conditioninsurancefee);
+                if (data.conditioninsurancefee == '-')
                     $('#hasinsurancefee').val(0);
-                }
-                else {
-                    $("#conditioninsurancefee").text(parseFloat(data.conditioninsurancefee).toFixed(2));
+                else
                     $('#hasinsurancefee').val(1);
-                }
 
-                if (data.conditioninsurancefeecustomerpaid == 0) $("#conditioninsurancefeecustomerpaid").text("-");
-                else $("#conditioninsurancefeecustomerpaid").text(parseFloat(data.conditioninsurancefeecustomerpaid).toFixed(2));
+                $("#conditioninsurancefeecustomerpaid").text(data.conditioninsurancefeecustomerpaid);
+                $("#conditioninsurancefeecompanypaid").text(data.conditioninsurancefeecompanypaid);
 
-                if (data.conditioninsurancefeecompanypaid == 0) $("#conditioninsurancefeecompanypaid").text("-");
-                else $("#conditioninsurancefeecompanypaid").text(parseFloat(data.conditioninsurancefeecompanypaid).toFixed(2));
-
-                if (data.conditioncompulsorymotorinsurancefee == 0) {
-                    $("#conditioncompulsorymotorinsurancefee").text("-");
+                $("#conditioncompulsorymotorinsurancefee").text(data.conditioncompulsorymotorinsurancefee);
+                if (data.conditioncompulsorymotorinsurancefee == '-')
                     $('#hascompulsorymotorinsurancefee').val(0);
-                }
-                else {
-                    $("#conditioncompulsorymotorinsurancefee").text(parseFloat(data.conditioncompulsorymotorinsurancefee).toFixed(2));
+                else
                     $('#hascompulsorymotorinsurancefee').val(1);
-                }
 
-                if (data.conditioncompulsorymotorinsurancefeecustomerpaid == 0) $("#conditioncompulsorymotorinsurancefeecustomerpaid").text("-");
-                else $("#conditioncompulsorymotorinsurancefeecustomerpaid").text(parseFloat(data.conditioncompulsorymotorinsurancefeecustomerpaid).toFixed(2));
-
-                if (data.conditioncompulsorymotorinsurancefeecompanypaid == 0) $("#conditioncompulsorymotorinsurancefeecompanypaid").text("-");
-                else $("#conditioncompulsorymotorinsurancefeecompanypaid").text(parseFloat(data.conditioncompulsorymotorinsurancefeecompanypaid).toFixed(2));
-
-                if (data.capitalinsurance == 0) $("#capitalinsurance").text("-");
-                else $("#capitalinsurance").text(parseFloat(data.capitalinsurance).toFixed(2));
-
-                if (data.insurancecompany == null || data.insurancecompany == '') $("#insurancecompany").text("-");
-                else $("#insurancecompany").text(data.insurancecompany);
-
-                if (data.compulsorymotorinsurancecompany == null || data.compulsorymotorinsurancecompany == '') $("#compulsorymotorinsurancecompany").text("-");
-                else $("#compulsorymotorinsurancecompany").text(data.compulsorymotorinsurancecompany);
-
-                if (data.note1insurancefee == 0) $("#note1insurancefee").text("-");
-                else $("#note1insurancefee").text(parseFloat(data.note1insurancefee).toFixed(2));
-
-                if (data.note1insurancefeevat == 0) $("#note1insurancefeevat").text("-");
-                else $("#note1insurancefeevat").text(parseFloat(data.note1insurancefeevat).toFixed(2));
-
-                if (data.note1insurancefeeincludevat == 0) $("#note1insurancefeeincludevat").text("-");
-                else $("#note1insurancefeeincludevat").text(parseFloat(data.note1insurancefeeincludevat).toFixed(2));
-
-                if (data.note1compulsorymotorinsurancefee == 0) $("#note1compulsorymotorinsurancefee").text("-");
-                else $("#note1compulsorymotorinsurancefee").text(parseFloat(data.note1compulsorymotorinsurancefee).toFixed(2));
-
-                if (data.note1compulsorymotorinsurancefeevat == 0) $("#note1compulsorymotorinsurancefeevat").text("-");
-                else $("#note1compulsorymotorinsurancefeevat").text(parseFloat(data.note1compulsorymotorinsurancefeevat).toFixed(2));
-
-                if (data.note1compulsorymotorinsurancefeeincludevat == 0) $("#note1compulsorymotorinsurancefeeincludevat").text("-");
-                else $("#note1compulsorymotorinsurancefeeincludevat").text(parseFloat(data.note1compulsorymotorinsurancefeeincludevat).toFixed(2));
-
-                if (data.note1totalfee == 0) $("#note1totalfee").text("-");
-                else $("#note1totalfee").text(parseFloat(data.note1totalfee).toFixed(2));
-
-                if (data.note1totalfeevat == 0) $("#note1totalfeevat").text("-");
-                else $("#note1totalfeevat").text(parseFloat(data.note1totalfeevat).toFixed(2));
-
-                if (data.note1totalfeeincludevat == 0) $("#note1totalfeeincludevat").text("-");
-                else $("#note1totalfeeincludevat").text(parseFloat(data.note1totalfeeincludevat).toFixed(2));
-
-                if (data.cashpledgeredlabel == 0) $("#cashpledgeredlabel").text("-");
-                else $("#cashpledgeredlabel").text(parseFloat(data.cashpledgeredlabel).toFixed(2));
-
-                if (data.cashpledge == 0) $("#cashpledge").text("-");
-                else $("#cashpledge").text(parseFloat(data.cashpledge).toFixed(2));
-
-                if (data.totalcashpledge == 0) $("#totalcashpledge").text("-");
-                else $("#totalcashpledge").text(parseFloat(data.totalcashpledge).toFixed(2));
-
-                if (data.totalcash == 0) $("#totalcash").text("-");
-                else $("#totalcash").text(parseFloat(data.totalcash).toFixed(2));
+                $("#conditioncompulsorymotorinsurancefeecustomerpaid").text(data.conditioncompulsorymotorinsurancefeecustomerpaid);
+                $("#conditioncompulsorymotorinsurancefeecompanypaid").text(data.conditioncompulsorymotorinsurancefeecompanypaid);
+                $("#capitalinsurance").text(data.capitalinsurance);
+                $("#insurancecompany").text(data.insurancecompany);
+                $("#compulsorymotorinsurancecompany").text(data.compulsorymotorinsurancecompany);
+                $("#note1insurancefee").text(data.note1insurancefee);
+                $("#note1insurancefeevat").text(data.note1insurancefeevat);
+                $("#note1insurancefeeincludevat").text(data.note1insurancefeeincludevat);
+                $("#note1compulsorymotorinsurancefee").text(data.note1compulsorymotorinsurancefee);
+                $("#note1compulsorymotorinsurancefeevat").text(data.note1compulsorymotorinsurancefeevat);
+                $("#note1compulsorymotorinsurancefeeincludevat").text(data.note1compulsorymotorinsurancefeeincludevat);
+                $("#note1totalfee").text(data.note1totalfee);
+                $("#note1totalfeevat").text(data.note1totalfeevat);
+                $("#note1totalfeeincludevat").text(data.note1totalfeeincludevat);
+                $("#cashpledgeredlabel").text(data.cashpledgeredlabel);
+                $("#cashpledge").text(data.cashpledge);
+                $("#totalcashpledge").text(data.totalcashpledge);
+                $("#totalcash").text(data.totalcash);
 
                 if (data.incasefinace == 1) {
                     $("#incasefinace").css("display", "block");
                     $("#finacecompany").text('กรณีจัดไฟแนนซ์ - ' + data.finacecompany);
                     $('#purchasetype').val(1);
 
-                    if (data.interest == 0) $("#interest").text("-");
-                    else $("#interest").text(parseFloat(data.interest).toFixed(2));
-
-                    if (data.installments == 0) $("#installments").text("-");
-                    else $("#installments").text(data.installments);
-
-                    if (data.yodjud == 0) $("#yodjud").text("-");
-                    else $("#yodjud").text(parseFloat(data.yodjud).toFixed(2));
-
-                    if (data.comfinpercent == 0) $("#comfinpercent").text("-");
-                    else $("#comfinpercent").text(data.comfinpercent);
-
-                    if (data.comfinyear == 0) $("#comfinyear").text("-");
-                    else $("#comfinyear").text(data.comfinyear);
-
-                    if (data.salename == null || data.salename == '') $("#salename").text("-");
-                    else $("#salename").text(data.salename);
-
-                    if (data.incasefinaceinsurancefee == 0) $("#incasefinaceinsurancefee").text("-");
-                    else $("#incasefinaceinsurancefee").text(parseFloat(data.incasefinaceinsurancefee).toFixed(2));
-
-                    if (data.note2insurancefeewhtax == 0) $("#note2insurancefeewhtax").text("-");
-                    else $("#note2insurancefeewhtax").text(parseFloat(data.note2insurancefeewhtax).toFixed(2));
-
-                    if (data.note2insurancefee == 0) $("#note2insurancefee").text("-");
-                    else $("#note2insurancefee").text(parseFloat(data.note2insurancefee).toFixed(2));
-
-                    if (data.note2insurancefeeexpense == 0) $("#note2insurancefeeexpense").text("-");
-                    else $("#note2insurancefeeexpense").text(parseFloat(data.note2insurancefeeexpense).toFixed(2));
-
-                    if (data.note2insurancefeeincome == 0) $("#note2insurancefeeincome").text("-");
-                    else $("#note2insurancefeeincome").text(parseFloat(data.note2insurancefeeincome).toFixed(2));
-
-                    if (data.incasefinacecompulsorymotorinsurancefee == 0) $("#incasefinacecompulsorymotorinsurancefee").text("-");
-                    else $("#incasefinacecompulsorymotorinsurancefee").text(parseFloat(data.incasefinacecompulsorymotorinsurancefee).toFixed(2));
-
-                    if (data.note2compulsorymotorinsurancefeewhtax == 0) $("#note2compulsorymotorinsurancefeewhtax").text("-");
-                    else $("#note2compulsorymotorinsurancefeewhtax").text(parseFloat(data.note2compulsorymotorinsurancefeewhtax).toFixed(2));
-
-                    if (data.note2compulsorymotorinsurancefee == 0) $("#note2compulsorymotorinsurancefee").text("-");
-                    else $("#note2compulsorymotorinsurancefee").text(parseFloat(data.note2compulsorymotorinsurancefee).toFixed(2));
-
-                    if (data.note2compulsorymotorinsurancefeeexpense == 0) $("#note2compulsorymotorinsurancefeeexpense").text("-");
-                    else $("#note2compulsorymotorinsurancefeeexpense").text(parseFloat(data.note2compulsorymotorinsurancefeeexpense).toFixed(2));
-
-                    if (data.note2compulsorymotorinsurancefeeincome == 0) $("#note2compulsorymotorinsurancefeeincome").text("-");
-                    else $("#note2compulsorymotorinsurancefeeincome").text(parseFloat(data.note2compulsorymotorinsurancefeeincome).toFixed(2));
-
-                    if (data.incasefinacefirstinstallmentpayamount == 0) $("#incasefinacefirstinstallmentpayamount").text("-");
-                    else $("#incasefinacefirstinstallmentpayamount").text(parseFloat(data.incasefinacefirstinstallmentpayamount).toFixed(2));
-
-                    if (data.note2firstinstallmentpayamount == 0) $("#note2firstinstallmentpayamount").text("-");
-                    else $("#note2firstinstallmentpayamount").text(parseFloat(data.note2firstinstallmentpayamount).toFixed(2));
-
-                    if (data.incasefinacepayinadvanceamount == 0) $("#incasefinacepayinadvanceamount").text("-");
-                    else $("#incasefinacepayinadvanceamount").text(parseFloat(data.incasefinacepayinadvanceamount).toFixed(2));
-
-                    if (data.note2payinadvanceamount == 0) $("#note2payinadvanceamount").text("-");
-                    else $("#note2payinadvanceamount").text(parseFloat(data.note2payinadvanceamount).toFixed(2));
-
-                    if (data.incasefinaceinsurancepremium == 0) $("#incasefinaceinsurancepremium").text("-");
-                    else $("#incasefinaceinsurancepremium").text(parseFloat(data.incasefinaceinsurancepremium).toFixed(2));
-
-                    if (data.note2insurancepremium == 0) $("#note2insurancepremium").text("-");
-                    else $("#note2insurancepremium").text(parseFloat(data.note2insurancepremium).toFixed(2));
-
-                    if (data.totalincasefinace == 0) $("#totalincasefinace").text("-");
-                    else $("#totalincasefinace").text(parseFloat(data.totalincasefinace).toFixed(2));
-
-                    if (data.incasefinacereceivedcash == 0) $("#incasefinacereceivedcash").text("-");
-                    else $("#incasefinacereceivedcash").text(parseFloat(data.incasefinacereceivedcash).toFixed(2));
-
-                    if (data.note2total1 == 0) $("#note2total1").text("-");
-                    else $("#note2total1").text(parseFloat(data.note2total1).toFixed(2));
-
-                    if (data.note2total2 == 0) $("#note2total2").text("-");
-                    else $("#note2total2").text(parseFloat(data.note2total2).toFixed(2));
-
-                    if (data.note2total3 == 0) $("#note2total3").text("-");
-                    else $("#note2total3").text(parseFloat(data.note2total3).toFixed(2));
-
-                    if (data.incasefinacesubsidise == 0) $("#incasefinacesubsidise").text("-");
-                    else $("#incasefinacesubsidise").text(parseFloat(data.incasefinacesubsidise).toFixed(2));
-
-                    if (data.incasefinacesubsidisevat == 0) $("#incasefinacesubsidisevat").text("-");
-                    else $("#incasefinacesubsidisevat").text(parseFloat(data.incasefinacesubsidisevat).toFixed(2));
-
-                    if (data.incasefinacesubsidisewithvat == 0) $("#incasefinacesubsidisewithvat").text("-");
-                    else $("#incasefinacesubsidisewithvat").text(parseFloat(data.incasefinacesubsidisewithvat).toFixed(2));
-
-                    if (data.note2subsidisewhtax == 0) $("#note2subsidisewhtax").text("-");
-                    else $("#note2subsidisewhtax").text(parseFloat(data.note2subsidisewhtax).toFixed(2));
-
-                    if (data.note2subsidisetotal == 0) $("#note2subsidisetotal").text("-");
-                    else $("#note2subsidisetotal").text(parseFloat(data.note2subsidisetotal).toFixed(2));
-
-                    if (data.incasefinacehassubsidisereceivedcash == 0) $("#incasefinacehassubsidisereceivedcash").text("-");
-                    else $("#incasefinacehassubsidisereceivedcash").text(parseFloat(data.incasefinacehassubsidisereceivedcash).toFixed(2));
-
-                    if (data.note2totalwhtax == 0) $("#note2totalwhtax").text("-");
-                    else $("#note2totalwhtax").text(parseFloat(data.note2totalwhtax).toFixed(2));
-
-                    if (data.incasefinacecomfinamount == 0) $("#incasefinacecomfinamount").text("-");
-                    else $("#incasefinacecomfinamount").text(parseFloat(data.incasefinacecomfinamount).toFixed(2));
-
-                    if (data.incasefinacecomfinvat == 0) $("#incasefinacecomfinvat").text("-");
-                    else $("#incasefinacecomfinvat").text(parseFloat(data.incasefinacecomfinvat).toFixed(2));
-
-                    if (data.incasefinacecomfinamountwithvat == 0) $("#incasefinacecomfinamountwithvat").text("-");
-                    else $("#incasefinacecomfinamountwithvat").text(parseFloat(data.incasefinacecomfinamountwithvat).toFixed(2));
-
-                    if (data.incasefinacecomfinwhtax == 0) $("#incasefinacecomfinwhtax").text("-");
-                    else $("#incasefinacecomfinwhtax").text(parseFloat(data.incasefinacecomfinwhtax).toFixed(2));
-
-                    if (data.incasefinacecomfintotal == 0) $("#incasefinacecomfintotal").text("-");
-                    else $("#incasefinacecomfintotal").text(parseFloat(data.incasefinacecomfintotal).toFixed(2));
-
-                    if (data.incasefinacecomextraamount == 0) $("#incasefinacecomextraamount").text("-");
-                    else $("#incasefinacecomextraamount").text(parseFloat(data.incasefinacecomextraamount).toFixed(2));
-
-                    if (data.incasefinacecomextravat == 0) $("#incasefinacecomextravat").text("-");
-                    else $("#incasefinacecomextravat").text(parseFloat(data.incasefinacecomextravat).toFixed(2));
-
-                    if (data.incasefinacecomextraamountwithvat == 0) $("#incasefinacecomextraamountwithvat").text("-");
-                    else $("#incasefinacecomextraamountwithvat").text(parseFloat(data.incasefinacecomextraamountwithvat).toFixed(2));
-
-                    if (data.incasefinacecomextrawhtax == 0) $("#incasefinacecomextrawhtax").text("-");
-                    else $("#incasefinacecomextrawhtax").text(parseFloat(data.incasefinacecomextrawhtax).toFixed(2));
-
-                    if (data.incasefinacecomextratotal == 0) $("#incasefinacecomextratotal").text("-");
-                    else $("#incasefinacecomextratotal").text(parseFloat(data.incasefinacecomextratotal).toFixed(2));
-
-                    if (data.incasefinacecomextraamount == 0) $("#incasefinacecomextraamount").text("-");
-                    else $("#incasefinacecomextraamount").text(parseFloat(data.incasefinacecomextraamount).toFixed(2));
-
-                    if (data.incasefinacecomextravat == 0) $("#incasefinacecomextravat").text("-");
-                    else $("#incasefinacecomextravat").text(parseFloat(data.incasefinacecomextravat).toFixed(2));
-
-                    if (data.incasefinacecomextraamountwithvat == 0) $("#incasefinacecomextraamountwithvat").text("-");
-                    else $("#incasefinacecomextraamountwithvat").text(parseFloat(data.incasefinacecomextraamountwithvat).toFixed(2));
-
-                    if (data.incasefinacecomextrawhtax == 0) $("#incasefinacecomextrawhtax").text("-");
-                    else $("#incasefinacecomextrawhtax").text(parseFloat(data.incasefinacecomextrawhtax).toFixed(2));
-
-                    if (data.incasefinacecomextratotal == 0) $("#incasefinacecomextratotal").text("-");
-                    else $("#incasefinacecomextratotal").text(parseFloat(data.incasefinacecomextratotal).toFixed(2));
-
-                    if (data.incasefinacecompaamount == 0) $("#incasefinacecompaamount").text("-");
-                    else $("#incasefinacecompaamount").text(parseFloat(data.incasefinacecompaamount).toFixed(2));
-
-                    if (data.incasefinacecompavat == 0) $("#incasefinacecompavat").text("-");
-                    else $("#incasefinacecompavat").text(parseFloat(data.incasefinacecompavat).toFixed(2));
-
-                    if (data.incasefinacecompaamountwithvat == 0) $("#incasefinacecompaamountwithvat").text("-");
-                    else $("#incasefinacecompaamountwithvat").text(parseFloat(data.incasefinacecompaamountwithvat).toFixed(2));
-
-                    if (data.incasefinacecompawhtax == 0) $("#incasefinacecompawhtax").text("-");
-                    else $("#incasefinacecompawhtax").text(parseFloat(data.incasefinacecompawhtax).toFixed(2));
-
-                    if (data.incasefinacecompatotal == 0) $("#incasefinacecompatotal").text("-");
-                    else $("#incasefinacecompatotal").text(parseFloat(data.incasefinacecompatotal).toFixed(2));
-
-                    if (data.incasefinacetotalcomamount == 0) $("#incasefinacetotalcomamount").text("-");
-                    else $("#incasefinacetotalcomamount").text(parseFloat(data.incasefinacetotalcomamount).toFixed(2));
-
-                    if (data.incasefinacetotalcomvat == 0) $("#incasefinacetotalcomvat").text("-");
-                    else $("#incasefinacetotalcomvat").text(parseFloat(data.incasefinacetotalcomvat).toFixed(2));
-
-                    if (data.incasefinacetotalcomwhtax == 0) $("#incasefinacetotalcomwhtax").text("-");
-                    else $("#incasefinacetotalcomwhtax").text(parseFloat(data.incasefinacetotalcomwhtax).toFixed(2));
-
-                    if (data.incasefinacetotalcomtotal == 0) $("#incasefinacetotalcomtotal").text("-");
-                    else $("#incasefinacetotalcomtotal").text(parseFloat(data.incasefinacetotalcomtotal).toFixed(2));
-
-                    if (data.receivedcashfromfinace == 0) $("#receivedcashfromfinace").text("-");
-                    else $("#receivedcashfromfinace").text(parseFloat(data.receivedcashfromfinace).toFixed(2));
-
-                    if (data.receivedcashfromfinace2 == 0) $("#receivedcashfromfinace2").text("-");
-                    else $("#receivedcashfromfinace2").text(parseFloat(data.receivedcashfromfinace2).toFixed(2));
+                    $("#interest").text(data.interest);
+                    $("#installments").text(data.installments);
+                    $("#yodjud").text(data.yodjud);
+                    $("#comfinpercent").text(data.comfinpercent);
+                    $("#comfinyear").text(data.comfinyear);
+                    $("#salename").text(data.salename);
+                    $("#incasefinaceinsurancefee").text(data.incasefinaceinsurancefee);
+                    $("#note2insurancefeewhtax").text(data.note2insurancefeewhtax);
+                    $("#note2insurancefee").text(data.note2insurancefee);
+                    $("#note2insurancefeeexpense").text(data.note2insurancefeeexpense);
+                    $("#note2insurancefeeincome").text(data.note2insurancefeeincome);
+                    $("#incasefinacecompulsorymotorinsurancefee").text(data.incasefinacecompulsorymotorinsurancefee);
+                    $("#note2compulsorymotorinsurancefeewhtax").text(data.note2compulsorymotorinsurancefeewhtax);
+                    $("#note2compulsorymotorinsurancefee").text(data.note2compulsorymotorinsurancefee);
+                    $("#note2compulsorymotorinsurancefeeexpense").text(data.note2compulsorymotorinsurancefeeexpense);
+                    $("#note2compulsorymotorinsurancefeeincome").text(data.note2compulsorymotorinsurancefeeincome);
+                    $("#incasefinacefirstinstallmentpayamount").text(data.incasefinacefirstinstallmentpayamount);
+                    $("#note2firstinstallmentpayamount").text(data.note2firstinstallmentpayamount);
+                    $("#incasefinacepayinadvanceamount").text(data.incasefinacepayinadvanceamount);
+                    $("#note2payinadvanceamount").text(data.note2payinadvanceamount);
+                    $("#incasefinaceinsurancepremium").text(data.incasefinaceinsurancepremium);
+                    $("#note2insurancepremium").text(data.note2insurancepremium);
+                    $("#totalincasefinace").text(data.totalincasefinace);
+                    $("#incasefinacereceivedcash").text(data.incasefinacereceivedcash);
+                    $("#note2total1").text(data.note2total1);
+                    $("#note2total2").text(data.note2total2);
+                    $("#note2total3").text(data.note2total3);
+                    $("#incasefinacesubsidise").text(data.incasefinacesubsidise);
+                    $("#incasefinacesubsidisevat").text(data.incasefinacesubsidisevat);
+                    $("#incasefinacesubsidisewithvat").text(data.incasefinacesubsidisewithvat);
+                    $("#note2subsidisewhtax").text(data.note2subsidisewhtax);
+                    $("#note2subsidisetotal").text(data.note2subsidisetotal);
+                    $("#incasefinacehassubsidisereceivedcash").text(data.incasefinacehassubsidisereceivedcash);
+                    $("#note2totalwhtax").text(data.note2totalwhtax);
+                    $("#incasefinacecomfinamount").text(data.incasefinacecomfinamount);
+                    $("#incasefinacecomfinvat").text(data.incasefinacecomfinvat);
+                    $("#incasefinacecomfinamountwithvat").text(data.incasefinacecomfinamountwithvat);
+                    $("#incasefinacecomfinwhtax").text(data.incasefinacecomfinwhtax);
+                    $("#incasefinacecomfintotal").text(data.incasefinacecomfintotal);
+                    $("#incasefinacecomextraamount").text(data.incasefinacecomextraamount);
+                    $("#incasefinacecomextravat").text(data.incasefinacecomextravat);
+                    $("#incasefinacecomextraamountwithvat").text(data.incasefinacecomextraamountwithvat);
+                    $("#incasefinacecomextrawhtax").text(data.incasefinacecomextrawhtax);
+                    $("#incasefinacecomextratotal").text(data.incasefinacecomextratotal);
+                    $("#incasefinacecompaamount").text(data.incasefinacecompaamount);
+                    $("#incasefinacecompavat").text(data.incasefinacecompavat);
+                    $("#incasefinacecompaamountwithvat").text(data.incasefinacecompaamountwithvat);
+                    $("#incasefinacecompawhtax").text(data.incasefinacecompawhtax);
+                    $("#incasefinacecompatotal").text(data.incasefinacecompatotal);
+                    $("#incasefinacetotalcomamount").text(data.incasefinacetotalcomamount);
+                    $("#incasefinacetotalcomvat").text(data.incasefinacetotalcomvat);
+                    $("#incasefinacetotalcomwhtax").text(data.incasefinacetotalcomwhtax);
+                    $("#incasefinacetotalcomtotal").text(data.incasefinacetotalcomtotal);
+                    $("#receivedcashfromfinace").text(data.receivedcashfromfinace);
+                    $("#receivedcashfromfinace2").text(data.receivedcashfromfinace2);
                 }
                 else {
                     $("#incasefinace").css("display", "none");
                     $('#purchasetype').val(0);
                 }
+
+                $("#tradereceivableaccount2amount").text(data.tradereceivableaccount2amount);
+                $("#oldcarprice").text(data.oldcarprice);
+                $("#overdue").text(data.overdue);
+                $("#tradereceivableaccount2remainingamount").text(data.tradereceivableaccount2remainingamount);
+
+                var incasefinacereceivedcash = data.incasefinacereceivedcash == '-' ? 0 : data.incasefinacereceivedcash;
+                var tradereceivableaccount1amount = parseFloat(finalopenbill) - parseFloat(incasefinacereceivedcash);
+                if (tradereceivableaccount1amount == 0) $("#tradereceivableaccount1amount").text("-");
+                else $("#tradereceivableaccount1amount").text(parseFloat(tradereceivableaccount1amount).toFixed(2));
+
+                if (tradereceivableaccount1amount == 0) $("#ar").text("-");
+                else $("#ar").text(parseFloat(tradereceivableaccount1amount).toFixed(2));
+                $("#ins").text(data.ins);
+                $("#prb").text(data.prb);
+                $("#dc").text(data.dc);
+
+                var adj = $('#adj').val();
+                if (adj == null || adj == '')
+                    adj = 0;
+
+                var cash = parseFloat(tradereceivableaccount1amount) - (data.ins == '-' ? 0 : parseFloat(data.ins))
+                        - (data.prb == '-' ? 0 : parseFloat(data.prb))
+                        - (data.dc == '-' ? 0 : parseFloat(data.dc)) + parseFloat(adj);
+                if (cash == 0) $("#cash").text("-");
+                else $("#cash").text(parseFloat(cash).toFixed(2));
             });
         }
 
@@ -515,6 +305,28 @@
             var realsalespricewithoutvat = parseFloat(realsalesprice) - parseFloat(vatoffinalopenbill);
             if (realsalespricewithoutvat == 0) $("#realsalespricewithoutvat").text("-");
             else $("#realsalespricewithoutvat").text(parseFloat(realsalespricewithoutvat).toFixed(2));
+        }
+
+        function AdjChange() {
+            var ar = $("#ar").text();
+            if (ar == '-') ar = 0;
+
+            var ins = $("#ins").text();
+            if (ins == '-') ins = 0;
+
+            var prb = $("#prb").text();
+            if (prb == '-') prb = 0;
+
+            var dc = $("#dc").text();
+            if (dc == '-') dc = 0;
+
+            var adj = $('#adj').val();
+            if (adj == null || adj == '')
+                adj = 0;
+
+            var cash = parseFloat(ar) - parseFloat(ins) - parseFloat(prb) - parseFloat(dc) + parseFloat(adj);
+            if (cash == 0) $("#cash").text("-");
+            else $("#cash").text(parseFloat(cash).toFixed(2));
         }
     </script>
 
@@ -618,9 +430,9 @@
                                             <label style="width:140px; font-weight:bold;">ราคาเปิดบิล</label>
                                             <label style="width: 100px; font-weight:bold; text-align:right;"
                                                    id="openbill">{{$accountingdetail->openbill}}</label>
-                                            <label style="width:30px; text-align:center;">+/-</label>
+                                            <label style="width:20px; text-align:center;">+/-</label>
                                             {!! Form::number('additionalopenbill', null, array('style'=>'width: 100px; height: 22px; padding:0; color:black; font-weight:bold; text-align:right;','id'=>'additionalopenbill','onchange'=>'AdditionalopenbillChange();')) !!}
-                                            <label style="width:30px; text-align:center;">=</label>
+                                            <label style="width:20px; text-align:center;">=</label>
                                             <label style="width: 100px; font-weight:bold; text-align:right; color:red;"
                                                    id="finalopenbill">{{$accountingdetail->finalopenbill}}</label>
                                             <label style="font-weight:bold; padding-left:5px;">(1)*</label>
@@ -638,10 +450,10 @@
                                             <label style="width:140px; padding-left:20px;">ราคาตั้งขาย + สี</label>
                                             <label class="dotted" style="width: 100px; text-align:right;"
                                                    id="carpriceinpricelist">{{$accountingdetail->carpriceinpricelist}}</label>
-                                            <label style="width:30px; text-align:center;">+</label>
+                                            <label style="width:20px; text-align:center;">+</label>
                                             <label class="dotted" style="width: 100px; text-align:right;"
                                                    id="colorprice">{{$accountingdetail->colorprice}}</label>
-                                            <label style="width:30px; text-align:center;">=</label>
+                                            <label style="width:20px; text-align:center;">=</label>
                                             <label class="dotted" style="width: 100px; text-align:right;"
                                                    id="carwithcolorprice">{{$accountingdetail->carwithcolorprice}}</label>
                                         </div>
@@ -672,9 +484,9 @@
                                             <label style="width:140px; padding-left:20px;">บวกอุปกรณ์ (หลอก)</label>
                                             <label class="dotted" style="width: 100px; text-align:right;"
                                                    id="plusfakeaccessories">{{$accountingdetail->fakeaccessories}}</label>
-                                            <label style="width:30px; text-align:center;"></label>
-                                            <label style="width:110px;">หักอุปกรณ์ (หลอก)</label>
                                             <label style="width:20px; text-align:center;"></label>
+                                            <label style="width:110px;">หักอุปกรณ์ (หลอก)</label>
+                                            <label style="width:10px; text-align:center;"></label>
                                             <label class="dotted" style="width: 100px; text-align:right;"
                                                    id="minusfakeaccessories">{{$accountingdetail->fakeaccessories}}</label>
                                         </div>
@@ -793,7 +605,7 @@
                                             <label style="width:70px;">ประเภทขาย</label>
                                             <label class="dashed"
                                                    style="width:70px; font-weight:bold; text-align:center; color:red;"
-                                                   id="purchasetype">{{$accountingdetail->purchasetype}}</label>
+                                                   id="purchasetypetext">{{$accountingdetail->purchasetypetext}}</label>
                                             <label style="width:100px;"></label>
                                             <label style="width:30px;"></label>
                                             <label style="width:100px;">เงินดาวน์</label>
@@ -1126,10 +938,10 @@
                                             <label class="dashed" style="width:30px; text-align:center;"
                                                    id="comfinyear">{{$accountingdetail->comfinyear}}</label>
                                             <label style="width:10px; text-align: center;">ปี</label>
-                                            <label style="width:10px;"></label>
+                                            <label style="width:5px;"></label>
                                             <label style="width:100px; text-align:center;">Sale Name</label>
-                                            <label style="width:25px;"></label>
-                                            <label class="underline_g" style="width:233px; text-align:center;"
+                                            <label style="width:20px;"></label>
+                                            <label class="underline_g" style="width:230px; text-align:center;"
                                                    id="salename">{{$accountingdetail->salename}}</label>
                                         </div>
                                     </div>
@@ -1142,11 +954,11 @@
                                             <label style="width:70px;"></label>
                                             <label style="width:70px; font-weight:bold; text-align:left; color: limegreen">Note
                                                 2</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label style="width:100px; text-align:center;">รับล่วงหน้า</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label style="width:100px; text-align:center;">ค่าใช้จ่าย</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label style="width:100px; text-align:center;">รายได้</label>
                                         </div>
                                     </div>
@@ -1162,13 +974,13 @@
                                             <label style="width:70px;">W/H Tax</label>
                                             <label class="dotted" style="width:70px; text-align:right; color: #0090FF"
                                                    id="note2insurancefeewhtax">{{$accountingdetail->note2insurancefeewhtax}}</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note2insurancefee">{{$accountingdetail->note2insurancefee}}</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note2insurancefeeexpense">{{$accountingdetail->note2insurancefeeexpense}}</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note2insurancefeeincome">{{$accountingdetail->note2insurancefeeincome}}</label>
                                         </div>
@@ -1185,13 +997,13 @@
                                             <label style="width:70px;">W/H Tax</label>
                                             <label class="dotted" style="width:70px; text-align:right; color: #0090FF"
                                                    id="note2compulsorymotorinsurancefeewhtax">{{$accountingdetail->note2compulsorymotorinsurancefeewhtax}}</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note2compulsorymotorinsurancefee">{{$accountingdetail->note2compulsorymotorinsurancefee}}</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note2compulsorymotorinsurancefeeexpense">{{$accountingdetail->note2compulsorymotorinsurancefeeexpense}}</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note2compulsorymotorinsurancefeeincome">{{$accountingdetail->note2compulsorymotorinsurancefeeincome}}</label>
                                         </div>
@@ -1207,12 +1019,12 @@
                                         <div style="width:540px; float:left;">
                                             <label style="width:70px;"></label>
                                             <label style="width:70px;"></label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note2firstinstallmentpayamount">{{$accountingdetail->note2firstinstallmentpayamount}}</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;">-</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;">-</label>
                                         </div>
                                     </div>
@@ -1227,12 +1039,12 @@
                                         <div style="width:540px; float:left;">
                                             <label style="width:70px;"></label>
                                             <label style="width:70px;"></label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note2payinadvanceamount">{{$accountingdetail->note2payinadvanceamount}}</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;">-</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;">-</label>
                                         </div>
                                     </div>
@@ -1249,12 +1061,12 @@
                                         <div style="width:540px; float:left;">
                                             <label style="width:70px;"></label>
                                             <label style="width:70px;"></label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note2insurancepremium">{{$accountingdetail->note2insurancepremium}}</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;">-</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;">-</label>
                                         </div>
                                     </div>
@@ -1270,13 +1082,13 @@
                                         <div style="width:540px; float:left;">
                                             <label style="width:70px;"></label>
                                             <label style="width:70px;"></label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="underline" style="width:100px; text-align:right;"
                                                    id="note2total1">{{$accountingdetail->note2total1}}</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="underline" style="width:100px; text-align:right;"
                                                    id="note2total2">{{$accountingdetail->note2total2}}</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="underline" style="width:100px; text-align:right;"
                                                    id="note2total3">{{$accountingdetail->note2total3}}</label>
                                         </div>
@@ -1300,9 +1112,9 @@
                                             <label class="underline"
                                                    style="width:70px; text-align:right; color: #0090FF"
                                                    id="note2subsidisewhtax">{{$accountingdetail->note2subsidisewhtax}}</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label style="width:100px; text-align:center;">Net...</label>
-                                            <label style="width:25px;"></label>
+                                            <label style="width:20px;"></label>
                                             <label class="dotted"
                                                    style="width:100px; text-align:right; color:red; font-weight:bold;"
                                                    id="note2subsidisetotal">{{$accountingdetail->note2subsidisetotal}}</label>
@@ -1452,7 +1264,7 @@
                                             <label style="width:45px; text-align:right;">(31)</label>
                                         </div>
                                         <div style="width:540px; float:left;">
-                                            <label style="width:70px;">รับเงินวันที่</label>
+                                            <label style="width:65px;">รับเงินวันที่</label>
                                             <div class="input-group" style="position: absolute; display: inline-table;">
                                                 {!! Form::text('receivedcashfromfinacedate', null, array('style'=>'height: 22px; padding:0;','class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'receivedcashfromfinacedate')) !!}
                                                 <span class="input-group-addon" style="padding:1px;">
@@ -1491,7 +1303,96 @@
                         <div class="widget-body">
                             <div class="widget-body-inner" style="display: block;">
                                 <div class="widget-main">
-
+                                    <div class="form-group" style="margin-left:10px;">
+                                        <div style="width:540px; float:left; margin-right:20px;">
+                                            <label style="width:388px; padding-left:25px;">ลูกหนี้การค้า (ตามบัญชี 2)
+                                                (21)-(22)</label>
+                                            <label class="dotted"
+                                                   style="width:100px; color:red; text-align:right;"
+                                                   id="tradereceivableaccount2amount">{{$accountingdetail->tradereceivableaccount2amount}}</label>
+                                            <label style="width:45px; text-align:right;">(32)</label>
+                                        </div>
+                                        <div style="width:540px; float:left;">
+                                            <label class="underline"
+                                                   style="width:18px; text-align:left; margin-right:14px; font-weight:bold;">AR</label>
+                                            <label class="dotted" style="width:100px; text-align:right;"
+                                                   id="ar">{{$accountingdetail->ar}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="margin-left:10px;">
+                                        <div style="width:540px; float:left; margin-right:20px;">
+                                            <label style="width:25px; padding-left:25px; font-weight:bold;">หัก</label>
+                                            <label style="width:359px; padding-left:25px;">ค่ารถเก่า</label>
+                                            <label class="dotted"
+                                                   style="width:100px; text-align:right;"
+                                                   id="oldcarprice">{{$accountingdetail->oldcarprice}}</label>
+                                            <label style="width:45px; text-align:right;">(33)</label>
+                                        </div>
+                                        <div style="width:540px; float:left;">
+                                            <label style="width:32px; text-align:left;">-INS</label>
+                                            <label class="dotted" style="width:100px; text-align:right; color:#7A019D;"
+                                                   id="ins">{{$accountingdetail->ins}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="margin-left:10px;">
+                                        <div style="width:540px; float:left; margin-right:20px;">
+                                            <label style="width:25px; padding-left:25px; font-weight:bold;">หัก</label>
+                                            <label style="width:359px; padding-left:25px;">ค้างดาวน์
+                                                (ไม่รวมดอกเบี้ย)</label>
+                                            <label class="underline"
+                                                   style="width:100px; text-align:right;"
+                                                   id="overdue">{{$accountingdetail->overdue}}</label>
+                                            <label style="width:45px; text-align:right;">(34)</label>
+                                        </div>
+                                        <div style="width:540px; float:left;">
+                                            <label style="width:32px; text-align:left;">-พรบ</label>
+                                            <label class="dotted" style="width:100px; text-align:right; color:#7A019D;"
+                                                   id="prb">{{$accountingdetail->prb}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="margin-left:10px;">
+                                        <div style="width:540px; float:left; margin-right:20px;">
+                                            <label style="width:388px; padding-left:25px; font-weight:bold;">คงเหลือรับคืน,
+                                                (จ่ายคืน) (32)-(33)-(34)=(35)</label>
+                                            <label class="underline_db"
+                                                   style="width:100px; color:red; text-align:right;"
+                                                   id="tradereceivableaccount2remainingamount">{{$accountingdetail->tradereceivableaccount2remainingamount}}</label>
+                                            <label style="width:45px; text-align:right;"></label>
+                                        </div>
+                                        <div style="width:540px; float:left;">
+                                            <label style="width:32px; text-align:left;">-D/C</label>
+                                            <label class="dotted" style="width:100px; text-align:right; color:#7A019D;"
+                                                   id="dc">{{$accountingdetail->dc}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="margin-left:10px;">
+                                        <div style="width:540px; float:left; margin-right:20px;">
+                                            <label style="width:388px; padding-left:25px;">รับเงินค่าคอมรถเก่า</label>
+                                            {!! Form::number('oldcarcomamount', null, array('style'=>'width: 100px; height: 22px; padding:0; color:black; text-align:right;','id'=>'oldcarcomamount')) !!}
+                                            <label style="width:45px; text-align:right;"></label>
+                                        </div>
+                                        <div style="width:540px; float:left;">
+                                            <label style="width:32px; text-align:left; color:red;">ADJ.</label>
+                                            {!! Form::number('adj', null, array('style'=>'width: 100px; height: 22px; padding:0; color:#7A019D; text-align:right;','id'=>'adj','onchange'=>'AdjChange();')) !!}
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="margin-left:10px;">
+                                        <div style="width:540px; float:left; margin-right:20px;">
+                                            <label style="width:388px; padding-left:25px; font-weight:bold;">ล/นการค้า
+                                                (ตามบ/ช 1) (1)*-(28)=(36)</label>
+                                            <label class="underline"
+                                                   style="width:100px; text-align:right; font-weight:bold;"
+                                                   id="tradereceivableaccount1amount">{{$accountingdetail->tradereceivableaccount1amount}}</label>
+                                            <label style="width:45px; text-align:right;"></label>
+                                        </div>
+                                        <div style="width:540px; float:left;">
+                                            <label class="underline"
+                                                   style="width:32px; text-align:left; font-weight:bold;">Cash</label>
+                                            <label class="underline"
+                                                   style="width:100px; text-align:right; font-weight:bold;"
+                                                   id="cash">{{$accountingdetail->cash}}</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1544,6 +1445,10 @@
             $('.date-picker').width(90);
             $('#cashpledgereceiptdate').width(80);
             $('#receivedcashfromfinacedate').width(80);
+
+            @if($accountingdetail->carpaymentid != null && $accountingdetail->carpaymentid > 0 && $accountingdetail->purchasetype == 0)
+                $("#incasefinace").css("display", "none");
+            @endif
 
             @if($oper == 'view')
                 $("#form-accountingdetail :input").prop("disabled", true);

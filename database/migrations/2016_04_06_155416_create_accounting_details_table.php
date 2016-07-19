@@ -32,6 +32,8 @@ class CreateAccountingDetailsTable extends Migration
             $table->dateTime('receivedcashfromfinacedate')->nullable();
             $table->integer('receivedcashfromfinacebankid')->nullable()->unsigned();
             $table->foreign('receivedcashfromfinacebankid')->references('id')->on('banks');
+            $table->decimal('oldcarcomamount', 10, 2);
+            $table->decimal('adj', 10, 2);
 
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');
