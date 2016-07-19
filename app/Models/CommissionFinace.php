@@ -1,18 +1,18 @@
 <?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;;
+use Illuminate\Support\Facades\Auth;
+
+;
 
 class CommissionFinace extends Model {
 
-    protected $table = 'commission_finaces';
-
     public $timestamps = false;
-
+    protected $table = 'commission_finaces';
     protected $guarded = ['id'];
 
     protected $fillable = ['finacecompanyid', 'interestratetypeid', 'name', //'useforcustomertype',
-        'effectivefrom', 'effectiveto', 'finaceminimumprofit', 'active',
+        'effectivefrom', 'effectiveto', 'finaceminimumprofit', 'years', 'active',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()
@@ -58,5 +58,20 @@ class CommissionFinace extends Model {
     public function interestRateType()
     {
         return $this->belongsTo('App\Models\InterestRateType', 'interestratetypeid', 'id');
+    }
+
+    public function commissionFinaceCars()
+    {
+        return $this->hasMany('App\Models\CommissionFinaceCar', 'commissionfinaceid', 'id');
+    }
+
+    public function commissionFinaceComs()
+    {
+        return $this->hasMany('App\Models\CommissionFinaceCom', 'commissionfinaceid', 'id');
+    }
+
+    public function commissionFinaceInterests()
+    {
+        return $this->hasMany('App\Models\CommissionFinaceInterest', 'commissionfinaceid', 'id');
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateCommissionFinacesTable extends Migration {
 
@@ -24,6 +24,7 @@ class CreateCommissionFinacesTable extends Migration {
             $table->dateTime('effectivefrom');
             $table->dateTime('effectiveto');
             $table->decimal('finaceminimumprofit', 10, 2)->default(0);
+			$table->integer('years');
             $table->boolean('active')->default(true);
 
             $table->integer('createdby')->unsigned();

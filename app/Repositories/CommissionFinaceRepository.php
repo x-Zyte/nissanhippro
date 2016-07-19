@@ -17,7 +17,7 @@ class CommissionFinaceRepository extends EloquentRepositoryAbstract
         $this->Database = new CommissionFinace;
         $this->orderBy = array(array('id', 'asc'));
         $this->crudFields = array('oper', 'id', 'finacecompanyid','interestratetypeid', 'name', //'useforcustomertype',
-            'effectivefrom', 'effectiveto', 'finaceminimumprofit');
+            'effectivefrom', 'effectiveto', 'finaceminimumprofit', 'years');
         $this->uniqueKeySingles = array();
         $this->uniqueKeyMultiples = array();
         $this->hasBranch = false;

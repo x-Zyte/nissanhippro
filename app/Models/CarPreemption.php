@@ -17,7 +17,7 @@ class CarPreemption extends Model {
         'oldcarprice', 'oldcarbuyername', 'oldcarother',
 
         'cashpledge', 'cashpledgepaymenttype', 'cashpledgechargepercent', 'cashpledgechargeamount', 'cashpledgechargefree',
-        'purchasetype', 'finacecompanyid', 'interest', 'down', 'installments', 'cashpledgeredlabel',
+        'purchasetype', 'finacecompanyid', 'interestratetypeid', 'interestratemode', 'interest', 'down', 'installments', 'cashpledgeredlabel',
         'registerprovinceid', 'registrationtype', 'registrationfee', 'registrationfeefree', 'insurancefee', 'insurancefeefree',
         'compulsorymotorinsurancefee', 'compulsorymotorinsurancefeefree', 'accessoriesfee', 'giveawaywithholdingtax',
         'otherfee', 'otherfeedetail', 'otherfee2', 'otherfeedetail2', 'otherfee3', 'otherfeedetail3',
@@ -176,6 +176,11 @@ class CarPreemption extends Model {
     public function finaceCompany()
     {
         return $this->belongsTo('App\Models\FinaceCompany', 'finacecompanyid', 'id');
+    }
+
+    public function interestRateType()
+    {
+        return $this->belongsTo('App\Models\InterestRateType', 'interestratetypeid', 'id');
     }
 
     public function carPayment()

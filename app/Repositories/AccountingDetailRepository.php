@@ -16,7 +16,10 @@ class AccountingDetailRepository extends EloquentRepositoryAbstract
     {
         $this->Database = new AccountingDetail;
         $this->orderBy = array(array('id', 'asc'));
-        $this->crudFields = array('oper', 'id', 'carpaymentid', 'invoiceno', 'date', 'additionalopenbill');
+        $this->crudFields = array('oper', 'id', 'carpaymentid', 'invoiceno', 'date', 'additionalopenbill',
+            'insurancefeereceiptcondition', 'compulsorymotorinsurancefeereceiptcondition',
+            'cashpledgereceiptbookno', 'cashpledgereceiptno', 'cashpledgereceiptdate', 'receivedcashfromfinacedate',
+            'receivedcashfromfinacebankid');
 
         $this->uniqueKeySingles = array(array('field' => 'carpaymentid', 'label' => 'รายละเอียดเพื่อการบันทึกบัญชีของใบชำระเงิน'));
         $this->uniqueKeyMultiples = array();

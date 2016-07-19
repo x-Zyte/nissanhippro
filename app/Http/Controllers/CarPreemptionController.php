@@ -21,6 +21,7 @@ use App\Models\Customer;
 use App\Models\Employee;
 use App\Models\FinaceCompany;
 use App\Models\Giveaway;
+use App\Models\InterestRateType;
 use App\Models\Pricelist;
 use App\Models\RedLabel;
 use App\Models\Redlabelhistory;
@@ -282,6 +283,9 @@ class CarPreemptionController extends Controller {
             $finacecompanyselectlist[$item->id] = $item->name;
         }
 
+        $interestratetypeselectlist = array();
+        $interestratetypeselectlist[null] = 'เลือกประเภทอัตราดอกเบี้ย';
+
         $bookingcustomeramphurid = SupportRequest::old('bookingcustomeramphurid');
         $bookingcustomerprovinceid = SupportRequest::old('bookingcustomerprovinceid');
         $bookingcustomerid = SupportRequest::old('bookingcustomerid');
@@ -456,6 +460,7 @@ class CarPreemptionController extends Controller {
                 'salemanageremployeeselectlist' => $salemanageremployeeselectlist,
                 'approveremployeeselectlist' => $approveremployeeselectlist,
                 'finacecompanyselectlist' => $finacecompanyselectlist,
+                'interestratetypeselectlist' => $interestratetypeselectlist,
                 'priceselectlist' => $priceselectlist,
                 'registerprovinceselectlist' => $registerprovinceselectlist]);
     }
@@ -767,6 +772,14 @@ class CarPreemptionController extends Controller {
             $finacecompanyselectlist[$item->id] = $item->name;
         }
 
+        $interestratetypes = InterestRateType::where('finacecompanyid', $model->finacecompanyid)
+            ->orderBy('name', 'asc')->get(['id', 'name']);
+        $interestratetypeselectlist = array();
+        $interestratetypeselectlist[null] = 'เลือกประเภทอัตราดอกเบี้ย';
+        foreach ($interestratetypes as $item) {
+            $interestratetypeselectlist[$item->id] = $item->name;
+        }
+
         $carprices = array();
         $priceselectlist = array();
         $pricelists = Pricelist::where('carsubmodelid',$model->carsubmodelid)
@@ -814,6 +827,7 @@ class CarPreemptionController extends Controller {
                 'salemanageremployeeselectlist' => $salemanageremployeeselectlist,
                 'approveremployeeselectlist' => $approveremployeeselectlist,
                 'finacecompanyselectlist' => $finacecompanyselectlist,
+                'interestratetypeselectlist' => $interestratetypeselectlist,
                 'priceselectlist' => $priceselectlist,
                 'registerprovinceselectlist' => $registerprovinceselectlist]);
     }
@@ -1038,10 +1052,17 @@ class CarPreemptionController extends Controller {
         }
 
         $finacecompanyselectlist = array();
-        array_push($giveawayselectlist,':เลือกบริษัท');
+        array_push($finacecompanyselectlist, ':เลือกบริษัท');
         if($model->purchasetype == 1) {
             $item = FinaceCompany::find($model->finacecompanyid);
             $finacecompanyselectlist[$item->id] = $item->name;
+        }
+
+        $interestratetypeselectlist = array();
+        array_push($interestratetypeselectlist, ':เลือกประเภทอัตราดอกเบี้ย');
+        if ($model->purchasetype == 1) {
+            $item = InterestRateType::find($model->interestratetypeid);
+            $interestratetypeselectlist[$item->id] = $item->name;
         }
 
         $priceselectlist = array();
@@ -1082,6 +1103,7 @@ class CarPreemptionController extends Controller {
                 'salemanageremployeeselectlist' => $salemanageremployeeselectlist,
                 'approveremployeeselectlist' => $approveremployeeselectlist,
                 'finacecompanyselectlist' => $finacecompanyselectlist,
+                'interestratetypeselectlist' => $interestratetypeselectlist,
                 'priceselectlist' => $priceselectlist,
                 'registerprovinceselectlist' => $registerprovinceselectlist]);
     }
@@ -1113,6 +1135,8 @@ class CarPreemptionController extends Controller {
             'cashpledgechargepercent' => 'required_if:cashpledgepaymenttype,1',
                 'purchasetype' => 'required',
                 'finacecompanyid' => 'required_if:purchasetype,1',
+            'interestratetypeid' => 'required_if:purchasetype,1',
+            'interestratemode' => 'required_if:purchasetype,1',
                 'interest' => 'required_if:purchasetype,1',
                 'down' => 'required_if:purchasetype,1',
             'subsidise' => 'required_if:purchasetype,1',
@@ -1164,7 +1188,9 @@ class CarPreemptionController extends Controller {
                 'cashpledgepaymenttype.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ประเภทการจ่ายเงินมัดจำ จำเป็นต้องเลือก',
                 'cashpledgechargepercent.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน % ค่าธรรมเนียม จำเป็นต้องเลือก',
                 'purchasetype.required' => 'รายละเอียด/เงื่อนไขการชำระเงิน ประเภทซื้อรถยนต์ จำเป็นต้องเลือก',
-                'finacecompanyid.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ชื่อบริษัทเช่าซื้อ จำเป็นต้องกรอก',
+                'finacecompanyid.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ชื่อบริษัทเช่าซื้อ จำเป็นต้องเลือก',
+                'interestratetypeid.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ประเภทอัตราดอกเบี้ย จำเป็นต้องเลือก',
+                'interestratemode.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน Mode อัตราดอกเบี้ย จำเป็นต้องเลือก',
                 'interest.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ดอกเบี้ย จำเป็นต้องกรอก',
                 'down.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน ดาวน์ จำเป็นต้องกรอก',
                 'installments.required_if' => 'รายละเอียด/เงื่อนไขการชำระเงิน จำนวนงวด จำเป็นต้องกรอก',
@@ -1271,6 +1297,8 @@ class CarPreemptionController extends Controller {
         else $model->cashpledgechargefree = 0;
         $model->purchasetype = $input['purchasetype'];
         $model->finacecompanyid = $input['finacecompanyid'];
+        $model->interestratetypeid = $input['interestratetypeid'];
+        $model->interestratemode = $input['interestratemode'];
         $model->interest = $input['interest'];
         $model->down = $input['down'];
         $model->installments = $input['installments'];
@@ -1381,10 +1409,12 @@ class CarPreemptionController extends Controller {
         }
         if($model->purchasetype == 0){
             $model->finacecompanyid = null;
+            $model->interestratetypeid = null;
             $model->interest = null;
             $model->down = null;
             $model->installments = null;
             $model->subsidise = null;
+            $model->interestratemode = null;
         }
         if($model->recommendedby == false){
             $model->recommendedbyname = null;
@@ -1498,6 +1528,11 @@ class CarPreemptionController extends Controller {
         if($model->finacecompanyid != null && $model->finacecompanyid != '') {
             $finacecompany = FinaceCompany::find($model->finacecompanyid);
             $model->finacecompany = $finacecompany->name;
+        }
+
+        if ($model->interestratetypeid != null && $model->interestratetypeid != '') {
+            $interestratetype = InterestRateType::find($model->interestratetypeid);
+            $model->interestratetype = $interestratetype->name;
         }
 
         if($model->purchasetype == 0) {

@@ -11,7 +11,9 @@ class AccountingDetail extends Model
     protected $guarded = ['id'];
 
     protected $fillable = ['provinceid', 'branchid', 'carpaymentid', 'invoiceno', 'date',
-        'additionalopenbill',
+        'additionalopenbill', 'insurancefeereceiptcondition', 'compulsorymotorinsurancefeereceiptcondition',
+        'cashpledgereceiptbookno', 'cashpledgereceiptno', 'cashpledgereceiptdate', 'receivedcashfromfinacedate',
+        'receivedcashfromfinacebankid',
 
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 

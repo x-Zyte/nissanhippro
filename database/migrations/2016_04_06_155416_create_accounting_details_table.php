@@ -23,7 +23,15 @@ class CreateAccountingDetailsTable extends Migration
             $table->foreign('branchid')->references('id')->on('branchs');
             $table->string('invoiceno', 50);
             $table->dateTime('date');
-            $table->decimal('additionalopenbill', 10, 2)->default(0);
+            $table->decimal('additionalopenbill', 10, 2);
+            $table->integer('insurancefeereceiptcondition')->nullable()->comment('0:ชื่อลูกค้า, 1:ชื่อบริษัท');
+            $table->integer('compulsorymotorinsurancefeereceiptcondition')->nullable()->comment('0:ชื่อลูกค้า, 1:ชื่อบริษัท');
+            $table->integer('cashpledgereceiptbookno');
+            $table->integer('cashpledgereceiptno');
+            $table->dateTime('cashpledgereceiptdate');
+            $table->dateTime('receivedcashfromfinacedate')->nullable();
+            $table->integer('receivedcashfromfinacebankid')->nullable()->unsigned();
+            $table->foreign('receivedcashfromfinacebankid')->references('id')->on('banks');
 
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');

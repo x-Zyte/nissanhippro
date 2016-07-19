@@ -267,6 +267,19 @@
             });
         }
 
+        function FinacecompanyChange(sel) {
+            var finacecompanyid = sel.value;
+            if (finacecompanyid == null || finacecompanyid == '') return;
+            $('#interestratetypeid').children('option:not(:first)').remove();
+
+            $.get('{{$pathPrefix}}interestratetype/readSelectlist/' + finacecompanyid, function (data) {
+                $.each(data, function (i, option) {
+                    $('#interestratetypeid').append($('<option/>').attr("value", option.id).text(option.name));
+                });
+                $('#interestratetypeid').val(null).trigger('chosen:updated');
+            });
+        }
+
         var carprices = [];
         @foreach ($carprices as $data)
             carprices["{{$data->pricelistid}}"] = "{{$data->price}}";
@@ -959,17 +972,38 @@
                                     <div class="col-sm-9 no-padding-left">
                                         {!! Form::label('purchasetype', '2. ซื้อรถยนต์', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
                                         <div class="col-sm-10">
-                                            <label>
+                                            <label style="padding-top: 7px;">
                                                 {!! Form::radio('purchasetype', 0, true, array('class' => 'ace', 'onchange'=>'PurchasetypeChange();')) !!}
                                                 <span class="lbl">  เงินสด</span>
                                             </label>
                                             &nbsp;
-                                            <label>
+                                            <label style="padding-top: 7px;">
                                                 {!! Form::radio('purchasetype', 1, false, array('class' => 'ace', 'onchange'=>'PurchasetypeChange();')) !!}
-                                                <span class="lbl">  เช่าซื้อกับบริษัท</span>&nbsp;&nbsp;
-                                                <div class="purchasetype1">
-                                                    {!! Form::select('finacecompanyid', $finacecompanyselectlist, null, array('id'=>'finacecompanyid', 'class' => 'chosen-select')) !!}
-                                                </div>
+                                                <span class="lbl">  เช่าซื้อกับบริษัท</span>
+                                            </label>
+                                            &nbsp;&nbsp;
+                                            <div class="purchasetype1">
+                                                {!! Form::select('finacecompanyid', $finacecompanyselectlist, null, array('id'=>'finacecompanyid', 'class' => 'chosen-select', 'onchange'=>'FinacecompanyChange(this)')) !!}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group purchasetype11">
+                                    <div class="col-sm-9 no-padding-left">
+                                        {!! Form::label('interestratetypeid', 'อัตราดอกเบี้ย', array('class' => 'col-sm-2 control-label no-padding-right')) !!}
+                                        <div class="col-sm-10">
+                                            {!! Form::select('interestratetypeid', $interestratetypeselectlist, null, array('id'=>'interestratetypeid', 'class' => 'chosen-select')) !!}
+                                            &nbsp;&nbsp;
+                                            {!! Form::label('interestratemode', 'Mode') !!}
+                                            &nbsp;&nbsp;
+                                            <label style="padding-top: 7px;">
+                                                {!! Form::radio('interestratemode', 0, false, array('class' => 'ace')) !!}
+                                                <span class="lbl">  Beginning</span>
+                                            </label>
+                                            &nbsp;
+                                            <label style="padding-top: 7px;">
+                                                {!! Form::radio('interestratemode', 1, false, array('class' => 'ace')) !!}
+                                                <span class="lbl">  Ending</span>
                                             </label>
                                         </div>
                                     </div>

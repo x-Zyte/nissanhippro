@@ -24,7 +24,7 @@ class CarPreemptionRepository extends EloquentRepositoryAbstract
             'oldcaryear', 'oldcarprice', 'oldcarbuyername', 'oldcarother',
 
             'cashpledge', 'cashpledgepaymenttype', 'cashpledgechargepercent', 'cashpledgechargeamount', 'cashpledgechargefree',
-            'purchasetype', 'finacecompanyid', 'interest', 'down', 'installments', 'cashpledgeredlabel',
+            'purchasetype', 'finacecompanyid', 'interestratetypeid', 'interestratemode', 'interest', 'down', 'installments', 'cashpledgeredlabel',
             'registerprovinceid', 'registrationtype', 'registrationfee', 'registrationfeefree', 'insurancefee', 'insurancefeefree',
             'compulsorymotorinsurancefee', 'compulsorymotorinsurancefeefree', 'accessoriesfee', 'giveawaywithholdingtax',
             'otherfee', 'otherfeedetail', 'otherfee2', 'otherfeedetail2', 'otherfee3', 'otherfeedetail3',

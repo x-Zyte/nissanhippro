@@ -27,14 +27,14 @@
             //resize to fit page size
             $(window).on('resize.jqGrid', function () {
                 resizeGrid();
-            })
+            });
             //resize on sidebar collapse/expand
             var parent_column = $(grid_selector).closest('[class*="col-"]');
             $(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
                 if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
                     $(grid_selector).jqGrid( 'setGridWidth', parent_column.width() );
                 }
-            })
+            });
 
             var candeletedata = false;
             if('{{Auth::user()->isadmin}}' == '1' || '{{Auth::user()->candeletedata}}' == '1'){
@@ -44,7 +44,7 @@
             $(grid_selector).jqGrid({
                 url:'{{ url('/commissionfinace/read') }}',
                 datatype: "json",
-                colNames:['ไฟแนนซ์','ประเภทอัตราดอกเบี้ย','ชื่อ', 'วันที่เริ่ม', 'วันที่สิ้นสุด', 'ดอกเบี้ยขั้นต่ำ'],
+                colNames: ['ไฟแนนซ์', 'ประเภทอัตราดอกเบี้ย', 'ชื่อ', 'วันที่เริ่ม', 'วันที่สิ้นสุด', 'ดอกเบี้ยขั้นต่ำ', 'จำนวนปีที่จ่าย Com'],
                 colModel:[
                     {name:'finacecompanyid',index:'finacecompanyid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
                         editoptions:{value: "{{$finacecompanyselectlist}}",
@@ -78,7 +78,17 @@
                         ,editrules:{required:true, custom: true, custom_func: check_effectiveto}},
                     {name:'finaceminimumprofit',index:'finaceminimumprofit', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
-                        formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}}
+                        formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
+                    },
+                    {
+                        name: 'years',
+                        index: 'years',
+                        width: 50,
+                        editable: true,
+                        editoptions: {size: "5"},
+                        align: 'left',
+                        editrules: {required: true}
+                    }
                 ],
                 viewrecords : true,
                 rowNum:10,
@@ -117,14 +127,14 @@
                     //resize to fit page size
                     $(window).on('resize.jqGridSubGrid', function () {
                         resizeSubGrid(subgrid_table_id);
-                    })
+                    });
                     //resize on sidebar collapse/expand
                     var parent_column = $("#"+subgrid_table_id).closest('[class*="col-"]');
                     $(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
                         if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
                             $("#"+subgrid_table_id).jqGrid( 'setGridWidth', parent_column.width() );
                         }
-                    })
+                    });
 
                     $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table><div id='"+pager_id+"' class='scroll'></div>");
                     jQuery("#"+subgrid_table_id).jqGrid({
@@ -201,7 +211,7 @@
                                     //$('.ui-state-error').attr('style', 'display: none !important');
                                 }
                             }
-                        })
+                        });
                         return result;
                     }
 
@@ -228,7 +238,7 @@
                                 viewPagerButtons : false,
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                                     style_edit_form(form);
 
                                     var dlgDiv = $("#editmod" + jQuery("#"+subgrid_table_id)[0].id);
@@ -273,7 +283,7 @@
                                     jQuery("#"+subgrid_table_id).jqGrid('resetSelection');
                                     var form = $(e[0]);
                                     form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
-                                            .wrapInner('<div class="widget-header" />')
+                                            .wrapInner('<div class="widget-header" />');
                                     style_edit_form(form);
 
                                     var dlgDiv = $("#editmod" + jQuery("#"+subgrid_table_id)[0].id);
@@ -315,7 +325,7 @@
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
                                     if(!form.data('styled')) {
-                                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                                         style_delete_form(form);
 
                                         form.data('styled', true);
@@ -349,7 +359,7 @@
                                 recreateForm: true,
                                 afterShowSearch: function(e){
                                     var form = $(e[0]);
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
                                     style_search_form(form);
 
                                     var dlgDiv = $("#searchmodfbox_" + jQuery("#"+subgrid_table_id)[0].id);
@@ -374,7 +384,7 @@
                                 recreateForm: true,
                                 beforeShowForm: function(e){
                                     var form = $(e[0]);
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
 
                                     var dlgDiv = $("#viewmod" + jQuery("#"+subgrid_table_id)[0].id);
                                     centerGridForm(dlgDiv);
@@ -383,7 +393,7 @@
                                     _token: "{{ csrf_token() }}"
                                 }
                             }
-                    )
+                    );
 
                     var subgrid_table_id2, pager_id2;
                     subgrid_table_id2 = subgrid_id+"_tt";
@@ -391,14 +401,14 @@
 
                     $(window).on('resize.jqGridSubGrid2', function () {
                         resizeSubGrid(subgrid_table_id2);
-                    })
+                    });
 
                     var parent_column2 = $("#"+subgrid_table_id2).closest('[class*="col-"]');
                     $(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
                         if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
                             $("#"+subgrid_table_id2).jqGrid( 'setGridWidth', parent_column2.width() );
                         }
-                    })
+                    });
 
                     $("#"+subgrid_id).append("<table id='"+subgrid_table_id2+"' class='scroll'></table><div id='"+pager_id2+"' class='scroll'></div>");
                     jQuery("#"+subgrid_table_id2).jqGrid({
@@ -457,7 +467,7 @@
                                     //$('.ui-state-error').attr('style', 'display: none !important');
                                 }
                             }
-                        })
+                        });
                         return result;
                     }
 
@@ -479,7 +489,7 @@
                                     //$('.ui-state-error').attr('style', 'display: none !important');
                                 }
                             }
-                        })
+                        });
                         return result;
                     }
 
@@ -505,7 +515,7 @@
                                 recreateForm: true,
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                                     style_edit_form(form);
 
                                     var dlgDiv = $("#editmod" + jQuery("#"+subgrid_table_id2)[0].id);
@@ -550,7 +560,7 @@
                                     jQuery("#"+subgrid_table_id2).jqGrid('resetSelection');
                                     var form = $(e[0]);
                                     form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
-                                            .wrapInner('<div class="widget-header" />')
+                                            .wrapInner('<div class="widget-header" />');
                                     style_edit_form(form);
 
                                     var dlgDiv = $("#editmod" + jQuery("#"+subgrid_table_id2)[0].id);
@@ -592,7 +602,7 @@
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
                                     if(!form.data('styled')) {
-                                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                                         style_delete_form(form);
 
                                         form.data('styled', true);
@@ -626,7 +636,7 @@
                                 recreateForm: true,
                                 afterShowSearch: function(e){
                                     var form = $(e[0]);
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
                                     style_search_form(form);
 
                                     var dlgDiv = $("#searchmodfbox_" + jQuery("#"+subgrid_table_id2)[0].id);
@@ -651,7 +661,7 @@
                                 recreateForm: true,
                                 beforeShowForm: function(e){
                                     var form = $(e[0]);
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
 
                                     var dlgDiv = $("#viewmod" + jQuery("#"+subgrid_table_id2)[0].id);
                                     centerGridForm(dlgDiv);
@@ -660,7 +670,7 @@
                                     _token: "{{ csrf_token() }}"
                                 }
                             }
-                    )
+                    );
 
                     var subgrid_table_id3, pager_id3;
                     subgrid_table_id3 = subgrid_id+"_ttt";
@@ -668,14 +678,14 @@
 
                     $(window).on('resize.jqGridSubGrid3', function () {
                         resizeSubGrid(subgrid_table_id3);
-                    })
+                    });
 
                     var parent_column3 = $("#"+subgrid_table_id3).closest('[class*="col-"]');
                     $(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
                         if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
                             $("#"+subgrid_table_id3).jqGrid( 'setGridWidth', parent_column3.width() );
                         }
-                    })
+                    });
 
                     $("#"+subgrid_id).append("<table id='"+subgrid_table_id3+"' class='scroll'></table><div id='"+pager_id3+"' class='scroll'></div>");
                     jQuery("#"+subgrid_table_id3).jqGrid({
@@ -744,7 +754,7 @@
                                     result = [false,data];
                                 }
                             }
-                        })
+                        });
                         return result;
                     }
 
@@ -770,7 +780,7 @@
                                 recreateForm: true,
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                                     style_edit_form(form);
 
                                     var carmodelid = $('#carmodelid').val();
@@ -827,7 +837,7 @@
                                     jQuery("#"+subgrid_table_id3).jqGrid('resetSelection');
                                     var form = $(e[0]);
                                     form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
-                                            .wrapInner('<div class="widget-header" />')
+                                            .wrapInner('<div class="widget-header" />');
                                     style_edit_form(form);
 
                                     $('#carsubmodelid').children('option:not(:first)').remove();
@@ -872,7 +882,7 @@
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
                                     if(!form.data('styled')) {
-                                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                                         style_delete_form(form);
 
                                         form.data('styled', true);
@@ -906,7 +916,7 @@
                                 recreateForm: true,
                                 afterShowSearch: function(e){
                                     var form = $(e[0]);
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
                                     style_search_form(form);
 
                                     var dlgDiv = $("#searchmodfbox_" + jQuery("#"+subgrid_table_id3)[0].id);
@@ -931,7 +941,7 @@
                                 recreateForm: true,
                                 beforeShowForm: function(e){
                                     var form = $(e[0]);
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
 
                                     var dlgDiv = $("#viewmod" + jQuery("#"+subgrid_table_id3)[0].id);
                                     centerGridForm(dlgDiv);
@@ -989,7 +999,7 @@
                     viewPagerButtons : false,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                         style_edit_form(form);
 
                         var finacecompanyid = $('#finacecompanyid').val();
@@ -1044,7 +1054,7 @@
                     beforeShowForm : function(e) {
                         jQuery(grid_selector).jqGrid('resetSelection');
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                         style_edit_form(form);
 
                         $('#interestratetypeid').children('option:not(:first)').remove();
@@ -1088,7 +1098,7 @@
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
                         if(!form.data('styled')){
-                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                             style_delete_form(form);
 
                             form.data('styled', true);
@@ -1122,7 +1132,7 @@
                     recreateForm: true,
                     afterShowSearch: function(e){
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
                         style_search_form(form);
 
                         var dlgDiv = $("#searchmodfbox_" + jQuery(grid_selector)[0].id);
@@ -1147,7 +1157,7 @@
                     recreateForm: true,
                     beforeShowForm: function(e){
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
 
                         var dlgDiv = $("#viewmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);

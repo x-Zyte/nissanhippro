@@ -62,6 +62,9 @@ class CreateCarPreemptionsTable extends Migration {
             $table->integer('purchasetype')->comment('0:เงินสด, 1:เช่าซื้อกับบริษัท');
             $table->integer('finacecompanyid')->unsigned()->nullable();
             $table->foreign('finacecompanyid')->references('id')->on('finace_companies');
+            $table->integer('interestratetypeid')->unsigned()->nullable();
+            $table->foreign('interestratetypeid')->references('id')->on('interestrate_types');
+            $table->integer('interestratemode')->nullable()->comment('0:Beginning, 1:Ending');
             $table->decimal('interest', 10, 2)->nullable();
             $table->decimal('down', 10, 2)->nullable();
             $table->integer('installments')->nullable();

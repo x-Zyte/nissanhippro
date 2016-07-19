@@ -1,14 +1,14 @@
 <?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;;
+use Illuminate\Support\Facades\Auth;
+
+;
 
 class CommissionExtra extends Model {
 
-    protected $table = 'commission_extras';
-
     public $timestamps = false;
-
+    protected $table = 'commission_extras';
     protected $guarded = ['id'];
 
     protected $fillable = ['finacecompanyid', 'effectivefrom', 'effectiveto', 'amount', 'active',
@@ -52,5 +52,10 @@ class CommissionExtra extends Model {
         {
             Log::create(['employeeid' => Auth::user()->id,'operation' => 'Delete','date' => date("Y-m-d H:i:s"),'model' => class_basename(get_class($model)),'detail' => $model->toJson()]);
         });
+    }
+
+    public function commissionExtraCars()
+    {
+        return $this->hasMany('App\Models\CommissionExtraCar', 'commissionextraid', 'id');
     }
 }

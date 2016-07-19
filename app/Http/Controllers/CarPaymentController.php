@@ -16,7 +16,13 @@ use App\Models\CarModel;
 use App\Models\CarPayment;
 use App\Models\CarPreemption;
 use App\Models\CarSubModel;
+use App\Models\CarType;
 use App\Models\Color;
+use App\Models\CommissionExtra;
+use App\Models\CommissionFinace;
+use App\Models\CommissionFinaceCom;
+use App\Models\CommissionFinaceInterest;
+use App\Models\CommissionPA;
 use App\Models\Customer;
 use App\Models\Employee;
 use App\Models\FinaceCompany;
@@ -269,7 +275,6 @@ class CarPaymentController extends Controller {
 
     public function save(Request $request)
     {
-        //TODO controller and form
         if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
         $this->validate($request, [
@@ -1064,24 +1069,64 @@ class CarPaymentController extends Controller {
 
             $accountingdetail->compulsorymotorinsurancefeefn = 0;
             $accountingdetail->insurancefeefn = 0;
+            $accountingdetail->firstinstallmentpayamount = 0;
+            $accountingdetail->installmentsinadvance = 0;
+            $accountingdetail->amountperinstallment = 0;
+            $accountingdetail->payinadvanceamount = 0;
+            $accountingdetail->insurancepremium = 0;
+            $accountingdetail->totalinadvancefees = 0;
+
+            $accountingdetail->conditioninsurancefee = $carpreemption->insurancefee;
+            $accountingdetail->conditioninsurancefeecustomerpaid = $accountingdetail->insurancefeecash;
+            $accountingdetail->conditioninsurancefeecompanypaid = $accountingdetail->conditioninsurancefee - $accountingdetail->conditioninsurancefeecustomerpaid;
+            $accountingdetail->conditioncompulsorymotorinsurancefeecustomerpaid = $accountingdetail->compulsorymotorinsurancefeecash;
         } else {
             if ($carpreemption->compulsorymotorinsurancefeefree) $accountingdetail->compulsorymotorinsurancefeefn = 0;
             else $accountingdetail->compulsorymotorinsurancefeefn = $carpreemption->compulsorymotorinsurancefee;
             if ($carpreemption->insurancefeefree) $accountingdetail->insurancefeefn = 0;
             else $accountingdetail->insurancefeefn = $carpreemption->insurancefee;
 
+            if ($carpayment->firstinstallmentpay) $accountingdetail->firstinstallmentpayamount = $carpayment->amountperinstallment;
+            else $accountingdetail->firstinstallmentpayamount = 0;
+
+            $accountingdetail->installmentsinadvance = $carpayment->installmentsinadvance;
+            $accountingdetail->amountperinstallment = $carpayment->amountperinstallment;
+            $accountingdetail->payinadvanceamount = $carpayment->installmentsinadvance * $carpayment->amountperinstallment;
+            $accountingdetail->insurancepremium = $carpayment->insurancepremium;
+            $accountingdetail->totalinadvancefees = $accountingdetail->insurancefeefn + $accountingdetail->compulsorymotorinsurancefeefn
+                + $accountingdetail->firstinstallmentpayamount + $accountingdetail->payinadvanceamount
+                + $accountingdetail->insurancepremium;
+
             $accountingdetail->compulsorymotorinsurancefeecash = 0;
             $accountingdetail->insurancefeecash = 0;
+
+            $accountingdetail->conditioninsurancefee = $carpreemption->insurancefee;
+            $accountingdetail->conditioninsurancefeecustomerpaid = $accountingdetail->insurancefeefn;
+            $accountingdetail->conditioninsurancefeecompanypaid = $accountingdetail->conditioninsurancefee - $accountingdetail->conditioninsurancefeecustomerpaid;
+            $accountingdetail->conditioncompulsorymotorinsurancefeecustomerpaid = $accountingdetail->compulsorymotorinsurancefeefn;
         }
 
         if ($carpreemption->implementfeefree) $accountingdetail->implementfee = 0;
         else $accountingdetail->implementfee = $carpreemption->implementfee;
 
+        if ($carpreemption->subsidisefree) $accountingdetail->subsidise = 0;
+        else $accountingdetail->subsidise = $carpreemption->subsidise;
+
+        $accountingdetail->giveawaywithholdingtax = $carpreemption->giveawaywithholdingtax;
+
         $accountingdetail->otherfee = $carpreemption->otherfee;
+        $accountingdetail->otherfeedetail = $carpreemption->otherfeedetail;
+        $accountingdetail->otherfee2 = $carpreemption->otherfee2;
+        $accountingdetail->otherfeedetail2 = $carpreemption->otherfeedetail2;
+        $accountingdetail->otherfee3 = $carpreemption->otherfee3;
+        $accountingdetail->otherfeedetail3 = $carpreemption->otherfeedetail3;
+
+        $accountingdetail->totalotherfee = $accountingdetail->subsidise + $accountingdetail->giveawaywithholdingtax
+            + $accountingdetail->otherfee + $accountingdetail->otherfee2 + $accountingdetail->otherfee3;
 
         $accountingdetail->totalotherfees = $accountingdetail->accessoriesfeeactuallypaid + $accountingdetail->registrationfee
             + $accountingdetail->compulsorymotorinsurancefeecash + $accountingdetail->insurancefeecash + $accountingdetail->implementfee
-            + $accountingdetail->otherfee;
+            + $accountingdetail->totalotherfee;
 
         $carmodel = CarModel::find($carpreemption->carmodelid);
         $carsubmodel = CarSubModel::find($carpreemption->carsubmodelid);
@@ -1101,30 +1146,252 @@ class CarPaymentController extends Controller {
         if ($carpreemption->down == null) $accountingdetail->down = 0;
         else $accountingdetail->down = $carpreemption->down;
 
-        return $accountingdetail;
+        $insurancecompany = InsuranceCompany::find($carpayment->insurancecompanyid);
+        if ($insurancecompany != null) $accountingdetail->insurancecompany = $insurancecompany->name;
+        else $accountingdetail->insurancecompany = null;
 
-        /*if($carpreemption->purchasetype == 0) {
-            $model->down = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
-            $model->yodjud =  0;
-            $model->yodjudwithinsurancepremium = 0;
-            if($model->overrideopenbill != null && $model->overrideopenbill != '')
-                $model->openbill = $model->overrideopenbill;
-            else
-                $model->openbill = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
-            $model->realprice = number_format($model->carprice - $carpreemption->discount, 2, '.', '');
-            $model->payinadvanceamount = 0;
+        if ($carpayment->capitalinsurance == null) $accountingdetail->capitalinsurance = 0;
+        else $accountingdetail->capitalinsurance = $carpayment->capitalinsurance;
+
+        $compulsorymotorinsurancecompany = InsuranceCompany::find($carpayment->compulsorymotorinsurancecompanyid);
+        if ($compulsorymotorinsurancecompany != null) $accountingdetail->compulsorymotorinsurancecompany = $compulsorymotorinsurancecompany->name;
+        else $accountingdetail->compulsorymotorinsurancecompany = null;
+
+        $cartype = CarType::find($carmodel->cartypeid);
+        $accountingdetail->conditioncompulsorymotorinsurancefee = $cartype->actpaidincludevat;
+        $accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid = $accountingdetail->conditioncompulsorymotorinsurancefee - $accountingdetail->conditioncompulsorymotorinsurancefeecustomerpaid;
+
+        $accountingdetail->note1insurancefee = ($accountingdetail->conditioninsurancefee * 100) / 107.00;
+        $accountingdetail->note1insurancefeeincludevat = $accountingdetail->conditioninsurancefee;
+        $accountingdetail->note1insurancefeevat = $accountingdetail->note1insurancefeeincludevat - $accountingdetail->note1insurancefee;
+
+        $accountingdetail->note1compulsorymotorinsurancefee = $cartype->actpaid;
+        $accountingdetail->note1compulsorymotorinsurancefeevat = $cartype->actpaidincludevat - $cartype->actpaid;
+        $accountingdetail->note1compulsorymotorinsurancefeeincludevat = $cartype->actpaidincludevat;
+
+        $accountingdetail->note1totalfee = $accountingdetail->note1insurancefee + $accountingdetail->note1compulsorymotorinsurancefee;
+        $accountingdetail->note1totalfeevat = $accountingdetail->note1insurancefeevat + $accountingdetail->note1compulsorymotorinsurancefeevat;
+        $accountingdetail->note1totalfeeincludevat = $accountingdetail->note1insurancefeeincludevat + $accountingdetail->note1compulsorymotorinsurancefeeincludevat;
+
+        if ($carpreemption->cashpledgeredlabel == null) $accountingdetail->cashpledgeredlabel = 0;
+        else $accountingdetail->cashpledgeredlabel = $carpreemption->cashpledgeredlabel;
+
+        if ($carpreemption->cashpledge == null) $accountingdetail->cashpledge = 0;
+        else $accountingdetail->cashpledge = $carpreemption->cashpledge;
+
+        $accountingdetail->totalcashpledge = $accountingdetail->cashpledgeredlabel + $accountingdetail->cashpledge;
+        $accountingdetail->totalcash = $accountingdetail->realsalesprice + $accountingdetail->totalotherfees
+            + $accountingdetail->totalinadvancefees - $accountingdetail->totalcashpledge;
+
+        $finacecompany = FinaceCompany::find($carpreemption->finacecompanyid);
+        if ($finacecompany != null) $accountingdetail->finacecompany = $finacecompany->name;
+        else $accountingdetail->finacecompany = null;
+
+        $accountingdetail->incasefinace = $carpreemption->purchasetype;
+        if ($carpreemption->purchasetype == 1) {
+            $accountingdetail->interest = $carpreemption->interest;
+            $accountingdetail->installments = $carpreemption->installments;
+
+            $pricelist = Pricelist::find($carpreemption->pricelistid);
+            $carprice = $pricelist->sellingpricewithaccessories + $carpreemption->colorprice;
+            $yodjud = $carprice - $carpreemption->discount - $carpreemption->down + $carpreemption->accessories + $carpayment->accessoriesfeeincludeinyodjud;
+            $yodjudwithinsurancepremium = $yodjud + $carpayment->insurancepremium;
+            $accountingdetail->yodjud = $yodjudwithinsurancepremium;
+            $accountingdetail->yodjudwithinterest = ($yodjudwithinsurancepremium * ($carpreemption->interest + 100)) / 100.00;
+            $finaceprofit = $accountingdetail->yodjudwithinterest - $yodjudwithinsurancepremium;
+
+            $commissionfinace = CommissionFinace::where('finacecompanyid', $carpreemption->finacecompanyid)
+                ->where('interestratetypeid', $carpreemption->interestratetypeid)->where('finaceminimumprofit', '<=', $finaceprofit)
+                ->where('effectivefrom', '<=', $carpreemption->date)->where('effectiveto', '>=', $carpreemption->date)
+                ->whereHas('commissionFinaceCars', function ($query) use ($carpreemption) {
+                    $query->where('carmodelid', $carpreemption->carmodelid)
+                        ->Where(function ($query) use ($carpreemption) {
+                            $query->where('carsubmodelid', $carpreemption->carsubmodelid)
+                                ->orWhere('carsubmodelid', 0);
+                        });
+                })->first();
+
+            $percentdown = ($carpreemption->down * 100.00) / ($carprice - $carpreemption->discount + $carpreemption->accessories);
+            $accountingdetail->comfinpercent = null;
+            $accountingdetail->comfinyear = null;
+            if ($commissionfinace != null) {
+                $accountingdetail->comfinyear = $commissionfinace->years;
+
+                $commissionfinaceinterest = CommissionFinaceInterest::where('commissionfinaceid', $commissionfinace->id)
+                    ->where('downfrom', '<=', $percentdown)->where('downto', '>=', $percentdown)->first();
+                if ($commissionfinaceinterest != null) {
+                    $commissionstandardinterest = 0;
+                    switch ($carpreemption->installments) {
+                        case 24:
+                            $commissionstandardinterest = $commissionfinaceinterest->installment24;
+                            break;
+                        case 36:
+                            $commissionstandardinterest = $commissionfinaceinterest->installment36;
+                            break;
+                        case 48:
+                            $commissionstandardinterest = $commissionfinaceinterest->installment48;
+                            break;
+                        case 60:
+                            $commissionstandardinterest = $commissionfinaceinterest->installment60;
+                            break;
+                        case 72:
+                            $commissionstandardinterest = $commissionfinaceinterest->installment72;
+                            break;
+                        case 84:
+                            $commissionstandardinterest = $commissionfinaceinterest->installment84;
+                            break;
+                    }
+
+                    $commissionfinaceinterests = CommissionFinaceCom::where('commissionfinaceid', $commissionfinace->id)->orderBy('com', 'asc')->get();
+                    $previousstepcom = null;
+
+                    foreach ($commissionfinaceinterests as $item) {
+                        if ($carpreemption->interestratemode == 0)
+                            $currentstepinterest = $commissionstandardinterest + $item->interestcalculationbeginning;
+                        else
+                            $currentstepinterest = $commissionstandardinterest + $item->interestcalculationending;
+
+                        if ($carpreemption->interest == $currentstepinterest) {
+                            $accountingdetail->comfinpercent = $item->com;
+                            break;
+                        } else if ($carpreemption->interest < $currentstepinterest) {
+                            if ($previousstepcom != null)
+                                $accountingdetail->comfinpercent = $previousstepcom;
+                            else
+                                $accountingdetail->comfinpercent = 0;
+                            break;
+                        } else if ($carpreemption->interest > $currentstepinterest) {
+                            $previousstepcom = $item->com;
+                        }
+                    }
+
+                    if ($accountingdetail->comfinpercent == null) {
+                        if ($previousstepcom == null) $accountingdetail->comfinpercent = 0;
+                        else $accountingdetail->comfinpercent = $previousstepcom;
+                    }
+                }
+            } else {
+                $accountingdetail->comfinpercent = 0;
+                $accountingdetail->comfinyear = 0;
+            }
+
+            $employee = Employee::find($carpreemption->salesmanemployeeid);
+            $accountingdetail->salename = $employee->title . $employee->firstname . ' ' . $employee->lastname;
+
+            $accountingdetail->incasefinaceinsurancefee = $accountingdetail->note1insurancefeeincludevat;
+            $accountingdetail->note2insurancefeewhtax = $accountingdetail->note1insurancefee / 100.00;
+            $accountingdetail->note2insurancefee = $accountingdetail->insurancefeefn;
+            if ($accountingdetail->conditioninsurancefeecompanypaid > 0) $accountingdetail->note2insurancefeeexpense = $accountingdetail->conditioninsurancefeecompanypaid;
+            else $accountingdetail->note2insurancefeeexpense = 0;
+            if ($accountingdetail->conditioninsurancefeecompanypaid < 0) $accountingdetail->note2insurancefeeincome = $accountingdetail->conditioninsurancefeecompanypaid * -1;
+            else $accountingdetail->note2insurancefeeincome = 0;
+
+            $accountingdetail->incasefinacecompulsorymotorinsurancefee = $accountingdetail->note1compulsorymotorinsurancefeeincludevat;
+            $accountingdetail->note2compulsorymotorinsurancefeewhtax = $accountingdetail->note1compulsorymotorinsurancefee / 100.00;
+            $accountingdetail->note2compulsorymotorinsurancefee = $accountingdetail->compulsorymotorinsurancefeefn;
+            if ($accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid > 0) $accountingdetail->note2compulsorymotorinsurancefeeexpense = $accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid;
+            else $accountingdetail->note2compulsorymotorinsurancefeeexpense = 0;
+            if ($accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid < 0) $accountingdetail->note2compulsorymotorinsurancefeeincome = $accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid * -1;
+            else $accountingdetail->note2compulsorymotorinsurancefeeincome = 0;
+
+            $accountingdetail->incasefinacefirstinstallmentpayamount = $accountingdetail->firstinstallmentpayamount;
+            $accountingdetail->note2firstinstallmentpayamount = $accountingdetail->firstinstallmentpayamount;
+            $accountingdetail->incasefinacepayinadvanceamount = $accountingdetail->payinadvanceamount;
+            $accountingdetail->note2payinadvanceamount = $accountingdetail->payinadvanceamount;
+            $accountingdetail->incasefinaceinsurancepremium = $accountingdetail->insurancepremium;
+            $accountingdetail->note2insurancepremium = $accountingdetail->insurancepremium;
+            $accountingdetail->totalincasefinace = $accountingdetail->incasefinaceinsurancefee
+                + $accountingdetail->incasefinacecompulsorymotorinsurancefee + $accountingdetail->incasefinacefirstinstallmentpayamount
+                + $accountingdetail->incasefinacepayinadvanceamount + $accountingdetail->incasefinaceinsurancepremium;
+
+            $accountingdetail->incasefinacereceivedcash = $accountingdetail->yodjud - $accountingdetail->totalincasefinace;
+            $accountingdetail->note2total1 = $accountingdetail->note2insurancefee + $accountingdetail->note2compulsorymotorinsurancefee
+                + $accountingdetail->note2firstinstallmentpayamount + $accountingdetail->note2payinadvanceamount
+                + $accountingdetail->note2insurancepremium;
+            $accountingdetail->note2total2 = $accountingdetail->note2insurancefeeexpense + $accountingdetail->note2compulsorymotorinsurancefeeexpense;
+            $accountingdetail->note2total3 = $accountingdetail->note2insurancefeeincome + $accountingdetail->note2compulsorymotorinsurancefeeincome;
+
+            $accountingdetail->incasefinacesubsidise = $carpreemption->subsidise;
+            $accountingdetail->incasefinacesubsidisevat = $carpreemption->subsidise * 0.07;
+            $accountingdetail->incasefinacesubsidisewithvat = $carpreemption->subsidise + ($carpreemption->subsidise * 0.07);
+            $accountingdetail->note2subsidisewhtax = $carpreemption->subsidise * 0.03;;
+            $accountingdetail->note2subsidisetotal = $accountingdetail->incasefinacesubsidisewithvat - $accountingdetail->note2subsidisewhtax;
+
+            $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacereceivedcash - $accountingdetail->incasefinacesubsidisewithvat;
+            $accountingdetail->note2totalwhtax = $accountingdetail->note2insurancefeewhtax + $accountingdetail->note2compulsorymotorinsurancefeewhtax
+                + $accountingdetail->note2subsidisewhtax;
+
+            $accountingdetail->incasefinacecomfinamount = ($accountingdetail->yodjud / 1.07) * ($accountingdetail->interest / 100.00)
+                * $accountingdetail->comfinyear * ($accountingdetail->comfinpercent / 100.00);
+            $accountingdetail->incasefinacecomfinvat = $accountingdetail->incasefinacecomfinamount * 0.07;
+            $accountingdetail->incasefinacecomfinamountwithvat = $accountingdetail->incasefinacecomfinamount + $accountingdetail->incasefinacecomfinvat;
+            $accountingdetail->incasefinacecomfinwhtax = $accountingdetail->incasefinacecomfinamount * 0.03;
+            $accountingdetail->incasefinacecomfintotal = $accountingdetail->incasefinacecomfinamountwithvat - $accountingdetail->incasefinacecomfinwhtax;
+
+            $commissionextra = CommissionExtra::where('finacecompanyid', $carpreemption->finacecompanyid)
+                ->where('effectivefrom', '<=', $carpreemption->date)->where('effectiveto', '>=', $carpreemption->date)
+                ->whereHas('commissionExtraCars', function ($query) use ($carpreemption) {
+                    $query->where('carmodelid', $carpreemption->carmodelid)
+                        ->Where(function ($query) use ($carpreemption) {
+                            $query->where('carsubmodelid', $carpreemption->carsubmodelid)
+                                ->orWhere('carsubmodelid', 0);
+                        });
+                })->first();
+
+            if ($commissionfinace != null) {
+                $accountingdetail->incasefinacecomextraamount = $commissionextra->amount;
+                $accountingdetail->incasefinacecomextravat = $commissionextra->amount * 0.07;
+                $accountingdetail->incasefinacecomextraamountwithvat = $accountingdetail->incasefinacecomextraamount + $accountingdetail->incasefinacecomextravat;
+                $accountingdetail->incasefinacecomextrawhtax = $commissionextra->amount * 0.03;
+                $accountingdetail->incasefinacecomextratotal = $accountingdetail->incasefinacecomextraamountwithvat - $accountingdetail->incasefinacecomextrawhtax;
+            } else {
+                $accountingdetail->incasefinacecomextraamount = 0;
+                $accountingdetail->incasefinacecomextravat = 0;
+                $accountingdetail->incasefinacecomextraamountwithvat = 0;
+                $accountingdetail->incasefinacecomextrawhtax = 0;
+                $accountingdetail->incasefinacecomextratotal = 0;
+            }
+
+            if ($carpayment->insurancepremium > 0) {
+                $commissionpa = CommissionPA::where('finacecompanyid', $carpreemption->finacecompanyid)
+                    ->where('effectivefrom', '<=', $carpreemption->date)->where('effectiveto', '>=', $carpreemption->date)
+                    ->first();
+
+                if ($commissionpa != null) {
+                    $accountingdetail->incasefinacecompaamount = $commissionpa->amount;
+                    $accountingdetail->incasefinacecompavat = $commissionpa->amount * 0.07;
+                    $accountingdetail->incasefinacecompaamountwithvat = $accountingdetail->incasefinacecomextraamount + $accountingdetail->incasefinacecomextravat;
+                    $accountingdetail->incasefinacecompawhtax = $commissionpa->amount * 0.03;
+                    $accountingdetail->incasefinacecompatotal = $accountingdetail->incasefinacecomextraamountwithvat - $accountingdetail->incasefinacecomextrawhtax;
+                } else {
+                    $accountingdetail->incasefinacecompaamount = 0;
+                    $accountingdetail->incasefinacecompavat = 0;
+                    $accountingdetail->incasefinacecompaamountwithvat = 0;
+                    $accountingdetail->incasefinacecompawhtax = 0;
+                    $accountingdetail->incasefinacecompatotal = 0;
+                }
+            } else {
+                $accountingdetail->incasefinacecompaamount = 0;
+                $accountingdetail->incasefinacecompavat = 0;
+                $accountingdetail->incasefinacecompaamountwithvat = 0;
+                $accountingdetail->incasefinacecompawhtax = 0;
+                $accountingdetail->incasefinacecompatotal = 0;
+            }
+
+            $accountingdetail->incasefinacetotalcomamount = $accountingdetail->incasefinacecomfinamount + $accountingdetail->incasefinacecomextraamount
+                + $accountingdetail->incasefinacecompaamount;
+            $accountingdetail->incasefinacetotalcomvat = $accountingdetail->incasefinacecomfinvat + $accountingdetail->incasefinacecomextravat
+                + $accountingdetail->incasefinacecompavat;
+            $accountingdetail->incasefinacetotalcomwhtax = $accountingdetail->incasefinacecomfinwhtax + $accountingdetail->incasefinacecomextrawhtax
+                + $accountingdetail->incasefinacecompawhtax;
+            $accountingdetail->incasefinacetotalcomtotal = $accountingdetail->incasefinacecomfintotal + $accountingdetail->incasefinacecomextratotal
+                + $accountingdetail->incasefinacecompatotal;
+
+            $accountingdetail->receivedcashfromfinace = $accountingdetail->incasefinacehassubsidisereceivedcash + $accountingdetail->note2totalwhtax
+                + $accountingdetail->incasefinacetotalcomtotal;
+            $accountingdetail->receivedcashfromfinace2 = $accountingdetail->receivedcashfromfinace;
         }
-        else {
-            $model->down = $carpreemption->down;
-            $model->yodjud =  number_format($model->carprice - $carpreemption->discount - $model->down + $carpreemption->accessories + $model->accessoriesfeeincludeinyodjud, 2, '.', '');
-            $model->yodjudwithinsurancepremium = number_format($model->yodjud + $model->insurancepremium, 2, '.', '');
-            $model->openbill = number_format($model->yodjud + $model->down, 2, '.', '');
-            $model->realprice =  number_format($model->carprice - $carpreemption->discount - $carpreemption->subdown, 2, '.', '');
-            if($model->firstinstallmentpay)
-                $model->firstinstallmentpayamount = number_format($model->amountperinstallment, 2, '.', '');
-            else
-                $model->firstinstallmentpayamount = number_format(0, 2, '.', '');
-            $model->payinadvanceamount = number_format($model->installmentsinadvance * $model->amountperinstallment, 2, '.', '');
-        }*/
+
+        return $accountingdetail;
     }
 }
