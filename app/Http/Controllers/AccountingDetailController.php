@@ -143,6 +143,11 @@ class AccountingDetailController extends Controller
             'cashpledgereceiptbookno' => 'required',
             'cashpledgereceiptno' => 'required',
             'cashpledgereceiptdate' => 'required',
+            'incasefinacecomfinamount' => 'required_if:purchasetype,1',
+            'incasefinacecomfinvat' => 'required_if:purchasetype,1',
+            'incasefinacecomfinamountwithvat' => 'required_if:purchasetype,1',
+            'incasefinacecomfinwhtax' => 'required_if:purchasetype,1',
+            'incasefinacecomfintotal' => 'required_if:purchasetype,1',
             'receivedcashfromfinacedate' => 'required_if:purchasetype,1',
             'receivedcashfromfinacebankid' => 'required_if:purchasetype,1',
             'oldcarcomamount' => 'required',
@@ -158,6 +163,11 @@ class AccountingDetailController extends Controller
                 'cashpledgereceiptbookno.required' => 'ใบรับเงิน เล่มที่ จำเป็นต้องกรอก',
                 'cashpledgereceiptno.required' => 'ใบรับเงิน เลขที่ จำเป็นต้องกรอก',
                 'cashpledgereceiptdate.required' => 'ใบรับเงิน วันที่ จำเป็นต้องกรอก',
+                'incasefinacecomfinamount.required_if' => 'Com Fin... จำเป็นต้องกรอก',
+                'incasefinacecomfinvat.required_if' => 'Com Fin Vat... จำเป็นต้องกรอก',
+                'incasefinacecomfinamountwithvat.required_if' => 'Com Fin Total... จำเป็นต้องกรอก',
+                'incasefinacecomfinwhtax.required_if' => 'Com Fin W/H ถูกหัก จำเป็นต้องกรอก',
+                'incasefinacecomfintotal.required_if' => 'Com Fin Net... จำเป็นต้องกรอก',
                 'receivedcashfromfinacedate.required_if' => 'วันที่ ที่รับเงินจากไฟแนนซ์ จำเป็นต้องกรอก',
                 'receivedcashfromfinacebankid.required_if' => 'Bank ที่รับเงินจากไฟแนนซ์ จำเป็นต้องเลือก',
                 'oldcarcomamount.required' => 'รับเงินค่าคอมรถเก่า จำเป็นต้องกรอก',
@@ -194,9 +204,29 @@ class AccountingDetailController extends Controller
         $model->cashpledgereceiptdate = date('Y-m-d', strtotime($input['cashpledgereceiptdate']));
 
         if ($input['purchasetype'] == 1) {
+            $model->incasefinacecomfinamount = $input['incasefinacecomfinamount'];
+            $model->incasefinacecomfinvat = $input['incasefinacecomfinvat'];
+            $model->incasefinacecomfinamountwithvat = $input['incasefinacecomfinamountwithvat'];
+            $model->incasefinacecomfinwhtax = $input['incasefinacecomfinwhtax'];
+            $model->incasefinacecomfintotal = $input['incasefinacecomfintotal'];
+            $model->systemcalincasefinacecomfinamount = $input['incasefinacecomfinamount'];
+            $model->systemcalincasefinacecomfinvat = $input['incasefinacecomfinvat'];
+            $model->systemcalincasefinacecomfinamountwithvat = $input['incasefinacecomfinamountwithvat'];
+            $model->systemcalincasefinacecomfinwhtax = $input['incasefinacecomfinwhtax'];
+            $model->systemcalincasefinacecomfintotal = $input['incasefinacecomfintotal'];
             $model->receivedcashfromfinacedate = date('Y-m-d', strtotime($input['receivedcashfromfinacedate']));
             $model->receivedcashfromfinacebankid = $input['receivedcashfromfinacebankid'];
         } else {
+            $model->incasefinacecomfinamount = null;
+            $model->incasefinacecomfinvat = null;
+            $model->incasefinacecomfinamountwithvat = null;
+            $model->incasefinacecomfinwhtax = null;
+            $model->incasefinacecomfintotal = null;
+            $model->systemcalincasefinacecomfinamount = null;
+            $model->systemcalincasefinacecomfinvat = null;
+            $model->systemcalincasefinacecomfinamountwithvat = null;
+            $model->systemcalincasefinacecomfinwhtax = null;
+            $model->systemcalincasefinacecomfintotal = null;
             $model->receivedcashfromfinacedate = null;
             $model->receivedcashfromfinacebankid = null;
         }

@@ -18,8 +18,10 @@ class AccountingDetailRepository extends EloquentRepositoryAbstract
         $this->orderBy = array(array('id', 'asc'));
         $this->crudFields = array('oper', 'id', 'carpaymentid', 'invoiceno', 'date', 'additionalopenbill',
             'insurancefeereceiptcondition', 'compulsorymotorinsurancefeereceiptcondition',
-            'cashpledgereceiptbookno', 'cashpledgereceiptno', 'cashpledgereceiptdate', 'receivedcashfromfinacedate',
-            'receivedcashfromfinacebankid', 'oldcarcomamount', 'adj');
+            'cashpledgereceiptbookno', 'cashpledgereceiptno', 'cashpledgereceiptdate',
+            'systemcalincasefinacecomfinamount', 'systemcalincasefinacecomfinvat', 'systemcalincasefinacecomfinamountwithvat', 'systemcalincasefinacecomfinwhtax', 'systemcalincasefinacecomfintotal',
+            'incasefinacecomfinamount', 'incasefinacecomfinvat', 'incasefinacecomfinamountwithvat', 'incasefinacecomfinwhtax', 'incasefinacecomfintotal',
+            'receivedcashfromfinacedate', 'receivedcashfromfinacebankid', 'oldcarcomamount', 'adj');
 
         $this->uniqueKeySingles = array(array('field' => 'carpaymentid', 'label' => 'รายละเอียดเพื่อการบันทึกบัญชีของใบชำระเงิน'));
         $this->uniqueKeyMultiples = array();

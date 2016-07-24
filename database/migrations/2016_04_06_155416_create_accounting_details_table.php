@@ -29,6 +29,16 @@ class CreateAccountingDetailsTable extends Migration
             $table->integer('cashpledgereceiptbookno');
             $table->integer('cashpledgereceiptno');
             $table->dateTime('cashpledgereceiptdate');
+            $table->decimal('incasefinacecomfinamount', 10, 2)->nullable();
+            $table->decimal('incasefinacecomfinvat', 10, 2)->nullable();
+            $table->decimal('incasefinacecomfinamountwithvat', 10, 2)->nullable();
+            $table->decimal('incasefinacecomfinwhtax', 10, 2)->nullable();
+            $table->decimal('incasefinacecomfintotal', 10, 2)->nullable();
+            $table->decimal('systemcalincasefinacecomfinamount', 10, 2)->nullable();
+            $table->decimal('systemcalincasefinacecomfinvat', 10, 2)->nullable();
+            $table->decimal('systemcalincasefinacecomfinamountwithvat', 10, 2)->nullable();
+            $table->decimal('systemcalincasefinacecomfinwhtax', 10, 2)->nullable();
+            $table->decimal('systemcalincasefinacecomfintotal', 10, 2)->nullable();
             $table->dateTime('receivedcashfromfinacedate')->nullable();
             $table->integer('receivedcashfromfinacebankid')->nullable()->unsigned();
             $table->foreign('receivedcashfromfinacebankid')->references('id')->on('banks');

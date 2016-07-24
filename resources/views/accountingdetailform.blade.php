@@ -215,11 +215,11 @@
                     $("#note2subsidisetotal").text(data.note2subsidisetotal);
                     $("#incasefinacehassubsidisereceivedcash").text(data.incasefinacehassubsidisereceivedcash);
                     $("#note2totalwhtax").text(data.note2totalwhtax);
-                    $("#incasefinacecomfinamount").text(data.incasefinacecomfinamount);
-                    $("#incasefinacecomfinvat").text(data.incasefinacecomfinvat);
-                    $("#incasefinacecomfinamountwithvat").text(data.incasefinacecomfinamountwithvat);
-                    $("#incasefinacecomfinwhtax").text(data.incasefinacecomfinwhtax);
-                    $("#incasefinacecomfintotal").text(data.incasefinacecomfintotal);
+                    $("#incasefinacecomfinamount").val(data.incasefinacecomfinamount);
+                    $("#incasefinacecomfinvat").val(data.incasefinacecomfinvat);
+                    $("#incasefinacecomfinamountwithvat").val(data.incasefinacecomfinamountwithvat);
+                    $("#incasefinacecomfinwhtax").val(data.incasefinacecomfinwhtax);
+                    $("#incasefinacecomfintotal").val(data.incasefinacecomfintotal);
                     $("#incasefinacecomextraamount").text(data.incasefinacecomextraamount);
                     $("#incasefinacecomextravat").text(data.incasefinacecomextravat);
                     $("#incasefinacecomextraamountwithvat").text(data.incasefinacecomextraamountwithvat);
@@ -1140,14 +1140,11 @@
                                         <div style="width:540px; float:left; margin-right:20px;">
                                             <label style="width:25px; font-weight:bold;">Com</label>
                                             <label style="width:95px; padding-left:25px;">Fin...</label>
-                                            <label class="dotted" style="width:100px; color:red; text-align:right;"
-                                                   id="incasefinacecomfinamount">{{$accountingdetail->incasefinacecomfinamount}}</label>
+                                            {!! Form::number('incasefinacecomfinamount', null, array('style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right;','id'=>'incasefinacecomfinamount')) !!}
                                             <label style="width:30px; text-align: center;">Vat...</label>
-                                            <label class="dotted" style="width:100px; color:red; text-align:right;"
-                                                   id="incasefinacecomfinvat">{{$accountingdetail->incasefinacecomfinvat}}</label>
+                                            {!! Form::number('incasefinacecomfinvat', null, array('style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right;','id'=>'incasefinacecomfinvat')) !!}
                                             <label style="width:21px;"></label>
-                                            <label style="width:100px; color:red; text-align:right;"
-                                                   id="incasefinacecomfinamountwithvat">{{$accountingdetail->incasefinacecomfinamountwithvat}}</label>
+                                            {!! Form::number('incasefinacecomfinamountwithvat', null, array('style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right;','id'=>'incasefinacecomfinamountwithvat')) !!}
                                         </div>
                                         <div style="width:540px; float:left;">
                                         </div>
@@ -1156,12 +1153,9 @@
                                         <div style="width:540px; float:left; margin-right:20px;">
                                             <label style="width:25px; font-weight:bold;"></label>
                                             <label style="width:95px; padding-left:25px;">W/H ถูกหัก</label>
-                                            <label class="dotted" style="width:100px; color:#0090FF; text-align:right;"
-                                                   id="incasefinacecomfinwhtax">{{$accountingdetail->incasefinacecomfinwhtax}}</label>
+                                            {!! Form::number('incasefinacecomfinwhtax', null, array('style'=>'width: 100px; height: 22px; padding:0; color:#0090FF; text-align:right;','id'=>'incasefinacecomfinwhtax')) !!}
                                             <label style="width:30px; text-align: center;">Net...</label>
-                                            <label class="dotted"
-                                                   style="width:100px; color:red; text-align:right; font-weight:bold;"
-                                                   id="incasefinacecomfintotal">{{$accountingdetail->incasefinacecomfintotal}}</label>
+                                            {!! Form::number('incasefinacecomfintotal', null, array('style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right; font-weight:bold;','id'=>'incasefinacecomfintotal')) !!}
                                         </div>
                                         <div style="width:540px; float:left;">
                                         </div>

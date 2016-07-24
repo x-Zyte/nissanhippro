@@ -1358,12 +1358,32 @@ class CarPaymentController extends Controller {
             $note2totalwhtax = ($note1insurancefee / 100.00) + ($cartype->actpaid / 100.00) + ($carpreemption->subsidise * 0.03);
             $accountingdetail->note2totalwhtax = $note2totalwhtax == 0 ? '-' : number_format($note2totalwhtax, 2, '.', '');
 
-            $incasefinacecomfinamount = ($yodjud / 1.07) * ($carpreemption->interest / 100.00) * $comfinyear * ($comfinpercent / 100.00);
-            $accountingdetail->incasefinacecomfinamount = $incasefinacecomfinamount == 0 ? '-' : number_format($incasefinacecomfinamount, 2, '.', '');
-            $accountingdetail->incasefinacecomfinvat = ($incasefinacecomfinamount * 0.07) == 0 ? '-' : number_format(($incasefinacecomfinamount * 0.07), 2, '.', '');
+            //NLTH,AYCAL,KL
+            if ($carpreemption->finacecompanyid == 1 || $carpreemption->finacecompanyid == 2 || $carpreemption->finacecompanyid == 4) {
+                $incasefinacecomfinamountwithvat = $yodjud * ($carpreemption->interest / 100.00) * $comfinyear * ($comfinpercent / 100.00);
+                $incasefinacecomfinamount = $incasefinacecomfinamountwithvat / 1.07;
+                $incasefinacecomfinvat = $incasefinacecomfinamountwithvat - $incasefinacecomfinamount;
+            } //SCB,T-Bank
+            else if ($carpreemption->finacecompanyid == 3 || $carpreemption->finacecompanyid == 5) {
+                $incasefinacecomfinamount = floor(($yodjud / 1.07) * ($carpreemption->interest / 100.00) * $comfinyear * ($comfinpercent / 100.00));
+                $incasefinacecomfinvat = $incasefinacecomfinamount * 0.07;
+                $incasefinacecomfinamountwithvat = $incasefinacecomfinamount + $incasefinacecomfinvat;
+            } //KK
+            else if ($carpreemption->finacecompanyid == 6) {
+                $incasefinacecomfinamount = round(($yodjud / 1.07) * ($carpreemption->interest / 100.00) * $comfinyear * ($comfinpercent / 100.00), 2);
+                $incasefinacecomfinvat = $incasefinacecomfinamount * 0.07;
+                $incasefinacecomfinamountwithvat = $incasefinacecomfinamount + $incasefinacecomfinvat;
+            } //KTB
+            else if ($carpreemption->finacecompanyid == 7) {
+                $incasefinacecomfinamount = (((($carpayment->amountperinstallment / 1.07) * $carpreemption->installments) - ($yodjud / 1.07)) * ($comfinpercent / 100.00) * 48) / $carpreemption->installments;
+                $incasefinacecomfinvat = $incasefinacecomfinamount * 0.07;
+                $incasefinacecomfinamountwithvat = $incasefinacecomfinamount + $incasefinacecomfinvat;
+            }
 
-            $incasefinacecomfinamountwithvat = $incasefinacecomfinamount + ($incasefinacecomfinamount * 0.07);
+            $accountingdetail->incasefinacecomfinamount = $incasefinacecomfinamount == 0 ? '-' : number_format($incasefinacecomfinamount, 2, '.', '');
+            $accountingdetail->incasefinacecomfinvat = $incasefinacecomfinvat == 0 ? '-' : number_format($incasefinacecomfinvat, 2, '.', '');
             $accountingdetail->incasefinacecomfinamountwithvat = $incasefinacecomfinamountwithvat == 0 ? '-' : number_format($incasefinacecomfinamountwithvat, 2, '.', '');
+
             $accountingdetail->incasefinacecomfinwhtax = ($incasefinacecomfinamount * 0.03) == 0 ? '-' : number_format(($incasefinacecomfinamount * 0.03), 2, '.', '');
             $incasefinacecomfintotal = $incasefinacecomfinamountwithvat - ($incasefinacecomfinamount * 0.03);
             $accountingdetail->incasefinacecomfintotal = $incasefinacecomfintotal == 0 ? '-' : number_format($incasefinacecomfintotal, 2, '.', '');

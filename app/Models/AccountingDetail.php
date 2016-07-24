@@ -12,8 +12,10 @@ class AccountingDetail extends Model
 
     protected $fillable = ['provinceid', 'branchid', 'carpaymentid', 'invoiceno', 'date',
         'additionalopenbill', 'insurancefeereceiptcondition', 'compulsorymotorinsurancefeereceiptcondition',
-        'cashpledgereceiptbookno', 'cashpledgereceiptno', 'cashpledgereceiptdate', 'receivedcashfromfinacedate',
-        'receivedcashfromfinacebankid', 'oldcarcomamount', 'adj',
+        'cashpledgereceiptbookno', 'cashpledgereceiptno', 'cashpledgereceiptdate',
+        'systemcalincasefinacecomfinamount', 'systemcalincasefinacecomfinvat', 'systemcalincasefinacecomfinamountwithvat', 'systemcalincasefinacecomfinwhtax', 'systemcalincasefinacecomfintotal',
+        'incasefinacecomfinamount', 'incasefinacecomfinvat', 'incasefinacecomfinamountwithvat', 'incasefinacecomfinwhtax', 'incasefinacecomfintotal',
+        'receivedcashfromfinacedate', 'receivedcashfromfinacebankid', 'oldcarcomamount', 'adj',
 
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
