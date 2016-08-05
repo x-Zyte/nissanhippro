@@ -59,6 +59,12 @@
     </style>
 
     <script type="text/javascript">
+        function numberWithCommas(x) {
+            var parts = x.toString().split(".");
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return parts.join(".");
+        }
+
         function CarpaymentChange(sel) {
             var carpaymentid = sel.value;
             if (carpaymentid == null || carpaymentid == '') {
@@ -2011,7 +2017,7 @@
                                         $('#bankid').children('option:not(:first)').remove();
                                     }
                                     else {
-                                        $.get(window.location.origin + '/nissanhippro/bank/readSelectlistByAccountGroup/' + thisval, function (data) {
+                                        $.get(window.location.origin + '/bank/readSelectlistByAccountGroup/' + thisval, function (data) {
                                             $('#bankid').children('option:not(:first)').remove();
                                             $.each(data, function (i, option) {
                                                 var ei = option.accountno.length - 1;
@@ -2163,7 +2169,7 @@
                                         $('#bankid').children('option:not(:first)').remove();
                                     }
                                     else {
-                                        $.get(window.location.origin + '/nissanhippro/bank/readSelectlistByAccountGroup/' + thisval, function (data) {
+                                        $.get(window.location.origin + '/bank/readSelectlistByAccountGroup/' + thisval, function (data) {
                                             $('#bankid').children('option:not(:first)').remove();
                                             $.each(data, function (i, option) {
                                                 var ei = option.accountno.length - 1;
@@ -2276,7 +2282,7 @@
                             var accountgroup = $('#accountgroup').val();
                             var bankid = $('#bankid').val();
 
-                            $.get(window.location.origin + '/nissanhippro/bank/readSelectlistByAccountGroup/' + accountgroup, function (data) {
+                            $.get(window.location.origin + '/bank/readSelectlistByAccountGroup/' + accountgroup, function (data) {
                                 $('#bankid').children('option:not(:first)').remove();
                                 $.each(data, function (i, option) {
                                     var ei = option.accountno.length - 1;
@@ -2405,7 +2411,7 @@
                             var accountgroup = $('#accountgroup').val();
                             var bankid = $('#bankid').val();
 
-                            $.get(window.location.origin + '/nissanhippro/bank/readSelectlistByAccountGroup/' + accountgroup, function (data) {
+                            $.get(window.location.origin + '/bank/readSelectlistByAccountGroup/' + accountgroup, function (data) {
                                 $('#bankid').children('option:not(:first)').remove();
                                 $.each(data, function (i, option) {
                                     var ei = option.accountno.length - 1;
