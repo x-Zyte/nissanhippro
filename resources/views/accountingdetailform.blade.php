@@ -65,7 +65,7 @@
                 return;
             }
 
-            $.get('{{$pathPrefix}}carpayment/getforaccountingdetailbyid/' + carpaymentid, function (data) {
+            $.get('{{$pathPrefix}}carpayment/getforaccountingdetailbyid/' + carpaymentid + '/1', function (data) {
                 $("#branchname").text(data.branchname);
                 $("#customername").text(data.customername);
                 $("#date").text(data.date);
@@ -75,9 +75,9 @@
                 var additionalopenbill = $('#additionalopenbill').val();
                 if (additionalopenbill == null || additionalopenbill == '')
                     additionalopenbill = 0;
-                var finalopenbill = parseFloat(data.openbill) + parseFloat(additionalopenbill);
+                var finalopenbill = parseFloat(data.openbill.replace(",", "")) + parseFloat(additionalopenbill);
                 if (finalopenbill == 0) $("#finalopenbill").text("-");
-                else $("#finalopenbill").text(parseFloat(finalopenbill).toFixed(2));
+                else $("#finalopenbill").text(numberWithCommas(parseFloat(finalopenbill).toFixed(2)));
 
                 $("#carpriceinpricelist").text(data.carpriceinpricelist);
                 $("#colorprice").text(data.colorprice);
@@ -98,16 +98,16 @@
                 else vat = parseFloat(finalopenbill) * parseFloat(0.07);
 
                 if (vat == 0) $("#vatoffinalopenbill").text("-");
-                else $("#vatoffinalopenbill").text(parseFloat(vat).toFixed(2));
+                else $("#vatoffinalopenbill").text(numberWithCommas(parseFloat(vat).toFixed(2)));
 
                 var finalopenbillwithoutvat = parseFloat(finalopenbill) - parseFloat(vat);
                 if (finalopenbillwithoutvat == 0) $("#finalopenbillwithoutvat").text("-");
-                else $("#finalopenbillwithoutvat").text(parseFloat(finalopenbillwithoutvat).toFixed(2));
+                else $("#finalopenbillwithoutvat").text(numberWithCommas(parseFloat(finalopenbillwithoutvat).toFixed(2)));
 
-                var realsalesprice = data.realsalesprice == '-' ? 0 : data.realsalesprice;
+                var realsalesprice = data.realsalesprice == '-' ? 0 : data.realsalesprice.replace(",", "");
                 var realsalespricewithoutvat = parseFloat(realsalesprice) - parseFloat(vat);
                 if (realsalespricewithoutvat == 0) $("#realsalespricewithoutvat").text("-");
-                else $("#realsalespricewithoutvat").text(parseFloat(realsalespricewithoutvat).toFixed(2));
+                else $("#realsalespricewithoutvat").text(numberWithCommas(parseFloat(realsalespricewithoutvat).toFixed(2)));
 
                 $("#accessoriesfeeactuallypaid").text(data.accessoriesfeeactuallypaid);
                 $("#registrationfee").text(data.registrationfee);
@@ -215,11 +215,16 @@
                     $("#note2subsidisetotal").text(data.note2subsidisetotal);
                     $("#incasefinacehassubsidisereceivedcash").text(data.incasefinacehassubsidisereceivedcash);
                     $("#note2totalwhtax").text(data.note2totalwhtax);
-                    $("#incasefinacecomfinamount").val(data.incasefinacecomfinamount);
-                    $("#incasefinacecomfinvat").val(data.incasefinacecomfinvat);
-                    $("#incasefinacecomfinamountwithvat").val(data.incasefinacecomfinamountwithvat);
-                    $("#incasefinacecomfinwhtax").val(data.incasefinacecomfinwhtax);
-                    $("#incasefinacecomfintotal").val(data.incasefinacecomfintotal);
+                    $("#incasefinacecomfinamount").val(parseFloat(data.incasefinacecomfinamount).toFixed(2));
+                    $("#incasefinacecomfinvat").val(parseFloat(data.incasefinacecomfinvat).toFixed(2));
+                    $("#incasefinacecomfinamountwithvat").val(parseFloat(data.incasefinacecomfinamountwithvat).toFixed(2));
+                    $("#incasefinacecomfinwhtax").val(parseFloat(data.incasefinacecomfinwhtax).toFixed(2));
+                    $("#incasefinacecomfintotal").val(parseFloat(data.incasefinacecomfintotal).toFixed(2));
+                    $("#systemcalincasefinacecomfinamount").val(parseFloat(data.incasefinacecomfinamount).toFixed(2));
+                    $("#systemcalincasefinacecomfinvat").val(parseFloat(data.incasefinacecomfinvat).toFixed(2));
+                    $("#systemcalincasefinacecomfinamountwithvat").val(parseFloat(data.incasefinacecomfinamountwithvat).toFixed(2));
+                    $("#systemcalincasefinacecomfinwhtax").val(parseFloat(data.incasefinacecomfinwhtax).toFixed(2));
+                    $("#systemcalincasefinacecomfintotal").val(parseFloat(data.incasefinacecomfintotal).toFixed(2));
                     $("#incasefinacecomextraamount").text(data.incasefinacecomextraamount);
                     $("#incasefinacecomextravat").text(data.incasefinacecomextravat);
                     $("#incasefinacecomextraamountwithvat").text(data.incasefinacecomextraamountwithvat);
@@ -235,7 +240,11 @@
                     $("#incasefinacetotalcomwhtax").text(data.incasefinacetotalcomwhtax);
                     $("#incasefinacetotalcomtotal").text(data.incasefinacetotalcomtotal);
                     $("#receivedcashfromfinace").text(data.receivedcashfromfinace);
-                    $("#receivedcashfromfinace2").text(data.receivedcashfromfinace2);
+                    $("#receivedcashfromfinacenet").val(parseFloat(data.receivedcashfromfinacenet).toFixed(2));
+                    $("#receivedcashfromfinaceshort").text(data.receivedcashfromfinaceshort);
+                    $("#receivedcashfromfinacenetshort").val(parseFloat(data.receivedcashfromfinacenetshort).toFixed(2));
+                    $("#receivedcashfromfinaceover").text(data.receivedcashfromfinaceover);
+                    $("#receivedcashfromfinacenetover").val(parseFloat(data.receivedcashfromfinacenetover).toFixed(2));
                 }
                 else {
                     $("#incasefinace").css("display", "none");
@@ -247,13 +256,13 @@
                 $("#overdue").text(data.overdue);
                 $("#tradereceivableaccount2remainingamount").text(data.tradereceivableaccount2remainingamount);
 
-                var incasefinacereceivedcash = data.incasefinacereceivedcash == '-' ? 0 : data.incasefinacereceivedcash;
+                var incasefinacereceivedcash = data.incasefinacereceivedcash == '-' ? 0 : data.incasefinacereceivedcash.replace(",", "");
                 var tradereceivableaccount1amount = parseFloat(finalopenbill) - parseFloat(incasefinacereceivedcash);
                 if (tradereceivableaccount1amount == 0) $("#tradereceivableaccount1amount").text("-");
-                else $("#tradereceivableaccount1amount").text(parseFloat(tradereceivableaccount1amount).toFixed(2));
+                else $("#tradereceivableaccount1amount").text(numberWithCommas(parseFloat(tradereceivableaccount1amount).toFixed(2)));
 
                 if (tradereceivableaccount1amount == 0) $("#ar").text("-");
-                else $("#ar").text(parseFloat(tradereceivableaccount1amount).toFixed(2));
+                else $("#ar").text(numberWithCommas(parseFloat(tradereceivableaccount1amount).toFixed(2)));
                 $("#ins").text(data.ins);
                 $("#prb").text(data.prb);
                 $("#dc").text(data.dc);
@@ -262,11 +271,39 @@
                 if (adj == null || adj == '')
                     adj = 0;
 
-                var cash = parseFloat(tradereceivableaccount1amount) - (data.ins == '-' ? 0 : parseFloat(data.ins))
-                        - (data.prb == '-' ? 0 : parseFloat(data.prb))
-                        - (data.dc == '-' ? 0 : parseFloat(data.dc)) + parseFloat(adj);
+                var cash = parseFloat(tradereceivableaccount1amount) - (data.ins == '-' ? 0 : parseFloat(data.ins.replace(",", "")))
+                        - (data.prb == '-' ? 0 : parseFloat(data.prb.replace(",", "")))
+                        - (data.dc == '-' ? 0 : parseFloat(data.dc.replace(",", ""))) + parseFloat(adj);
                 if (cash == 0) $("#cash").text("-");
-                else $("#cash").text(parseFloat(cash).toFixed(2));
+                else $("#cash").text(numberWithCommas(parseFloat(cash).toFixed(2)));
+
+                $("#totalacc1").text(numberWithCommas(parseFloat(cash).toFixed(2)));
+                $("#totalaccount1").val(parseFloat(cash).toFixed(2));
+                $("#totalacc1short").text(numberWithCommas(parseFloat(cash).toFixed(2)));
+                $("#totalaccount1short").val(parseFloat(cash).toFixed(2));
+                $("#totalacc1over").text("-");
+                $("#totalaccount1over").val(parseFloat(0).toFixed(2));
+
+                var tradereceivableaccount2amount = data.tradereceivableaccount2amount == '-' ? 0 : data.tradereceivableaccount2amount.replace(",", "");
+                var totalaccount2;
+                if (parseFloat(cash) < parseFloat(tradereceivableaccount2amount)) {
+                    totalaccount2 = parseFloat(tradereceivableaccount2amount) - parseFloat(cash);
+                    $("#totalacc2").text(numberWithCommas(parseFloat(totalaccount2).toFixed(2)));
+                    $("#totalaccount2").val(parseFloat(totalaccount2).toFixed(2));
+                    $("#totalacc2short").text(numberWithCommas(parseFloat(totalaccount2).toFixed(2)));
+                    $("#totalaccount2short").val(parseFloat(totalaccount2).toFixed(2));
+                    $("#totalacc2over").text("-");
+                    $("#totalaccount2over").val(parseFloat(0).toFixed(2));
+                }
+                else {
+                    totalaccount2 = 0;
+                    $("#totalacc2").text("-");
+                    $("#totalaccount2").val(parseFloat(0).toFixed(2));
+                    $("#totalacc2short").text("-");
+                    $("#totalaccount2short").val(parseFloat(0).toFixed(2));
+                    $("#totalacc2over").text("-");
+                    $("#totalaccount2over").val(parseFloat(0).toFixed(2));
+                }
             });
         }
 
@@ -282,6 +319,7 @@
         function AdditionalopenbillChange() {
             var openbill = $("#openbill").text();
             if (openbill == '-') openbill = 0;
+            else openbill = openbill.replace(",", "");
 
             var additionalopenbill = $('#additionalopenbill').val();
             if (additionalopenbill == null || additionalopenbill == '')
@@ -289,36 +327,54 @@
 
             var finalopenbill = parseFloat(openbill) + parseFloat(additionalopenbill);
             if (finalopenbill == 0) $("#finalopenbill").text("-");
-            else $("#finalopenbill").text(parseFloat(finalopenbill).toFixed(2));
+            else $("#finalopenbill").text(numberWithCommas(parseFloat(finalopenbill).toFixed(2)));
 
             var vatoffinalopenbill = parseFloat(finalopenbill) * parseFloat(0.07);
             if (vatoffinalopenbill == 0) $("#vatoffinalopenbill").text("-");
-            else $("#vatoffinalopenbill").text(parseFloat(vatoffinalopenbill).toFixed(2));
+            else $("#vatoffinalopenbill").text(numberWithCommas(parseFloat(vatoffinalopenbill).toFixed(2)));
 
             var finalopenbillwithoutvat = parseFloat(finalopenbill) - parseFloat(vatoffinalopenbill);
             if (finalopenbillwithoutvat == 0) $("#finalopenbillwithoutvat").text("-");
-            else $("#finalopenbillwithoutvat").text(parseFloat(finalopenbillwithoutvat).toFixed(2));
+            else $("#finalopenbillwithoutvat").text(numberWithCommas(parseFloat(finalopenbillwithoutvat).toFixed(2)));
 
             var realsalesprice = $("#realsalesprice").text();
             if (realsalesprice == '-') realsalesprice = 0;
+            else realsalesprice = realsalesprice.replace(",", "");
 
             var realsalespricewithoutvat = parseFloat(realsalesprice) - parseFloat(vatoffinalopenbill);
             if (realsalespricewithoutvat == 0) $("#realsalespricewithoutvat").text("-");
-            else $("#realsalespricewithoutvat").text(parseFloat(realsalespricewithoutvat).toFixed(2));
+            else $("#realsalespricewithoutvat").text(numberWithCommas(parseFloat(realsalespricewithoutvat).toFixed(2)));
+
+            var incasefinacereceivedcash = $("#incasefinacereceivedcash").text();
+            if (incasefinacereceivedcash == '-') incasefinacereceivedcash = 0;
+            else incasefinacereceivedcash = incasefinacereceivedcash.replace(",", "");
+
+            var tradereceivableaccount1amount = parseFloat(finalopenbill) - parseFloat(incasefinacereceivedcash);
+            var ar = tradereceivableaccount1amount;
+            if (tradereceivableaccount1amount == 0) $("#tradereceivableaccount1amount").text("-");
+            else $("#tradereceivableaccount1amount").text(numberWithCommas(parseFloat(tradereceivableaccount1amount).toFixed(2)));
+            if (ar == 0) $("#ar").text("-");
+            else $("#ar").text(numberWithCommas(parseFloat(ar).toFixed(2)));
+
+            AdjChange();
         }
 
         function AdjChange() {
             var ar = $("#ar").text();
             if (ar == '-') ar = 0;
+            else ar = ar.replace(",", "");
 
             var ins = $("#ins").text();
             if (ins == '-') ins = 0;
+            else ins = ins.replace(",", "");
 
             var prb = $("#prb").text();
             if (prb == '-') prb = 0;
+            else prb = prb.replace(",", "");
 
             var dc = $("#dc").text();
             if (dc == '-') dc = 0;
+            else dc = dc.replace(",", "");
 
             var adj = $('#adj').val();
             if (adj == null || adj == '')
@@ -326,7 +382,225 @@
 
             var cash = parseFloat(ar) - parseFloat(ins) - parseFloat(prb) - parseFloat(dc) + parseFloat(adj);
             if (cash == 0) $("#cash").text("-");
-            else $("#cash").text(parseFloat(cash).toFixed(2));
+            else $("#cash").text(numberWithCommas(parseFloat(cash).toFixed(2)));
+
+            if (cash == 0) $("#totalacc1").text("-");
+            else $("#totalacc1").text(numberWithCommas(parseFloat(cash).toFixed(2)));
+
+            $("#totalaccount1").val(parseFloat(cash).toFixed(2));
+
+            var tradereceivableaccount2amount = $("#tradereceivableaccount2amount").text();
+            if (tradereceivableaccount2amount == '-') tradereceivableaccount2amount = 0;
+            else tradereceivableaccount2amount = tradereceivableaccount2amount.replace(",", "");
+
+            if (parseFloat(cash) < parseFloat(tradereceivableaccount2amount)) {
+                var totalaccount2 = parseFloat(tradereceivableaccount2amount) - parseFloat(cash);
+                $("#totalacc2").text(numberWithCommas(parseFloat(totalaccount2).toFixed(2)));
+                $("#totalaccount2").val(parseFloat(totalaccount2).toFixed(2));
+            }
+            else {
+                $("#totalacc2").text("-");
+                $("#totalaccount2").val(parseFloat(0).toFixed(2));
+            }
+
+            CalShortOver1();
+        }
+
+        function IncasefinacecomfintotalChange() {
+            var incasefinacehassubsidisereceivedcash = $("#incasefinacehassubsidisereceivedcash").text();
+            if (incasefinacehassubsidisereceivedcash == '-') incasefinacehassubsidisereceivedcash = 0;
+            else incasefinacehassubsidisereceivedcash = incasefinacehassubsidisereceivedcash.replace(",", "");
+
+            var note2totalwhtax = $("#note2totalwhtax").text();
+            if (note2totalwhtax == '-') note2totalwhtax = 0;
+            else note2totalwhtax = note2totalwhtax.replace(",", "");
+
+            var incasefinacecomfintotal = $('#incasefinacecomfintotal').val();
+            if (incasefinacecomfintotal == null || incasefinacecomfintotal == '')
+                incasefinacecomfintotal = 0;
+
+            var incasefinacecomextratotal = $("#incasefinacecomextratotal").text();
+            if (incasefinacecomextratotal == '-') incasefinacecomextratotal = 0;
+            else incasefinacecomextratotal = incasefinacecomextratotal.replace(",", "");
+
+            var incasefinacecompatotal = $("#incasefinacecompatotal").text();
+            if (incasefinacecompatotal == '-') incasefinacecompatotal = 0;
+            else incasefinacecompatotal = incasefinacecompatotal.replace(",", "");
+
+            var incasefinacetotalcomtotal = parseFloat(incasefinacecomfintotal) + parseFloat(incasefinacecomextratotal) + parseFloat(incasefinacecompatotal);
+            if (incasefinacetotalcomtotal == 0) $("#incasefinacetotalcomtotal").text("-");
+            else $("#incasefinacetotalcomtotal").text(numberWithCommas(parseFloat(incasefinacetotalcomtotal).toFixed(2)));
+
+            var receivedcashfromfinace = parseFloat(incasefinacehassubsidisereceivedcash) + parseFloat(note2totalwhtax) + parseFloat(incasefinacetotalcomtotal);
+            if (receivedcashfromfinace == 0) $("#receivedcashfromfinace").text("-");
+            else $("#receivedcashfromfinace").text(numberWithCommas(parseFloat(receivedcashfromfinace).toFixed(2)));
+
+            $("#receivedcashfromfinacenet").val(parseFloat(receivedcashfromfinace).toFixed(2));
+            CalShortOver0();
+        }
+
+        function IncasefinacecomfinamountChange() {
+            var incasefinacecomfinamount = $('#incasefinacecomfinamount').val();
+            if (incasefinacecomfinamount == null || incasefinacecomfinamount == '')
+                incasefinacecomfinamount = 0;
+
+            var incasefinacecomextraamount = $("#incasefinacecomextraamount").text();
+            if (incasefinacecomextraamount == '-') incasefinacecomextraamount = 0;
+            else incasefinacecomextraamount = incasefinacecomextraamount.replace(",", "");
+
+            var incasefinacecompaamount = $("#incasefinacecompaamount").text();
+            if (incasefinacecompaamount == '-') incasefinacecompaamount = 0;
+            else incasefinacecompaamount = incasefinacecompaamount.replace(",", "");
+
+            var incasefinacetotalcomamount = parseFloat(incasefinacecomfinamount) + parseFloat(incasefinacecomextraamount) + parseFloat(incasefinacecompaamount);
+            if (incasefinacetotalcomamount == 0) $("#incasefinacetotalcomamount").text("-");
+            else $("#incasefinacetotalcomamount").text(numberWithCommas(parseFloat(incasefinacetotalcomamount).toFixed(2)));
+        }
+
+        function IncasefinacecomfinvatChange() {
+            var incasefinacecomfinvat = $('#incasefinacecomfinvat').val();
+            if (incasefinacecomfinvat == null || incasefinacecomfinvat == '')
+                incasefinacecomfinvat = 0;
+
+            var incasefinacecomextravat = $("#incasefinacecomextravat").text();
+            if (incasefinacecomextravat == '-') incasefinacecomextravat = 0;
+            else incasefinacecomextravat = incasefinacecomextravat.replace(",", "");
+
+            var incasefinacecompavat = $("#incasefinacecompavat").text();
+            if (incasefinacecompavat == '-') incasefinacecompavat = 0;
+            else incasefinacecompavat = incasefinacecompavat.replace(",", "");
+
+            var incasefinacetotalcomvat = parseFloat(incasefinacecomfinvat) + parseFloat(incasefinacecomextravat) + parseFloat(incasefinacecompavat);
+            if (incasefinacetotalcomvat == 0) $("#incasefinacetotalcomvat").text("-");
+            else $("#incasefinacetotalcomvat").text(numberWithCommas(parseFloat(incasefinacetotalcomvat).toFixed(2)));
+        }
+
+        function IncasefinacecomfinwhtaxChange() {
+            var incasefinacecomfinwhtax = $('#incasefinacecomfinwhtax').val();
+            if (incasefinacecomfinwhtax == null || incasefinacecomfinwhtax == '')
+                incasefinacecomfinwhtax = 0;
+
+            var incasefinacecomextrawhtax = $("#incasefinacecomextrawhtax").text();
+            if (incasefinacecomextrawhtax == '-') incasefinacecomextrawhtax = 0;
+            else incasefinacecomextrawhtax = incasefinacecomextrawhtax.replace(",", "");
+
+            var incasefinacecompawhtax = $("#incasefinacecompawhtax").text();
+            if (incasefinacecompawhtax == '-') incasefinacecompawhtax = 0;
+            else incasefinacecompawhtax = incasefinacecompawhtax.replace(",", "");
+
+            var incasefinacetotalcomwhtax = parseFloat(incasefinacecomfinwhtax) + parseFloat(incasefinacecomextrawhtax) + parseFloat(incasefinacecompawhtax);
+            if (incasefinacetotalcomwhtax == 0) $("#incasefinacetotalcomwhtax").text("-");
+            else $("#incasefinacetotalcomwhtax").text(numberWithCommas(parseFloat(incasefinacetotalcomwhtax).toFixed(2)));
+        }
+
+        function CalShortOver0() {
+            var totalreceived = 0;
+            var datas = $("#grid-table-in-form0").jqGrid('getGridParam', 'data');
+            if (datas.length > 0) {
+                datas.forEach(function (arrayItem) {
+                    if (arrayItem.type == 0)
+                        totalreceived = parseFloat(totalreceived) + parseFloat(arrayItem.amount);
+                    else if (arrayItem.type == 1)
+                        totalreceived = parseFloat(totalreceived) - parseFloat(arrayItem.amount);
+                });
+            }
+
+            var receivedcashfromfinacenet = $('#receivedcashfromfinacenet').val();
+            if (receivedcashfromfinacenet == null || receivedcashfromfinacenet == '')
+                receivedcashfromfinacenet = 0;
+
+            if (receivedcashfromfinacenet == totalreceived) {
+                $("#receivedcashfromfinaceshort").text("-");
+                $("#receivedcashfromfinacenetshort").val(0);
+                $("#receivedcashfromfinaceover").text("-");
+                $("#receivedcashfromfinacenetover").val(0);
+            }
+            else if (receivedcashfromfinacenet > totalreceived) {
+                var shortamount = parseFloat(receivedcashfromfinacenet) - parseFloat(totalreceived);
+                $("#receivedcashfromfinaceshort").text(numberWithCommas(parseFloat(shortamount).toFixed(2)));
+                $("#receivedcashfromfinacenetshort").val(parseFloat(shortamount).toFixed(2));
+                $("#receivedcashfromfinaceover").text("-");
+                $("#receivedcashfromfinacenetover").val(0);
+            }
+            else if (receivedcashfromfinacenet < totalreceived) {
+                var overamount = parseFloat(totalreceived) - parseFloat(receivedcashfromfinacenet);
+                $("#receivedcashfromfinaceshort").text("-");
+                $("#receivedcashfromfinacenetshort").val(0);
+                $("#receivedcashfromfinaceover").text(numberWithCommas(parseFloat(overamount).toFixed(2)));
+                $("#receivedcashfromfinacenetover").val(parseFloat(overamount).toFixed(2));
+            }
+        }
+
+        function CalShortOver1() {
+            var totalreceivedacc1 = 0;
+            var totalreceivedacc2 = 0;
+            var datas = $("#grid-table-in-form1").jqGrid('getGridParam', 'data');
+            if (datas.length > 0) {
+                datas.forEach(function (arrayItem) {
+                    if (arrayItem.accountgroup == 1) {
+                        if (arrayItem.type == 0)
+                            totalreceivedacc1 = parseFloat(totalreceivedacc1) + parseFloat(arrayItem.amount);
+                        else if (arrayItem.type == 1)
+                            totalreceivedacc1 = parseFloat(totalreceivedacc1) - parseFloat(arrayItem.amount);
+                    }
+                    else if (arrayItem.accountgroup == 2) {
+                        if (arrayItem.type == 0)
+                            totalreceivedacc2 = parseFloat(totalreceivedacc2) + parseFloat(arrayItem.amount);
+                        else if (arrayItem.type == 1)
+                            totalreceivedacc2 = parseFloat(totalreceivedacc2) - parseFloat(arrayItem.amount);
+                    }
+                });
+            }
+
+            var totalaccount1 = $('#totalaccount1').val();
+            if (totalaccount1 == null || totalaccount1 == '')
+                totalaccount1 = 0;
+
+            if (totalaccount1 == totalreceivedacc1) {
+                $("#totalacc1short").text("-");
+                $("#totalaccount1short").val(0);
+                $("#totalacc1over").text("-");
+                $("#totalaccount1over").val(0);
+            }
+            else if (totalaccount1 > totalreceivedacc1) {
+                var shortamount = parseFloat(totalaccount1) - parseFloat(totalreceivedacc1);
+                $("#totalacc1short").text(numberWithCommas(parseFloat(shortamount).toFixed(2)));
+                $("#totalaccount1short").val(parseFloat(shortamount).toFixed(2));
+                $("#totalacc1over").text("-");
+                $("#totalaccount1over").val(0);
+            }
+            else if (totalaccount1 < totalreceivedacc1) {
+                var overamount = parseFloat(totalreceivedacc1) - parseFloat(totalaccount1);
+                $("#totalacc1short").text("-");
+                $("#totalaccount1short").val(0);
+                $("#totalacc1over").text(numberWithCommas(parseFloat(overamount).toFixed(2)));
+                $("#totalaccount1over").val(parseFloat(overamount).toFixed(2));
+            }
+
+            var totalaccount2 = $('#totalaccount2').val();
+            if (totalaccount2 == null || totalaccount2 == '')
+                totalaccount2 = 0;
+
+            if (totalaccount2 == totalreceivedacc2) {
+                $("#totalacc2short").text("-");
+                $("#totalaccount2short").val(0);
+                $("#totalacc2over").text("-");
+                $("#totalaccount2over").val(0);
+            }
+            else if (totalaccount2 > totalreceivedacc2) {
+                var shortamount = parseFloat(totalaccount2) - parseFloat(totalreceivedacc2);
+                $("#totalacc2short").text(numberWithCommas(parseFloat(shortamount).toFixed(2)));
+                $("#totalaccount2short").val(parseFloat(shortamount).toFixed(2));
+                $("#totalacc2over").text("-");
+                $("#totalaccount2over").val(0);
+            }
+            else if (totalaccount2 < totalreceivedacc2) {
+                var overamount = parseFloat(totalreceivedacc2) - parseFloat(totalaccount2);
+                $("#totalacc2short").text("-");
+                $("#totalaccount2short").val(0);
+                $("#totalacc2over").text(numberWithCommas(parseFloat(overamount).toFixed(2)));
+                $("#totalaccount2over").val(parseFloat(overamount).toFixed(2));
+            }
         }
     </script>
 
@@ -431,7 +705,7 @@
                                             <label style="width: 100px; font-weight:bold; text-align:right;"
                                                    id="openbill">{{$accountingdetail->openbill}}</label>
                                             <label style="width:20px; text-align:center;">+/-</label>
-                                            {!! Form::number('additionalopenbill', null, array('style'=>'width: 100px; height: 22px; padding:0; color:black; font-weight:bold; text-align:right;','id'=>'additionalopenbill','onchange'=>'AdditionalopenbillChange();')) !!}
+                                            {!! Form::number('additionalopenbill', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:black; font-weight:bold; text-align:right;','id'=>'additionalopenbill','onchange'=>'AdditionalopenbillChange();')) !!}
                                             <label style="width:20px; text-align:center;">=</label>
                                             <label style="width: 100px; font-weight:bold; text-align:right; color:red;"
                                                    id="finalopenbill">{{$accountingdetail->finalopenbill}}</label>
@@ -695,7 +969,7 @@
                                             {!! Form::select('insurancefeereceiptcondition', array(null => 'เลือก', 1 => 'ชื่อบริษัท', 0 => 'ชื่อลูกค้า'), null, array('style' => 'padding:0; height:23px; width:75px;')) !!}
                                             <label class="dashed" style="width:100px; text-align:right; color:#0090FF;"
                                                    id="conditioninsurancefee">{{$accountingdetail->conditioninsurancefee}}</label>
-                                            {!! Form::hidden('hasinsurancefee',0,array('id'=>'hasinsurancefee')) !!}
+                                            {!! Form::hidden('hasinsurancefee',null,array('id'=>'hasinsurancefee')) !!}
                                             <label style="width:30px;"></label>
                                             <label class="dashed" style="width:100px; text-align:right;"
                                                    id="conditioninsurancefeecompanypaid">{{$accountingdetail->conditioninsurancefeecompanypaid}}</label>
@@ -717,7 +991,7 @@
                                             {!! Form::select('compulsorymotorinsurancefeereceiptcondition', array(null => 'เลือก', 1 => 'ชื่อบริษัท', 0 => 'ชื่อลูกค้า'), null, array('style' => 'padding:0; height:23px; width:75px;')) !!}
                                             <label class="dashed" style="width:100px; text-align:right; color:#0090FF;"
                                                    id="conditioncompulsorymotorinsurancefee">{{$accountingdetail->conditioncompulsorymotorinsurancefee}}</label>
-                                            {!! Form::hidden('hascompulsorymotorinsurancefee',0,array('id'=>'hascompulsorymotorinsurancefee')) !!}
+                                            {!! Form::hidden('hascompulsorymotorinsurancefee',null,array('id'=>'hascompulsorymotorinsurancefee')) !!}
                                             <label style="width:30px;"></label>
                                             <label class="dashed" style="width:100px; text-align:right;"
                                                    id="conditioncompulsorymotorinsurancefeecompanypaid">{{$accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid}}</label>
@@ -1140,11 +1414,14 @@
                                         <div style="width:540px; float:left; margin-right:20px;">
                                             <label style="width:25px; font-weight:bold;">Com</label>
                                             <label style="width:95px; padding-left:25px;">Fin...</label>
-                                            {!! Form::number('incasefinacecomfinamount', null, array('style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right;','id'=>'incasefinacecomfinamount')) !!}
+                                            {!! Form::number('incasefinacecomfinamount', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right;','id'=>'incasefinacecomfinamount','onchange'=>'IncasefinacecomfinamountChange();')) !!}
+                                            {!! Form::hidden('systemcalincasefinacecomfinamount',null,array('id'=>'systemcalincasefinacecomfinamount')) !!}
                                             <label style="width:30px; text-align: center;">Vat...</label>
-                                            {!! Form::number('incasefinacecomfinvat', null, array('style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right;','id'=>'incasefinacecomfinvat')) !!}
+                                            {!! Form::number('incasefinacecomfinvat', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right;','id'=>'incasefinacecomfinvat','onchange'=>'IncasefinacecomfinvatChange();')) !!}
+                                            {!! Form::hidden('systemcalincasefinacecomfinvat',null,array('id'=>'systemcalincasefinacecomfinvat')) !!}
                                             <label style="width:21px;"></label>
-                                            {!! Form::number('incasefinacecomfinamountwithvat', null, array('style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right;','id'=>'incasefinacecomfinamountwithvat')) !!}
+                                            {!! Form::number('incasefinacecomfinamountwithvat', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right;','id'=>'incasefinacecomfinamountwithvat')) !!}
+                                            {!! Form::hidden('systemcalincasefinacecomfinamountwithvat',null,array('id'=>'systemcalincasefinacecomfinamountwithvat')) !!}
                                         </div>
                                         <div style="width:540px; float:left;">
                                         </div>
@@ -1153,9 +1430,11 @@
                                         <div style="width:540px; float:left; margin-right:20px;">
                                             <label style="width:25px; font-weight:bold;"></label>
                                             <label style="width:95px; padding-left:25px;">W/H ถูกหัก</label>
-                                            {!! Form::number('incasefinacecomfinwhtax', null, array('style'=>'width: 100px; height: 22px; padding:0; color:#0090FF; text-align:right;','id'=>'incasefinacecomfinwhtax')) !!}
+                                            {!! Form::number('incasefinacecomfinwhtax', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:#0090FF; text-align:right;','id'=>'incasefinacecomfinwhtax','onchange'=>'IncasefinacecomfinwhtaxChange();')) !!}
+                                            {!! Form::hidden('systemcalincasefinacecomfinwhtax',null,array('id'=>'systemcalincasefinacecomfinwhtax')) !!}
                                             <label style="width:30px; text-align: center;">Net...</label>
-                                            {!! Form::number('incasefinacecomfintotal', null, array('style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right; font-weight:bold;','id'=>'incasefinacecomfintotal')) !!}
+                                            {!! Form::number('incasefinacecomfintotal', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right; font-weight:bold;','id'=>'incasefinacecomfintotal','onchange'=>'IncasefinacecomfintotalChange();')) !!}
+                                            {!! Form::hidden('systemcalincasefinacecomfintotal',null,array('id'=>'systemcalincasefinacecomfintotal')) !!}
                                         </div>
                                         <div style="width:540px; float:left;">
                                         </div>
@@ -1255,24 +1534,26 @@
                                             <label class="underline_db"
                                                    style="width:100px; text-align:right; font-weight:bold;"
                                                    id="receivedcashfromfinace">{{$accountingdetail->receivedcashfromfinace}}</label>
+                                            {!! Form::hidden('receivedcashfromfinacenet',null,array('id'=>'receivedcashfromfinacenet')) !!}
                                             <label style="width:45px; text-align:right;">(31)</label>
                                         </div>
                                         <div style="width:540px; float:left;">
-                                            <label style="width:65px;">รับเงินวันที่</label>
-                                            <div class="input-group" style="position: absolute; display: inline-table;">
-                                                {!! Form::text('receivedcashfromfinacedate', null, array('style'=>'height: 22px; padding:0;','class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'receivedcashfromfinacedate')) !!}
-                                                <span class="input-group-addon" style="padding:1px;">
-                                                    <i class="fa fa-calendar bigger-110"></i>
-                                                </span>
-                                            </div>
-                                            <label style="width:85px; margin-left:105px;">รับจริงจาก Fin</label>
-                                            {{--border: 1px solid black;--}}
+                                            <label style="width:65px; font-weight:bold;">เงินขาด</label>
                                             <label class="underline"
-                                                   style="width:90px; color:#7A019D; text-align:right; font-weight:bold;"
-                                                   id="receivedcashfromfinace2">{{$accountingdetail->receivedcashfromfinace2}}</label>
-                                            <label style="width:35px; margin-left:5px; font-weight:bold;">Bank</label>
-                                            {!! Form::select('receivedcashfromfinacebankid', $bankselectlist, null, array('id'=>'receivedcashfromfinacebankid','style' => 'padding:0; height:23px; width:136px;')) !!}
+                                                   style="width:100px; color:red; text-align:right; font-weight:bold;"
+                                                   id="receivedcashfromfinaceshort">{{$accountingdetail->receivedcashfromfinaceshort}}</label>
+                                            {!! Form::hidden('receivedcashfromfinacenetshort',null,array('id'=>'receivedcashfromfinacenetshort')) !!}
+                                            <label style="width:65px; margin-left:10px; font-weight:bold;">เงินเกิน</label>
+                                            <label class="underline"
+                                                   style="width:100px; color:red; text-align:right; font-weight:bold;"
+                                                   id="receivedcashfromfinaceover">{{$accountingdetail->receivedcashfromfinaceover}}</label>
+                                            {!! Form::hidden('receivedcashfromfinacenetover',null,array('id'=>'receivedcashfromfinacenetover')) !!}
                                         </div>
+                                    </div>
+
+                                    <div>
+                                        <table id="grid-table-in-form0"></table>
+                                        <div id="grid-pager0"></div>
                                     </div>
                                 </div>
                             </div>
@@ -1362,12 +1643,12 @@
                                     <div class="form-group" style="margin-left:10px;">
                                         <div style="width:540px; float:left; margin-right:20px;">
                                             <label style="width:388px; padding-left:25px;">รับเงินค่าคอมรถเก่า</label>
-                                            {!! Form::number('oldcarcomamount', null, array('style'=>'width: 100px; height: 22px; padding:0; color:black; text-align:right;','id'=>'oldcarcomamount')) !!}
+                                            {!! Form::number('oldcarcomamount', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:black; text-align:right;','id'=>'oldcarcomamount')) !!}
                                             <label style="width:45px; text-align:right;"></label>
                                         </div>
                                         <div style="width:540px; float:left;">
                                             <label style="width:32px; text-align:left; color:red;">ADJ.</label>
-                                            {!! Form::number('adj', null, array('style'=>'width: 100px; height: 22px; padding:0; color:#7A019D; text-align:right;','id'=>'adj','onchange'=>'AdjChange();')) !!}
+                                            {!! Form::number('adj', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:#7A019D; text-align:right;','id'=>'adj','onchange'=>'AdjChange();')) !!}
                                         </div>
                                     </div>
                                     <div class="form-group" style="margin-left:10px;">
@@ -1386,6 +1667,59 @@
                                                    style="width:100px; text-align:right; font-weight:bold;"
                                                    id="cash">{{$accountingdetail->cash}}</label>
                                         </div>
+                                    </div>
+                                    </br>
+                                    <div class="form-group" style="margin-left:10px;">
+                                        <div style="width:540px; float:left; margin-right:20px;">
+                                            <label style="width:388px; padding-left:25px; font-weight:bold;">ยอดรวมบัญชี
+                                                1</label>
+                                            <label class="underline_db"
+                                                   style="width:100px; text-align:right; font-weight:bold;"
+                                                   id="totalacc1">{{$accountingdetail->totalacc1}}</label>
+                                            {!! Form::hidden('totalaccount1',null,array('id'=>'totalaccount1')) !!}
+                                            <label style="width:45px; text-align:right;"></label>
+                                        </div>
+                                        <div style="width:540px; float:left;">
+                                            <label style="width:65px; font-weight:bold;">เงินขาด</label>
+                                            <label class="underline"
+                                                   style="width:100px; color:red; text-align:right; font-weight:bold;"
+                                                   id="totalacc1short">{{$accountingdetail->totalacc1short}}</label>
+                                            {!! Form::hidden('totalaccount1short',null,array('id'=>'totalaccount1short')) !!}
+                                            <label style="width:65px; margin-left:10px; font-weight:bold;">เงินเกิน</label>
+                                            <label class="underline"
+                                                   style="width:100px; color:red; text-align:right; font-weight:bold;"
+                                                   id="totalacc1over">{{$accountingdetail->totalacc1over}}</label>
+                                            {!! Form::hidden('totalaccount1over',null,array('id'=>'totalaccount1over')) !!}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-left:10px;">
+                                        <div style="width:540px; float:left; margin-right:20px;">
+                                            <label style="width:388px; padding-left:25px; font-weight:bold;">ยอดรวมบัญชี
+                                                2</label>
+                                            <label class="underline_db"
+                                                   style="width:100px; text-align:right; font-weight:bold;"
+                                                   id="totalacc2">{{$accountingdetail->totalacc2}}</label>
+                                            {!! Form::hidden('totalaccount2',null,array('id'=>'totalaccount2')) !!}
+                                            <label style="width:45px; text-align:right;"></label>
+                                        </div>
+                                        <div style="width:540px; float:left;">
+                                            <label style="width:65px; font-weight:bold;">เงินขาด</label>
+                                            <label class="underline"
+                                                   style="width:100px; color:red; text-align:right; font-weight:bold;"
+                                                   id="totalacc2short">{{$accountingdetail->totalacc2short}}</label>
+                                            {!! Form::hidden('totalaccount2short',null,array('id'=>'totalaccount2short')) !!}
+                                            <label style="width:65px; margin-left:10px; font-weight:bold;">เงินเกิน</label>
+                                            <label class="underline"
+                                                   style="width:100px; color:red; text-align:right; font-weight:bold;"
+                                                   id="totalacc2over">{{$accountingdetail->totalacc2over}}</label>
+                                            {!! Form::hidden('totalaccount2over',null,array('id'=>'totalaccount2over')) !!}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <table id="grid-table-in-form1"></table>
+                                        <div id="grid-pager1"></div>
                                     </div>
                                 </div>
                             </div>
@@ -1417,7 +1751,761 @@
     {!! Form::close() !!}
 
     <script type="text/javascript">
+
+        function compare(a, b) {
+            var adateArr = a.date.split("-");
+            var bdateArr = b.date.split("-");
+            var newadate = new Date(adateArr[1] + '-' + adateArr[2] + '-' + adateArr[0]);
+            var newbdate = new Date(bdateArr[1] + '-' + bdateArr[2] + '-' + bdateArr[0]);
+            if (newadate.getTime() < newbdate.getTime())
+                return -1;
+            if (newadate.getTime() > newbdate.getTime())
+                return 1;
+            return 0;
+        }
+
+        var receiveAndPayData0 = [
+                @foreach ($receiveAndPayDatas0 as $data)
+            {
+                "date": "{{$data->date}}",
+                "type": "{{$data->type}}",
+                "amount": "{{$data->amount}}",
+                "accountgroup": "{{$data->accountgroup}}",
+                "bankid": "{{$data->bankid}}",
+                "note": "{{$data->note}}"
+            },
+            @endforeach
+        ];
+
+        receiveAndPayData0.sort(compare);
+
+        var receiveAndPayData1 = [
+                @foreach ($receiveAndPayDatas1 as $data)
+            {
+                "date": "{{$data->date}}",
+                "type": "{{$data->type}}",
+                "amount": "{{$data->amount}}",
+                "accountgroup": "{{$data->accountgroup}}",
+                "bankid": "{{$data->bankid}}",
+                "note": "{{$data->note}}"
+            },
+            @endforeach
+        ];
+
+        receiveAndPayData1.sort(compare);
+
+        onclickSubmitLocal = function (options, postdata) {
+            var $this = $(this), p = $(this).jqGrid("getGridParam"),// p = this.p,
+                    idname = p.prmNames.id,
+                    id = this.id,
+                    idInPostdata = id + "_id",
+                    rowid = postdata[idInPostdata],
+                    addMode = rowid === "_empty",
+                    oldValueOfSortColumn,
+                    newId,
+                    idOfTreeParentNode;
+
+            // postdata has row id property with another name. we fix it:
+            if (addMode) {
+                // generate new id
+                newId = $.jgrid.randId();
+                while ($("#" + newId).length !== 0) {
+                    newId = $.jgrid.randId();
+                }
+                postdata[idname] = String(newId);
+            } else if (postdata[idname] === undefined) {
+                // set id property only if the property not exist
+                postdata[idname] = rowid;
+            }
+            delete postdata[idInPostdata];
+
+            // prepare postdata for tree grid
+            if (p.treeGrid === true) {
+                if (addMode) {
+                    idOfTreeParentNode = p.treeGridModel === "adjacency" ? p.treeReader.parent_id_field : "parent_id";
+                    postdata[idOfTreeParentNode] = p.selrow;
+                }
+
+                $.each(p.treeReader, function () {
+                    if (postdata.hasOwnProperty(this)) {
+                        delete postdata[this];
+                    }
+                });
+            }
+
+            // decode data if there encoded with autoencode
+            if (p.autoencode) {
+                $.each(postdata, function (n, v) {
+                    if (n == "date") {
+                        var dateArr = v.split("-");
+                        if (addMode)
+                            var newDate = dateArr[2] + '-' + dateArr[1] + '-' + dateArr[0];
+                        else
+                            var newDate = dateArr[0] + '-' + dateArr[1] + '-' + dateArr[2];
+                        postdata[n] = $.jgrid.htmlDecode(newDate);
+                    }
+                    else
+                        postdata[n] = $.jgrid.htmlDecode(v); // TODO: some columns could be skipped
+                });
+            }
+            else {
+                $.each(postdata, function (n, v) {
+                    if (n == "date") {
+                        var dateArr = v.split("-");
+                        if (addMode)
+                            var newDate = dateArr[2] + '-' + dateArr[1] + '-' + dateArr[0];
+                        else
+                            var newDate = dateArr[0] + '-' + dateArr[1] + '-' + dateArr[2];
+                        postdata[n] = newDate;
+                    }
+                });
+            }
+
+            // save old value from the sorted column
+            oldValueOfSortColumn = p.sortname === "" ? undefined : $this.jqGrid("getCell", rowid, p.sortname);
+
+            // save the data in the grid
+            if (p.treeGrid === true) {
+                if (addMode) {
+                    $this.jqGrid("addChildNode", newId, p.selrow, postdata);
+                } else {
+                    $this.jqGrid("setTreeRow", rowid, postdata);
+                }
+            } else {
+                if (addMode) {
+                    $this.jqGrid("addRowData", newId, postdata, options.addedrow);
+                } else {
+                    $this.jqGrid("setRowData", rowid, postdata);
+                }
+            }
+
+            if ((addMode && options.closeAfterAdd) || (!addMode && options.closeAfterEdit)) {
+                // close the edit/add dialog
+                $.jgrid.hideModal("#editmod" + $.jgrid.jqID(id), {
+                    gb: "#gbox_" + $.jgrid.jqID(id),
+                    jqm: options.jqModal,
+                    onClose: options.onClose
+                });
+            }
+
+            if (postdata[p.sortname] !== oldValueOfSortColumn) {
+                // if the data are changed in the column by which are currently sorted
+                // we need resort the grid
+                setTimeout(function () {
+                    $this.trigger("reloadGrid", [{current: true}]);
+                }, 100);
+            }
+
+            // !!! the most important step: skip ajax request to the server
+            options.processing = true;
+
+            if (this.id == "grid-table-in-form0") {
+                CalShortOver0();
+            }
+
+            if (this.id == "grid-table-in-form1") {
+                CalShortOver1();
+            }
+
+            return {};
+        };
+
         $(document).ready(function () {
+            var grid_selector0 = "#grid-table-in-form0";
+            var pager_selector0 = "#grid-pager0";
+            var grid_selector1 = "#grid-table-in-form1";
+            var pager_selector1 = "#grid-pager1";
+
+            //resize to fit page size
+            $(window).on('resize.jqGrid', function () {
+                resizeGridInForm('grid-table-in-form0');
+                resizeGridInForm('grid-table-in-form1');
+            });
+            //resize on sidebar collapse/expand
+            var parent_column0 = $(grid_selector0).closest('[class*="col-"]');
+            $(document).on('settings.ace.jqGrid', function (ev, event_name, collapsed) {
+                if (event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed') {
+                    $(grid_selector0).jqGrid('setGridWidth', parent_column0.width());
+                }
+            });
+
+            var parent_column1 = $(grid_selector1).closest('[class*="col-"]');
+            $(document).on('settings.ace.jqGrid', function (ev, event_name, collapsed) {
+                if (event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed') {
+                    $(grid_selector1).jqGrid('setGridWidth', parent_column1.width());
+                }
+            });
+
+            $(grid_selector0).jqGrid({
+                datatype: "local",
+                data: receiveAndPayData0,
+                colNames: ["วันที่", "รับเงิน/จ่ายเงิน", "จำนวน", "กลุ่มบัญชี", "บัญชี", "หมายเหตุ"],
+                colModel: [
+                    {
+                        name: 'date',
+                        index: 'date',
+                        width: 100,
+                        editable: true,
+                        sorttype: "date",
+                        formatter: "date",
+                        formatoptions: {srcformat: 'Y-m-d', newformat: 'd-m-Y'}
+                        ,
+                        editoptions: {
+                            size: "10", dataInit: function (elem) {
+                                $(elem).datepicker({format: 'dd-mm-yyyy', autoclose: true, todayHighlight: true});
+                            }
+                        },
+                        align: 'center'
+                        ,
+                        searchrules: {required: true}
+                        ,
+                        searchoptions: {
+                            size: "10", dataInit: function (elem) {
+                                $(elem).datepicker({format: 'dd-mm-yyyy', autoclose: true, todayHighlight: true});
+                            }
+                            , sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']
+                        }
+                        ,
+                        editrules: {required: true}
+                    },
+                    {
+                        name: 'type',
+                        index: 'type',
+                        width: 100,
+                        editable: true,
+                        edittype: "select",
+                        formatter: 'select',
+                        align: 'center'
+                        ,
+                        stype: 'select',
+                        searchrules: {required: true},
+                        searchoptions: {sopt: ["eq", "ne"], value: "0:รับเงิน;1:จ่ายเงิน"}
+                        ,
+                        editoptions: {value: "0:รับเงิน;1:จ่ายเงิน"}
+                    },
+                    {
+                        name: 'amount', index: 'amount', width: 100, editable: true,
+                        editrules: {required: true, number: true}, align: 'right', formatter: 'number',
+                        formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
+                    },
+                    {
+                        name: 'accountgroup',
+                        index: 'accountgroup',
+                        width: 100,
+                        editable: true,
+                        edittype: "select",
+                        formatter: 'select',
+                        align: 'center'
+                        ,
+                        stype: 'select',
+                        searchrules: {required: true},
+                        searchoptions: {sopt: ["eq", "ne"], value: "1:บัญชี 1;2:บัญชี 2"},
+                        editrules: {required: true}
+                        ,
+                        editoptions: {
+                            value: ":เลือกกลุ่ม;1:บัญชี 1;2:บัญชี 2",
+                            dataEvents: [{
+                                type: 'change', fn: function (e) {
+                                    var thisval = $(e.target).val();
+                                    if (thisval == null || thisval == '') {
+                                        $('#bankid').children('option:not(:first)').remove();
+                                    }
+                                    else {
+                                        $.get(window.location.origin + '/nissanhippro/bank/readSelectlistByAccountGroup/' + thisval, function (data) {
+                                            $('#bankid').children('option:not(:first)').remove();
+                                            $.each(data, function (i, option) {
+                                                var ei = option.accountno.length - 1;
+                                                var si = ei - 3;
+                                                var text = option.name + ' ' + option.accountno.substr(si, ei);
+                                                $('#bankid').append($('<option/>').attr("value", option.id).text(text));
+                                            });
+                                        });
+                                    }
+                                }
+                            }]
+                        }
+                    },
+                    {
+                        name: 'bankid',
+                        index: 'bankid',
+                        width: 100,
+                        editable: true,
+                        edittype: "select",
+                        formatter: 'select',
+                        editoptions: {value: "{{ $bankselectlist2 }}"},
+                        editrules: {required: true}
+                        ,
+                        align: 'center',
+                        stype: 'select',
+                        searchrules: {required: true},
+                        searchoptions: {sopt: ["eq", "ne"], value: "{{ $bankselectlist2 }}"}
+                    },
+                    {
+                        name: 'note',
+                        index: 'note',
+                        width: 150,
+                        editable: true,
+                        edittype: 'textarea',
+                        editoptions: {rows: "2", cols: "35"},
+                        align: 'left'
+                    }
+
+                ],
+                cmTemplate: {editable: true, sortable: false, searchoptions: {clearSearch: false}},
+                rowNum: 10,
+                rowList: [5, 10, 20],
+                pager: pager_selector0,
+                gridview: true,
+                rownumbers: true,
+                //autoencode: true,
+                //ignoreCase: true,
+                viewrecords: true,
+                altRows: true,
+                multiselect: true,
+                multiboxonly: true,
+                caption: "การรับเงิน/การจ่ายเงิน",
+                height: "100%",
+                editurl: "clientArray",
+                loadComplete: function () {
+                    var table = this;
+                    setTimeout(function () {
+                        styleCheckbox(table);
+
+                        updateActionIcons(table);
+                        updatePagerIcons(table);
+                        enableTooltips(table);
+                    }, 0);
+                },
+                ondblClickRow: function (rowid) {
+                    /*var $this = $(this), p = this.p;
+                     if (p.selrow !== rowid) {
+                     // prevent the row from be unselected on double-click
+                     // the implementation is for "multiselect:false" which we use,
+                     // but one can easy modify the code for "multiselect:true"
+                     $this.jqGrid("setSelection", rowid);
+                     }
+                     $this.jqGrid("editGridRow", rowid, editSettings);*/
+                }
+            });
+
+            $(grid_selector1).jqGrid({
+                datatype: "local",
+                data: receiveAndPayData1,
+                colNames: ["วันที่", "รับเงิน/จ่ายเงิน", "จำนวน", "กลุ่มบัญชี", "บัญชี", "หมายเหตุ"],
+                colModel: [
+                    {
+                        name: 'date',
+                        index: 'date',
+                        width: 100,
+                        editable: true,
+                        sorttype: "date",
+                        formatter: "date",
+                        formatoptions: {srcformat: 'Y-m-d', newformat: 'd-m-Y'}
+                        ,
+                        editoptions: {
+                            size: "10", dataInit: function (elem) {
+                                $(elem).datepicker({format: 'dd-mm-yyyy', autoclose: true, todayHighlight: true});
+                            }
+                        },
+                        align: 'center'
+                        ,
+                        searchrules: {required: true}
+                        ,
+                        searchoptions: {
+                            size: "10", dataInit: function (elem) {
+                                $(elem).datepicker({format: 'dd-mm-yyyy', autoclose: true, todayHighlight: true});
+                            }
+                            , sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']
+                        }
+                        ,
+                        editrules: {required: true}
+                    },
+                    {
+                        name: 'type',
+                        index: 'type',
+                        width: 100,
+                        editable: true,
+                        edittype: "select",
+                        formatter: 'select',
+                        align: 'center'
+                        ,
+                        stype: 'select',
+                        searchrules: {required: true},
+                        searchoptions: {sopt: ["eq", "ne"], value: "0:รับเงิน;1:จ่ายเงิน"}
+                        ,
+                        editoptions: {value: "0:รับเงิน;1:จ่ายเงิน"}
+                    },
+                    {
+                        name: 'amount', index: 'amount', width: 100, editable: true,
+                        editrules: {required: true, number: true}, align: 'right', formatter: 'number',
+                        formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
+                    },
+                    {
+                        name: 'accountgroup',
+                        index: 'accountgroup',
+                        width: 100,
+                        editable: true,
+                        edittype: "select",
+                        formatter: 'select',
+                        align: 'center'
+                        ,
+                        stype: 'select',
+                        searchrules: {required: true},
+                        searchoptions: {sopt: ["eq", "ne"], value: "1:บัญชี 1;2:บัญชี 2"},
+                        editrules: {required: true}
+                        ,
+                        editoptions: {
+                            value: ":เลือกกลุ่ม;1:บัญชี 1;2:บัญชี 2",
+                            dataEvents: [{
+                                type: 'change', fn: function (e) {
+                                    var thisval = $(e.target).val();
+                                    if (thisval == null || thisval == '') {
+                                        $('#bankid').children('option:not(:first)').remove();
+                                    }
+                                    else {
+                                        $.get(window.location.origin + '/nissanhippro/bank/readSelectlistByAccountGroup/' + thisval, function (data) {
+                                            $('#bankid').children('option:not(:first)').remove();
+                                            $.each(data, function (i, option) {
+                                                var ei = option.accountno.length - 1;
+                                                var si = ei - 3;
+                                                var text = option.name + ' ' + option.accountno.substr(si, ei);
+                                                $('#bankid').append($('<option/>').attr("value", option.id).text(text));
+                                            });
+                                        });
+                                    }
+                                }
+                            }]
+                        }
+                    },
+                    {
+                        name: 'bankid',
+                        index: 'bankid',
+                        width: 100,
+                        editable: true,
+                        edittype: "select",
+                        formatter: 'select',
+                        editoptions: {value: "{{ $bankselectlist2 }}"},
+                        editrules: {required: true}
+                        ,
+                        align: 'center',
+                        stype: 'select',
+                        searchrules: {required: true},
+                        searchoptions: {sopt: ["eq", "ne"], value: "{{ $bankselectlist2 }}"}
+                    },
+                    {
+                        name: 'note',
+                        index: 'note',
+                        width: 150,
+                        editable: true,
+                        edittype: 'textarea',
+                        editoptions: {rows: "2", cols: "35"},
+                        align: 'left'
+                    }
+
+                ],
+                cmTemplate: {editable: true, sortable: false, searchoptions: {clearSearch: false}},
+                rowNum: 10,
+                rowList: [5, 10, 20],
+                pager: pager_selector1,
+                gridview: true,
+                rownumbers: true,
+                //autoencode: true,
+                //ignoreCase: true,
+                viewrecords: true,
+                altRows: true,
+                multiselect: true,
+                multiboxonly: true,
+                caption: "การรับเงิน/การจ่ายเงิน",
+                height: "100%",
+                editurl: "clientArray",
+                loadComplete: function () {
+                    var table = this;
+                    setTimeout(function () {
+                        styleCheckbox(table);
+
+                        updateActionIcons(table);
+                        updatePagerIcons(table);
+                        enableTooltips(table);
+                    }, 0);
+                },
+                ondblClickRow: function (rowid) {
+                    /*var $this = $(this), p = this.p;
+                     if (p.selrow !== rowid) {
+                     // prevent the row from be unselected on double-click
+                     // the implementation is for "multiselect:false" which we use,
+                     // but one can easy modify the code for "multiselect:true"
+                     $this.jqGrid("setSelection", rowid);
+                     }
+                     $this.jqGrid("editGridRow", rowid, editSettings);*/
+                }
+            });
+
+            $(window).triggerHandler('resize.jqGrid');
+
+            var notViewMode = true;
+            if ('{{$oper}}' == 'view') {
+                notViewMode = false;
+            }
+
+            $(grid_selector0).jqGrid("navGrid", pager_selector0,
+                    { 	//navbar options
+                        edit: notViewMode,
+                        editicon: 'ace-icon fa fa-pencil blue',
+                        add: notViewMode,
+                        addicon: 'ace-icon fa fa-plus-circle purple',
+                        del: notViewMode,
+                        delicon: 'ace-icon fa fa-trash-o red',
+                        search: false,
+                        searchicon: 'ace-icon fa fa-search orange',
+                        refresh: false,
+                        refreshicon: 'ace-icon fa fa-refresh green',
+                        view: false,
+                        viewicon: 'ace-icon fa fa-search-plus grey'
+                    },
+                    {
+                        //edit record form
+                        closeAfterEdit: true,
+                        width: 600,
+                        recreateForm: true,
+                        viewPagerButtons: false,
+                        beforeShowForm: function (e) {
+                            var form = $(e[0]);
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
+                            style_edit_form(form);
+
+                            var accountgroup = $('#accountgroup').val();
+                            var bankid = $('#bankid').val();
+
+                            $.get(window.location.origin + '/nissanhippro/bank/readSelectlistByAccountGroup/' + accountgroup, function (data) {
+                                $('#bankid').children('option:not(:first)').remove();
+                                $.each(data, function (i, option) {
+                                    var ei = option.accountno.length - 1;
+                                    var si = ei - 3;
+                                    var text = option.name + ' ' + option.accountno.substr(si, ei);
+                                    $('#bankid').append($('<option/>').attr("value", option.id).text(text));
+                                });
+                                $('#bankid').val(bankid);
+                            });
+
+                            var dlgDiv = $("#editmod" + jQuery(grid_selector0)[0].id);
+                            dlgDiv[0].style.left = (($("#appbody").width() - 600) / 2) + "px";
+                        },
+                        reloadAfterSubmit: false,
+                        savekey: [true, 13],
+                        modal: true,
+                        onclickSubmit: onclickSubmitLocal
+                    },
+                    {
+                        //new record form
+                        width: 600,
+                        closeAfterAdd: true,
+                        recreateForm: true,
+                        viewPagerButtons: false,
+                        beforeShowForm: function (e) {
+                            jQuery(grid_selector0).jqGrid('resetSelection');
+                            var form = $(e[0]);
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
+                            style_edit_form(form);
+
+                            $('#bankid').children('option:not(:first)').remove();
+
+                            var dlgDiv = $("#editmod" + jQuery(grid_selector0)[0].id);
+                            dlgDiv[0].style.left = (($("#appbody").width() - 600) / 2) + "px";
+                        },
+                        reloadAfterSubmit: false,
+                        savekey: [true, 13],
+                        modal: true,
+                        onclickSubmit: onclickSubmitLocal
+                    },
+                    {
+                        //delete record form
+                        width: 400,
+                        recreateForm: true,
+                        beforeShowForm: function (e) {
+                            var form = $(e[0]);
+                            if (!form.data('styled')) {
+                                form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
+                                style_delete_form(form);
+
+                                form.data('styled', true);
+
+                                var dlgDiv = $("#delmod" + jQuery(grid_selector0)[0].id);
+                                dlgDiv[0].style.left = (($("#appbody").width() - 400) / 2) + "px";
+                            }
+
+                            var totalRows = $(grid_selector0).jqGrid('getGridParam', 'selarrrow');
+                            var totalRowsCount = totalRows.length;
+                            $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
+                        },
+                        // because I use "local" data I don't want to send the changes to the server
+                        // so I use "processing:true" setting and delete the row manually in onclickSubmit
+                        onclickSubmit: function (options, rowid) {
+                            var $this = $(this), id = $.jgrid.jqID(this.id), p = this.p,
+                                    newPage = p.page;
+
+                            // reset the value of processing option to true to
+                            // skip the ajax request to "clientArray".
+                            options.processing = true;
+
+                            var totalRows = $(grid_selector0).jqGrid('getGridParam', 'selarrrow');
+                            var rowLength = totalRows.length;
+                            for (var i = 0; i < rowLength; i++) {
+                                $this.jqGrid("delRowData", totalRows[0]);
+                            }
+
+                            $.jgrid.hideModal("#delmod" + id, {
+                                gb: "#gbox_" + id,
+                                jqm: options.jqModal,
+                                onClose: options.onClose
+                            });
+
+                            if (p.lastpage > 1) {// on the multipage grid reload the grid
+                                if (p.reccount === 0 && newPage === p.lastpage) {
+                                    // if after deliting there are no rows on the current page
+                                    // which is the last page of the grid
+                                    newPage--; // go to the previous page
+                                }
+                                // reload grid to make the row from the next page visable.
+                                $this.trigger("reloadGrid", [{page: newPage}]);
+                            }
+
+                            CalShortOver0();
+                            return true;
+                        },
+                        processing: true
+                    }
+            );
+
+            $(grid_selector1).jqGrid("navGrid", pager_selector1,
+                    { 	//navbar options
+                        edit: notViewMode,
+                        editicon: 'ace-icon fa fa-pencil blue',
+                        add: notViewMode,
+                        addicon: 'ace-icon fa fa-plus-circle purple',
+                        del: notViewMode,
+                        delicon: 'ace-icon fa fa-trash-o red',
+                        search: false,
+                        searchicon: 'ace-icon fa fa-search orange',
+                        refresh: false,
+                        refreshicon: 'ace-icon fa fa-refresh green',
+                        view: false,
+                        viewicon: 'ace-icon fa fa-search-plus grey'
+                    },
+                    {
+                        //edit record form
+                        closeAfterEdit: true,
+                        width: 600,
+                        recreateForm: true,
+                        viewPagerButtons: false,
+                        beforeShowForm: function (e) {
+                            var form = $(e[0]);
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
+                            style_edit_form(form);
+
+                            var accountgroup = $('#accountgroup').val();
+                            var bankid = $('#bankid').val();
+
+                            $.get(window.location.origin + '/nissanhippro/bank/readSelectlistByAccountGroup/' + accountgroup, function (data) {
+                                $('#bankid').children('option:not(:first)').remove();
+                                $.each(data, function (i, option) {
+                                    var ei = option.accountno.length - 1;
+                                    var si = ei - 3;
+                                    var text = option.name + ' ' + option.accountno.substr(si, ei);
+                                    $('#bankid').append($('<option/>').attr("value", option.id).text(text));
+                                });
+                                $('#bankid').val(bankid);
+                            });
+
+                            var dlgDiv = $("#editmod" + jQuery(grid_selector1)[0].id);
+                            dlgDiv[0].style.left = (($("#appbody").width() - 600) / 2) + "px";
+                        },
+                        reloadAfterSubmit: false,
+                        savekey: [true, 13],
+                        modal: true,
+                        onclickSubmit: onclickSubmitLocal
+                    },
+                    {
+                        //new record form
+                        width: 600,
+                        closeAfterAdd: true,
+                        recreateForm: true,
+                        viewPagerButtons: false,
+                        beforeShowForm: function (e) {
+                            jQuery(grid_selector1).jqGrid('resetSelection');
+                            var form = $(e[0]);
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
+                            style_edit_form(form);
+
+                            $('#bankid').children('option:not(:first)').remove();
+
+                            var dlgDiv = $("#editmod" + jQuery(grid_selector1)[0].id);
+                            dlgDiv[0].style.left = (($("#appbody").width() - 600) / 2) + "px";
+                        },
+                        reloadAfterSubmit: false,
+                        savekey: [true, 13],
+                        modal: true,
+                        onclickSubmit: onclickSubmitLocal
+                    },
+                    {
+                        //delete record form
+                        width: 400,
+                        recreateForm: true,
+                        beforeShowForm: function (e) {
+                            var form = $(e[0]);
+                            if (!form.data('styled')) {
+                                form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
+                                style_delete_form(form);
+
+                                form.data('styled', true);
+
+                                var dlgDiv = $("#delmod" + jQuery(grid_selector1)[0].id);
+                                dlgDiv[0].style.left = (($("#appbody").width() - 400) / 2) + "px";
+                            }
+
+                            var totalRows = $(grid_selector1).jqGrid('getGridParam', 'selarrrow');
+                            var totalRowsCount = totalRows.length;
+                            $("td.delmsg", form).html("คุณต้องการลบข้อมูลที่ถูกเลือก <b>ทั้งหมด " + totalRowsCount + " รายการ</b>" + " ใช่หรือไม่?");
+                        },
+                        // because I use "local" data I don't want to send the changes to the server
+                        // so I use "processing:true" setting and delete the row manually in onclickSubmit
+                        onclickSubmit: function (options, rowid) {
+                            var $this = $(this), id = $.jgrid.jqID(this.id), p = this.p,
+                                    newPage = p.page;
+
+                            // reset the value of processing option to true to
+                            // skip the ajax request to "clientArray".
+                            options.processing = true;
+
+                            var totalRows = $(grid_selector1).jqGrid('getGridParam', 'selarrrow');
+                            var rowLength = totalRows.length;
+                            for (var i = 0; i < rowLength; i++) {
+                                $this.jqGrid("delRowData", totalRows[0]);
+                            }
+
+                            $.jgrid.hideModal("#delmod" + id, {
+                                gb: "#gbox_" + id,
+                                jqm: options.jqModal,
+                                onClose: options.onClose
+                            });
+
+                            if (p.lastpage > 1) {// on the multipage grid reload the grid
+                                if (p.reccount === 0 && newPage === p.lastpage) {
+                                    // if after deliting there are no rows on the current page
+                                    // which is the last page of the grid
+                                    newPage--; // go to the previous page
+                                }
+                                // reload grid to make the row from the next page visable.
+                                $this.trigger("reloadGrid", [{page: newPage}]);
+                            }
+
+                            CalShortOver1();
+                            return true;
+                        },
+                        processing: true
+                    }
+            );
+
+
             //datepicker plugin
             $('.date-picker').datepicker({
                 autoclose: true,
@@ -1435,10 +2523,9 @@
 
             $('.date-picker').parent().width(140);
             $('#cashpledgereceiptdate').parent().width(98);
-            $('#receivedcashfromfinacedate').parent().width(98);
+
             $('.date-picker').width(90);
             $('#cashpledgereceiptdate').width(80);
-            $('#receivedcashfromfinacedate').width(80);
 
             @if($accountingdetail->carpaymentid != null && $accountingdetail->carpaymentid > 0 && $accountingdetail->purchasetype == 0)
                 $("#incasefinace").css("display", "none");
@@ -1451,6 +2538,12 @@
         });
 
         $('#form-accountingdetail').submit(function () { //listen for submit event
+            var receiveAndPayData0 = $("#grid-table-in-form0").jqGrid('getGridParam', 'data');
+            var receiveAndPayData1 = $("#grid-table-in-form1").jqGrid('getGridParam', 'data');
+            receiveAndPayData0 = JSON.stringify(receiveAndPayData0);
+            receiveAndPayData1 = JSON.stringify(receiveAndPayData1);
+            $(this).append($('<input>').attr('type', 'hidden').attr('name', 'receiveAndPayData0').val(receiveAndPayData0));
+            $(this).append($('<input>').attr('type', 'hidden').attr('name', 'receiveAndPayData1').val(receiveAndPayData1));
             return true;
         });
     </script>

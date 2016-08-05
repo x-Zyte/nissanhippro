@@ -45,7 +45,8 @@
                 colModel:[
                     {name:'bookno',index:'bookno', width:50,align:'center'},
                     {name:'no',index:'no', width:50,align:'center'},
-                    {name:'date',index:'date', width:100,align:'left', sorttype:"date", formatter: "date",align:'center'
+                    {
+                        name: 'date', index: 'date', width: 100, sorttype: "date", formatter: "date", align: 'center'
                         ,formatoptions: { srcformat:'Y-m-d', newformat:'d-m-Y' }
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}

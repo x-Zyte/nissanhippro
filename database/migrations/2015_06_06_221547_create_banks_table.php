@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateBanksTable extends Migration {
 
@@ -19,6 +19,7 @@ class CreateBanksTable extends Migration {
             $table->string('accountno',50);
             $table->integer('accounttype')->comment('0:S/A, 1:F/A, 2:C/A');
             $table->string('accountname',100);
+			$table->integer('accountgroup');
             $table->boolean('active')->default(true);
 
             $table->integer('createdby')->unsigned();

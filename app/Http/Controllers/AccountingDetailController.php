@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\GridEncoder;
 use App\Models\AccountingDetail;
+use App\Models\AccountingDetailReceiveAndPay;
 use App\Models\Bank;
 use App\Models\CarPayment;
 use App\Repositories\AccountingDetailRepository;
@@ -23,6 +24,19 @@ class AccountingDetailController extends Controller
 
     protected $menuPermissionName = "รายละเอียดเพื่อการบันทึกบัญชี";
 
+    protected $arrNotFormatted = array("id", "purchasetype", "carpaymentid", "hasinsurancefee", "hascompulsorymotorinsurancefee"
+    , "systemcalincasefinacecomfinamount", "systemcalincasefinacecomfinvat", "systemcalincasefinacecomfinamountwithvat"
+    , "systemcalincasefinacecomfinwhtax", "systemcalincasefinacecomfintotal", "receivedcashfromfinacenet"
+    , "receivedcashfromfinacenetshort", "receivedcashfromfinacenetover"
+    , "totalaccount1", "totalaccount1short", "totalaccount1over", "totalaccount2", "totalaccount2short", "totalaccount2over"
+    , "invoiceno", "additionalopenbill", "cashpledgereceiptbookno"
+    , "cashpledgereceiptno", "incasefinacecomfinamount", "incasefinacecomfinvat", "incasefinacecomfinamountwithvat"
+    , "incasefinacecomfinwhtax", "incasefinacecomfintotal", "oldcarcomamount", "adj", "insurancefeereceiptcondition"
+    , "compulsorymotorinsurancefeereceiptcondition"
+    , "carno", "installmentsinadvance", "installments", "comfinyear"
+    , "createdby", "createddate", "modifiedby", "modifieddate", "submodel"
+    );
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -32,13 +46,21 @@ class AccountingDetailController extends Controller
     {
         if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
-        $carpayments = CarPayment::with('carpreemption')->get();
-        $carpaymentselectlist = array();
+        if (Auth::user()->isadmin) {
+            $carpayments = CarPayment::has('accountingDetail')
+                ->with('carpreemption.buyerCustomer')
+                ->get();
+        } else {
+            $carpayments = CarPayment::has('accountingDetail')->where('provinceid', Auth::user()->provinceid)
+                ->with('carpreemption.buyerCustomer')
+                ->get();
+        }
+        $customerselectlist = array();
         foreach ($carpayments as $item) {
-            array_push($carpaymentselectlist, $item->id . ':' . $item->carpreemption->bookno . '/' . $item->carpreemption->no);
+            array_push($customerselectlist, $item->id . ':' . $item->carpreemption->buyerCustomer->title . $item->carpreemption->buyerCustomer->firstname . ' ' . $item->carpreemption->buyerCustomer->lastname);
         }
 
-        return view('accountingdetail', ['carpaymentselectlist' => implode(";", $carpaymentselectlist)]);
+        return view('accountingdetail', ['customerselectlist' => implode(";", $customerselectlist)]);
     }
 
     public function read()
@@ -73,60 +95,196 @@ class AccountingDetailController extends Controller
                 ->doesntHave('accountingDetail')
                 ->get();
         }
+
+        $carpayments = $carpayments->sortBy(function ($carpayment) {
+            return sprintf('%08s%08s', $carpayment->carpreemption->bookno, $carpayment->carpreemption->no);
+        });
+
         $carpaymentselectlist = array();
         $carpaymentselectlist[null] = 'เลือกการจอง';
         foreach ($carpayments as $item) {
             $carpaymentselectlist[$item->id] = $item->carpreemption->bookno . '/' . $item->carpreemption->no;
         }
 
-        $banks = Bank::orderBy('name', 'asc')->get();
+        $banks = Bank::orderBy('accountgroup', 'asc')->orderBy('name', 'asc')->get();
         $bankselectlist = array();
-        $bankselectlist[null] = 'เลือก Bank';
+        $bankselectlist[null] = 'เลือกบัญชี';
         foreach ($banks as $item) {
-            $bankselectlist[$item->id] = $item->accountname . ' (' . $item->name . ')';
+            $bankselectlist[$item->id] = $item->name . ' ' . substr($item->accountno, -4);
+        }
+
+        $bankselectlist2 = array();
+        array_push($bankselectlist2, ':เลือกบัญชี');
+        foreach ($banks as $item) {
+            array_push($bankselectlist2, $item->id . ':' . $item->name . ' ' . substr($item->accountno, -4));
         }
 
         $accountingdetail = new AccountingDetail();
         $carpaymentid = SupportRequest::old('carpaymentid');
         if ($carpaymentid != null && $carpaymentid > 0) {
-            $accountingdetail = (new CarPaymentController)->getforaccountingdetailbyid($carpaymentid);
+            $accountingdetail = (new CarPaymentController)->getforaccountingdetailbyid($carpaymentid, 0);
             $additionalopenbill = SupportRequest::old('additionalopenbill');
 
-            $finalopenbill = $accountingdetail->openbill == '-' ? 0 : $accountingdetail->openbill;
+            $finalopenbill = $accountingdetail->openbill;
             if ($additionalopenbill != null && $additionalopenbill > 0) {
                 $finalopenbill = $finalopenbill + $additionalopenbill;
             }
 
             if ($finalopenbill == 0) {
-                $accountingdetail->finalopenbill = '-';
-                $accountingdetail->vatoffinalopenbill = '-';
-                $accountingdetail->finalopenbillwithoutvat = '-';
+                $accountingdetail->finalopenbill = 0;
+                $accountingdetail->vatoffinalopenbill = 0;
+                $accountingdetail->finalopenbillwithoutvat = 0;
                 $accountingdetail->realsalespricewithoutvat = $accountingdetail->realsalesprice;
             } else {
-                $accountingdetail->finalopenbill = number_format($finalopenbill, 2, '.', '');
+                $accountingdetail->finalopenbill = $finalopenbill;
                 $vat = $finalopenbill * 0.07;
-                $accountingdetail->vatoffinalopenbill = number_format($vat, 2, '.', '');
-                $accountingdetail->finalopenbillwithoutvat = number_format(($finalopenbill - $vat), 2, '.', '');
-                $accountingdetail->realsalespricewithoutvat = $accountingdetail->realsalesprice;
+                $accountingdetail->vatoffinalopenbill = $vat;
+                $accountingdetail->finalopenbillwithoutvat = ($finalopenbill - $vat);
+                $realsalesprice = $accountingdetail->realsalesprice;
+                $accountingdetail->realsalespricewithoutvat = ($realsalesprice - $vat);
             }
 
-            $incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash == '-' ? 0 : $accountingdetail->incasefinacereceivedcash;
+            $incasefinacecomfinamount = SupportRequest::old('incasefinacecomfinamount');
+            if ($incasefinacecomfinamount != null) {
+                $incasefinacetotalcomamount = $incasefinacecomfinamount + $accountingdetail->incasefinacecomextraamount
+                    + $accountingdetail->incasefinacecompaamount;
+                $accountingdetail->incasefinacetotalcomamount = $incasefinacetotalcomamount;
+            }
+            $incasefinacecomfinvat = SupportRequest::old('incasefinacecomfinvat');
+            if ($incasefinacecomfinvat != null) {
+                $incasefinacetotalcomvat = $incasefinacecomfinvat + $accountingdetail->incasefinacecomextravat
+                    + $accountingdetail->incasefinacecompavat;
+                $accountingdetail->incasefinacetotalcomvat = $incasefinacetotalcomvat;
+            }
+            $incasefinacecomfinwhtax = SupportRequest::old('incasefinacecomfinwhtax');
+            if ($incasefinacecomfinwhtax != null) {
+                $incasefinacetotalcomwhtax = $incasefinacecomfinwhtax + $accountingdetail->incasefinacecomextrawhtax
+                    + $accountingdetail->incasefinacecompawhtax;
+                $accountingdetail->incasefinacetotalcomwhtax = $incasefinacetotalcomwhtax;
+            }
+            $incasefinacecomfintotal = SupportRequest::old('incasefinacecomfintotal');
+            if ($incasefinacecomfintotal != null) {
+                $incasefinacetotalcomtotal = $incasefinacecomfintotal + $accountingdetail->incasefinacecomextratotal
+                    + $accountingdetail->incasefinacecompatotal;
+                $accountingdetail->incasefinacetotalcomtotal = $incasefinacetotalcomtotal;
+            }
+
+            $receivedcashfromfinacenet = SupportRequest::old('receivedcashfromfinacenet');
+            if ($receivedcashfromfinacenet != null) {
+                $accountingdetail->receivedcashfromfinace = $receivedcashfromfinacenet;
+            }
+            $receivedcashfromfinacenetshort = SupportRequest::old('receivedcashfromfinacenetshort');
+            if ($receivedcashfromfinacenetshort != null) {
+                $accountingdetail->receivedcashfromfinaceshort = $receivedcashfromfinacenetshort;
+            }
+            $receivedcashfromfinacenetover = SupportRequest::old('receivedcashfromfinacenetover');
+            if ($receivedcashfromfinacenetover != null) {
+                $accountingdetail->receivedcashfromfinaceover = $receivedcashfromfinacenetover;
+            }
+
+            $incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash;
             $tradereceivableaccount1amount = $finalopenbill - $incasefinacereceivedcash;
-            $accountingdetail->tradereceivableaccount1amount = $tradereceivableaccount1amount == 0 ? '-' : number_format($tradereceivableaccount1amount, 2, '.', '');
-            $accountingdetail->ar = $tradereceivableaccount1amount == 0 ? '-' : number_format($tradereceivableaccount1amount, 2, '.', '');
+            $accountingdetail->tradereceivableaccount1amount = $tradereceivableaccount1amount;
+            $accountingdetail->ar = $tradereceivableaccount1amount;
 
             $adj = SupportRequest::old('adj');
-            $cash = $tradereceivableaccount1amount - ($accountingdetail->ins == '-' ? 0 : $accountingdetail->ins)
-                - ($accountingdetail->prb == '-' ? 0 : $accountingdetail->prb)
-                - ($accountingdetail->dc == '-' ? 0 : $accountingdetail->dc)
-                + ($adj == null ? 0 : $adj);
-            $accountingdetail->cash = $cash == 0 ? '-' : number_format($cash, 2, '.', '');
+            $cash = $tradereceivableaccount1amount - $accountingdetail->ins
+                - $accountingdetail->prb
+                - $accountingdetail->dc
+                + $adj;
+            $accountingdetail->cash = $cash;
+
+            $accountingdetail->totalacc1 = $cash;
+            $accountingdetail->totalacc1short = $cash;
+            $accountingdetail->totalacc1over = 0;
+            $accountingdetail->totalaccount1 = $cash;
+            $accountingdetail->totalaccount1short = $cash;
+            $accountingdetail->totalaccount1over = 0;
+
+            $totalaccount1 = SupportRequest::old('totalaccount1');
+            if ($totalaccount1 != null) {
+                $accountingdetail->totalacc1 = $totalaccount1;
+            }
+            $totalaccount1short = SupportRequest::old('totalaccount1short');
+            if ($totalaccount1short != null) {
+                $accountingdetail->totalacc1short = $totalaccount1short;
+            }
+            $totalaccount1over = SupportRequest::old('totalaccount1over');
+            if ($totalaccount1over != null) {
+                $accountingdetail->totalacc1over = $totalaccount1over;
+            }
+
+            $tradereceivableaccount2amount = $accountingdetail->tradereceivableaccount2amount;
+            if ($cash < $tradereceivableaccount2amount) {
+                $totalaccount2 = $tradereceivableaccount2amount - $cash;
+                $accountingdetail->totalacc2 = $totalaccount2;
+                $accountingdetail->totalacc2short = $totalaccount2;
+                $accountingdetail->totalacc2over = 0;
+                $accountingdetail->totalaccount2 = $totalaccount2;
+                $accountingdetail->totalaccount2short = $totalaccount2;
+                $accountingdetail->totalaccount2over = 0;
+            } else {
+                $totalaccount2 = 0;
+                $accountingdetail->totalacc2 = $totalaccount2;
+                $accountingdetail->totalacc2short = $totalaccount2;
+                $accountingdetail->totalacc2over = $totalaccount2;
+                $accountingdetail->totalaccount2 = $totalaccount2;
+                $accountingdetail->totalaccount2short = $totalaccount2;
+                $accountingdetail->totalaccount2over = $totalaccount2;
+            }
+
+            $totalaccount2 = SupportRequest::old('totalaccount2');
+            if ($totalaccount2 != null) {
+                $accountingdetail->totalacc2 = $totalaccount2;
+            }
+            $totalaccount2short = SupportRequest::old('totalaccount2short');
+            if ($totalaccount2short != null) {
+                $accountingdetail->totalacc2short = $totalaccount2short;
+            }
+            $totalaccount2over = SupportRequest::old('totalaccount2over');
+            if ($totalaccount2over != null) {
+                $accountingdetail->totalacc2over = $totalaccount2over;
+            }
+        }
+
+        $receiveAndPayData0 = SupportRequest::old('receiveAndPayData0');
+        $receiveAndPayData0 = json_decode($receiveAndPayData0, true);
+        $receiveAndPayDatas0 = array();
+        if ($receiveAndPayData0 != null && $receiveAndPayData0 != '') {
+            foreach ($receiveAndPayData0 as $data) {
+                $obj = (object)array("date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
+                array_push($receiveAndPayDatas0, $obj);
+            }
+        }
+
+        $receiveAndPayData1 = SupportRequest::old('receiveAndPayData1');
+        $receiveAndPayData1 = json_decode($receiveAndPayData1, true);
+        $receiveAndPayDatas1 = array();
+        if ($receiveAndPayData1 != null && $receiveAndPayData1 != '') {
+            foreach ($receiveAndPayData1 as $data) {
+                $obj = (object)array("date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
+                array_push($receiveAndPayDatas1, $obj);
+            }
+        }
+
+        foreach ($accountingdetail->toArray() as $key => $value) {
+            if (!in_array($key, $this->arrNotFormatted)) {
+                if (is_numeric($value) && (float)$value != 0.00) {
+                    $value = number_format($value, 2, '.', ',');
+                } else if ($value == null || $value == '' || (is_numeric($value) && (float)$value == 0.00))
+                    $value = '-';
+
+                $accountingdetail->$key = $value;
+            }
         }
 
         return view('accountingdetailform',
             ['oper' => 'new', 'pathPrefix' => '../', 'accountingdetail' => $accountingdetail,
                 'carpaymentselectlist' => $carpaymentselectlist,
-                'bankselectlist' => $bankselectlist]);
+                'bankselectlist' => $bankselectlist,
+                'bankselectlist2' => implode(";", $bankselectlist2),
+                'receiveAndPayDatas0' => $receiveAndPayDatas0,
+                'receiveAndPayDatas1' => $receiveAndPayDatas1]);
     }
 
     public function save(Request $request)
@@ -148,8 +306,6 @@ class AccountingDetailController extends Controller
             'incasefinacecomfinamountwithvat' => 'required_if:purchasetype,1',
             'incasefinacecomfinwhtax' => 'required_if:purchasetype,1',
             'incasefinacecomfintotal' => 'required_if:purchasetype,1',
-            'receivedcashfromfinacedate' => 'required_if:purchasetype,1',
-            'receivedcashfromfinacebankid' => 'required_if:purchasetype,1',
             'oldcarcomamount' => 'required',
             'adj' => 'required'
         ],
@@ -168,8 +324,6 @@ class AccountingDetailController extends Controller
                 'incasefinacecomfinamountwithvat.required_if' => 'Com Fin Total... จำเป็นต้องกรอก',
                 'incasefinacecomfinwhtax.required_if' => 'Com Fin W/H ถูกหัก จำเป็นต้องกรอก',
                 'incasefinacecomfintotal.required_if' => 'Com Fin Net... จำเป็นต้องกรอก',
-                'receivedcashfromfinacedate.required_if' => 'วันที่ ที่รับเงินจากไฟแนนซ์ จำเป็นต้องกรอก',
-                'receivedcashfromfinacebankid.required_if' => 'Bank ที่รับเงินจากไฟแนนซ์ จำเป็นต้องเลือก',
                 'oldcarcomamount.required' => 'รับเงินค่าคอมรถเก่า จำเป็นต้องกรอก',
                 'adj.required' => 'ADJ. จำเป็นต้องกรอก'
             ]
@@ -209,13 +363,14 @@ class AccountingDetailController extends Controller
             $model->incasefinacecomfinamountwithvat = $input['incasefinacecomfinamountwithvat'];
             $model->incasefinacecomfinwhtax = $input['incasefinacecomfinwhtax'];
             $model->incasefinacecomfintotal = $input['incasefinacecomfintotal'];
-            $model->systemcalincasefinacecomfinamount = $input['incasefinacecomfinamount'];
-            $model->systemcalincasefinacecomfinvat = $input['incasefinacecomfinvat'];
-            $model->systemcalincasefinacecomfinamountwithvat = $input['incasefinacecomfinamountwithvat'];
-            $model->systemcalincasefinacecomfinwhtax = $input['incasefinacecomfinwhtax'];
-            $model->systemcalincasefinacecomfintotal = $input['incasefinacecomfintotal'];
-            $model->receivedcashfromfinacedate = date('Y-m-d', strtotime($input['receivedcashfromfinacedate']));
-            $model->receivedcashfromfinacebankid = $input['receivedcashfromfinacebankid'];
+            $model->systemcalincasefinacecomfinamount = $input['systemcalincasefinacecomfinamount'];
+            $model->systemcalincasefinacecomfinvat = $input['systemcalincasefinacecomfinvat'];
+            $model->systemcalincasefinacecomfinamountwithvat = $input['systemcalincasefinacecomfinamountwithvat'];
+            $model->systemcalincasefinacecomfinwhtax = $input['systemcalincasefinacecomfinwhtax'];
+            $model->systemcalincasefinacecomfintotal = $input['systemcalincasefinacecomfintotal'];
+            $model->receivedcashfromfinacenet = $input['receivedcashfromfinacenet'];
+            $model->receivedcashfromfinacenetshort = $input['receivedcashfromfinacenetshort'];
+            $model->receivedcashfromfinacenetover = $input['receivedcashfromfinacenetover'];
         } else {
             $model->incasefinacecomfinamount = null;
             $model->incasefinacecomfinvat = null;
@@ -227,24 +382,465 @@ class AccountingDetailController extends Controller
             $model->systemcalincasefinacecomfinamountwithvat = null;
             $model->systemcalincasefinacecomfinwhtax = null;
             $model->systemcalincasefinacecomfintotal = null;
-            $model->receivedcashfromfinacedate = null;
-            $model->receivedcashfromfinacebankid = null;
+            $model->receivedcashfromfinacenet = null;
+            $model->receivedcashfromfinacenetshort = null;
+            $model->receivedcashfromfinacenetover = null;
         }
+        $model->totalaccount1 = $input['totalaccount1'];
+        $model->totalaccount1short = $input['totalaccount1short'];
+        $model->totalaccount1over = $input['totalaccount1over'];
+        $model->totalaccount2 = $input['totalaccount2'];
+        $model->totalaccount2short = $input['totalaccount2short'];
+        $model->totalaccount2over = $input['totalaccount2over'];
 
         $model->oldcarcomamount = $input['oldcarcomamount'];
         $model->adj = $input['adj'];
+
+        if ($model->save()) {
+            $receiveAndPayData0 = $request->receiveAndPayData0;
+            $receiveAndPayData0 = json_decode($receiveAndPayData0, true);
+
+            foreach ($receiveAndPayData0 as $data) {
+                $obj = new AccountingDetailReceiveAndPay();
+                $obj->accountingdetailid = $model->id;
+                $obj->sectiontype = 0;
+                $obj->date = date('Y-m-d', strtotime($data["date"]));
+                $obj->type = $data["type"];
+                $obj->amount = $data["amount"];
+                $obj->accountgroup = $data["accountgroup"];
+                $obj->bankid = $data["bankid"];
+                $obj->note = $data["note"];
+                $obj->save();
+            }
+
+            $receiveAndPayData1 = $request->receiveAndPayData1;
+            $receiveAndPayData1 = json_decode($receiveAndPayData1, true);
+
+            foreach ($receiveAndPayData1 as $data) {
+                $obj = new AccountingDetailReceiveAndPay();
+                $obj->accountingdetailid = $model->id;
+                $obj->sectiontype = 1;
+                $obj->date = date('Y-m-d', strtotime($data["date"]));
+                $obj->type = $data["type"];
+                $obj->amount = $data["amount"];
+                $obj->accountgroup = $data["accountgroup"];
+                $obj->bankid = $data["bankid"];
+                $obj->note = $data["note"];
+                $obj->save();
+            }
+
+            return redirect()->action('AccountingDetailController@edit', ['id' => $model->id]);
+        } else {
+            //hack returning error
+            $this->validate($request, ['invoiceno' => 'alpha'], ['invoiceno.alpha' => 'ไม่สามารถทำการบันทึกข้อมูลรายละเอียดเพื่อการบันทึกบัญชีได้ กรุณาติดต่อผู้ดูแลระบบ!!']);
+        }
     }
 
     public function edit($id)
     {
         if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
+        $tempModel = AccountingDetail::find($id);
+        $accountingdetail = (new CarPaymentController)->getforaccountingdetailbyid($tempModel->carpaymentid, 0);
+        $accountingdetail->id = $tempModel->id;
+        $accountingdetail->invoiceno = $tempModel->invoiceno;
+        $accountingdetail->date = date('d-m-Y', strtotime($tempModel->date));
+        $accountingdetail->additionalopenbill = $tempModel->additionalopenbill;
+        $accountingdetail->insurancefeereceiptcondition = $tempModel->insurancefeereceiptcondition;
 
+        if ($tempModel->insurancefeereceiptcondition == 0 || $tempModel->insurancefeereceiptcondition == 1)
+            $accountingdetail->hasinsurancefee = 1;
+        else
+            $accountingdetail->hasinsurancefee = 0;
+
+        $accountingdetail->compulsorymotorinsurancefeereceiptcondition = $tempModel->compulsorymotorinsurancefeereceiptcondition;
+
+        if ($tempModel->compulsorymotorinsurancefeereceiptcondition == 0 || $tempModel->compulsorymotorinsurancefeereceiptcondition == 1)
+            $accountingdetail->hascompulsorymotorinsurancefee = 1;
+        else
+            $accountingdetail->hascompulsorymotorinsurancefee = 0;
+
+        $accountingdetail->cashpledgereceiptbookno = $tempModel->cashpledgereceiptbookno;
+        $accountingdetail->cashpledgereceiptno = $tempModel->cashpledgereceiptno;
+        $accountingdetail->cashpledgereceiptdate = date('d-m-Y', strtotime($tempModel->cashpledgereceiptdate));
+        $accountingdetail->oldcarcomamount = $tempModel->oldcarcomamount;
+        $accountingdetail->adj = $tempModel->adj;
+        $accountingdetail->incasefinacecomfinamount = $tempModel->incasefinacecomfinamount;
+        $accountingdetail->incasefinacecomfinvat = $tempModel->incasefinacecomfinvat;
+        $accountingdetail->incasefinacecomfinamountwithvat = $tempModel->incasefinacecomfinamountwithvat;
+        $accountingdetail->incasefinacecomfinwhtax = $tempModel->incasefinacecomfinwhtax;
+        $accountingdetail->incasefinacecomfintotal = $tempModel->incasefinacecomfintotal;
+
+        $accountingdetail->incasefinacetotalcomamount = $accountingdetail->incasefinacecomfinamount
+            + $accountingdetail->incasefinacecomextraamount + $accountingdetail->incasefinacecompaamount;
+        $accountingdetail->incasefinacetotalcomvat = $accountingdetail->incasefinacecomfinvat
+            + $accountingdetail->incasefinacecomextravat + $accountingdetail->incasefinacecompavat;
+        $accountingdetail->incasefinacetotalcomwhtax = $accountingdetail->incasefinacecomfinwhtax
+            + $accountingdetail->incasefinacecomextrawhtax + $accountingdetail->incasefinacecompawhtax;
+        $accountingdetail->incasefinacetotalcomtotal = $accountingdetail->incasefinacecomfintotal
+            + $accountingdetail->incasefinacecomextratotal + $accountingdetail->incasefinacecompatotal;
+
+        $accountingdetail->systemcalincasefinacecomfinamount = $tempModel->systemcalincasefinacecomfinamount;
+        $accountingdetail->systemcalincasefinacecomfinvat = $tempModel->systemcalincasefinacecomfinvat;
+        $accountingdetail->systemcalincasefinacecomfinamountwithvat = $tempModel->systemcalincasefinacecomfinamountwithvat;
+        $accountingdetail->systemcalincasefinacecomfinwhtax = $tempModel->systemcalincasefinacecomfinwhtax;
+        $accountingdetail->systemcalincasefinacecomfintotal = $tempModel->systemcalincasefinacecomfintotal;
+        $accountingdetail->receivedcashfromfinace = $tempModel->receivedcashfromfinacenet;
+        $accountingdetail->receivedcashfromfinacenet = $tempModel->receivedcashfromfinacenet;
+        $accountingdetail->receivedcashfromfinaceshort = $tempModel->receivedcashfromfinacenetshort;
+        $accountingdetail->receivedcashfromfinacenetshort = $tempModel->receivedcashfromfinacenetshort;
+        $accountingdetail->receivedcashfromfinaceover = $tempModel->receivedcashfromfinacenetover;
+        $accountingdetail->receivedcashfromfinacenetover = $tempModel->receivedcashfromfinacenetover;
+
+        $accountingdetail->totalacc1 = $tempModel->totalaccount1;
+        $accountingdetail->totalaccount1 = $tempModel->totalaccount1;
+        $accountingdetail->totalacc1short = $tempModel->totalaccount1short;
+        $accountingdetail->totalaccount1short = $tempModel->totalaccount1short;
+        $accountingdetail->totalacc1over = $tempModel->totalaccount1over;
+        $accountingdetail->totalaccount1over = $tempModel->totalaccount1over;
+
+        $accountingdetail->totalacc2 = $tempModel->totalaccount2;
+        $accountingdetail->totalaccount2 = $tempModel->totalaccount2;
+        $accountingdetail->totalacc2short = $tempModel->totalaccount2short;
+        $accountingdetail->totalaccount2short = $tempModel->totalaccount2short;
+        $accountingdetail->totalacc2over = $tempModel->totalaccount2over;
+        $accountingdetail->totalaccount2over = $tempModel->totalaccount2over;
+
+        $additionalopenbill = SupportRequest::old('additionalopenbill');
+        if ($additionalopenbill != null) $accountingdetail->additionalopenbill = $additionalopenbill;
+
+        $finalopenbill = $accountingdetail->openbill;
+        if ($accountingdetail->additionalopenbill != null && $accountingdetail->additionalopenbill > 0) {
+            $finalopenbill = $finalopenbill + $accountingdetail->additionalopenbill;
+        }
+
+        if ($finalopenbill == 0) {
+            $accountingdetail->finalopenbill = 0;
+            $accountingdetail->vatoffinalopenbill = 0;
+            $accountingdetail->finalopenbillwithoutvat = 0;
+            $accountingdetail->realsalespricewithoutvat = $accountingdetail->realsalesprice;
+        } else {
+            $accountingdetail->finalopenbill = $finalopenbill;
+            $vat = $finalopenbill * 0.07;
+            $accountingdetail->vatoffinalopenbill = $vat;
+            $accountingdetail->finalopenbillwithoutvat = ($finalopenbill - $vat);
+            $realsalesprice = $accountingdetail->realsalesprice;
+            $accountingdetail->realsalespricewithoutvat = ($realsalesprice - $vat);
+        }
+
+        $incasefinacecomfinamount = SupportRequest::old('incasefinacecomfinamount');
+        if ($incasefinacecomfinamount != null) {
+            $incasefinacetotalcomamount = $incasefinacecomfinamount + $accountingdetail->incasefinacecomextraamount
+                + $accountingdetail->incasefinacecompaamount;
+            $accountingdetail->incasefinacetotalcomamount = $incasefinacetotalcomamount;
+        }
+        $incasefinacecomfinvat = SupportRequest::old('incasefinacecomfinvat');
+        if ($incasefinacecomfinvat != null) {
+            $incasefinacetotalcomvat = $incasefinacecomfinvat + $accountingdetail->incasefinacecomextravat
+                + $accountingdetail->incasefinacecompavat;
+            $accountingdetail->incasefinacetotalcomvat = $incasefinacetotalcomvat;
+        }
+        $incasefinacecomfinwhtax = SupportRequest::old('incasefinacecomfinwhtax');
+        if ($incasefinacecomfinwhtax != null) {
+            $incasefinacetotalcomwhtax = $incasefinacecomfinwhtax + $accountingdetail->incasefinacecomextrawhtax
+                + $accountingdetail->incasefinacecompawhtax;
+            $accountingdetail->incasefinacetotalcomwhtax = $incasefinacetotalcomwhtax;
+        }
+        $incasefinacecomfintotal = SupportRequest::old('incasefinacecomfintotal');
+        if ($incasefinacecomfintotal != null) {
+            $incasefinacetotalcomtotal = $incasefinacecomfintotal + $accountingdetail->incasefinacecomextratotal
+                + $accountingdetail->incasefinacecompatotal;
+            $accountingdetail->incasefinacetotalcomtotal = $incasefinacetotalcomtotal;
+        }
+
+        $receivedcashfromfinacenet = SupportRequest::old('receivedcashfromfinacenet');
+        if ($receivedcashfromfinacenet != null) {
+            $accountingdetail->receivedcashfromfinace = $receivedcashfromfinacenet;
+        }
+        $receivedcashfromfinacenetshort = SupportRequest::old('receivedcashfromfinacenetshort');
+        if ($receivedcashfromfinacenetshort != null) {
+            $accountingdetail->receivedcashfromfinaceshort = $receivedcashfromfinacenetshort;
+        }
+        $receivedcashfromfinacenetover = SupportRequest::old('receivedcashfromfinacenetover');
+        if ($receivedcashfromfinacenetover != null) {
+            $accountingdetail->receivedcashfromfinaceover = $receivedcashfromfinacenetover;
+        }
+
+        $incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash;
+        $tradereceivableaccount1amount = $finalopenbill - $incasefinacereceivedcash;
+        $accountingdetail->tradereceivableaccount1amount = $tradereceivableaccount1amount;
+        $accountingdetail->ar = $tradereceivableaccount1amount;
+
+        $adj = SupportRequest::old('adj');
+        if ($adj != null) $accountingdetail->adj = $adj;
+
+        $cash = $tradereceivableaccount1amount - $accountingdetail->ins
+            - $accountingdetail->prb
+            - $accountingdetail->dc
+            + $accountingdetail->adj;
+        $accountingdetail->cash = $cash;
+
+        $totalaccount1 = SupportRequest::old('totalaccount1');
+        if ($totalaccount1 != null) {
+            $accountingdetail->totalacc1 = $totalaccount1;
+        }
+        $totalaccount1short = SupportRequest::old('totalaccount1short');
+        if ($totalaccount1short != null) {
+            $accountingdetail->totalacc1short = $totalaccount1short;
+        }
+        $totalaccount1over = SupportRequest::old('totalaccount1over');
+        if ($totalaccount1over != null) {
+            $accountingdetail->totalacc1over = $totalaccount1over;
+        }
+
+        $totalaccount2 = SupportRequest::old('totalaccount2');
+        if ($totalaccount2 != null) {
+            $accountingdetail->totalacc2 = $totalaccount2;
+        }
+        $totalaccount2short = SupportRequest::old('totalaccount2short');
+        if ($totalaccount2short != null) {
+            $accountingdetail->totalacc2short = $totalaccount2short;
+        }
+        $totalaccount2over = SupportRequest::old('totalaccount2over');
+        if ($totalaccount2over != null) {
+            $accountingdetail->totalacc2over = $totalaccount2over;
+        }
+
+        $carpayment = CarPayment::where('id', $tempModel->carpaymentid)->with('carpreemption')->first();
+        $carpaymentselectlist = array();
+        $carpaymentselectlist[$carpayment->id] = $carpayment->carpreemption->bookno . '/' . $carpayment->carpreemption->no;
+
+        $banks = Bank::orderBy('accountgroup', 'asc')->orderBy('name', 'asc')->get();
+        $bankselectlist = array();
+        $bankselectlist[null] = 'เลือกบัญชี';
+        foreach ($banks as $item) {
+            $bankselectlist[$item->id] = $item->name . ' ' . substr($item->accountno, -4);
+        }
+
+        $bankselectlist2 = array();
+        array_push($bankselectlist2, ':เลือกบัญชี');
+        foreach ($banks as $item) {
+            array_push($bankselectlist2, $item->id . ':' . $item->name . ' ' . substr($item->accountno, -4));
+        }
+
+        $receiveAndPayDatas0 = array();
+        $receiveAndPayData0 = SupportRequest::old('receiveAndPayData0');
+        if ($receiveAndPayData0 != null && $receiveAndPayData0 != '') {
+            $receiveAndPayData0 = json_decode($receiveAndPayData0, true);
+            foreach ($receiveAndPayData0 as $data) {
+                $obj = (object)array("date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
+                array_push($receiveAndPayDatas0, $obj);
+            }
+        } else {
+            $receiveAndPays0 = AccountingDetailReceiveAndPay::where('accountingdetailid', $id)->where('sectiontype', 0)
+                ->get(['id', 'date', 'type', 'amount', 'accountgroup', 'bankid', 'note']);
+
+            foreach ($receiveAndPays0 as $data) {
+                $obj = (object)array("date" => $data->date, "type" => $data->type, "amount" => $data->amount, "accountgroup" => $data->accountgroup, "bankid" => $data->bankid, "note" => $data->note);
+                array_push($receiveAndPayDatas0, $obj);
+            }
+        }
+
+        $receiveAndPayDatas1 = array();
+        $receiveAndPayData1 = SupportRequest::old('receiveAndPayData1');
+        if ($receiveAndPayData1 != null && $receiveAndPayData1 != '') {
+            $receiveAndPayData1 = json_decode($receiveAndPayData1, true);
+            foreach ($receiveAndPayData1 as $data) {
+                $obj = (object)array("date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
+                array_push($receiveAndPayDatas1, $obj);
+            }
+        } else {
+            $receiveAndPays1 = AccountingDetailReceiveAndPay::where('accountingdetailid', $id)->where('sectiontype', 1)
+                ->get(['id', 'date', 'type', 'amount', 'accountgroup', 'bankid', 'note']);
+
+            foreach ($receiveAndPays1 as $data) {
+                $obj = (object)array("date" => $data->date, "type" => $data->type, "amount" => $data->amount, "accountgroup" => $data->accountgroup, "bankid" => $data->bankid, "note" => $data->note);
+                array_push($receiveAndPayDatas1, $obj);
+            }
+        }
+
+
+        foreach ($accountingdetail->toArray() as $key => $value) {
+            if (!in_array($key, $this->arrNotFormatted)) {
+                if (is_numeric($value) && (float)$value != 0.00) {
+                    $value = number_format($value, 2, '.', ',');
+                } else if ($value == null || $value == '' || (is_numeric($value) && (float)$value == 0.00))
+                    $value = '-';
+
+                $accountingdetail->$key = $value;
+            }
+        }
+
+        return view('accountingdetailform',
+            ['oper' => 'edit', 'pathPrefix' => '../../', 'accountingdetail' => $accountingdetail,
+                'carpaymentselectlist' => $carpaymentselectlist,
+                'bankselectlist' => $bankselectlist,
+                'bankselectlist2' => implode(";", $bankselectlist2),
+                'receiveAndPayDatas0' => $receiveAndPayDatas0,
+                'receiveAndPayDatas1' => $receiveAndPayDatas1]);
     }
 
     public function view($id)
     {
         if (!$this->hasPermission($this->menuPermissionName)) return view($this->viewPermissiondeniedName);
 
+        $tempModel = AccountingDetail::find($id);
+        $accountingdetail = (new CarPaymentController)->getforaccountingdetailbyid($tempModel->carpaymentid, 0);
+        $accountingdetail->id = $tempModel->id;
+        $accountingdetail->invoiceno = $tempModel->invoiceno;
+        $accountingdetail->date = date('d-m-Y', strtotime($tempModel->date));
+        $accountingdetail->additionalopenbill = $tempModel->additionalopenbill;
+        $accountingdetail->insurancefeereceiptcondition = $tempModel->insurancefeereceiptcondition;
+
+        if ($tempModel->insurancefeereceiptcondition == 0 || $tempModel->insurancefeereceiptcondition == 1)
+            $accountingdetail->hasinsurancefee = 1;
+        else
+            $accountingdetail->hasinsurancefee = 0;
+
+        $accountingdetail->compulsorymotorinsurancefeereceiptcondition = $tempModel->compulsorymotorinsurancefeereceiptcondition;
+
+        if ($tempModel->compulsorymotorinsurancefeereceiptcondition == 0 || $tempModel->compulsorymotorinsurancefeereceiptcondition == 1)
+            $accountingdetail->hascompulsorymotorinsurancefee = 1;
+        else
+            $accountingdetail->hascompulsorymotorinsurancefee = 0;
+
+        $accountingdetail->cashpledgereceiptbookno = $tempModel->cashpledgereceiptbookno;
+        $accountingdetail->cashpledgereceiptno = $tempModel->cashpledgereceiptno;
+        $accountingdetail->cashpledgereceiptdate = date('d-m-Y', strtotime($tempModel->cashpledgereceiptdate));
+        $accountingdetail->oldcarcomamount = $tempModel->oldcarcomamount;
+        $accountingdetail->adj = $tempModel->adj;
+        $accountingdetail->incasefinacecomfinamount = $tempModel->incasefinacecomfinamount;
+        $accountingdetail->incasefinacecomfinvat = $tempModel->incasefinacecomfinvat;
+        $accountingdetail->incasefinacecomfinamountwithvat = $tempModel->incasefinacecomfinamountwithvat;
+        $accountingdetail->incasefinacecomfinwhtax = $tempModel->incasefinacecomfinwhtax;
+        $accountingdetail->incasefinacecomfintotal = $tempModel->incasefinacecomfintotal;
+        $accountingdetail->systemcalincasefinacecomfinamount = $tempModel->systemcalincasefinacecomfinamount;
+        $accountingdetail->systemcalincasefinacecomfinvat = $tempModel->systemcalincasefinacecomfinvat;
+        $accountingdetail->systemcalincasefinacecomfinamountwithvat = $tempModel->systemcalincasefinacecomfinamountwithvat;
+        $accountingdetail->systemcalincasefinacecomfinwhtax = $tempModel->systemcalincasefinacecomfinwhtax;
+        $accountingdetail->systemcalincasefinacecomfintotal = $tempModel->systemcalincasefinacecomfintotal;
+        $accountingdetail->receivedcashfromfinace = $tempModel->receivedcashfromfinacenet;
+        $accountingdetail->receivedcashfromfinacenet = $tempModel->receivedcashfromfinacenet;
+        $accountingdetail->receivedcashfromfinaceshort = $tempModel->receivedcashfromfinacenetshort;
+        $accountingdetail->receivedcashfromfinacenetshort = $tempModel->receivedcashfromfinacenetshort;
+        $accountingdetail->receivedcashfromfinaceover = $tempModel->receivedcashfromfinacenetover;
+        $accountingdetail->receivedcashfromfinacenetover = $tempModel->receivedcashfromfinacenetover;
+
+        $accountingdetail->totalacc1 = $tempModel->totalaccount1;
+        $accountingdetail->totalaccount1 = $tempModel->totalaccount1;
+        $accountingdetail->totalacc1short = $tempModel->totalaccount1short;
+        $accountingdetail->totalaccount1short = $tempModel->totalaccount1short;
+        $accountingdetail->totalacc1over = $tempModel->totalaccount1over;
+        $accountingdetail->totalaccount1over = $tempModel->totalaccount1over;
+
+        $accountingdetail->totalacc2 = $tempModel->totalaccount2;
+        $accountingdetail->totalaccount2 = $tempModel->totalaccount2;
+        $accountingdetail->totalacc2short = $tempModel->totalaccount2short;
+        $accountingdetail->totalaccount2short = $tempModel->totalaccount2short;
+        $accountingdetail->totalacc2over = $tempModel->totalaccount2over;
+        $accountingdetail->totalaccount2over = $tempModel->totalaccount2over;
+
+        $finalopenbill = $accountingdetail->openbill;
+        if ($accountingdetail->additionalopenbill != null && $accountingdetail->additionalopenbill > 0) {
+            $finalopenbill = $finalopenbill + $accountingdetail->additionalopenbill;
+        }
+
+        if ($finalopenbill == 0) {
+            $accountingdetail->finalopenbill = 0;
+            $accountingdetail->vatoffinalopenbill = 0;
+            $accountingdetail->finalopenbillwithoutvat = 0;
+            $accountingdetail->realsalespricewithoutvat = $accountingdetail->realsalesprice;
+        } else {
+            $accountingdetail->finalopenbill = $finalopenbill;
+            $vat = $finalopenbill * 0.07;
+            $accountingdetail->vatoffinalopenbill = $vat;
+            $accountingdetail->finalopenbillwithoutvat = ($finalopenbill - $vat);
+            $realsalesprice = $accountingdetail->realsalesprice;
+            $accountingdetail->realsalespricewithoutvat = ($realsalesprice - $vat);
+        }
+
+        $incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash;
+        $tradereceivableaccount1amount = $finalopenbill - $incasefinacereceivedcash;
+        $accountingdetail->tradereceivableaccount1amount = $tradereceivableaccount1amount;
+        $accountingdetail->ar = $tradereceivableaccount1amount;
+
+        $cash = $tradereceivableaccount1amount - $accountingdetail->ins
+            - $accountingdetail->prb
+            - $accountingdetail->dc
+            + $accountingdetail->adj;
+        $accountingdetail->cash = $cash;
+
+
+        $carpayment = CarPayment::where('id', $tempModel->carpaymentid)->with('carpreemption')->first();
+        $carpaymentselectlist = array();
+        $carpaymentselectlist[$carpayment->id] = $carpayment->carpreemption->bookno . '/' . $carpayment->carpreemption->no;
+
+        $banks = Bank::orderBy('accountgroup', 'asc')->orderBy('name', 'asc')->get();
+        $bankselectlist = array();
+        $bankselectlist[null] = 'เลือกบัญชี';
+        foreach ($banks as $item) {
+            $bankselectlist[$item->id] = $item->name . ' ' . substr($item->accountno, -4);
+        }
+
+        $bankselectlist2 = array();
+        array_push($bankselectlist2, ':เลือกบัญชี');
+        foreach ($banks as $item) {
+            array_push($bankselectlist2, $item->id . ':' . $item->name . ' ' . substr($item->accountno, -4));
+        }
+
+        $receiveAndPayDatas0 = array();
+        $receiveAndPayData0 = SupportRequest::old('receiveAndPayData0');
+        if ($receiveAndPayData0 != null && $receiveAndPayData0 != '') {
+            $receiveAndPayData0 = json_decode($receiveAndPayData0, true);
+            foreach ($receiveAndPayData0 as $data) {
+                $obj = (object)array("date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
+                array_push($receiveAndPayDatas0, $obj);
+            }
+        } else {
+            $receiveAndPays0 = AccountingDetailReceiveAndPay::where('accountingdetailid', $id)->where('sectiontype', 0)
+                ->get(['id', 'date', 'type', 'amount', 'accountgroup', 'bankid', 'note']);
+
+            foreach ($receiveAndPays0 as $data) {
+                $obj = (object)array("date" => $data->date, "type" => $data->type, "amount" => $data->amount, "accountgroup" => $data->accountgroup, "bankid" => $data->bankid, "note" => $data->note);
+                array_push($receiveAndPayDatas0, $obj);
+            }
+        }
+
+        $receiveAndPayDatas1 = array();
+        $receiveAndPayData1 = SupportRequest::old('receiveAndPayData1');
+        if ($receiveAndPayData1 != null && $receiveAndPayData1 != '') {
+            $receiveAndPayData1 = json_decode($receiveAndPayData1, true);
+            foreach ($receiveAndPayData1 as $data) {
+                $obj = (object)array("date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
+                array_push($receiveAndPayDatas1, $obj);
+            }
+        } else {
+            $receiveAndPays1 = AccountingDetailReceiveAndPay::where('accountingdetailid', $id)->where('sectiontype', 1)
+                ->get(['id', 'date', 'type', 'amount', 'accountgroup', 'bankid', 'note']);
+
+            foreach ($receiveAndPays1 as $data) {
+                $obj = (object)array("date" => $data->date, "type" => $data->type, "amount" => $data->amount, "accountgroup" => $data->accountgroup, "bankid" => $data->bankid, "note" => $data->note);
+                array_push($receiveAndPayDatas1, $obj);
+            }
+        }
+
+        foreach ($accountingdetail->toArray() as $key => $value) {
+            if (!in_array($key, $this->arrNotFormatted)) {
+                if (is_numeric($value) && (float)$value != 0.00) {
+                    $value = number_format($value, 2, '.', ',');
+                } else if ($value == null || $value == '' || (is_numeric($value) && (float)$value == 0.00))
+                    $value = '-';
+
+                $accountingdetail->$key = $value;
+            }
+        }
+
+        return view('accountingdetailform',
+            ['oper' => 'view', 'pathPrefix' => '../../', 'accountingdetail' => $accountingdetail,
+                'carpaymentselectlist' => $carpaymentselectlist,
+                'bankselectlist' => $bankselectlist,
+                'bankselectlist2' => implode(";", $bankselectlist2),
+                'receiveAndPayDatas0' => $receiveAndPayDatas0,
+                'receiveAndPayDatas1' => $receiveAndPayDatas1]);
     }
 }

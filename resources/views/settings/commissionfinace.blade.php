@@ -86,7 +86,7 @@
                         width: 50,
                         editable: true,
                         editoptions: {size: "5"},
-                        align: 'left',
+                        align: 'center',
                         editrules: {required: true}
                     }
                 ],

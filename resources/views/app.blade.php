@@ -84,7 +84,7 @@
     <link rel="stylesheet" href="@yield('pathPrefix')resources/assets/css/lightbox.css">
     <link rel="shortcut icon" href="@yield('pathPrefix')resources/assets/img/favicon.ico">
 </head>
-<body class="skin-2">
+<body id="appbody" class="skin-2">
 
 @if ($employeeMenus = Auth::user()->employeePermissions()->lists('menu')) @endif
 
@@ -277,7 +277,7 @@
 
             <li class="@yield('menu-accountingdetail-class')"
                 @if(!Auth::user()->isadmin && !in_array("รายละเอียดเพื่อการบันทึกบัญชี", $employeeMenus)) style="display: none" @endif>
-                <a href="{{ url('/accountingdetail/newaccountingdetail') }}">
+                <a href="{{ url('/accountingdetail') }}">
                     <i class="menu-icon fa fa-info-circle"></i>
                     <span class="menu-text"> รายละเอียดเพื่อการบันทึกบัญชี </span>
                 </a>

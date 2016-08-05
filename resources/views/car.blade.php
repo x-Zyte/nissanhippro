@@ -53,7 +53,9 @@
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
                     {name:'datatype',index:'datatype', width:70, editable: true,edittype:"select",formatter:'select',align:'center',editrules:{required:true}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:เก่า;1:ปัจจุบัน" }
-                        ,editoptions:{value: ":เลือกประเภทข้อมูล;0:เก่า;1:ปัจจุบัน",
+                        ,
+                        editoptions: {
+                            value: "0:เก่า;1:ปัจจุบัน",
                         dataEvents :[{type: 'change', fn: function(e){
                             var thisval = $(e.target).val();
                             var objective = $('#objective').val();
@@ -332,7 +334,7 @@
                     viewPagerButtons : false,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                         style_edit_form(form);
 
                         var carmodelid = $('#carmodelid').val();
@@ -412,7 +414,7 @@
                         jQuery(grid_selector).jqGrid('resetSelection');
                         var form = $(e[0]);
                         form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
-                                .wrapInner('<div class="widget-header" />')
+                                .wrapInner('<div class="widget-header" />');
                         style_edit_form(form);
 
                         $('#carsubmodelid').children('option:not(:first)').remove();
@@ -463,7 +465,7 @@
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
                         if(!form.data('styled')) {
-                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                             style_delete_form(form);
 
                             form.data('styled', true);
@@ -497,7 +499,7 @@
                     recreateForm: true,
                     afterShowSearch: function(e){
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
                         style_search_form(form);
 
                         var dlgDiv = $("#searchmodfbox_" + jQuery(grid_selector)[0].id);
@@ -522,7 +524,7 @@
                     recreateForm: true,
                     beforeShowForm: function(e){
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
 
                         var dlgDiv = $("#viewmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);

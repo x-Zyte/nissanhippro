@@ -78,6 +78,12 @@ function check_AZ09HyphenSquarebracket(value, colname) {
     return [re.test(value), value + " ต้องเป็นภาษาอังกฤษตัวพิมพ์ใหญ่ ตัวเลข - [ ] เท่านั้น"];
 }
 
+function numberWithCommas(x) {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+}
+
 function style_edit_form(form) {
     //enable datepicker on "sdate" field and switches for "stock" field
     //form.find('input[name=isadmin],input[name=active],input[type=checkbox]')
@@ -127,7 +133,7 @@ function style_search_filters(form) {
 }
 function style_search_form(form) {
     var dialog = form.closest('.ui-jqdialog');
-    var buttons = dialog.find('.EditTable')
+    var buttons = dialog.find('.EditTable');
     buttons.find('.EditButton a[id*="_reset"]').addClass('btn btn-sm btn-info').find('.ui-icon').attr('class', 'ace-icon fa fa-retweet');
     buttons.find('.EditButton a[id*="_query"]').addClass('btn btn-sm btn-inverse').find('.ui-icon').attr('class', 'ace-icon fa fa-comment-o');
     buttons.find('.EditButton a[id*="_search"]').addClass('btn btn-sm btn-purple').find('.ui-icon').attr('class', 'ace-icon fa fa-search');
@@ -139,7 +145,7 @@ function beforeDeleteCallback(e) {
     var form = $(e[0]);
     if(form.data('styled')) return false;
 
-    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
     style_delete_form(form);
 
     form.data('styled', true);
@@ -147,7 +153,7 @@ function beforeDeleteCallback(e) {
 
 function beforeEditCallback(e) {
     var form = $(e[0]);
-    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
     style_edit_form(form);
 }
 

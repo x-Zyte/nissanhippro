@@ -102,6 +102,7 @@ Route::post('carmodelregister/update', 'Settings\CarModelRegisterController@upda
 Route::get('bank', 'Settings\BankController@index');
 Route::get('bank/read', 'Settings\BankController@read');
 Route::post('bank/update', 'Settings\BankController@update');
+Route::get('bank/readSelectlistByAccountGroup/{accountgroup}', 'Settings\BankController@readSelectlistByAccountGroup');
 
 //InsuranceCompany
 Route::get('insurancecompany', 'Settings\InsuranceCompanyController@index');
@@ -224,7 +225,7 @@ Route::get('carpayment', 'CarPaymentController@index');
 Route::get('carpayment/read', 'CarPaymentController@read');
 Route::post('carpayment/update', 'CarPaymentController@update');
 Route::get('carpayment/getbahttext/{amount}', 'CarPaymentController@getbahttext');
-Route::get('carpayment/getforaccountingdetailbyid/{id}', 'CarPaymentController@getforaccountingdetailbyid');
+Route::get('carpayment/getforaccountingdetailbyid/{id}/{donumberformat}', 'CarPaymentController@getforaccountingdetailbyid');
 
 Route::get('carpayment/newcarpayment', 'CarPaymentController@newcarpayment');
 Route::get('carpayment/edit/{id}', 'CarPaymentController@edit');

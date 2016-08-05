@@ -5,13 +5,11 @@ use Illuminate\Support\Facades\Auth;
 
 class Bank extends Model {
 
-    protected $table = 'banks';
-
     public $timestamps = false;
-
+    protected $table = 'banks';
     protected $guarded = ['id'];
 
-    protected $fillable = ['name', 'accountno', 'accounttype', 'accountname', 'active',
+    protected $fillable = ['name', 'accountno', 'accounttype', 'accountname', 'accountgroup', 'active',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

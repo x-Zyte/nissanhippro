@@ -1900,9 +1900,6 @@
                 return result;
             }
 
-            var alertt = $(".page-content").height()*0.71;
-            var alertl = ($(window).width()-80)/2;
-
             var notViewMode = true;
             if('{{$oper}}' == 'view'){
                 notViewMode = false;
@@ -1921,9 +1918,7 @@
                     refresh: false,
                     refreshicon : 'ace-icon fa fa-refresh green',
                     view: false,
-                    viewicon : 'ace-icon fa fa-search-plus grey',
-                    alerttop : alertt,
-                    alertleft : alertl
+                    viewicon: 'ace-icon fa fa-search-plus grey'
                 },
                 {
                     //edit record form
@@ -1937,7 +1932,7 @@
                         style_edit_form(form);
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
-                        dlgDiv[0].style.left = (($(grid_selector).width() - 150)/2) + "px";
+                        dlgDiv[0].style.left = (($("#appbody").width() - 600) / 2) + "px";
                     },
                     reloadAfterSubmit: false,
                     savekey: [true, 13],
@@ -1957,7 +1952,7 @@
                         style_edit_form(form);
 
                         var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
-                        dlgDiv[0].style.left = (($(grid_selector).width() - 150)/2) + "px";
+                        dlgDiv[0].style.left = (($("#appbody").width() - 600) / 2) + "px";
                     },
                     reloadAfterSubmit: false,
                     savekey: [true, 13],
@@ -1977,7 +1972,7 @@
                             form.data('styled', true);
 
                             var dlgDiv = $("#delmod" + jQuery(grid_selector)[0].id);
-                            dlgDiv[0].style.left = (($(grid_selector).width() - 150)/2) + "px";
+                            dlgDiv[0].style.left = (($("#appbody").width() - 400) / 2) + "px";
                         }
 
                         var totalRows = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
@@ -2035,9 +2030,7 @@
                         refresh: false,
                         refreshicon : 'ace-icon fa fa-refresh green',
                         view: false,
-                        viewicon : 'ace-icon fa fa-search-plus grey',
-                        alerttop : alertt,
-                        alertleft : alertl
+                        viewicon: 'ace-icon fa fa-search-plus grey'
                     },
                     {
                         //edit record form
@@ -2051,7 +2044,7 @@
                             style_edit_form(form);
 
                             var dlgDiv = $("#editmod" + jQuery(grid_selector2)[0].id);
-                            dlgDiv[0].style.left = (($(grid_selector2).width() - 150)/2) + "px";
+                            dlgDiv[0].style.left = (($("#appbody").width() - 600) / 2) + "px";
                         },
                         reloadAfterSubmit: false,
                         savekey: [true, 13],
@@ -2071,7 +2064,7 @@
                             style_edit_form(form);
 
                             var dlgDiv = $("#editmod" + jQuery(grid_selector2)[0].id);
-                            dlgDiv[0].style.left = (($(grid_selector2).width() - 150)/2) + "px";
+                            dlgDiv[0].style.left = (($("#appbody").width() - 600) / 2) + "px";
                         },
                         reloadAfterSubmit: false,
                         savekey: [true, 13],
@@ -2091,7 +2084,7 @@
                                 form.data('styled', true);
 
                                 var dlgDiv = $("#delmod" + jQuery(grid_selector2)[0].id);
-                                dlgDiv[0].style.left = (($(grid_selector2).width() - 150)/2) + "px";
+                                dlgDiv[0].style.left = (($("#appbody").width() - 400) / 2) + "px";
                             }
 
                             var totalRows = $(grid_selector2).jqGrid('getGridParam', 'selarrrow');

@@ -15,8 +15,8 @@ class AccountingDetail extends Model
         'cashpledgereceiptbookno', 'cashpledgereceiptno', 'cashpledgereceiptdate',
         'systemcalincasefinacecomfinamount', 'systemcalincasefinacecomfinvat', 'systemcalincasefinacecomfinamountwithvat', 'systemcalincasefinacecomfinwhtax', 'systemcalincasefinacecomfintotal',
         'incasefinacecomfinamount', 'incasefinacecomfinvat', 'incasefinacecomfinamountwithvat', 'incasefinacecomfinwhtax', 'incasefinacecomfintotal',
-        'receivedcashfromfinacedate', 'receivedcashfromfinacebankid', 'oldcarcomamount', 'adj',
-
+        'receivedcashfromfinacenet', 'receivedcashfromfinacenetshort', 'receivedcashfromfinacenetover', 'oldcarcomamount', 'adj',
+        'totalaccount1', 'totalaccount1short', 'totalaccount1over', 'totalaccount2', 'totalaccount2short', 'totalaccount2over',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()
@@ -43,12 +43,18 @@ class AccountingDetail extends Model
             $model->provinceid = $carpayment->provinceid;
             $model->branchid = $carpayment->branchid;
 
+            $model->accountingDetailReceiveAndPays()->delete();
+
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");
         });
 
         static::updated(function ($model) {
             Log::create(['employeeid' => Auth::user()->id, 'operation' => 'Update', 'date' => date("Y-m-d H:i:s"), 'model' => class_basename(get_class($model)), 'detail' => $model->toJson()]);
+        });
+
+        static::deleting(function ($model) {
+            $model->accountingDetailReceiveAndPays()->delete();
         });
 
         static::deleted(function ($model) {
@@ -59,5 +65,10 @@ class AccountingDetail extends Model
     public function carpayment()
     {
         return $this->belongsTo('App\Models\CarPayment', 'carpaymentid', 'id');
+    }
+
+    public function accountingDetailReceiveAndPays()
+    {
+        return $this->hasMany('App\Models\AccountingDetailReceiveAndPay', 'accountingdetailid', 'id');
     }
 }

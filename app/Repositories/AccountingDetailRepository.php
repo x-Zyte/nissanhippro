@@ -21,7 +21,8 @@ class AccountingDetailRepository extends EloquentRepositoryAbstract
             'cashpledgereceiptbookno', 'cashpledgereceiptno', 'cashpledgereceiptdate',
             'systemcalincasefinacecomfinamount', 'systemcalincasefinacecomfinvat', 'systemcalincasefinacecomfinamountwithvat', 'systemcalincasefinacecomfinwhtax', 'systemcalincasefinacecomfintotal',
             'incasefinacecomfinamount', 'incasefinacecomfinvat', 'incasefinacecomfinamountwithvat', 'incasefinacecomfinwhtax', 'incasefinacecomfintotal',
-            'receivedcashfromfinacedate', 'receivedcashfromfinacebankid', 'oldcarcomamount', 'adj');
+            'receivedcashfromfinacenet', 'receivedcashfromfinacenetshort', 'receivedcashfromfinacenetover', 'oldcarcomamount', 'adj',
+            'totalaccount1', 'totalaccount1short', 'totalaccount1over', 'totalaccount2', 'totalaccount2short', 'totalaccount2over');
 
         $this->uniqueKeySingles = array(array('field' => 'carpaymentid', 'label' => 'รายละเอียดเพื่อการบันทึกบัญชีของใบชำระเงิน'));
         $this->uniqueKeyMultiples = array();
