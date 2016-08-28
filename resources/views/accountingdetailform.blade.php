@@ -75,6 +75,7 @@
                 $("#branchname").text(data.branchname);
                 $("#customername").text(data.customername);
                 $("#date").text(data.date);
+                $("#deliverycardate").text(data.deliverycardate);
 
                 $("#openbill").text(data.openbill);
 
@@ -101,7 +102,7 @@
 
                 var vat;
                 if (finalopenbill == 0) vat = 0;
-                else vat = parseFloat(finalopenbill) * parseFloat(0.07);
+                else vat = (parseFloat(finalopenbill) * parseFloat(7)) / parseFloat(107);
 
                 if (vat == 0) $("#vatoffinalopenbill").text("-");
                 else $("#vatoffinalopenbill").text(numberWithCommas(parseFloat(vat).toFixed(2)));
@@ -177,7 +178,9 @@
                 $("#note1totalfee").text(data.note1totalfee);
                 $("#note1totalfeevat").text(data.note1totalfeevat);
                 $("#note1totalfeeincludevat").text(data.note1totalfeeincludevat);
+                $('#hascashpledgeredlabel').val(0);
                 $("#cashpledgeredlabel").text(data.cashpledgeredlabel);
+                $("#deliverycardate").text(data.deliverycardate);
                 $("#cashpledge").text(data.cashpledge);
                 $("#totalcashpledge").text(data.totalcashpledge);
                 $("#totalcash").text(data.totalcash);
@@ -215,7 +218,6 @@
                     $("#note2total2").text(data.note2total2);
                     $("#note2total3").text(data.note2total3);
                     $("#incasefinacesubsidise").text(data.incasefinacesubsidise);
-                    $("#incasefinacesubsidisevat").text(data.incasefinacesubsidisevat);
                     $("#incasefinacesubsidisewithvat").text(data.incasefinacesubsidisewithvat);
                     $("#note2subsidisewhtax").text(data.note2subsidisewhtax);
                     $("#note2subsidisetotal").text(data.note2subsidisetotal);
@@ -243,6 +245,7 @@
                     $("#incasefinacecompatotal").text(data.incasefinacecompatotal);
                     $("#incasefinacetotalcomamount").text(data.incasefinacetotalcomamount);
                     $("#incasefinacetotalcomvat").text(data.incasefinacetotalcomvat);
+                    $("#incasefinacetotalcomamountwithvat").text(data.incasefinacetotalcomamountwithvat);
                     $("#incasefinacetotalcomwhtax").text(data.incasefinacetotalcomwhtax);
                     $("#incasefinacetotalcomtotal").text(data.incasefinacetotalcomtotal);
                     $("#receivedcashfromfinace").text(data.receivedcashfromfinace);
@@ -335,7 +338,7 @@
             if (finalopenbill == 0) $("#finalopenbill").text("-");
             else $("#finalopenbill").text(numberWithCommas(parseFloat(finalopenbill).toFixed(2)));
 
-            var vatoffinalopenbill = parseFloat(finalopenbill) * parseFloat(0.07);
+            var vatoffinalopenbill = (parseFloat(finalopenbill) * parseFloat(7)) / parseFloat(107);
             if (vatoffinalopenbill == 0) $("#vatoffinalopenbill").text("-");
             else $("#vatoffinalopenbill").text(numberWithCommas(parseFloat(vatoffinalopenbill).toFixed(2)));
 
@@ -363,6 +366,123 @@
             else $("#ar").text(numberWithCommas(parseFloat(ar).toFixed(2)));
 
             AdjChange();
+        }
+
+        function InsurancefeereceiptconditionChange(sel) {
+            var receiptcondition = sel.value;
+            if (receiptcondition == null || receiptcondition == '') return;
+
+            var purchasetype = $('#purchasetype').val();
+
+            if (purchasetype == 1) {
+                var note1insurancefee = $("#note1insurancefee").text();
+                if (note1insurancefee == '-') note1insurancefee = 0;
+                else note1insurancefee = note1insurancefee.replace(",", "");
+
+                if (receiptcondition == 0) {
+                    $("#note2insurancefeewhtax").text("-");
+                }
+                else if (receiptcondition == 1) {
+                    var note2insurancefeewhtax = parseFloat(note1insurancefee) / 100.00;
+                    $("#note2insurancefeewhtax").text(numberWithCommas(parseFloat(note2insurancefeewhtax).toFixed(2)));
+                }
+
+                Calnote2totalwhtax();
+            }
+
+            if (receiptcondition == 0) {
+                $("#ins").text("-");
+            }
+            else if (receiptcondition == 1) {
+                var conditioninsurancefee = $("#conditioninsurancefee").text();
+                if (conditioninsurancefee == '-') conditioninsurancefee = 0;
+                else conditioninsurancefee = conditioninsurancefee.replace(",", "");
+
+                if (conditioninsurancefee == 0) $("#ins").text("-");
+                else $("#ins").text(numberWithCommas(parseFloat(conditioninsurancefee).toFixed(2)));
+            }
+
+            AdjChange();
+        }
+
+        function CompulsorymotorinsurancefeereceiptconditionChange(sel) {
+            var receiptcondition = sel.value;
+            if (receiptcondition == null || receiptcondition == '') return;
+
+            var purchasetype = $('#purchasetype').val();
+
+            if (purchasetype == 1) {
+                var note1compulsorymotorinsurancefee = $("#note1compulsorymotorinsurancefee").text();
+                if (note1compulsorymotorinsurancefee == '-') note1compulsorymotorinsurancefee = 0;
+                else note1compulsorymotorinsurancefee = note1compulsorymotorinsurancefee.replace(",", "");
+
+                if (receiptcondition == 0) {
+                    $("#note2compulsorymotorinsurancefeewhtax").text("-");
+                }
+                else if (receiptcondition == 1) {
+                    var note2compulsorymotorinsurancefeewhtax = parseFloat(note1compulsorymotorinsurancefee) / 100.00;
+                    $("#note2compulsorymotorinsurancefeewhtax").text(numberWithCommas(parseFloat(note2compulsorymotorinsurancefeewhtax).toFixed(2)));
+                }
+
+                Calnote2totalwhtax();
+            }
+
+            if (receiptcondition == 0) {
+                $("#prb").text("-");
+            }
+            else if (receiptcondition == 1) {
+                var conditioncompulsorymotorinsurancefee = $("#conditioncompulsorymotorinsurancefee").text();
+                if (conditioncompulsorymotorinsurancefee == '-') conditioncompulsorymotorinsurancefee = 0;
+                else conditioncompulsorymotorinsurancefee = conditioncompulsorymotorinsurancefee.replace(",", "");
+
+                if (conditioncompulsorymotorinsurancefee == 0) $("#prb").text("-");
+                else $("#prb").text(numberWithCommas(parseFloat(conditioncompulsorymotorinsurancefee).toFixed(2)));
+            }
+
+            AdjChange();
+        }
+
+        function Calnote2totalwhtax() {
+            var note2insurancefeewhtax = $("#note2insurancefeewhtax").text();
+            if (note2insurancefeewhtax == '-') note2insurancefeewhtax = 0;
+            else note2insurancefeewhtax = note2insurancefeewhtax.replace(",", "");
+
+            var note2compulsorymotorinsurancefeewhtax = $("#note2compulsorymotorinsurancefeewhtax").text();
+            if (note2compulsorymotorinsurancefeewhtax == '-') note2compulsorymotorinsurancefeewhtax = 0;
+            else note2compulsorymotorinsurancefeewhtax = note2compulsorymotorinsurancefeewhtax.replace(",", "");
+
+            var note2subsidisewhtax = $("#note2subsidisewhtax").text();
+            if (note2subsidisewhtax == '-') note2subsidisewhtax = 0;
+            else note2subsidisewhtax = note2subsidisewhtax.replace(",", "");
+
+            var note2totalwhtax = parseFloat(note2insurancefeewhtax)
+                    + parseFloat(note2compulsorymotorinsurancefeewhtax)
+                    + parseFloat(note2subsidisewhtax);
+            if (note2totalwhtax == 0) $("#note2totalwhtax").text("-");
+            else $("#note2totalwhtax").text(numberWithCommas(parseFloat(note2totalwhtax).toFixed(2)));
+
+            Calreceivedcashfromfinace();
+        }
+
+        function Calreceivedcashfromfinace() {
+            var incasefinacehassubsidisereceivedcash = $("#incasefinacehassubsidisereceivedcash").text();
+            if (incasefinacehassubsidisereceivedcash == '-' || incasefinacehassubsidisereceivedcash == '') incasefinacehassubsidisereceivedcash = 0;
+            else incasefinacehassubsidisereceivedcash = incasefinacehassubsidisereceivedcash.replace(",", "");
+
+            var note2totalwhtax = $("#note2totalwhtax").text();
+            if (note2totalwhtax == '-' || note2totalwhtax == '') note2totalwhtax = 0;
+            else note2totalwhtax = note2totalwhtax.replace(",", "");
+
+            var incasefinacetotalcomtotal = $("#incasefinacetotalcomtotal").text();
+            if (incasefinacetotalcomtotal == '-' || incasefinacetotalcomtotal == '') incasefinacetotalcomtotal = 0;
+            else incasefinacetotalcomtotal = incasefinacetotalcomtotal.replace(",", "");
+
+            var receivedcashfromfinace = parseFloat(incasefinacehassubsidisereceivedcash) + parseFloat(note2totalwhtax) + parseFloat(incasefinacetotalcomtotal);
+            if (receivedcashfromfinace == 0) $("#receivedcashfromfinace").text("-");
+            else $("#receivedcashfromfinace").text(numberWithCommas(parseFloat(receivedcashfromfinace).toFixed(2)));
+
+            $("#receivedcashfromfinacenet").val(parseFloat(receivedcashfromfinace).toFixed(2));
+            CalShortOver0();
         }
 
         function AdjChange() {
@@ -413,14 +533,6 @@
         }
 
         function IncasefinacecomfintotalChange() {
-            var incasefinacehassubsidisereceivedcash = $("#incasefinacehassubsidisereceivedcash").text();
-            if (incasefinacehassubsidisereceivedcash == '-') incasefinacehassubsidisereceivedcash = 0;
-            else incasefinacehassubsidisereceivedcash = incasefinacehassubsidisereceivedcash.replace(",", "");
-
-            var note2totalwhtax = $("#note2totalwhtax").text();
-            if (note2totalwhtax == '-') note2totalwhtax = 0;
-            else note2totalwhtax = note2totalwhtax.replace(",", "");
-
             var incasefinacecomfintotal = $('#incasefinacecomfintotal').val();
             if (incasefinacecomfintotal == null || incasefinacecomfintotal == '')
                 incasefinacecomfintotal = 0;
@@ -437,12 +549,7 @@
             if (incasefinacetotalcomtotal == 0) $("#incasefinacetotalcomtotal").text("-");
             else $("#incasefinacetotalcomtotal").text(numberWithCommas(parseFloat(incasefinacetotalcomtotal).toFixed(2)));
 
-            var receivedcashfromfinace = parseFloat(incasefinacehassubsidisereceivedcash) + parseFloat(note2totalwhtax) + parseFloat(incasefinacetotalcomtotal);
-            if (receivedcashfromfinace == 0) $("#receivedcashfromfinace").text("-");
-            else $("#receivedcashfromfinace").text(numberWithCommas(parseFloat(receivedcashfromfinace).toFixed(2)));
-
-            $("#receivedcashfromfinacenet").val(parseFloat(receivedcashfromfinace).toFixed(2));
-            CalShortOver0();
+            Calreceivedcashfromfinace();
         }
 
         function IncasefinacecomfinamountChange() {
@@ -497,6 +604,24 @@
             var incasefinacetotalcomwhtax = parseFloat(incasefinacecomfinwhtax) + parseFloat(incasefinacecomextrawhtax) + parseFloat(incasefinacecompawhtax);
             if (incasefinacetotalcomwhtax == 0) $("#incasefinacetotalcomwhtax").text("-");
             else $("#incasefinacetotalcomwhtax").text(numberWithCommas(parseFloat(incasefinacetotalcomwhtax).toFixed(2)));
+        }
+
+        function IncasefinacecomfinamountwithvatChange() {
+            var incasefinacecomfinamountwithvat = $('#incasefinacecomfinamountwithvat').val();
+            if (incasefinacecomfinamountwithvat == null || incasefinacecomfinamountwithvat == '')
+                incasefinacecomfinamountwithvat = 0;
+
+            var incasefinacecomextraamountwithvat = $("#incasefinacecomextraamountwithvat").text();
+            if (incasefinacecomextraamountwithvat == '-') incasefinacecomextraamountwithvat = 0;
+            else incasefinacecomextraamountwithvat = incasefinacecomextraamountwithvat.replace(",", "");
+
+            var incasefinacecompaamountwithvat = $("#incasefinacecompaamountwithvat").text();
+            if (incasefinacecompaamountwithvat == '-') incasefinacecompaamountwithvat = 0;
+            else incasefinacecompaamountwithvat = incasefinacecompaamountwithvat.replace(",", "");
+
+            var incasefinacetotalcomamountwithvat = parseFloat(incasefinacecomfinamountwithvat) + parseFloat(incasefinacecomextraamountwithvat) + parseFloat(incasefinacecompaamountwithvat);
+            if (incasefinacetotalcomamountwithvat == 0) $("#incasefinacetotalcomamountwithvat").text("-");
+            else $("#incasefinacetotalcomamountwithvat").text(numberWithCommas(parseFloat(incasefinacetotalcomamountwithvat).toFixed(2)));
         }
 
         function CalShortOver0() {
@@ -608,6 +733,157 @@
                 $("#totalaccount2over").val(parseFloat(overamount).toFixed(2));
             }
         }
+
+        function InsurancefeepaymentChange(sel) {
+            var payment = sel.value;
+            if (payment == null || payment == '') return;
+
+            if (payment == 1) {
+                $("#insurancefeepaidseparatelydate").prop("disabled", false);
+                $("#insurancepremiumnet").prop("disabled", false);
+                $("#insurancepremiumcom").prop("disabled", false);
+                $("#insurancefeepaidseparatelytotal").prop("disabled", false);
+
+                $("#incasefinaceinsurancefee").text("-");
+            }
+            else {
+                $("#insurancefeepaidseparatelydate").val(null);
+                $("#insurancepremiumnet").val(null);
+                $("#insurancepremiumcom").val(null);
+                $("#insurancefeepaidseparatelytotal").val(null);
+                $("#insurancefeepaidseparatelydate").prop("disabled", true);
+                $("#insurancepremiumnet").prop("disabled", true);
+                $("#insurancepremiumcom").prop("disabled", true);
+                $("#insurancefeepaidseparatelytotal").prop("disabled", true);
+
+                var note1insurancefeeincludevat = $("#note1insurancefeeincludevat").text();
+                if (note1insurancefeeincludevat == '-' || note1insurancefeeincludevat == '') note1insurancefeeincludevat = 0;
+                else note1insurancefeeincludevat = note1insurancefeeincludevat.replace(",", "");
+
+                $("#incasefinaceinsurancefee").text(numberWithCommas(parseFloat(note1insurancefeeincludevat).toFixed(2)));
+            }
+
+            Caltotalincasefinace();
+        }
+
+        function CompulsorymotorinsurancefeepaymentChange(sel) {
+            var payment = sel.value;
+            if (payment == null || payment == '') return;
+
+            if (payment == 1) {
+                $("#compulsorymotorinsurancefeepaidseparatelydate").prop("disabled", false);
+                $("#compulsorymotorinsurancepremiumnet").prop("disabled", false);
+                $("#compulsorymotorinsurancepremiumcom").prop("disabled", false);
+                $("#compulsorymotorinsurancefeepaidseparatelytotal").prop("disabled", false);
+
+                $("#incasefinacecompulsorymotorinsurancefee").text("-");
+            }
+            else {
+                $("#compulsorymotorinsurancefeepaidseparatelydate").val(null);
+                $("#compulsorymotorinsurancepremiumnet").val(null);
+                $("#compulsorymotorinsurancepremiumcom").val(null);
+                $("#compulsorymotorinsurancefeepaidseparatelytotal").val(null);
+                $("#compulsorymotorinsurancefeepaidseparatelydate").prop("disabled", true);
+                $("#compulsorymotorinsurancepremiumnet").prop("disabled", true);
+                $("#compulsorymotorinsurancepremiumcom").prop("disabled", true);
+                $("#compulsorymotorinsurancefeepaidseparatelytotal").prop("disabled", true);
+
+                var note1compulsorymotorinsurancefeeincludevat = $("#note1compulsorymotorinsurancefeeincludevat").text();
+                if (note1compulsorymotorinsurancefeeincludevat == '-' || note1compulsorymotorinsurancefeeincludevat == '') note1compulsorymotorinsurancefeeincludevat = 0;
+                else note1compulsorymotorinsurancefeeincludevat = note1compulsorymotorinsurancefeeincludevat.replace(",", "");
+
+                $("#incasefinacecompulsorymotorinsurancefee").text(numberWithCommas(parseFloat(note1compulsorymotorinsurancefeeincludevat).toFixed(2)));
+            }
+
+            Caltotalincasefinace();
+        }
+
+        function Caltotalincasefinace() {
+            var incasefinaceinsurancefee = $("#incasefinaceinsurancefee").text();
+            if (incasefinaceinsurancefee == '-' || incasefinaceinsurancefee == '') incasefinaceinsurancefee = 0;
+            else incasefinaceinsurancefee = incasefinaceinsurancefee.replace(",", "");
+
+            var incasefinacecompulsorymotorinsurancefee = $("#incasefinacecompulsorymotorinsurancefee").text();
+            if (incasefinacecompulsorymotorinsurancefee == '-' || incasefinacecompulsorymotorinsurancefee == '') incasefinacecompulsorymotorinsurancefee = 0;
+            else incasefinacecompulsorymotorinsurancefee = incasefinacecompulsorymotorinsurancefee.replace(",", "");
+
+            var incasefinacefirstinstallmentpayamount = $("#incasefinacefirstinstallmentpayamount").text();
+            if (incasefinacefirstinstallmentpayamount == '-' || incasefinacefirstinstallmentpayamount == '') incasefinacefirstinstallmentpayamount = 0;
+            else incasefinacefirstinstallmentpayamount = incasefinacefirstinstallmentpayamount.replace(",", "");
+
+            var incasefinacepayinadvanceamount = $("#incasefinacepayinadvanceamount").text();
+            if (incasefinacepayinadvanceamount == '-' || incasefinacepayinadvanceamount == '') incasefinacepayinadvanceamount = 0;
+            else incasefinacepayinadvanceamount = incasefinacepayinadvanceamount.replace(",", "");
+
+            var incasefinaceinsurancepremium = $("#incasefinaceinsurancepremium").text();
+            if (incasefinaceinsurancepremium == '-' || incasefinaceinsurancepremium == '') incasefinaceinsurancepremium = 0;
+            else incasefinaceinsurancepremium = incasefinaceinsurancepremium.replace(",", "");
+
+            var totalincasefinace = parseFloat(incasefinaceinsurancefee) + parseFloat(incasefinacecompulsorymotorinsurancefee)
+                    + parseFloat(incasefinacefirstinstallmentpayamount) + parseFloat(incasefinacepayinadvanceamount) + parseFloat(incasefinaceinsurancepremium);
+            if (totalincasefinace == 0) $("#totalincasefinace").text("-");
+            else $("#totalincasefinace").text(numberWithCommas(parseFloat(totalincasefinace).toFixed(2)));
+
+            Calincasefinacereceivedcash();
+        }
+
+        function Calincasefinacereceivedcash() {
+            var yodjud = $("#yodjud").text();
+            if (yodjud == '-' || yodjud == '') yodjud = 0;
+            else yodjud = yodjud.replace(",", "");
+
+            var totalincasefinace = $("#totalincasefinace").text();
+            if (totalincasefinace == '-' || totalincasefinace == '') totalincasefinace = 0;
+            else totalincasefinace = totalincasefinace.replace(",", "");
+
+            var incasefinacereceivedcash = parseFloat(yodjud) - parseFloat(totalincasefinace);
+            if (incasefinacereceivedcash == 0) $("#incasefinacereceivedcash").text("-");
+            else $("#incasefinacereceivedcash").text(numberWithCommas(parseFloat(incasefinacereceivedcash).toFixed(2)));
+
+            var incasefinacesubsidisewithvat = $("#incasefinacesubsidisewithvat").text();
+            if (incasefinacesubsidisewithvat == '-' || incasefinacesubsidisewithvat == '') incasefinacesubsidisewithvat = 0;
+            else incasefinacesubsidisewithvat = incasefinacesubsidisewithvat.replace(",", "");
+
+            var incasefinacehassubsidisereceivedcash = parseFloat(incasefinacereceivedcash) - parseFloat(incasefinacesubsidisewithvat);
+            if (incasefinacehassubsidisereceivedcash == 0) $("#incasefinacehassubsidisereceivedcash").text("-");
+            else $("#incasefinacehassubsidisereceivedcash").text(numberWithCommas(parseFloat(incasefinacehassubsidisereceivedcash).toFixed(2)));
+
+            Calreceivedcashfromfinace();
+        }
+
+        function CalInsurancefeepaidseparatelytotal() {
+            var insurancepremiumnet = $('#insurancepremiumnet').val();
+            if (insurancepremiumnet == null || insurancepremiumnet == '')
+                insurancepremiumnet = 0;
+
+            var insurancepremiumcom = $('#insurancepremiumcom').val();
+            if (insurancepremiumcom == null || insurancepremiumcom == '')
+                insurancepremiumcom = 0;
+
+            var note1insurancefeeincludevat = $("#note1insurancefeeincludevat").text();
+            if (note1insurancefeeincludevat == '-' || note1insurancefeeincludevat == '') note1insurancefeeincludevat = 0;
+            else note1insurancefeeincludevat = note1insurancefeeincludevat.replace(",", "");
+
+            var insurancefeepaidseparatelytotal = parseFloat(note1insurancefeeincludevat) - ((parseFloat(insurancepremiumnet) * parseFloat(insurancepremiumcom)) / 100.00);
+            $("#insurancefeepaidseparatelytotal").val(parseFloat(insurancefeepaidseparatelytotal).toFixed(2));
+        }
+
+        function CalCompulsorymotorinsurancefeepaidseparatelytotal() {
+            var compulsorymotorinsurancepremiumnet = $('#compulsorymotorinsurancepremiumnet').val();
+            if (compulsorymotorinsurancepremiumnet == null || compulsorymotorinsurancepremiumnet == '')
+                compulsorymotorinsurancepremiumnet = 0;
+
+            var compulsorymotorinsurancepremiumcom = $('#compulsorymotorinsurancepremiumcom').val();
+            if (compulsorymotorinsurancepremiumcom == null || compulsorymotorinsurancepremiumcom == '')
+                compulsorymotorinsurancepremiumcom = 0;
+
+            var note1compulsorymotorinsurancefeeincludevat = $("#note1compulsorymotorinsurancefeeincludevat").text();
+            if (note1compulsorymotorinsurancefeeincludevat == '-' || note1compulsorymotorinsurancefeeincludevat == '') note1compulsorymotorinsurancefeeincludevat = 0;
+            else note1compulsorymotorinsurancefeeincludevat = note1compulsorymotorinsurancefeeincludevat.replace(",", "");
+
+            var compulsorymotorinsurancefeepaidseparatelytotal = parseFloat(note1compulsorymotorinsurancefeeincludevat) - ((parseFloat(compulsorymotorinsurancepremiumnet) * parseFloat(compulsorymotorinsurancepremiumcom)) / 100.00);
+            $("#compulsorymotorinsurancefeepaidseparatelytotal").val(parseFloat(compulsorymotorinsurancefeepaidseparatelytotal).toFixed(2));
+        }
     </script>
 
     @if($oper == 'new')
@@ -668,7 +944,7 @@
                 </td>
                 <td><label style="width:90px; font-weight:bold; margin-left:20px;">เลขที่ใบกำกับ</label></td>
                 <td>{!! Form::text('invoiceno', null, array('id'=>'invoiceno')) !!}</td>
-                <td><label style="width:35px; font-weight:bold; margin-left:20px;">วันที่</label></td>
+                <td><label style="width:110px; font-weight:bold; margin-left:20px;">วันที่เปิดใบกำกับ</label></td>
                 <td><label>
                         <div class="input-group">
                             {!! Form::text('date', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'date')) !!}
@@ -677,6 +953,10 @@
                     </span>
                         </div>
                     </label></td>
+                <td><label style="width:70px; font-weight:bold; margin-left:20px;">วันที่ส่งรถ</label></td>
+                <td class="underline_g"><label style="width:100px; text-align:center;"
+                                               id="deliverycardate">{{$accountingdetail->deliverycardate}}</label>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -953,12 +1233,13 @@
                                             <label style="width:45px;"></label>
                                         </div>
                                         <div style="width:540px; float:left;">
-                                            <label style="width:70px;"></label>
-                                            <label style="width:70px; text-align:center;">เงื่อนไข*</label>
+                                            <label style="width:65px;"></label>
+                                            <label style="width:85px; text-align:center; color:red;">เงื่อนไข
+                                                AC1*</label>
                                             <label style="width:100px; text-align:center;">ยอดรวม</label>
-                                            <label style="width:30px;"></label>
-                                            <label style="width:100px; text-align:center;">บริษัทชำระ</label>
-                                            <label style="width:30px;"></label>
+                                            <label style="width:15px;"></label>
+                                            <label style="width:120px; text-align:center;">บริษัทชำระ/(กำไร)</label>
+                                            <label style="width:15px;"></label>
                                             <label style="width:100px; text-align:center;">ลูกค้าชำระ</label>
                                         </div>
                                     </div>
@@ -972,14 +1253,14 @@
                                         </div>
                                         <div style="width:540px; float:left;">
                                             <label style="width:65px;">ค่าเบี้ย ป.1</label>
-                                            {!! Form::select('insurancefeereceiptcondition', array(null => 'เลือก', 1 => 'ชื่อบริษัท', 0 => 'ชื่อลูกค้า'), null, array('style' => 'padding:0; height:23px; width:75px;')) !!}
+                                            {!! Form::select('insurancefeereceiptcondition', array(null => 'เลือก', 1 => 'ชื่อบริษัท', 0 => 'ชื่อลูกค้า'), null, array('style' => 'padding:0; height:23px; width:85px;', 'onchange'=>'InsurancefeereceiptconditionChange(this)')) !!}
                                             <label class="dashed" style="width:100px; text-align:right; color:#0090FF;"
                                                    id="conditioninsurancefee">{{$accountingdetail->conditioninsurancefee}}</label>
                                             {!! Form::hidden('hasinsurancefee',null,array('id'=>'hasinsurancefee')) !!}
-                                            <label style="width:30px;"></label>
+                                            <label style="width:25px;"></label>
                                             <label class="dashed" style="width:100px; text-align:right;"
                                                    id="conditioninsurancefeecompanypaid">{{$accountingdetail->conditioninsurancefeecompanypaid}}</label>
-                                            <label style="width:30px;"></label>
+                                            <label style="width:25px;"></label>
                                             <label class="dashed" style="width:100px; text-align:right;"
                                                    id="conditioninsurancefeecustomerpaid">{{$accountingdetail->conditioninsurancefeecustomerpaid}}</label>
                                         </div>
@@ -994,14 +1275,14 @@
                                         </div>
                                         <div style="width:540px; float:left;">
                                             <label style="width:65px;">ค่า พ.ร.บ.</label>
-                                            {!! Form::select('compulsorymotorinsurancefeereceiptcondition', array(null => 'เลือก', 1 => 'ชื่อบริษัท', 0 => 'ชื่อลูกค้า'), null, array('style' => 'padding:0; height:23px; width:75px;')) !!}
+                                            {!! Form::select('compulsorymotorinsurancefeereceiptcondition', array(null => 'เลือก', 1 => 'ชื่อบริษัท', 0 => 'ชื่อลูกค้า'), null, array('style' => 'padding:0; height:23px; width:85px;', 'onchange'=>'CompulsorymotorinsurancefeereceiptconditionChange(this)')) !!}
                                             <label class="dashed" style="width:100px; text-align:right; color:#0090FF;"
                                                    id="conditioncompulsorymotorinsurancefee">{{$accountingdetail->conditioncompulsorymotorinsurancefee}}</label>
                                             {!! Form::hidden('hascompulsorymotorinsurancefee',null,array('id'=>'hascompulsorymotorinsurancefee')) !!}
-                                            <label style="width:30px;"></label>
+                                            <label style="width:25px;"></label>
                                             <label class="dashed" style="width:100px; text-align:right;"
                                                    id="conditioncompulsorymotorinsurancefeecompanypaid">{{$accountingdetail->conditioncompulsorymotorinsurancefeecompanypaid}}</label>
-                                            <label style="width:30px;"></label>
+                                            <label style="width:25px;"></label>
                                             <label class="dashed" style="width:100px; text-align:right;"
                                                    id="conditioncompulsorymotorinsurancefeecustomerpaid">{{$accountingdetail->conditioncompulsorymotorinsurancefeecustomerpaid}}</label>
                                         </div>
@@ -1015,12 +1296,12 @@
                                         </div>
                                         <div style="width:540px; float:left;">
                                             <label style="width:70px;">บจ. ประกัน</label>
-                                            <label class="dashed" style="width:174px; text-align:center;"
+                                            <label class="dashed" style="width:175px; text-align:center;"
                                                    id="insurancecompany">{{$accountingdetail->insurancecompany}}</label>
-                                            <label style="width:30px;"></label>
-                                            <label style="width:100px;">ทุนประกัน</label>
-                                            <label class="dashed" style="width:134px; text-align:right;"
-                                                   id="capitalinsurance">{{$accountingdetail->capitalinsurance}}</label>
+                                            <label style="width:15px;"></label>
+                                            <label style="width:70px;">บจ. พ.ร.บ.</label>
+                                            <label class="dashed" style="width:175px; text-align:center;"
+                                                   id="compulsorymotorinsurancecompany">{{$accountingdetail->compulsorymotorinsurancecompany}}</label>
                                         </div>
                                     </div>
                                     <div class="form-group" style="margin-left:10px;">
@@ -1038,9 +1319,15 @@
                                             <label style="width:45px; text-align:right;">(15)</label>
                                         </div>
                                         <div style="width:540px; float:left;">
-                                            <label style="width:70px;">บจ. พ.ร.บ.</label>
-                                            <label class="dashed" style="width:174px; text-align:center;"
-                                                   id="compulsorymotorinsurancecompany">{{$accountingdetail->compulsorymotorinsurancecompany}}</label>
+                                            <label style="width:120px;">จ่ายเงินคืน Fin วันที่</label>
+                                            <div class="input-group" style="position: absolute; display: inline-table;">
+                                                {!! Form::text('payinadvanceamountreimbursementdate', null, array('style'=>'height: 22px; padding:0;','class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'payinadvanceamountreimbursementdate')) !!}
+                                                <span class="input-group-addon" style="padding:1px;">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                            </div>
+                                            <label style="width:auto; padding-left: 110px;">เลขที่เอกสาร</label>
+                                            {!! Form::text('payinadvanceamountreimbursementdocno', null, array('style'=>'width: 100px; height: 22px; padding:0; text-align:center;','id'=>'payinadvanceamountreimbursementdocno')) !!}
                                         </div>
                                     </div>
                                     <div class="form-group" style="margin-left:10px;">
@@ -1061,30 +1348,31 @@
                                             <label style="width:45px; text-align:right;">(17)</label>
                                         </div>
                                         <div style="width:540px; float:left;">
-                                            <label style="width:70px;"></label>
-                                            <label style="width:70px; font-weight:bold; text-align:left; color: limegreen">Note
+                                            <label style="width:85px; text-align:center; color:red;">เงื่อนไข
+                                                AC2*</label>
+                                            <label style="width:65px; font-weight:bold; text-align:left; color: limegreen">Note
                                                 1</label>
                                             <label style="width:100px; text-align:center;">ยอดก่อน VAT</label>
-                                            <label style="width:30px;"></label>
+                                            <label style="width:25px;"></label>
                                             <label style="width:100px; text-align:center;">VAT</label>
-                                            <label style="width:30px;"></label>
+                                            <label style="width:25px;"></label>
                                             <label style="width:100px; text-align:center;">ยอดรวม VAT</label>
                                         </div>
                                     </div>
                                     <div class="form-group" style="margin-left:10px;">
                                         <div style="width:540px; float:left; margin-right:20px;">
-                                            <label style="width:490px;">4. หักเงินมัดจำ</label>
+                                            <label style="width:490px;">4. เงินมัดจำ</label>
                                             <label style="width:45px;"></label>
                                         </div>
                                         <div style="width:540px; float:left;">
-                                            <label style="width:70px;"></label>
-                                            <label style="width:70px; text-align:left;">ค่าเบี้ย ป.1</label>
+                                            {!! Form::select('note1insurancefeereceiptcondition', array(null => 'เลือก', 1 => 'ชื่อบริษัท', 0 => 'ชื่อลูกค้า'), null, array('style' => 'padding:0; height:23px; width:85px;')) !!}
+                                            <label style="width:65px; text-align:left;">ค่าเบี้ย ป.1</label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note1insurancefee">{{$accountingdetail->note1insurancefee}}</label>
-                                            <label style="width:30px;"></label>
+                                            <label style="width:25px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note1insurancefeevat">{{$accountingdetail->note1insurancefeevat}}</label>
-                                            <label style="width:30px;"></label>
+                                            <label style="width:25px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note1insurancefeeincludevat">{{$accountingdetail->note1insurancefeeincludevat}}</label>
                                         </div>
@@ -1097,16 +1385,51 @@
                                             <label style="width:45px; text-align:right;">(18)</label>
                                         </div>
                                         <div style="width:540px; float:left;">
-                                            <label style="width:70px;"></label>
-                                            <label style="width:70px; text-align:left;">ค่า พ.ร.บ.</label>
+                                            {!! Form::select('note1compulsorymotorinsurancefeereceiptcondition', array(null => 'เลือก', 1 => 'ชื่อบริษัท', 0 => 'ชื่อลูกค้า'), null, array('style' => 'padding:0; height:23px; width:85px;')) !!}
+                                            <label style="width:65px; text-align:left;">ค่า พ.ร.บ.</label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note1compulsorymotorinsurancefee">{{$accountingdetail->note1compulsorymotorinsurancefee}}</label>
-                                            <label style="width:30px;"></label>
+                                            <label style="width:25px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note1compulsorymotorinsurancefeevat">{{$accountingdetail->note1compulsorymotorinsurancefeevat}}</label>
-                                            <label style="width:30px;"></label>
+                                            <label style="width:25px;"></label>
                                             <label class="dotted" style="width:100px; text-align:right;"
                                                    id="note1compulsorymotorinsurancefeeincludevat">{{$accountingdetail->note1compulsorymotorinsurancefeeincludevat}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="margin-left:10px;">
+                                        <div style="width:540px; float:left; margin-right:20px;">
+                                            {!! Form::hidden('hascashpledgeredlabel',null,array('id'=>'hascashpledgeredlabel')) !!}
+                                            <label style="width:auto; padding-left:48px;"> เลขที่ใบรับเงิน</label>
+                                            {!! Form::number('cashpledgeredlabelreceiptbookno', null, array('style'=>'width: 50px; height: 22px; padding:0; text-align:center;','id'=>'cashpledgeredlabelreceiptbookno')) !!}
+                                            <label style="width:auto;">/</label>
+                                            {!! Form::number('cashpledgeredlabelreceiptno', null, array('style'=>'width: 50px; height: 22px; padding:0; text-align:center;','id'=>'cashpledgeredlabelreceiptno')) !!}
+                                            <label style="width:45px;">วันที่รับ</label>
+                                            <div class="input-group" style="position: absolute; display: inline-table;">
+                                                {!! Form::text('cashpledgeredlabelreceiptdate', null, array('style'=>'height: 22px; padding:0;','class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'cashpledgeredlabelreceiptdate')) !!}
+                                                <span class="input-group-addon" style="padding:1px;">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div style="width:540px; float:left;">
+                                            <label style="width:85px;"></label>
+                                            <label style="width:65px; text-align:left;">รวม</label>
+                                            <label class="dotted" style="width:100px; text-align:right;"
+                                                   id="note1totalfee">{{$accountingdetail->note1totalfee}}</label>
+                                            <label style="width:25px;"></label>
+                                            <label class="dotted" style="width:100px; text-align:right;"
+                                                   id="note1totalfeevat">{{$accountingdetail->note1totalfeevat}}</label>
+                                            <label style="width:25px;"></label>
+                                            <label class="dotted" style="width:100px; text-align:right;"
+                                                   id="note1totalfeeincludevat">{{$accountingdetail->note1totalfeeincludevat}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="margin-left:10px;">
+                                        <div style="width:540px; float:left; margin-right:20px;">
+                                            <label style="width:auto; padding-left:48px;">วันที่คืนป้าย</label>
+                                            <label class="underline_g" style="width:100px; text-align: center;"
+                                                   id="redlabelreturndate">{{$accountingdetail->redlabelreturndate}}</label>
                                         </div>
                                     </div>
                                     <div class="form-group" style="margin-left:10px;">
@@ -1117,21 +1440,20 @@
                                             <label style="width:45px; text-align:right;">(19)</label>
                                         </div>
                                         <div style="width:540px; float:left;">
-                                            <label style="width:70px;"></label>
-                                            <label style="width:70px; text-align:left;">รวม</label>
-                                            <label class="dotted" style="width:100px; text-align:right;"
-                                                   id="note1totalfee">{{$accountingdetail->note1totalfee}}</label>
-                                            <label style="width:30px;"></label>
-                                            <label class="dotted" style="width:100px; text-align:right;"
-                                                   id="note1totalfeevat">{{$accountingdetail->note1totalfeevat}}</label>
-                                            <label style="width:30px;"></label>
-                                            <label class="dotted" style="width:100px; text-align:right;"
-                                                   id="note1totalfeeincludevat">{{$accountingdetail->note1totalfeeincludevat}}</label>
+                                            <label style="width:85px; text-align:left;">ป.1 จ่ายเงิน</label>
+                                            {!! Form::select('insurancefeepayment', array(null => 'เลือก', 0 => 'หักจากยอดจัด', 1 => 'จ่ายต่างหาก'), null, array('style' => 'padding:0; height:23px; width:100px;', 'id'=>'insurancefeepayment', 'onchange'=>'InsurancefeepaymentChange(this)')) !!}
+                                            <label style="width:110px;">วันที่(จ่ายต่างหาก)</label>
+                                            <div class="input-group" style="position: absolute; display: inline-table;">
+                                                {!! Form::text('insurancefeepaidseparatelydate', null, array('style'=>'height: 22px; padding:0;','class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'insurancefeepaidseparatelydate')) !!}
+                                                <span class="input-group-addon" style="padding:1px;">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-group" style="margin-left:10px;">
                                         <div style="width:540px; float:left; margin-right:20px;">
-                                            <label style="width:auto; padding-left:25px;">4.2 เลขที่ใบรับเงิน</label>
+                                            <label style="width:auto; padding-left:48px;"> เลขที่ใบรับเงิน</label>
                                             {!! Form::number('cashpledgereceiptbookno', null, array('style'=>'width: 50px; height: 22px; padding:0; text-align:center;','id'=>'cashpledgereceiptbookno')) !!}
                                             <label style="width:auto;">/</label>
                                             {!! Form::number('cashpledgereceiptno', null, array('style'=>'width: 50px; height: 22px; padding:0; text-align:center;','id'=>'cashpledgereceiptno')) !!}
@@ -1143,24 +1465,51 @@
                                                 </span>
                                             </div>
                                         </div>
+                                        <div style="width:540px; float:left;">
+                                            <label style="width:85px; text-align:left;">เบี้ยสุทธิ</label>
+                                            {!! Form::number('insurancepremiumnet', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:black; text-align:right;','id'=>'insurancepremiumnet','onchange'=>'CalInsurancefeepaidseparatelytotal();')) !!}
+                                            <label style="text-align:left;">com %</label>
+                                            {!! Form::number('insurancepremiumcom', null, array('step' => '0.01','style'=>'width: 55px; height: 22px; padding:0; color:black; text-align:right;','id'=>'insurancepremiumcom','onchange'=>'CalInsurancefeepaidseparatelytotal();')) !!}
+                                            <label style="text-align:left;">รวมจ่าย</label>
+                                            {!! Form::number('insurancefeepaidseparatelytotal', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:black; text-align:right;','id'=>'insurancefeepaidseparatelytotal')) !!}
+                                        </div>
                                     </div>
                                     <div class="form-group" style="margin-left:10px;">
                                         <div style="width:540px; float:left; margin-right:20px;">
-                                            <label style="width:388px; font-weight:bold; padding-left:55px;">รวมรายการหักเงินมัดจำ
+                                            <label style="width:388px; font-weight:bold; padding-left:55px;">รวมรายการเงินมัดจำ
                                                 (18)+(19)</label>
                                             <label class="underline_db" style="width:100px;"
                                                    id="totalcashpledge">{{$accountingdetail->totalcashpledge}}</label>
                                             <label style="width:45px; text-align:right;">(20)</label>
                                         </div>
+                                        <div style="width:540px; float:left;">
+                                            <label style="width:85px; text-align:left;">พ.ร.บ. จ่ายเงิน</label>
+                                            {!! Form::select('compulsorymotorinsurancefeepayment', array(null => 'เลือก', 0 => 'หักจากยอดจัด', 1 => 'จ่ายต่างหาก'), null, array('style' => 'padding:0; height:23px; width:100px;', 'id'=>'compulsorymotorinsurancefeepayment', 'onchange'=>'CompulsorymotorinsurancefeepaymentChange(this)')) !!}
+                                            <label style="width:110px;">วันที่(จ่ายต่างหาก)</label>
+                                            <div class="input-group" style="position: absolute; display: inline-table;">
+                                                {!! Form::text('compulsorymotorinsurancefeepaidseparatelydate', null, array('style'=>'height: 22px; padding:0;','class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'compulsorymotorinsurancefeepaidseparatelydate')) !!}
+                                                <span class="input-group-addon" style="padding:1px;">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-group" style="margin-left:10px;">
                                         <div style="width:540px; float:left; margin-right:20px;">
                                             <label style="width:388px; font-weight:bold;">รวมเงินสดที่ได้รับ ณ.วันรับรถ
-                                                (1)+(11)+(17)-(20)</label>
+                                                (1)+(11)+(17)+(20)</label>
                                             <label class="underline_db"
                                                    style="width:100px; color: red; font-weight: bold;"
                                                    id="totalcash">{{$accountingdetail->totalcash}}</label>
                                             <label style="width:45px; text-align:right;">(21)</label>
+                                        </div>
+                                        <div style="width:540px; float:left;">
+                                            <label style="width:85px; text-align:left;">เบี้ยสุทธิ</label>
+                                            {!! Form::number('compulsorymotorinsurancepremiumnet', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:black; text-align:right;','id'=>'compulsorymotorinsurancepremiumnet','onchange'=>'CalCompulsorymotorinsurancefeepaidseparatelytotal();')) !!}
+                                            <label style="text-align:left;">com %</label>
+                                            {!! Form::number('compulsorymotorinsurancepremiumcom', null, array('step' => '0.01','style'=>'width: 55px; height: 22px; padding:0; color:black; text-align:right;','id'=>'compulsorymotorinsurancepremiumcom','onchange'=>'CalCompulsorymotorinsurancefeepaidseparatelytotal();')) !!}
+                                            <label style="text-align:left;">รวมจ่าย</label>
+                                            {!! Form::number('compulsorymotorinsurancefeepaidseparatelytotal', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:black; text-align:right;','id'=>'compulsorymotorinsurancefeepaidseparatelytotal')) !!}
                                         </div>
                                     </div>
 
@@ -1342,12 +1691,12 @@
                                             <label style="width:70px;"></label>
                                             <label style="width:70px;"></label>
                                             <label style="width:20px;"></label>
-                                            <label class="dotted" style="width:100px; text-align:right;"
+                                            <label class="underline" style="width:100px; text-align:right;"
                                                    id="note2insurancepremium">{{$accountingdetail->note2insurancepremium}}</label>
                                             <label style="width:20px;"></label>
-                                            <label class="dotted" style="width:100px; text-align:right;">-</label>
+                                            <label class="underline" style="width:100px; text-align:right;">-</label>
                                             <label style="width:20px;"></label>
-                                            <label class="dotted" style="width:100px; text-align:right;">-</label>
+                                            <label class="underline" style="width:100px; text-align:right;">-</label>
                                         </div>
                                     </div>
                                     <div class="form-group" style="margin-left:10px;">
@@ -1363,13 +1712,13 @@
                                             <label style="width:70px;"></label>
                                             <label style="width:70px;"></label>
                                             <label style="width:20px;"></label>
-                                            <label class="underline" style="width:100px; text-align:right;"
+                                            <label class="underline_db" style="width:100px; text-align:right;"
                                                    id="note2total1">{{$accountingdetail->note2total1}}</label>
                                             <label style="width:20px;"></label>
-                                            <label class="underline" style="width:100px; text-align:right;"
+                                            <label class="underline_db" style="width:100px; text-align:right;"
                                                    id="note2total2">{{$accountingdetail->note2total2}}</label>
                                             <label style="width:20px;"></label>
-                                            <label class="underline" style="width:100px; text-align:right;"
+                                            <label class="underline_db" style="width:100px; text-align:right;"
                                                    id="note2total3">{{$accountingdetail->note2total3}}</label>
                                         </div>
                                     </div>
@@ -1379,9 +1728,8 @@
                                             <label style="width:95px; padding-left:25px;">SUBSIDISE</label>
                                             <label class="dotted" style="width:100px; text-align:center;"
                                                    id="incasefinacesubsidise">{{$accountingdetail->incasefinacesubsidise}}</label>
-                                            <label style="width:30px; text-align: center;">Vat...</label>
-                                            <label class="dotted" style="width:100px; text-align:center;"
-                                                   id="incasefinacesubsidisevat">{{$accountingdetail->incasefinacesubsidisevat}}</label>
+                                            <label style="width:30px; text-align: center;"></label>
+                                            <label style="width:100px; text-align:center;"></label>
                                             <label style="width:21px;"></label>
                                             <label class="underline" style="width:100px; color:red; text-align:right;"
                                                    id="incasefinacesubsidisewithvat">{{$accountingdetail->incasefinacesubsidisewithvat}}</label>
@@ -1426,7 +1774,7 @@
                                             {!! Form::number('incasefinacecomfinvat', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right;','id'=>'incasefinacecomfinvat','onchange'=>'IncasefinacecomfinvatChange();')) !!}
                                             {!! Form::hidden('systemcalincasefinacecomfinvat',null,array('id'=>'systemcalincasefinacecomfinvat')) !!}
                                             <label style="width:21px;"></label>
-                                            {!! Form::number('incasefinacecomfinamountwithvat', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right;','id'=>'incasefinacecomfinamountwithvat')) !!}
+                                            {!! Form::number('incasefinacecomfinamountwithvat', null, array('step' => '0.01','style'=>'width: 100px; height: 22px; padding:0; color:red; text-align:right;','id'=>'incasefinacecomfinamountwithvat','onchange'=>'IncasefinacecomfinamountwithvatChange();')) !!}
                                             {!! Form::hidden('systemcalincasefinacecomfinamountwithvat',null,array('id'=>'systemcalincasefinacecomfinamountwithvat')) !!}
                                         </div>
                                         <div style="width:540px; float:left;">
@@ -1515,6 +1863,9 @@
                                             <label style="width:30px; text-align: center; font-weight:bold;">Vat...</label>
                                             <label class="dotted" style="width:100px; color:red; text-align:right;"
                                                    id="incasefinacetotalcomvat">{{$accountingdetail->incasefinacetotalcomvat}}</label>
+                                            <label style="width:21px;"></label>
+                                            <label style="width:100px; color:red; text-align:right;"
+                                                   id="incasefinacetotalcomamountwithvat">{{$accountingdetail->incasefinacetotalcomamountwithvat}}</label>
                                         </div>
                                         <div style="width:540px; float:left;">
                                         </div>
@@ -1770,6 +2121,26 @@
             return 0;
         }
 
+        function compare2(a, b) {
+            if (a.accountgroup != b.accountgroup) {
+                if (a.accountgroup < b.accountgroup)
+                    return -1;
+                if (a.accountgroup > b.accountgroup)
+                    return 1;
+            }
+            else {
+                var adateArr = a.date.split("-");
+                var bdateArr = b.date.split("-");
+                var newadate = new Date(adateArr[1] + '-' + adateArr[2] + '-' + adateArr[0]);
+                var newbdate = new Date(bdateArr[1] + '-' + bdateArr[2] + '-' + bdateArr[0]);
+                if (newadate.getTime() < newbdate.getTime())
+                    return -1;
+                if (newadate.getTime() > newbdate.getTime())
+                    return 1;
+                return 0;
+            }
+        }
+
         var receiveAndPayData0 = [
                 @foreach ($receiveAndPayDatas0 as $data)
             {
@@ -1783,7 +2154,7 @@
             @endforeach
         ];
 
-        receiveAndPayData0.sort(compare);
+        receiveAndPayData0.sort(compare2);
 
         var receiveAndPayData1 = [
                 @foreach ($receiveAndPayDatas1 as $data)
@@ -1798,7 +2169,7 @@
             @endforeach
         ];
 
-        receiveAndPayData1.sort(compare);
+        receiveAndPayData1.sort(compare2);
 
         onclickSubmitLocal = function (options, postdata) {
             var $this = $(this), p = $(this).jqGrid("getGridParam"),// p = this.p,
@@ -2528,10 +2899,18 @@
             }).trigger('resize.chosen');
 
             $('.date-picker').parent().width(140);
+            $('#cashpledgeredlabelreceiptdate').parent().width(98);
             $('#cashpledgereceiptdate').parent().width(98);
+            $('#insurancefeepaidseparatelydate').parent().width(98);
+            $('#compulsorymotorinsurancefeepaidseparatelydate').parent().width(98);
+            $('#payinadvanceamountreimbursementdate').parent().width(98);
 
             $('.date-picker').width(90);
+            $('#cashpledgeredlabelreceiptdate').width(80);
             $('#cashpledgereceiptdate').width(80);
+            $('#insurancefeepaidseparatelydate').width(80);
+            $('#compulsorymotorinsurancefeepaidseparatelydate').width(80);
+            $('#payinadvanceamountreimbursementdate').width(80);
 
             @if($accountingdetail->carpaymentid != null && $accountingdetail->carpaymentid > 0 && $accountingdetail->purchasetype == 0)
                 $("#incasefinace").css("display", "none");
@@ -2540,6 +2919,21 @@
             @if($oper == 'view')
                 $("#form-accountingdetail :input").prop("disabled", true);
             $(".chosen-select").attr('disabled', true).trigger("chosen:updated");
+                    @else
+            var insurancefeepayment = $('#insurancefeepayment').val();
+            if (insurancefeepayment == 0) {
+                $("#insurancefeepaidseparatelydate").prop("disabled", true);
+                $("#insurancepremiumnet").prop("disabled", true);
+                $("#insurancepremiumcom").prop("disabled", true);
+                $("#insurancefeepaidseparatelytotal").prop("disabled", true);
+            }
+            var compulsorymotorinsurancefeepayment = $('#compulsorymotorinsurancefeepayment').val();
+            if (compulsorymotorinsurancefeepayment == 0) {
+                $("#compulsorymotorinsurancefeepaidseparatelydate").prop("disabled", true);
+                $("#compulsorymotorinsurancepremiumnet").prop("disabled", true);
+                $("#compulsorymotorinsurancepremiumcom").prop("disabled", true);
+                $("#compulsorymotorinsurancefeepaidseparatelytotal").prop("disabled", true);
+            }
             @endif
         });
 

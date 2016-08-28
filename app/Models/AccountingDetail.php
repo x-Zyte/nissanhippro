@@ -12,6 +12,13 @@ class AccountingDetail extends Model
 
     protected $fillable = ['provinceid', 'branchid', 'carpaymentid', 'invoiceno', 'date',
         'additionalopenbill', 'insurancefeereceiptcondition', 'compulsorymotorinsurancefeereceiptcondition',
+        'payinadvanceamountreimbursementdate', 'payinadvanceamountreimbursementdocno',
+        'note1insurancefeereceiptcondition', 'note1compulsorymotorinsurancefeereceiptcondition',
+        'insurancefeepayment', 'insurancefeepaidseparatelydate',
+        'insurancepremiumnet', 'insurancepremiumcom', 'insurancefeepaidseparatelytotal',
+        'compulsorymotorinsurancefeepayment', 'compulsorymotorinsurancefeepaidseparatelydate',
+        'compulsorymotorinsurancepremiumnet', 'compulsorymotorinsurancepremiumcom', 'compulsorymotorinsurancefeepaidseparatelytotal',
+        'cashpledgeredlabelreceiptbookno', 'cashpledgeredlabelreceiptno', 'cashpledgeredlabelreceiptdate',
         'cashpledgereceiptbookno', 'cashpledgereceiptno', 'cashpledgereceiptdate',
         'systemcalincasefinacecomfinamount', 'systemcalincasefinacecomfinvat', 'systemcalincasefinacecomfinamountwithvat', 'systemcalincasefinacecomfinwhtax', 'systemcalincasefinacecomfintotal',
         'incasefinacecomfinamount', 'incasefinacecomfinvat', 'incasefinacecomfinamountwithvat', 'incasefinacecomfinwhtax', 'incasefinacecomfintotal',

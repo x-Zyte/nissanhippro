@@ -24,15 +24,23 @@ class AccountingDetailController extends Controller
 
     protected $menuPermissionName = "รายละเอียดเพื่อการบันทึกบัญชี";
 
-    protected $arrNotFormatted = array("id", "purchasetype", "carpaymentid", "hasinsurancefee", "hascompulsorymotorinsurancefee"
+    protected $arrNotFormatted = array("id", "purchasetype", "carpaymentid", "hasinsurancefee", "hascompulsorymotorinsurancefee", "hascashpledgeredlabel"
     , "systemcalincasefinacecomfinamount", "systemcalincasefinacecomfinvat", "systemcalincasefinacecomfinamountwithvat"
     , "systemcalincasefinacecomfinwhtax", "systemcalincasefinacecomfintotal", "receivedcashfromfinacenet"
     , "receivedcashfromfinacenetshort", "receivedcashfromfinacenetover"
     , "totalaccount1", "totalaccount1short", "totalaccount1over", "totalaccount2", "totalaccount2short", "totalaccount2over"
-    , "invoiceno", "additionalopenbill", "cashpledgereceiptbookno"
-    , "cashpledgereceiptno", "incasefinacecomfinamount", "incasefinacecomfinvat", "incasefinacecomfinamountwithvat"
-    , "incasefinacecomfinwhtax", "incasefinacecomfintotal", "oldcarcomamount", "adj", "insurancefeereceiptcondition"
-    , "compulsorymotorinsurancefeereceiptcondition"
+    , "invoiceno", "additionalopenbill", "deliverycardate"
+    , "cashpledgeredlabelreceiptbookno", "cashpledgeredlabelreceiptno", "cashpledgeredlabelreceiptdate", "redlabelreturndate"
+    , "cashpledgereceiptbookno", "cashpledgereceiptno", "cashpledgereceiptdate"
+    , "incasefinacecomfinamount", "incasefinacecomfinvat", "incasefinacecomfinamountwithvat"
+    , "incasefinacecomfinwhtax", "incasefinacecomfintotal", "oldcarcomamount", "adj"
+    , "insurancefeereceiptcondition", "compulsorymotorinsurancefeereceiptcondition"
+    , "payinadvanceamountreimbursementdate", "payinadvanceamountreimbursementdocno"
+    , "note1insurancefeereceiptcondition", "note1compulsorymotorinsurancefeereceiptcondition"
+    , 'insurancefeepayment', 'insurancefeepaidseparatelydate'
+    , 'insurancepremiumnet', 'insurancepremiumcom', 'insurancefeepaidseparatelytotal'
+    , 'compulsorymotorinsurancefeepayment', 'compulsorymotorinsurancefeepaidseparatelydate'
+    , 'compulsorymotorinsurancepremiumnet', 'compulsorymotorinsurancepremiumcom', 'compulsorymotorinsurancefeepaidseparatelytotal'
     , "carno", "installmentsinadvance", "installments", "comfinyear"
     , "createdby", "createddate", "modifiedby", "modifieddate", "submodel"
     );
@@ -137,7 +145,7 @@ class AccountingDetailController extends Controller
                 $accountingdetail->realsalespricewithoutvat = $accountingdetail->realsalesprice;
             } else {
                 $accountingdetail->finalopenbill = $finalopenbill;
-                $vat = $finalopenbill * 0.07;
+                $vat = ($finalopenbill * 7.00) / 107.00;
                 $accountingdetail->vatoffinalopenbill = $vat;
                 $accountingdetail->finalopenbillwithoutvat = ($finalopenbill - $vat);
                 $realsalesprice = $accountingdetail->realsalesprice;
@@ -155,6 +163,12 @@ class AccountingDetailController extends Controller
                 $incasefinacetotalcomvat = $incasefinacecomfinvat + $accountingdetail->incasefinacecomextravat
                     + $accountingdetail->incasefinacecompavat;
                 $accountingdetail->incasefinacetotalcomvat = $incasefinacetotalcomvat;
+            }
+            $incasefinacecomfinamountwithvat = SupportRequest::old('incasefinacecomfinamountwithvat');
+            if ($incasefinacecomfinamountwithvat != null) {
+                $incasefinacetotalcomamountwithvat = $incasefinacecomfinamountwithvat + $accountingdetail->incasefinacecomextraamountwithvat
+                    + $accountingdetail->incasefinacecompaamountwithvat;
+                $accountingdetail->incasefinacetotalcomamountwithvat = $incasefinacetotalcomamountwithvat;
             }
             $incasefinacecomfinwhtax = SupportRequest::old('incasefinacecomfinwhtax');
             if ($incasefinacecomfinwhtax != null) {
@@ -298,6 +312,14 @@ class AccountingDetailController extends Controller
             'additionalopenbill' => 'required',
             'insurancefeereceiptcondition' => 'required_if:hasinsurancefee,1',
             'compulsorymotorinsurancefeereceiptcondition' => 'required_if:hascompulsorymotorinsurancefee,1',
+            'note1insurancefeereceiptcondition' => 'required_if:hasinsurancefee,1',
+            'note1compulsorymotorinsurancefeereceiptcondition' => 'required_if:hascompulsorymotorinsurancefee,1',
+            'insurancefeepayment' => 'required_if:hasinsurancefee,1',
+            'compulsorymotorinsurancefeepayment' => 'required_if:hascompulsorymotorinsurancefee,1',
+            'cashpledgeredlabelreceiptbookno' => 'required_if:hascashpledgeredlabel,1',
+            'cashpledgeredlabelreceiptno' => 'required_if:hascashpledgeredlabel,1',
+            'cashpledgeredlabelreceiptdate' => 'required_if:hascashpledgeredlabel,1',
+
             'cashpledgereceiptbookno' => 'required',
             'cashpledgereceiptno' => 'required',
             'cashpledgereceiptdate' => 'required',
@@ -314,11 +336,18 @@ class AccountingDetailController extends Controller
                 'invoiceno.required' => 'เลขที่ใบกำกับ จำเป็นต้องกรอก',
                 'date.required' => 'วันที่ จำเป็นต้องกรอก',
                 'additionalopenbill.required' => 'ราคาเปิดบิลเพิ่มเติม จำเป็นต้องกรอก',
-                'insurancefeereceiptcondition.required_if' => 'เงื่อนไข ค่าเบี้ย ป.1 จำเป็นต้องเลือก',
-                'compulsorymotorinsurancefeereceiptcondition.required_if' => 'เงื่อนไข ค่า พ.ร.บ. จำเป็นต้องเลือก',
-                'cashpledgereceiptbookno.required' => 'ใบรับเงิน เล่มที่ จำเป็นต้องกรอก',
-                'cashpledgereceiptno.required' => 'ใบรับเงิน เลขที่ จำเป็นต้องกรอก',
-                'cashpledgereceiptdate.required' => 'ใบรับเงิน วันที่ จำเป็นต้องกรอก',
+                'insurancefeereceiptcondition.required_if' => 'เงื่อนไข AC1* ค่าเบี้ย ป.1 จำเป็นต้องเลือก',
+                'compulsorymotorinsurancefeereceiptcondition.required_if' => 'เงื่อนไข AC1* ค่า พ.ร.บ. จำเป็นต้องเลือก',
+                'note1insurancefeereceiptcondition.required_if' => 'เงื่อนไข AC2* ค่าเบี้ย ป.1 จำเป็นต้องเลือก',
+                'note1compulsorymotorinsurancefeereceiptcondition.required_if' => 'เงื่อนไข AC2* ค่า พ.ร.บ. จำเป็นต้องเลือก',
+                'insurancefeepayment.required_if' => 'ป.1 จ่ายเงิน จำเป็นต้องเลือก',
+                'compulsorymotorinsurancefeepayment.required_if' => 'พ.ร.บ. จ่ายเงิน จำเป็นต้องเลือก',
+                'cashpledgeredlabelreceiptbookno.required_if' => 'เงินมัดจำป้ายแดง เล่มที่ใบรับเงิน จำเป็นต้องกรอก',
+                'cashpledgeredlabelreceiptno.required_if' => 'เงินมัดจำป้ายแดง เลขที่ใบรับเงิน จำเป็นต้องกรอก',
+                'cashpledgeredlabelreceiptdate.required_if' => 'เงินมัดจำป้ายแดง วันที่ใบรับเงิน จำเป็นต้องกรอก',
+                'cashpledgereceiptbookno.required' => 'เงินมัดจำรถ เล่มที่ใบรับเงิน จำเป็นต้องกรอก',
+                'cashpledgereceiptno.required' => 'เงินมัดจำรถ เลขที่ใบรับเงิน จำเป็นต้องกรอก',
+                'cashpledgereceiptdate.required' => 'เงินมัดจำรถ วันที่ใบรับเงิน จำเป็นต้องกรอก',
                 'incasefinacecomfinamount.required_if' => 'Com Fin... จำเป็นต้องกรอก',
                 'incasefinacecomfinvat.required_if' => 'Com Fin Vat... จำเป็นต้องกรอก',
                 'incasefinacecomfinamountwithvat.required_if' => 'Com Fin Total... จำเป็นต้องกรอก',
@@ -343,15 +372,82 @@ class AccountingDetailController extends Controller
         $model->date = date('Y-m-d', strtotime($input['date']));
         $model->additionalopenbill = $input['additionalopenbill'];
 
-        if ($input['hasinsurancefee'] == 1)
-            $model->insurancefeereceiptcondition = $input['insurancefeereceiptcondition'];
+        if ($input['payinadvanceamountreimbursementdate'] != null && $input['payinadvanceamountreimbursementdate'] != '')
+            $model->payinadvanceamountreimbursementdate = date('Y-m-d', strtotime($input['payinadvanceamountreimbursementdate']));
         else
-            $model->insurancefeereceiptcondition = null;
+            $model->payinadvanceamountreimbursementdate = null;
+        if ($input['payinadvanceamountreimbursementdocno'] != null && $input['payinadvanceamountreimbursementdocno'] != '')
+            $model->payinadvanceamountreimbursementdocno = $input['payinadvanceamountreimbursementdocno'];
+        else
+            $model->payinadvanceamountreimbursementdocno = null;
 
-        if ($input['hascompulsorymotorinsurancefee'] == 1)
+        if ($input['hasinsurancefee'] == 1) {
+            $model->insurancefeereceiptcondition = $input['insurancefeereceiptcondition'];
+            $model->note1insurancefeereceiptcondition = $input['note1insurancefeereceiptcondition'];
+            $model->insurancefeepayment = $input['insurancefeepayment'];
+            if ($input['insurancefeepayment'] == 1) {
+                if ($input['insurancefeepaidseparatelydate'] != null && $input['insurancefeepaidseparatelydate'] != '')
+                    $model->insurancefeepaidseparatelydate = date('Y-m-d', strtotime($input['insurancefeepaidseparatelydate']));
+                if ($input['insurancepremiumnet'] != null && $input['insurancepremiumnet'] != '')
+                    $model->insurancepremiumnet = $input['insurancepremiumnet'];
+                if ($input['insurancepremiumcom'] != null && $input['insurancepremiumcom'] != '')
+                    $model->insurancepremiumcom = $input['insurancepremiumcom'];
+                if ($input['insurancefeepaidseparatelytotal'] != null && $input['insurancefeepaidseparatelytotal'] != '')
+                    $model->insurancefeepaidseparatelytotal = $input['insurancefeepaidseparatelytotal'];
+            } else {
+                $model->insurancefeepaidseparatelydate = null;
+                $model->insurancepremiumnet = null;
+                $model->insurancepremiumcom = null;
+                $model->insurancefeepaidseparatelytotal = null;
+            }
+        } else {
+            $model->insurancefeereceiptcondition = null;
+            $model->note1insurancefeereceiptcondition = null;
+            $model->insurancefeepayment = null;
+            $model->insurancefeepaidseparatelydate = null;
+            $model->insurancepremiumnet = null;
+            $model->insurancepremiumcom = null;
+            $model->insurancefeepaidseparatelytotal = null;
+        }
+
+        if ($input['hascompulsorymotorinsurancefee'] == 1) {
             $model->compulsorymotorinsurancefeereceiptcondition = $input['compulsorymotorinsurancefeereceiptcondition'];
-        else
+            $model->note1compulsorymotorinsurancefeereceiptcondition = $input['note1compulsorymotorinsurancefeereceiptcondition'];
+            $model->compulsorymotorinsurancefeepayment = $input['compulsorymotorinsurancefeepayment'];
+            if ($input['compulsorymotorinsurancefeepayment'] == 1) {
+                if ($input['compulsorymotorinsurancefeepaidseparatelydate'] != null && $input['compulsorymotorinsurancefeepaidseparatelydate'] != '')
+                    $model->compulsorymotorinsurancefeepaidseparatelydate = date('Y-m-d', strtotime($input['compulsorymotorinsurancefeepaidseparatelydate']));
+                if ($input['compulsorymotorinsurancepremiumnet'] != null && $input['compulsorymotorinsurancepremiumnet'] != '')
+                    $model->compulsorymotorinsurancepremiumnet = $input['compulsorymotorinsurancepremiumnet'];
+                if ($input['compulsorymotorinsurancepremiumcom'] != null && $input['compulsorymotorinsurancepremiumcom'] != '')
+                    $model->compulsorymotorinsurancepremiumcom = $input['compulsorymotorinsurancepremiumcom'];
+                if ($input['compulsorymotorinsurancefeepaidseparatelytotal'] != null && $input['compulsorymotorinsurancefeepaidseparatelytotal'] != '')
+                    $model->compulsorymotorinsurancefeepaidseparatelytotal = $input['compulsorymotorinsurancefeepaidseparatelytotal'];
+            } else {
+                $model->compulsorymotorinsurancefeepaidseparatelydate = null;
+                $model->compulsorymotorinsurancepremiumnet = null;
+                $model->compulsorymotorinsurancepremiumcom = null;
+                $model->compulsorymotorinsurancefeepaidseparatelytotal = null;
+            }
+        } else {
             $model->compulsorymotorinsurancefeereceiptcondition = null;
+            $model->note1compulsorymotorinsurancefeereceiptcondition = null;
+            $model->compulsorymotorinsurancefeepayment = null;
+            $model->compulsorymotorinsurancefeepaidseparatelydate = null;
+            $model->compulsorymotorinsurancepremiumnet = null;
+            $model->compulsorymotorinsurancepremiumcom = null;
+            $model->compulsorymotorinsurancefeepaidseparatelytotal = null;
+        }
+
+        if ($input['hascashpledgeredlabel'] == 1) {
+            $model->cashpledgeredlabelreceiptbookno = $input['cashpledgeredlabelreceiptbookno'];
+            $model->cashpledgeredlabelreceiptno = $input['cashpledgeredlabelreceiptno'];
+            $model->cashpledgeredlabelreceiptdate = date('Y-m-d', strtotime($input['cashpledgeredlabelreceiptdate']));
+        } else {
+            $model->cashpledgeredlabelreceiptbookno = null;
+            $model->cashpledgeredlabelreceiptno = null;
+            $model->cashpledgeredlabelreceiptdate = null;
+        }
 
         $model->cashpledgereceiptbookno = $input['cashpledgereceiptbookno'];
         $model->cashpledgereceiptno = $input['cashpledgereceiptno'];
@@ -447,19 +543,72 @@ class AccountingDetailController extends Controller
         $accountingdetail->date = date('d-m-Y', strtotime($tempModel->date));
         $accountingdetail->additionalopenbill = $tempModel->additionalopenbill;
         $accountingdetail->insurancefeereceiptcondition = $tempModel->insurancefeereceiptcondition;
+        if ($tempModel->payinadvanceamountreimbursementdate != null)
+            $accountingdetail->payinadvanceamountreimbursementdate = date('d-m-Y', strtotime($tempModel->payinadvanceamountreimbursementdate));
+        else
+            $accountingdetail->payinadvanceamountreimbursementdate = null;
+        $accountingdetail->payinadvanceamountreimbursementdocno = $tempModel->payinadvanceamountreimbursementdocno;
+        $accountingdetail->note1insurancefeereceiptcondition = $tempModel->note1insurancefeereceiptcondition;
+        $accountingdetail->insurancefeepayment = $tempModel->insurancefeepayment;
+        if ($tempModel->insurancefeepayment == 1) {
+            $accountingdetail->totalincasefinace = $accountingdetail->totalincasefinace - $accountingdetail->incasefinaceinsurancefee;
+            $accountingdetail->incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash + $accountingdetail->incasefinaceinsurancefee;
+            $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacehassubsidisereceivedcash + $accountingdetail->incasefinaceinsurancefee;
+            $accountingdetail->incasefinaceinsurancefee = 0;
+        }
+        if ($tempModel->insurancefeepaidseparatelydate != null)
+            $accountingdetail->insurancefeepaidseparatelydate = date('d-m-Y', strtotime($tempModel->insurancefeepaidseparatelydate));
+        else
+            $accountingdetail->insurancefeepaidseparatelydate = null;
+        $accountingdetail->insurancepremiumnet = $tempModel->insurancepremiumnet;
+        $accountingdetail->insurancepremiumcom = $tempModel->insurancepremiumcom;
+        $accountingdetail->insurancefeepaidseparatelytotal = $tempModel->insurancefeepaidseparatelytotal;
 
-        if ($tempModel->insurancefeereceiptcondition == 0 || $tempModel->insurancefeereceiptcondition == 1)
+        if ($tempModel->insurancefeereceiptcondition == 0 || $tempModel->insurancefeereceiptcondition == 1) {
             $accountingdetail->hasinsurancefee = 1;
+            if ($tempModel->insurancefeereceiptcondition == 0) {
+                $accountingdetail->note2insurancefeewhtax = 0;
+                $accountingdetail->ins = 0;
+            }
+        }
         else
             $accountingdetail->hasinsurancefee = 0;
 
         $accountingdetail->compulsorymotorinsurancefeereceiptcondition = $tempModel->compulsorymotorinsurancefeereceiptcondition;
+        $accountingdetail->note1compulsorymotorinsurancefeereceiptcondition = $tempModel->note1compulsorymotorinsurancefeereceiptcondition;
+        $accountingdetail->compulsorymotorinsurancefeepayment = $tempModel->compulsorymotorinsurancefeepayment;
+        if ($tempModel->compulsorymotorinsurancefeepayment == 1) {
+            $accountingdetail->totalincasefinace = $accountingdetail->totalincasefinace - $accountingdetail->incasefinacecompulsorymotorinsurancefee;
+            $accountingdetail->incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash + $accountingdetail->incasefinacecompulsorymotorinsurancefee;
+            $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacehassubsidisereceivedcash + $accountingdetail->incasefinacecompulsorymotorinsurancefee;
+            $accountingdetail->incasefinacecompulsorymotorinsurancefee = 0;
+        }
+        if ($tempModel->compulsorymotorinsurancefeepaidseparatelydate != null)
+            $accountingdetail->compulsorymotorinsurancefeepaidseparatelydate = date('d-m-Y', strtotime($tempModel->compulsorymotorinsurancefeepaidseparatelydate));
+        else
+            $accountingdetail->compulsorymotorinsurancefeepaidseparatelydate = null;
+        $accountingdetail->compulsorymotorinsurancepremiumnet = $tempModel->compulsorymotorinsurancepremiumnet;
+        $accountingdetail->compulsorymotorinsurancepremiumcom = $tempModel->compulsorymotorinsurancepremiumcom;
+        $accountingdetail->compulsorymotorinsurancefeepaidseparatelytotal = $tempModel->compulsorymotorinsurancefeepaidseparatelytotal;
 
-        if ($tempModel->compulsorymotorinsurancefeereceiptcondition == 0 || $tempModel->compulsorymotorinsurancefeereceiptcondition == 1)
+        if ($tempModel->compulsorymotorinsurancefeereceiptcondition == 0 || $tempModel->compulsorymotorinsurancefeereceiptcondition == 1) {
             $accountingdetail->hascompulsorymotorinsurancefee = 1;
+            if ($tempModel->compulsorymotorinsurancefeereceiptcondition == 0) {
+                $accountingdetail->note2compulsorymotorinsurancefeewhtax = 0;
+                $accountingdetail->prb = 0;
+            }
+        }
         else
             $accountingdetail->hascompulsorymotorinsurancefee = 0;
 
+        $note2totalwhtax = $accountingdetail->note2insurancefeewhtax + $accountingdetail->note2compulsorymotorinsurancefeewhtax + $accountingdetail->note2subsidisewhtax;
+        $accountingdetail->note2totalwhtax = $note2totalwhtax;
+
+        $accountingdetail->cashpledgeredlabelreceiptbookno = $tempModel->cashpledgeredlabelreceiptbookno;
+        $accountingdetail->cashpledgeredlabelreceiptno = $tempModel->cashpledgeredlabelreceiptno;
+        if ($tempModel->cashpledgeredlabelreceiptdate != null)
+            $accountingdetail->cashpledgeredlabelreceiptdate = date('d-m-Y', strtotime($tempModel->cashpledgeredlabelreceiptdate));
+        else $accountingdetail->cashpledgeredlabelreceiptdate = null;
         $accountingdetail->cashpledgereceiptbookno = $tempModel->cashpledgereceiptbookno;
         $accountingdetail->cashpledgereceiptno = $tempModel->cashpledgereceiptno;
         $accountingdetail->cashpledgereceiptdate = date('d-m-Y', strtotime($tempModel->cashpledgereceiptdate));
@@ -475,6 +624,8 @@ class AccountingDetailController extends Controller
             + $accountingdetail->incasefinacecomextraamount + $accountingdetail->incasefinacecompaamount;
         $accountingdetail->incasefinacetotalcomvat = $accountingdetail->incasefinacecomfinvat
             + $accountingdetail->incasefinacecomextravat + $accountingdetail->incasefinacecompavat;
+        $accountingdetail->incasefinacetotalcomamountwithvat = $accountingdetail->incasefinacecomfinamountwithvat
+            + $accountingdetail->incasefinacecomextraamountwithvat + $accountingdetail->incasefinacecompaamountwithvat;
         $accountingdetail->incasefinacetotalcomwhtax = $accountingdetail->incasefinacecomfinwhtax
             + $accountingdetail->incasefinacecomextrawhtax + $accountingdetail->incasefinacecompawhtax;
         $accountingdetail->incasefinacetotalcomtotal = $accountingdetail->incasefinacecomfintotal
@@ -521,7 +672,7 @@ class AccountingDetailController extends Controller
             $accountingdetail->realsalespricewithoutvat = $accountingdetail->realsalesprice;
         } else {
             $accountingdetail->finalopenbill = $finalopenbill;
-            $vat = $finalopenbill * 0.07;
+            $vat = ($finalopenbill * 7.00) / 107.00;
             $accountingdetail->vatoffinalopenbill = $vat;
             $accountingdetail->finalopenbillwithoutvat = ($finalopenbill - $vat);
             $realsalesprice = $accountingdetail->realsalesprice;
@@ -539,6 +690,12 @@ class AccountingDetailController extends Controller
             $incasefinacetotalcomvat = $incasefinacecomfinvat + $accountingdetail->incasefinacecomextravat
                 + $accountingdetail->incasefinacecompavat;
             $accountingdetail->incasefinacetotalcomvat = $incasefinacetotalcomvat;
+        }
+        $incasefinacecomfinamountwithvat = SupportRequest::old('incasefinacecomfinamountwithvat');
+        if ($incasefinacecomfinamountwithvat != null) {
+            $incasefinacetotalcomamountwithvat = $incasefinacecomfinamountwithvat + $accountingdetail->incasefinacecomextraamountwithvat
+                + $accountingdetail->incasefinacecompaamountwithvat;
+            $accountingdetail->incasefinacetotalcomamountwithvat = $incasefinacetotalcomamountwithvat;
         }
         $incasefinacecomfinwhtax = SupportRequest::old('incasefinacecomfinwhtax');
         if ($incasefinacecomfinwhtax != null) {
@@ -691,19 +848,72 @@ class AccountingDetailController extends Controller
         $accountingdetail->date = date('d-m-Y', strtotime($tempModel->date));
         $accountingdetail->additionalopenbill = $tempModel->additionalopenbill;
         $accountingdetail->insurancefeereceiptcondition = $tempModel->insurancefeereceiptcondition;
+        if ($tempModel->payinadvanceamountreimbursementdate != null)
+            $accountingdetail->payinadvanceamountreimbursementdate = date('d-m-Y', strtotime($tempModel->payinadvanceamountreimbursementdate));
+        else
+            $accountingdetail->payinadvanceamountreimbursementdate = null;
+        $accountingdetail->payinadvanceamountreimbursementdocno = $tempModel->payinadvanceamountreimbursementdocno;
+        $accountingdetail->note1insurancefeereceiptcondition = $tempModel->note1insurancefeereceiptcondition;
+        $accountingdetail->insurancefeepayment = $tempModel->insurancefeepayment;
+        if ($tempModel->insurancefeepayment == 1) {
+            $accountingdetail->totalincasefinace = $accountingdetail->totalincasefinace - $accountingdetail->incasefinaceinsurancefee;
+            $accountingdetail->incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash + $accountingdetail->incasefinaceinsurancefee;
+            $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacehassubsidisereceivedcash + $accountingdetail->incasefinaceinsurancefee;
+            $accountingdetail->incasefinaceinsurancefee = 0;
+        }
+        if ($tempModel->insurancefeepaidseparatelydate != null)
+            $accountingdetail->insurancefeepaidseparatelydate = date('d-m-Y', strtotime($tempModel->insurancefeepaidseparatelydate));
+        else
+            $accountingdetail->insurancefeepaidseparatelydate = null;
+        $accountingdetail->insurancepremiumnet = $tempModel->insurancepremiumnet;
+        $accountingdetail->insurancepremiumcom = $tempModel->insurancepremiumcom;
+        $accountingdetail->insurancefeepaidseparatelytotal = $tempModel->insurancefeepaidseparatelytotal;
 
-        if ($tempModel->insurancefeereceiptcondition == 0 || $tempModel->insurancefeereceiptcondition == 1)
+        if ($tempModel->insurancefeereceiptcondition == 0 || $tempModel->insurancefeereceiptcondition == 1) {
             $accountingdetail->hasinsurancefee = 1;
+            if ($tempModel->insurancefeereceiptcondition == 0) {
+                $accountingdetail->note2insurancefeewhtax = 0;
+                $accountingdetail->ins = 0;
+            }
+        }
         else
             $accountingdetail->hasinsurancefee = 0;
 
         $accountingdetail->compulsorymotorinsurancefeereceiptcondition = $tempModel->compulsorymotorinsurancefeereceiptcondition;
+        $accountingdetail->note1compulsorymotorinsurancefeereceiptcondition = $tempModel->note1compulsorymotorinsurancefeereceiptcondition;
+        $accountingdetail->compulsorymotorinsurancefeepayment = $tempModel->compulsorymotorinsurancefeepayment;
+        if ($tempModel->compulsorymotorinsurancefeepayment == 1) {
+            $accountingdetail->totalincasefinace = $accountingdetail->totalincasefinace - $accountingdetail->incasefinacecompulsorymotorinsurancefee;
+            $accountingdetail->incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash + $accountingdetail->incasefinacecompulsorymotorinsurancefee;
+            $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacehassubsidisereceivedcash + $accountingdetail->incasefinacecompulsorymotorinsurancefee;
+            $accountingdetail->incasefinacecompulsorymotorinsurancefee = 0;
+        }
+        if ($tempModel->compulsorymotorinsurancefeepaidseparatelydate != null)
+            $accountingdetail->compulsorymotorinsurancefeepaidseparatelydate = date('d-m-Y', strtotime($tempModel->compulsorymotorinsurancefeepaidseparatelydate));
+        else
+            $accountingdetail->compulsorymotorinsurancefeepaidseparatelydate = null;
+        $accountingdetail->compulsorymotorinsurancepremiumnet = $tempModel->compulsorymotorinsurancepremiumnet;
+        $accountingdetail->compulsorymotorinsurancepremiumcom = $tempModel->compulsorymotorinsurancepremiumcom;
+        $accountingdetail->compulsorymotorinsurancefeepaidseparatelytotal = $tempModel->compulsorymotorinsurancefeepaidseparatelytotal;
 
-        if ($tempModel->compulsorymotorinsurancefeereceiptcondition == 0 || $tempModel->compulsorymotorinsurancefeereceiptcondition == 1)
+        if ($tempModel->compulsorymotorinsurancefeereceiptcondition == 0 || $tempModel->compulsorymotorinsurancefeereceiptcondition == 1) {
             $accountingdetail->hascompulsorymotorinsurancefee = 1;
+            if ($tempModel->compulsorymotorinsurancefeereceiptcondition == 0) {
+                $accountingdetail->note2compulsorymotorinsurancefeewhtax = 0;
+                $accountingdetail->prb = 0;
+            }
+        }
         else
             $accountingdetail->hascompulsorymotorinsurancefee = 0;
 
+        $note2totalwhtax = $accountingdetail->note2insurancefeewhtax + $accountingdetail->note2compulsorymotorinsurancefeewhtax + $accountingdetail->note2subsidisewhtax;
+        $accountingdetail->note2totalwhtax = $note2totalwhtax;
+
+        $accountingdetail->cashpledgeredlabelreceiptbookno = $tempModel->cashpledgeredlabelreceiptbookno;
+        $accountingdetail->cashpledgeredlabelreceiptno = $tempModel->cashpledgeredlabelreceiptno;
+        if ($tempModel->cashpledgeredlabelreceiptdate != null)
+            $accountingdetail->cashpledgeredlabelreceiptdate = date('d-m-Y', strtotime($tempModel->cashpledgeredlabelreceiptdate));
+        else $accountingdetail->cashpledgeredlabelreceiptdate = null;
         $accountingdetail->cashpledgereceiptbookno = $tempModel->cashpledgereceiptbookno;
         $accountingdetail->cashpledgereceiptno = $tempModel->cashpledgereceiptno;
         $accountingdetail->cashpledgereceiptdate = date('d-m-Y', strtotime($tempModel->cashpledgereceiptdate));
@@ -752,7 +962,7 @@ class AccountingDetailController extends Controller
             $accountingdetail->realsalespricewithoutvat = $accountingdetail->realsalesprice;
         } else {
             $accountingdetail->finalopenbill = $finalopenbill;
-            $vat = $finalopenbill * 0.07;
+            $vat = ($finalopenbill * 7.00) / 107.00;
             $accountingdetail->vatoffinalopenbill = $vat;
             $accountingdetail->finalopenbillwithoutvat = ($finalopenbill - $vat);
             $realsalesprice = $accountingdetail->realsalesprice;

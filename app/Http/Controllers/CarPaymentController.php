@@ -1037,9 +1037,13 @@ class CarPaymentController extends Controller {
         $customer = Customer::find($carpreemption->buyercustomerid);
         $accountingdetail->customername = $customer->title . $customer->firstname . ' ' . $customer->lastname;
 
-        if ($carpayment->deliverycardate != null && $carpayment->deliverycardate != '')
+        if ($carpayment->deliverycardate != null && $carpayment->deliverycardate != '') {
             $accountingdetail->date = date('d-m-Y', strtotime($carpayment->deliverycardate));
-        else $accountingdetail->date = null;
+            $accountingdetail->deliverycardate = date('d-m-Y', strtotime($carpayment->deliverycardate));
+        } else {
+            $accountingdetail->date = null;
+            $accountingdetail->deliverycardate = "-";
+        }
 
         $pricelist = Pricelist::find($carpreemption->pricelistid);
         $accountingdetail->carpriceinpricelist = $pricelist->sellingpricewithaccessories;
@@ -1197,13 +1201,26 @@ class CarPaymentController extends Controller {
 
         $cashpledgeredlabel = $carpreemption->cashpledgeredlabel;
         $accountingdetail->cashpledgeredlabel = $cashpledgeredlabel;
+        if ($cashpledgeredlabel == null || $cashpledgeredlabel == 0)
+            $accountingdetail->hascashpledgeredlabel = 0;
+        else
+            $accountingdetail->hascashpledgeredlabel = 1;
+
+        $redlabelhistory = Redlabelhistory::where('carpreemptionid', $carpreemption->id)->first();
+        if ($redlabelhistory != null) {
+            if ($redlabelhistory->returndate != null)
+                $accountingdetail->redlabelreturndate = date('d-m-Y', strtotime($redlabelhistory->returndate));
+            else
+                $accountingdetail->redlabelreturndate = "-";
+        } else
+            $accountingdetail->redlabelreturndate = "ไม่เอาป้าย";
 
         $cashpledge = $carpreemption->cashpledge;
         $accountingdetail->cashpledge = $cashpledge;
 
-        $totalcashpledge = $cashpledgeredlabel + $cashpledge;
+        $totalcashpledge = $cashpledgeredlabel - $cashpledge;
         $accountingdetail->totalcashpledge = $totalcashpledge;
-        $totalcash = $realsalesprice + $totalotherfees + $totalinadvancefees - $totalcashpledge;
+        $totalcash = $realsalesprice + $totalotherfees + $totalinadvancefees + $totalcashpledge;
         $accountingdetail->totalcash = $totalcash;
 
         $finacecompany = FinaceCompany::find($carpreemption->finacecompanyid);
@@ -1339,7 +1356,7 @@ class CarPaymentController extends Controller {
             $totalincasefinace = $carpreemption->insurancefee + $cartype->actpaidincludevat + $firstinstallmentpayamount + $payinadvanceamount + $carpayment->insurancepremium;
             $accountingdetail->totalincasefinace = $totalincasefinace;
 
-            $accountingdetail->incasefinacereceivedcash = ($yodjud - $totalincasefinace);
+            $accountingdetail->incasefinacereceivedcash = ($yodjudwithinsurancepremium - $totalincasefinace);
             $note2total1 = $insurancefeefn + $compulsorymotorinsurancefeefn + $firstinstallmentpayamount + $payinadvanceamount + $carpayment->insurancepremium;
             $accountingdetail->note2total1 = $note2total1;
             $note2total2 = $note2insurancefeeexpense + $note2compulsorymotorinsurancefeeexpense;
@@ -1348,14 +1365,13 @@ class CarPaymentController extends Controller {
             $accountingdetail->note2total3 = $note2total3;
 
             $accountingdetail->incasefinacesubsidise = $carpreemption->subsidise;
-            $accountingdetail->incasefinacesubsidisevat = ($carpreemption->subsidise * 0.07);
             $incasefinacesubsidisewithvat = $carpreemption->subsidise + ($carpreemption->subsidise * 0.07);
             $accountingdetail->incasefinacesubsidisewithvat = $incasefinacesubsidisewithvat;
             $accountingdetail->note2subsidisewhtax = ($carpreemption->subsidise * 0.03);
             $note2subsidisetotal = ($carpreemption->subsidise + ($carpreemption->subsidise * 0.07)) - ($carpreemption->subsidise * 0.03);
             $accountingdetail->note2subsidisetotal = $note2subsidisetotal;
 
-            $incasefinacehassubsidisereceivedcash = ($yodjud - $totalincasefinace) - $incasefinacesubsidisewithvat;
+            $incasefinacehassubsidisereceivedcash = ($yodjudwithinsurancepremium - $totalincasefinace) - $incasefinacesubsidisewithvat;
             $accountingdetail->incasefinacehassubsidisereceivedcash = $incasefinacehassubsidisereceivedcash;
             $note2totalwhtax = ($note1insurancefee / 100.00) + ($cartype->actpaid / 100.00) + ($carpreemption->subsidise * 0.03);
             $accountingdetail->note2totalwhtax = $note2totalwhtax;
@@ -1466,6 +1482,8 @@ class CarPaymentController extends Controller {
             $accountingdetail->incasefinacetotalcomamount = $incasefinacetotalcomamount;
             $incasefinacetotalcomvat = ($incasefinacecomfinamount * 0.07) + $incasefinacecomextravat + $incasefinacecompavat;
             $accountingdetail->incasefinacetotalcomvat = $incasefinacetotalcomvat;
+            $incasefinacetotalcomamountwithvat = $incasefinacetotalcomamount + $incasefinacetotalcomvat;
+            $accountingdetail->incasefinacetotalcomamountwithvat = $incasefinacetotalcomamountwithvat;
             $incasefinacetotalcomwhtax = ($incasefinacecomfinamount * 0.03) + $incasefinacecomextrawhtax + $incasefinacecompawhtax;
             $accountingdetail->incasefinacetotalcomwhtax = $incasefinacetotalcomwhtax;
             $incasefinacetotalcomtotal = $incasefinacecomfintotal + $incasefinacecomextratotal + $incasefinacecompatotal;
@@ -1481,10 +1499,11 @@ class CarPaymentController extends Controller {
             $accountingdetail->receivedcashfromfinacenetover = 0;
         } else {
             $yodjud = 0;
+            $yodjudwithinsurancepremium = 0;
             $accountingdetail->incasefinacereceivedcash = 0;
         }
 
-        $tradereceivableaccount2amount = $totalcash - $yodjud;
+        $tradereceivableaccount2amount = $totalcash - $yodjudwithinsurancepremium;
         $accountingdetail->tradereceivableaccount2amount = $tradereceivableaccount2amount;;
         $oldcarprice = $carpreemption->oldcarprice;
         $accountingdetail->oldcarprice = $oldcarprice;
@@ -1493,8 +1512,8 @@ class CarPaymentController extends Controller {
         $tradereceivableaccount2remainingamount = $tradereceivableaccount2amount - $oldcarprice - $overdue;
         $accountingdetail->tradereceivableaccount2remainingamount = $tradereceivableaccount2remainingamount;
 
-        $accountingdetail->ins = $carpreemption->insurancefeefree ? $carpreemption->insurancefee : 0;
-        $accountingdetail->prb = $carpreemption->compulsorymotorinsurancefeefree ? $carpreemption->compulsorymotorinsurancefee : 0;
+        $accountingdetail->ins = $carpreemption->insurancefee;
+        $accountingdetail->prb = $carpreemption->compulsorymotorinsurancefee;
         $accountingdetail->dc = $carpreemption->accessories + $carpreemption->subdown;
 
         $accountingdetail->totalacc2 = $tradereceivableaccount2remainingamount;
@@ -1505,15 +1524,23 @@ class CarPaymentController extends Controller {
         $accountingdetail->totalaccount2over = 0;
 
 
-        $arrNotFormatted = array("id", "purchasetype", "carpaymentid", "hasinsurancefee", "hascompulsorymotorinsurancefee"
+        $arrNotFormatted = array("id", "purchasetype", "carpaymentid", "hasinsurancefee", "hascompulsorymotorinsurancefee", "hascashpledgeredlabel"
         , "systemcalincasefinacecomfinamount", "systemcalincasefinacecomfinvat", "systemcalincasefinacecomfinamountwithvat"
         , "systemcalincasefinacecomfinwhtax", "systemcalincasefinacecomfintotal", "receivedcashfromfinacenet"
         , "receivedcashfromfinacenetshort", "receivedcashfromfinacenetover"
         , "totalaccount1", "totalaccount1short", "totalaccount1over", "totalaccount2", "totalaccount2short", "totalaccount2over"
-        , "invoiceno", "additionalopenbill", "cashpledgereceiptbookno"
-        , "cashpledgereceiptno", "incasefinacecomfinamount", "incasefinacecomfinvat", "incasefinacecomfinamountwithvat"
-        , "incasefinacecomfinwhtax", "incasefinacecomfintotal", "oldcarcomamount", "adj", "insurancefeereceiptcondition"
-        , "compulsorymotorinsurancefeereceiptcondition"
+        , "invoiceno", "additionalopenbill", "deliverycardate"
+        , "cashpledgeredlabelreceiptbookno", "cashpledgeredlabelreceiptno", "cashpledgeredlabelreceiptdate", "redlabelreturndate"
+        , "cashpledgereceiptbookno", "cashpledgereceiptno", "cashpledgereceiptdate"
+        , "incasefinacecomfinamount", "incasefinacecomfinvat", "incasefinacecomfinamountwithvat"
+        , "incasefinacecomfinwhtax", "incasefinacecomfintotal", "oldcarcomamount", "adj"
+        , "insurancefeereceiptcondition", "compulsorymotorinsurancefeereceiptcondition"
+        , "payinadvanceamountreimbursementdate", "payinadvanceamountreimbursementdocno"
+        , "note1insurancefeereceiptcondition", "note1compulsorymotorinsurancefeereceiptcondition"
+        , 'insurancefeepayment', 'insurancefeepaidseparatelydate'
+        , 'insurancepremiumnet', 'insurancepremiumcom', 'insurancefeepaidseparatelytotal'
+        , 'compulsorymotorinsurancefeepayment', 'compulsorymotorinsurancefeepaidseparatelydate'
+        , 'compulsorymotorinsurancepremiumnet', 'compulsorymotorinsurancepremiumcom', 'compulsorymotorinsurancefeepaidseparatelytotal'
         , "carno", "installmentsinadvance", "installments", "comfinyear"
         , "createdby", "createddate", "modifiedby", "modifieddate"
         );
