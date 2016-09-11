@@ -36,20 +36,79 @@
             });
         }
 
-        function AmountapprovedChange()
+        function RefundamountChange()
         {
-            $amountapproved = $('#amountapproved');
-            var amountapproved = $amountapproved.val();
-            if(amountapproved == null || amountapproved == '')
-                amountapproved = 0;
+            debugger;
+            $refundamount = $('#refundamount');
+            $refunddate = $('#refunddate');
+            $refunddocno = $('#refunddocno');
+
+            var refundamount = $refundamount.val();
+            if (refundamount == null || refundamount == '')
+                refundamount = 0;
+
+            $confiscateamount = $('#confiscateamount');
+            $confiscatedate = $('#confiscatedate');
+            $confiscatedocno = $('#confiscatedocno');
 
             $cashpledge = $('#cashpledge');
             var cashpledge = $cashpledge.val();
             if(cashpledge == null || cashpledge == '')
                 cashpledge = 0;
 
-            if(parseFloat(amountapproved) > parseFloat(cashpledge))
-                $amountapproved.val(cashpledge);
+            if (parseFloat(refundamount) >= parseFloat(cashpledge)) {
+                $refundamount.val(cashpledge);
+                $confiscateamount.val(0);
+                $confiscatedate.val(null);
+                $confiscatedocno.val(null);
+            }
+            else if (parseFloat(refundamount) <= 0) {
+                $refundamount.val(0);
+                $refunddate.val(null);
+                $refunddocno.val(null);
+                $confiscateamount.val(cashpledge);
+            }
+            else {
+                var confiscateamount = parseFloat(cashpledge) - parseFloat(refundamount);
+                $confiscateamount.val(confiscateamount);
+            }
+        }
+
+        function ConfiscateamountChange() {
+            debugger;
+            $confiscateamount = $('#confiscateamount');
+            $confiscatedate = $('#confiscatedate');
+            $confiscatedocno = $('#confiscatedocno');
+
+            var confiscateamount = $confiscateamount.val();
+            if (confiscateamount == null || confiscateamount == '')
+                confiscateamount = 0;
+
+            $refundamount = $('#refundamount');
+            $refunddate = $('#refunddate');
+            $refunddocno = $('#refunddocno');
+
+            $cashpledge = $('#cashpledge');
+            var cashpledge = $cashpledge.val();
+            if (cashpledge == null || cashpledge == '')
+                cashpledge = 0;
+
+            if (parseFloat(confiscateamount) >= parseFloat(cashpledge)) {
+                $confiscateamount.val(cashpledge);
+                $refundamount.val(0);
+                $refunddate.val(null);
+                $refunddocno.val(null);
+            }
+            else if (parseFloat(confiscateamount) <= 0) {
+                $confiscateamount.val(0);
+                $confiscatedate.val(null);
+                $confiscatedocno.val(null);
+                $refundamount.val(cashpledge);
+            }
+            else {
+                var refundamount = parseFloat(cashpledge) - parseFloat(confiscateamount);
+                $refundamount.val(refundamount);
+            }
         }
     </script>
 
@@ -174,26 +233,51 @@
                             </div>
                             <div class="clear"></div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label no-padding-right" style="padding-top:6px;">อนุมัติ</label>
-                                <div class="col-sm-4">
-                                    <label style="margin-right:5px;">
-                                        {!! Form::radio('approvaltype', 0, false, array('class' => 'ace')) !!}
-                                        <span class="lbl"> คืนเงิน</span>
-
-                                    </label>
-                                    {!! Form::number('amountapproved', null, array('style'=>'width:100px;','step' => '0.01', 'min' => '0', 'id'=>'amountapproved','onchange'=>'AmountapprovedChange();')) !!}
-                                    <label>บาท</label>
-                                </div>
+                                <label class="col-sm-2 control-label no-padding-right"
+                                       style="padding-top:6px;">อนุมัติ</label>
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td><label style="width: 60px; margin-left: 10px;">คืนเงิน</label></td>
+                                        <td>{!! Form::number('refundamount', null, array('style'=>'width:100px;','step' => '0.01', 'min' => '0', 'id'=>'refundamount','onchange'=>'RefundamountChange();')) !!}</td>
+                                        <td><label style="width: 30px; margin-left: 5px;">บาท</label></td>
+                                        <td><label style="width: 70px; margin-left: 10px;">วันที่คืนจอง</label></td>
+                                        <td>
+                                            <div class="input-group">
+                                                {!! Form::text('refunddate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'refunddate')) !!}
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td><label style="width: 80px; margin-left: 10px;">เลขที่เอกสาร</label></td>
+                                        <td>{!! Form::text('refunddocno', null, array('style'=>'width:100px;','id'=>'refunddocno')) !!}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2"></label>
-                                <div class="col-sm-10">
-                                    <label style="margin-right:20px;">
-                                        {!! Form::radio('approvaltype', 1, false, array('class' => 'ace')) !!}
-                                        <span class="lbl"> ไม่คืนเงิน </span>
-                                    </label>
-
-                                </div>
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td><label style="width: 60px; margin-left: 10px;">ไม่คืนเงิน</label></td>
+                                        <td>{!! Form::number('confiscateamount', null, array('style'=>'width:100px;','step' => '0.01', 'min' => '0', 'id'=>'confiscateamount','onchange'=>'ConfiscateamountChange();')) !!}</td>
+                                        <td><label style="width: 30px; margin-left: 5px;">บาท</label></td>
+                                        <td><label style="width: 70px; margin-left: 10px;">วันที่ยึดจอง</label></td>
+                                        <td>
+                                            <div class="input-group">
+                                                {!! Form::text('confiscatedate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'confiscatedate')) !!}
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td><label style="width: 80px; margin-left: 10px;">เลขที่เอกสาร</label></td>
+                                        <td>{!! Form::text('confiscatedocno', null, array('style'=>'width:100px;','id'=>'confiscatedocno')) !!}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                             <div class="clear"></div>
                             <div class="form-group" style="padding-top:15px;">

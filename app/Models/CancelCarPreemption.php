@@ -5,14 +5,13 @@ use Illuminate\Support\Facades\Auth;
 
 class CancelCarPreemption extends Model {
 
-    protected $table = 'cancel_car_preemptions';
-
     public $timestamps = false;
-
+    protected $table = 'cancel_car_preemptions';
     protected $guarded = ['id'];
 
     protected $fillable = ['provinceid','branchid','carpreemptionid','toemployeeid', 'cancelreasontype',
-        'cancelreasondetails', 'remark','approvaltype','amountapproved',
+        'cancelreasondetails', 'remark', 'refundamount', 'refunddate', 'refunddocno',
+        'confiscateamount', 'confiscatedate', 'confiscatedocno',
         'salesmanemployeedate', 'accountemployeeid', 'accountemployeedate',
         'financeemployeeid', 'financeemployeedate', 'approversemployeeid', 'approversemployeedate',
 
@@ -27,8 +26,6 @@ class CancelCarPreemption extends Model {
             $carpreemption = CarPreemption::find($model->carpreemptionid);
             $model->provinceid = $carpreemption->provinceid;
             $model->branchid = $carpreemption->branchid;
-
-            if($model->approvaltype == 1) $model->amountapproved = null;
 
             $model->createdby = Auth::user()->id;
             $model->createddate = date("Y-m-d H:i:s");
@@ -50,8 +47,6 @@ class CancelCarPreemption extends Model {
             $carpreemption = CarPreemption::find($model->carpreemptionid);
             $model->provinceid = $carpreemption->provinceid;
             $model->branchid = $carpreemption->branchid;
-
-            if($model->approvaltype == 1) $model->amountapproved = null;
 
             $model->modifiedby = Auth::user()->id;
             $model->modifieddate = date("Y-m-d H:i:s");

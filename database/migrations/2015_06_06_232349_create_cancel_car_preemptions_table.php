@@ -26,7 +26,14 @@ class CreateCancelCarPreemptionsTable extends Migration {
             $table->integer('cancelreasontype')->comment('0:สัญญาไม่ผ่าน, 1:ไม่มีรถ, 2:อื่นๆ');
             $table->string('cancelreasondetails',100)->nullable();
             $table->text('remark');
-            $table->integer('approvaltype')->comment('0:คืนเงิน, 1:ไม่คืนเงิน');
+            $table->decimal('refundamount', 10, 2);
+            $table->dateTime('refunddate')->nullable();
+            $table->string('refunddocno', 20)->nullable();
+            $table->decimal('confiscateamount', 10, 2);
+            $table->dateTime('confiscatedate')->nullable();
+            $table->string('confiscatedocno', 20)->nullable();
+            
+            
             $table->decimal('amountapproved', 10, 2)->nullable();
 
             $table->dateTime('salesmanemployeedate');

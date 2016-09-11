@@ -191,8 +191,8 @@ class CancelCarPreemptionController extends Controller {
                 'toemployeeid' => 'required',
                 'cancelreasontype' => 'required',
                 'cancelreasondetails' => 'required_if:cancelreasontype,2',
-                'approvaltype' => 'required',
-                'amountapproved' => 'required_if:approvaltype,0',
+            'refundamount' => 'required',
+            'confiscateamount' => 'required',
                 'salesmanemployeedate' => 'required',
                 'accountemployeeid' => 'required',
                 'accountemployeedate' => 'required',
@@ -206,8 +206,8 @@ class CancelCarPreemptionController extends Controller {
                 'toemployeeid.required' => 'กรุณาเลือกคนที่จะเรียนให้ทราบ',
                 'cancelreasontype.required' => 'ยกเลิกเนื่องจาก จำเป็นต้องเลือก',
                 'cancelreasondetails.required_if' => 'อื่นๆ จำเป็นต้องกรอก',
-                'approvaltype.required' => 'อนุมัติ จำเป็นต้องเลือก',
-                'amountapproved.required_if' => 'จำนวนเงินคืน จำเป็นต้องกรอก',
+                'refundamount.required' => 'จำนวนคืนเงิน จำเป็นต้องกรอก',
+                'confiscateamount.required' => 'จำนวนไม่คืนเงิน จำเป็นต้องกรอก',
                 'salesmanemployeedate.required' => 'วันที่ ของพนักงานขาย จำเป็นต้องเลือก',
                 'accountemployeeid.required' => 'พนักงานบัญชี จำเป็นต้องเลือก',
                 'accountemployeedate.required' => 'วันที่ ของพนักงานบัญชี จำเป็นต้องเลือก',
@@ -239,11 +239,19 @@ class CancelCarPreemptionController extends Controller {
 
         $model->remark = $input['remark'];
 
-        $model->approvaltype = $input['approvaltype'];
-        if($model->approvaltype == 0)
-            $model->amountapproved = $input['amountapproved'];
+        $model->refundamount = $input['refundamount'];
+        if ($input['refunddate'] != null && $input['refunddate'] != '')
+            $model->refunddate = date('Y-m-d', strtotime($input['refunddate']));
         else
-            $model->amountapproved = 0;
+            $model->refunddate = null;
+        $model->refunddocno = $input['refunddocno'];
+
+        $model->confiscateamount = $input['confiscateamount'];
+        if ($input['confiscatedate'] != null && $input['confiscatedate'] != '')
+            $model->confiscatedate = date('Y-m-d', strtotime($input['confiscatedate']));
+        else
+            $model->confiscatedate = null;
+        $model->confiscatedocno = $input['confiscatedocno'];
 
         $model->salesmanemployeedate = date('Y-m-d', strtotime($input['salesmanemployeedate']));
         $model->accountemployeeid = $input['accountemployeeid'];
@@ -285,6 +293,12 @@ class CancelCarPreemptionController extends Controller {
 
         $model->carpreemptiondate = date('d-m-Y', strtotime($carpreemption->date));
         $model->cashpledge = $carpreemption->cashpledge;
+
+        if ($model->refunddate != null && $model->refunddate != '')
+            $model->refunddate = date('d-m-Y', strtotime($model->refunddate));
+
+        if ($model->confiscatedate != null && $model->confiscatedate != '')
+            $model->confiscatedate = date('d-m-Y', strtotime($model->confiscatedate));
 
         $salesmanemployee = Employee::find($carpreemption->salesmanemployeeid);
         $model->salesmanemployee = $salesmanemployee->title.' '.$salesmanemployee->firstname.' '.$salesmanemployee->lastname;
@@ -366,6 +380,12 @@ class CancelCarPreemptionController extends Controller {
 
         $model->carpreemptiondate = date('d-m-Y', strtotime($carpreemption->date));
         $model->cashpledge = $carpreemption->cashpledge;
+
+        if ($model->refunddate != null && $model->refunddate != '')
+            $model->refunddate = date('d-m-Y', strtotime($model->refunddate));
+
+        if ($model->confiscatedate != null && $model->confiscatedate != '')
+            $model->confiscatedate = date('d-m-Y', strtotime($model->confiscatedate));
 
         $salesmanemployee = Employee::find($carpreemption->salesmanemployeeid);
         $model->salesmanemployee = $salesmanemployee->title.' '.$salesmanemployee->firstname.' '.$salesmanemployee->lastname;

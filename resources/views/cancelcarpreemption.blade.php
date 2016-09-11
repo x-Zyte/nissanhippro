@@ -40,7 +40,7 @@
             $(grid_selector).jqGrid({
                 url: "cancelcarpreemption/read",
                 datatype: "json",
-                colNames:['การจอง เล่มที่/เลขที่', 'ยกเลิกเนื่องจาก', 'อนุมัติ', 'คืนเงินจำนวน','ผู้อนุมัติ', 'วันที่อนุมัติ'],
+                colNames: ['การจอง เล่มที่/เลขที่', 'ยกเลิกเนื่องจาก', 'คืนจำนวน', 'ไม่คืนจำนวน', 'ผู้อนุมัติ', 'วันที่อนุมัติ'],
                 colModel:[
                     {name:'carpreemptionid',index:'carpreemptionid', width:100, formatter:'select',editoptions:{value: "{{$carpreemptionselectlist}}"}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$carpreemptionselectlist}}"}
@@ -52,11 +52,16 @@
                     //{name:'amount',index:'amount', width:100,align:'right',formatter:'number'
                         //,formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}
                     //},
-                    {name:'approvaltype',index:'approvaltype', width:100, editable: true,edittype:"select",formatter:'select',align:'center'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:คืนเงิน;1:ไม่คืนเงิน;" },
-                        editoptions:{value: "0:คืนเงิน;1:ไม่คืนเงิน;"}
+                    {
+                        name: 'refundamount', index: 'refundamount', width: 100, align: 'right', formatter: 'number'
+                        , formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
                     },
-                    {name:'amountapproved',index:'amountapproved', width:100,align:'right',formatter:'number'
+                    {
+                        name: 'confiscateamount',
+                        index: 'confiscateamount',
+                        width: 100,
+                        align: 'right',
+                        formatter: 'number'
                         ,formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}
                     },
                     {name:'approversemployeeid',index:'approversemployeeid', width:150, formatter:'select',editoptions:{value: "{{$approversemployeeselectlist}}"}
