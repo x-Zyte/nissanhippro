@@ -592,6 +592,8 @@ class AccountingDetailController extends Controller
             $accountingdetail->incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash - $tempModel->insurancebilldifferent;
             $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacehassubsidisereceivedcash - $tempModel->insurancebilldifferent;
 
+            $accountingdetail->note2insurancefeewhtax = ($accountingdetail->note1insurancefee / 100.00);
+            
             $accountingdetail->ins = $accountingdetail->ins + $tempModel->insurancebilldifferent;
         }
         $accountingdetail->note1insurancefeereceiptcondition = $tempModel->note1insurancefeereceiptcondition;
@@ -935,6 +937,8 @@ class AccountingDetailController extends Controller
             $accountingdetail->incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash - $tempModel->insurancebilldifferent;
             $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacehassubsidisereceivedcash - $tempModel->insurancebilldifferent;
 
+            $accountingdetail->note2insurancefeewhtax = ($accountingdetail->note1insurancefee / 100.00);
+            
             $accountingdetail->ins = $accountingdetail->ins + $tempModel->insurancebilldifferent;
         }
         $accountingdetail->note1insurancefeereceiptcondition = $tempModel->note1insurancefeereceiptcondition;
