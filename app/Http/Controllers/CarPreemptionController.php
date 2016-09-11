@@ -417,7 +417,7 @@ class CarPreemptionController extends Controller {
         $giveawayFreeDatas = array();
         if($giveawayFreeData != null && $giveawayFreeData != '') {
             foreach ($giveawayFreeData as $data) {
-                $obj = (object)array("giveawayid" => $data["giveawayid"], "price" => $data["price"]);
+                $obj = (object)array("id" => $data["id"], "giveawayid" => $data["giveawayid"], "price" => $data["price"]);
                 array_push($giveawayFreeDatas, $obj);
             }
         }
@@ -425,7 +425,7 @@ class CarPreemptionController extends Controller {
         $giveawayBuyDatas = array();
         if($giveawayBuyData != null && $giveawayBuyData != '') {
             foreach ($giveawayBuyData as $data) {
-                $obj = (object)array("giveawayid" => $data["giveawayid"]);
+                $obj = (object)array("id" => $data["id"], "giveawayid" => $data["giveawayid"]);
                 array_push($giveawayBuyDatas, $obj);
             }
         }
@@ -732,7 +732,7 @@ class CarPreemptionController extends Controller {
         if($giveawayFreeData != null && $giveawayFreeData != ''){
             $giveawayFreeData = json_decode($giveawayFreeData,true);
             foreach ($giveawayFreeData as $data) {
-                $obj = (object)array("giveawayid" => $data["giveawayid"], "price" => $data["price"]);
+                $obj = (object)array("id" => $data["id"], "giveawayid" => $data["giveawayid"], "price" => $data["price"]);
                 array_push($giveawayFreeDatas, $obj);
             }
         }
@@ -742,7 +742,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','giveawayid','price']);
 
             foreach($giveawayFrees as $data){
-                $obj = (object)array("giveawayid" => $data->giveawayid,"price" => $data->price);
+                $obj = (object)array("id" => $data->id, "giveawayid" => $data->giveawayid, "price" => $data->price);
                 array_push($giveawayFreeDatas,$obj);
             }
         }
@@ -750,7 +750,7 @@ class CarPreemptionController extends Controller {
         if($giveawayBuyData != null && $giveawayBuyData != ''){
             $giveawayBuyData = json_decode($giveawayBuyData,true);
             foreach ($giveawayBuyData as $data) {
-                $obj = (object)array("giveawayid" => $data["giveawayid"]);
+                $obj = (object)array("id" => $data["id"], "giveawayid" => $data["giveawayid"]);
                 array_push($giveawayBuyDatas, $obj);
             }
         }
@@ -760,7 +760,7 @@ class CarPreemptionController extends Controller {
                 ->get(['id','giveawayid']);
 
             foreach($giveawayBuys as $data){
-                $obj = (object)array("giveawayid" => $data->giveawayid);
+                $obj = (object)array("id" => $data->id, "giveawayid" => $data->giveawayid);
                 array_push($giveawayBuyDatas,$obj);
             }
         }
@@ -1038,7 +1038,7 @@ class CarPreemptionController extends Controller {
             ->get(['id','giveawayid','price']);
         $giveawayFreeDatas = array();
         foreach($giveawayFrees as $data){
-            $obj = (object)array("giveawayid" => $data->giveawayid,"price" => $data->price);
+            $obj = (object)array("id" => $data->id, "giveawayid" => $data->giveawayid, "price" => $data->price);
             array_push($giveawayFreeDatas,$obj);
         }
 
@@ -1047,7 +1047,7 @@ class CarPreemptionController extends Controller {
             ->get(['id','giveawayid']);
         $giveawayBuyDatas = array();
         foreach($giveawayBuys as $data){
-            $obj = (object)array("giveawayid" => $data->giveawayid);
+            $obj = (object)array("id" => $data->id, "giveawayid" => $data->giveawayid);
             array_push($giveawayBuyDatas,$obj);
         }
 

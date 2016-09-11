@@ -1070,6 +1070,8 @@ class CarPaymentController extends Controller {
         $registrationfee = $carpreemption->registrationfeefree ? 0 : $carpreemption->registrationfee;
         $accountingdetail->registrationfee = $registrationfee;
 
+        $accountingdetail->actualinsurancefee = $carpreemption->insurancefee;
+
         if ($carpreemption->purchasetype == 0) {
             $compulsorymotorinsurancefeecash = $carpreemption->compulsorymotorinsurancefeefree ? 0 : $carpreemption->compulsorymotorinsurancefee;
             $conditioncompulsorymotorinsurancefeecustomerpaid = $compulsorymotorinsurancefeecash;
@@ -1206,14 +1208,14 @@ class CarPaymentController extends Controller {
         else
             $accountingdetail->hascashpledgeredlabel = 1;
 
-        $redlabelhistory = Redlabelhistory::where('carpreemptionid', $carpreemption->id)->first();
+        $redlabelhistory = Redlabelhistory::where('carpreemptionid', $carpreemption->id)->orderBy('id', 'desc')->first();
         if ($redlabelhistory != null) {
             if ($redlabelhistory->returndate != null)
-                $accountingdetail->redlabelreturndate = date('d-m-Y', strtotime($redlabelhistory->returndate));
+                $accountingdetail->redlabelreturncashpledgedate = date('d-m-Y', strtotime($redlabelhistory->returncashpledgedate));
             else
-                $accountingdetail->redlabelreturndate = "-";
+                $accountingdetail->redlabelreturncashpledgedate = "-";
         } else
-            $accountingdetail->redlabelreturndate = "ไม่เอาป้าย";
+            $accountingdetail->redlabelreturncashpledgedate = "ไม่เอาป้าย";
 
         $cashpledge = $carpreemption->cashpledge;
         $accountingdetail->cashpledge = $cashpledge;
@@ -1512,8 +1514,8 @@ class CarPaymentController extends Controller {
         $tradereceivableaccount2remainingamount = $tradereceivableaccount2amount - $oldcarprice - $overdue;
         $accountingdetail->tradereceivableaccount2remainingamount = $tradereceivableaccount2remainingamount;
 
-        $accountingdetail->ins = $carpreemption->insurancefee;
-        $accountingdetail->prb = $carpreemption->compulsorymotorinsurancefee;
+        $accountingdetail->ins = $accountingdetail->note1insurancefeeincludevat; //$carpreemption->insurancefee;
+        $accountingdetail->prb = $accountingdetail->note1compulsorymotorinsurancefeeincludevat; //$carpreemption->compulsorymotorinsurancefee;
         $accountingdetail->dc = $carpreemption->accessories + $carpreemption->subdown;
 
         $accountingdetail->totalacc2 = $tradereceivableaccount2remainingamount;
@@ -1529,20 +1531,21 @@ class CarPaymentController extends Controller {
         , "systemcalincasefinacecomfinwhtax", "systemcalincasefinacecomfintotal", "receivedcashfromfinacenet"
         , "receivedcashfromfinacenetshort", "receivedcashfromfinacenetover"
         , "totalaccount1", "totalaccount1short", "totalaccount1over", "totalaccount2", "totalaccount2short", "totalaccount2over"
+        , 'totalaccounts', 'totalaccountsshort', 'totalaccountsover'
         , "invoiceno", "additionalopenbill", "deliverycardate"
-        , "cashpledgeredlabelreceiptbookno", "cashpledgeredlabelreceiptno", "cashpledgeredlabelreceiptdate", "redlabelreturndate"
+        , "cashpledgeredlabelreceiptbookno", "cashpledgeredlabelreceiptno", "cashpledgeredlabelreceiptdate", "redlabelreturncashpledgedate"
         , "cashpledgereceiptbookno", "cashpledgereceiptno", "cashpledgereceiptdate"
         , "incasefinacecomfinamount", "incasefinacecomfinvat", "incasefinacecomfinamountwithvat"
-        , "incasefinacecomfinwhtax", "incasefinacecomfintotal", "oldcarcomamount", "adj"
+        , "incasefinacecomfinwhtax", "incasefinacecomfintotal", "oldcarcomamount", 'oldcarcomdate', "adj"
         , "insurancefeereceiptcondition", "compulsorymotorinsurancefeereceiptcondition"
-        , "payinadvanceamountreimbursementdate", "payinadvanceamountreimbursementdocno"
+        , "payinadvanceamountreimbursementdate", "payinadvanceamountreimbursementdocno", 'insurancebilldifferent'
         , "note1insurancefeereceiptcondition", "note1compulsorymotorinsurancefeereceiptcondition"
         , 'insurancefeepayment', 'insurancefeepaidseparatelydate'
         , 'insurancepremiumnet', 'insurancepremiumcom', 'insurancefeepaidseparatelytotal'
         , 'compulsorymotorinsurancefeepayment', 'compulsorymotorinsurancefeepaidseparatelydate'
         , 'compulsorymotorinsurancepremiumnet', 'compulsorymotorinsurancepremiumcom', 'compulsorymotorinsurancefeepaidseparatelytotal'
         , "carno", "installmentsinadvance", "installments", "comfinyear"
-        , "createdby", "createddate", "modifiedby", "modifieddate"
+        , "createdby", "createddate", "modifiedby", "modifieddate", 'actualinsurancefee'
         );
 
         if ($donumberformat == 1) {

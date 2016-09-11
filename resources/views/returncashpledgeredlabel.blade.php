@@ -1,10 +1,10 @@
 @extends('app')
-@section('title','รายละเอียดเพื่อการบันทึกบัญชี')
-@section('menu-accountingdetail-class','active')
+@section('title','คืนเงินมัดจำป้ายแดง')
+@section('menu-returncashpledgeredlabel-class','active')
 
 @section('content')
 
-    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-btc"></i> รายละเอียดเพื่อการบันทึกบัญชี</h3>
+    <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-ticket"></i> คืนเงินมัดจำป้ายแดง</h3>
 
     <table id="grid-table"></table>
 
@@ -33,26 +33,79 @@
             });
 
             var candeletedata = false;
-            if ('{{Auth::user()->isadmin}}' == '1' || '{{Auth::user()->candeletedata}}' == '1') {
-                candeletedata = true;
-            }
 
             $(grid_selector).jqGrid({
-                url: "accountingdetail/read",
+                url: '{{ url('/returncashpledgeredlabel/read') }}',
                 datatype: "json",
-                colNames: ['เลขที่ใบกำกับ', 'วันที่', 'ชื่อลูกค้า', 'ยอดรวมที่ต้องรับเงินจากไฟแนนซ์', 'เงินขาด', 'เงินเกิน', 'ยอดรวมที่ลูกค้าต้องชำระ', 'เงินขาด', 'เงินเกิน'],
+                colNames: ['เลขป้าย', 'เลขเครื่อง/เลขถัง', 'ชื่อลูกค้า', 'เงินมัดจำ', 'วันที่คืนเงินมัดจำ'],
                 colModel: [
-                    {name: 'invoiceno', index: 'invoiceno', width: 100, align: 'center'},
                     {
-                        name: 'date',
-                        index: 'date',
-                        width: 100,
+                        name: 'redlabelid',
+                        index: 'redlabelid',
+                        width: 150,
+                        editable: true,
+                        edittype: "select",
+                        formatter: 'select',
+                        editoptions: {value: "{{$redlabelselectlist}}"},
                         align: 'left',
+                        stype: 'select',
+                        searchrules: {required: true},
+                        searchoptions: {sopt: ["eq", "ne"], value: "{{$redlabelselectlist}}"}
+                    },
+                    {
+                        name: 'carpreemptionid',
+                        index: 'carpreemptionid',
+                        width: 150,
+                        editable: true,
+                        edittype: "select",
+                        formatter: 'select',
+                        editoptions: {value: "{{$carselectlist}}"},
+                        align: 'left',
+                        stype: 'select',
+                        searchrules: {required: true},
+                        searchoptions: {sopt: ["eq", "ne"], value: "{{$carselectlist}}"}
+                    },
+                    {
+                        name: 'carpreemptionid',
+                        index: 'carpreemptionid',
+                        width: 150,
+                        editable: false,
+                        edittype: "select",
+                        formatter: 'select',
+                        editoptions: {value: "{{$customerselectlist}}"},
+                        align: 'left',
+                        stype: 'select',
+                        searchrules: {required: true},
+                        searchoptions: {sopt: ["eq", "ne"], value: "{{$customerselectlist}}"}
+                    },
+                    {
+                        name: 'carpreemptionid',
+                        index: 'carpreemptionid',
+                        width: 150,
+                        editable: false,
+                        edittype: "select",
+                        formatter: 'select',
+                        editoptions: {value: "{{$cashpledgeselectlist}}"},
+                        align: 'right',
+                        stype: 'select',
+                        searchrules: {required: true},
+                        searchoptions: {sopt: ["eq", "ne"], value: "{{$cashpledgeselectlist}}"}
+                    },
+                    {
+                        name: 'returncashpledgedate',
+                        index: 'returncashpledgedate',
+                        width: 100,
+                        editable: true,
                         sorttype: "date",
                         formatter: "date",
-                        align: 'center'
-                        ,
                         formatoptions: {srcformat: 'Y-m-d', newformat: 'd-m-Y'}
+                        ,
+                        editoptions: {
+                            size: "10", dataInit: function (elem) {
+                                $(elem).datepicker({format: 'dd-mm-yyyy', autoclose: true, todayHighlight: true});
+                            }
+                        },
+                        align: 'center'
                         ,
                         searchrules: {required: true}
                         ,
@@ -62,66 +115,6 @@
                             }
                             , sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']
                         }
-                    },
-                    {
-                        name: 'carpaymentid',
-                        index: 'carpaymentid',
-                        width: 100,
-                        formatter: 'select',
-                        editoptions: {value: "{{$customerselectlist}}"}
-                        ,
-                        stype: 'select',
-                        searchrules: {required: true},
-                        searchoptions: {sopt: ["eq", "ne"], value: "{{$customerselectlist}}"}
-                    },
-                    {
-                        name: 'receivedcashfromfinacenet',
-                        index: 'receivedcashfromfinacenet',
-                        width: 100,
-                        align: 'right',
-                        formatter: 'number'
-                        ,
-                        formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
-                    },
-                    {
-                        name: 'receivedcashfromfinacenetshort',
-                        index: 'receivedcashfromfinacenetshort',
-                        width: 100,
-                        align: 'right',
-                        formatter: 'number'
-                        ,
-                        formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
-                    },
-                    {
-                        name: 'receivedcashfromfinacenetover',
-                        index: 'receivedcashfromfinacenetover',
-                        width: 100,
-                        align: 'right',
-                        formatter: 'number'
-                        ,
-                        formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
-                    },
-                    {
-                        name: 'totalaccounts', index: 'totalaccounts', width: 100, align: 'right', formatter: 'number'
-                        , formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
-                    },
-                    {
-                        name: 'totalaccountsshort',
-                        index: 'totalaccountsshort',
-                        width: 100,
-                        align: 'right',
-                        formatter: 'number'
-                        ,
-                        formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
-                    },
-                    {
-                        name: 'totalaccountsover',
-                        index: 'totalaccountsover',
-                        width: 100,
-                        align: 'right',
-                        formatter: 'number'
-                        ,
-                        formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
                     }
                 ],
                 viewrecords: true,
@@ -143,7 +136,7 @@
                     }, 0);
                 },
 
-                editurl: "accountingdetail/update",
+                editurl: "returncashpledgeredlabel/update",
                 caption: "",
                 height: '100%'
             });
@@ -153,11 +146,11 @@
             //navButtons
             jQuery(grid_selector).jqGrid('navGrid', pager_selector,
                     { 	//navbar options
-                        edit: false,
+                        edit: true,
                         editicon: 'ace-icon fa fa-pencil blue',
                         add: false,
                         addicon: 'ace-icon fa fa-plus-circle purple',
-                        del: candeletedata,
+                        del: false,
                         delicon: 'ace-icon fa fa-trash-o red',
                         search: true,
                         searchicon: 'ace-icon fa fa-search orange',
@@ -176,6 +169,9 @@
                             var form = $(e[0]);
                             form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                             style_edit_form(form);
+
+                            $('#tr_redlabelid', form).hide();
+                            $('#tr_carpreemptionid', form).hide();
 
                             var dlgDiv = $("#editmod" + jQuery(grid_selector)[0].id);
                             centerGridForm(dlgDiv);
@@ -317,46 +313,7 @@
                             _token: "{{ csrf_token() }}"
                         }
                     }
-            ).jqGrid('navButtonAdd', pager_selector,
-                    {
-                        caption: '',
-                        buttonicon: 'ace-icon fa fa-search-plus grey',
-                        onClickButton: function () {
-                            var selRowId = $(grid_selector).jqGrid('getGridParam', 'selrow');
-                            if (selRowId)
-                                window.open("{{URL::to('accountingdetail/view')}}" + '/' + selRowId, '_blank');
-                            else
-                                alert("กรุณาเลือกข้อมูล");
-                        },
-                        position: "first",
-                        title: "ดูรายละเอียดข้อมูล"
-                    }
-            ).jqGrid('navButtonAdd', pager_selector,
-                    {
-                        caption: '',
-                        buttonicon: 'ace-icon fa fa-pencil blue',
-                        onClickButton: function () {
-                            var selRowId = $(grid_selector).jqGrid('getGridParam', 'selrow');
-                            if (selRowId)
-                                window.open("{{URL::to('accountingdetail/edit')}}" + '/' + selRowId, '_blank');
-                            else
-                                alert("กรุณาเลือกข้อมูล");
-                        },
-                        position: "first",
-                        title: "แก้ไขข้อมูล"
-                    }
-            ).jqGrid('navButtonAdd', pager_selector,
-                    {
-                        caption: '',
-                        buttonicon: 'ace-icon fa fa-plus-circle purple',
-                        onClickButton: function () {
-                            window.open("{{URL::to('accountingdetail/newaccountingdetail')}}", '_blank');
-                        },
-                        position: "first",
-                        title: "เพิ่มข้อมูล"
-                    }
             )
-
         })
     </script>
 @endsection

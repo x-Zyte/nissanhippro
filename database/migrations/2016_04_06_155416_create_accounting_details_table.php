@@ -28,6 +28,7 @@ class CreateAccountingDetailsTable extends Migration
             $table->integer('compulsorymotorinsurancefeereceiptcondition')->nullable()->comment('0:ชื่อลูกค้า, 1:ชื่อบริษัท');
             $table->dateTime('payinadvanceamountreimbursementdate')->nullable();
             $table->string('payinadvanceamountreimbursementdocno', 20)->nullable();
+            $table->decimal('insurancebilldifferent', 10, 2);
             $table->integer('note1insurancefeereceiptcondition')->nullable()->comment('0:ชื่อลูกค้า, 1:ชื่อบริษัท');
             $table->integer('note1compulsorymotorinsurancefeereceiptcondition')->nullable()->comment('0:ชื่อลูกค้า, 1:ชื่อบริษัท');
             $table->integer('insurancefeepayment')->nullable()->comment('0:หักจากยอดจัด, 1:จ่ายต่างหาก');
@@ -60,6 +61,7 @@ class CreateAccountingDetailsTable extends Migration
             $table->decimal('receivedcashfromfinacenetshort', 10, 2)->nullable();
             $table->decimal('receivedcashfromfinacenetover', 10, 2)->nullable();
             $table->decimal('oldcarcomamount', 10, 2);
+            $table->dateTime('oldcarcomdate')->nullable();
             $table->decimal('adj', 10, 2);
             $table->decimal('totalaccount1', 10, 2);
             $table->decimal('totalaccount1short', 10, 2);
@@ -67,6 +69,9 @@ class CreateAccountingDetailsTable extends Migration
             $table->decimal('totalaccount2', 10, 2);
             $table->decimal('totalaccount2short', 10, 2);
             $table->decimal('totalaccount2over', 10, 2);
+            $table->decimal('totalaccounts', 10, 2);
+            $table->decimal('totalaccountsshort', 10, 2);
+            $table->decimal('totalaccountsover', 10, 2);
 
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');

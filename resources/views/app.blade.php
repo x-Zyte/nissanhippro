@@ -294,6 +294,16 @@
                 <b class="arrow"></b>
             </li>
 
+            <li class="@yield('menu-returncashpledgeredlabel-class')"
+                @if(!Auth::user()->isadmin && !in_array("คืนเงินมัดจำป้ายแดง", $employeeMenus)) style="display: none" @endif>
+                <a href="{{ url('/returncashpledgeredlabel') }}">
+                    <i class="menu-icon fa fa-ticket"></i>
+                    <span class="menu-text"> คืนเงินมัดจำป้ายแดง </span>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
             <li class="@yield('menu-employee-class')" @if(!Auth::user()->isadmin && !in_array("พนักงาน", $employeeMenus)) style="display: none" @endif>
                 <a href="{{ url('/employee') }}">
                     <i class="menu-icon fa fa-male"></i>

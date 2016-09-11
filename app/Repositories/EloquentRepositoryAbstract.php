@@ -43,9 +43,12 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
     protected $crudFields;
     protected $uniqueKeySingles;
     protected $uniqueKeyMultiples;
-    protected $hasBranch;
-    protected $hasProvince;
-
+    protected $hasBranch = false;
+    protected $hasProvince = false;
+    protected $parentHasProvince = false;
+    protected $parentModel;
+    protected $whereNotNullFields = array();
+    
     /**
      * Calculate the number of rows. It's used for paging the result.
      *
@@ -67,6 +70,16 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
             }
             if($this->hasProvince && !Auth::user()->isadmin){
                 $query->where('provinceid', Auth::user()->provinceid);
+            } else {
+                if ($this->parentHasProvince && !Auth::user()->isadmin) {
+                    $query->whereHas($this->parentModel, function ($q) {
+                        $q->where('provinceid', Auth::user()->provinceid);
+                    });
+                }
+            }
+
+            foreach ($this->whereNotNullFields as $fieldName) {
+                $query->whereNotNull($fieldName);
             }
 
             foreach ($filters as $filter)
@@ -198,6 +211,16 @@ abstract class EloquentRepositoryAbstract implements RepositoryInterface{
             }
             if($this->hasProvince && !Auth::user()->isadmin){
                 $query->where('provinceid', Auth::user()->provinceid);
+            } else {
+                if ($this->parentHasProvince && !Auth::user()->isadmin) {
+                    $query->whereHas($this->parentModel, function ($q) {
+                        $q->where('provinceid', Auth::user()->provinceid);
+                    });
+                }
+            }
+
+            foreach ($this->whereNotNullFields as $fieldName) {
+                $query->whereNotNull($fieldName);
             }
 
             foreach ($filters as $filter)

@@ -258,6 +258,11 @@ Route::get('accountingdetail/edit/{id}', 'AccountingDetailController@edit');
 Route::get('accountingdetail/view/{id}', 'AccountingDetailController@view');
 Route::post('accountingdetail/save', 'AccountingDetailController@save');
 
+//ReturnCashPledgeRedLabel
+Route::get('returncashpledgeredlabel', 'ReturnCashPledgeRedLabelController@index');
+Route::get('returncashpledgeredlabel/read', 'ReturnCashPledgeRedLabelController@read');
+Route::post('returncashpledgeredlabel/update', 'ReturnCashPledgeRedLabelController@update');
+
 Route::get('report', 'ReportController@index');
 Route::post('report/carstock', 'ReportController@carstock');
 

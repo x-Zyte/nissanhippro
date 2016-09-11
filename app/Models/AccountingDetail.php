@@ -12,7 +12,7 @@ class AccountingDetail extends Model
 
     protected $fillable = ['provinceid', 'branchid', 'carpaymentid', 'invoiceno', 'date',
         'additionalopenbill', 'insurancefeereceiptcondition', 'compulsorymotorinsurancefeereceiptcondition',
-        'payinadvanceamountreimbursementdate', 'payinadvanceamountreimbursementdocno',
+        'payinadvanceamountreimbursementdate', 'payinadvanceamountreimbursementdocno', 'insurancebilldifferent',
         'note1insurancefeereceiptcondition', 'note1compulsorymotorinsurancefeereceiptcondition',
         'insurancefeepayment', 'insurancefeepaidseparatelydate',
         'insurancepremiumnet', 'insurancepremiumcom', 'insurancefeepaidseparatelytotal',
@@ -22,8 +22,9 @@ class AccountingDetail extends Model
         'cashpledgereceiptbookno', 'cashpledgereceiptno', 'cashpledgereceiptdate',
         'systemcalincasefinacecomfinamount', 'systemcalincasefinacecomfinvat', 'systemcalincasefinacecomfinamountwithvat', 'systemcalincasefinacecomfinwhtax', 'systemcalincasefinacecomfintotal',
         'incasefinacecomfinamount', 'incasefinacecomfinvat', 'incasefinacecomfinamountwithvat', 'incasefinacecomfinwhtax', 'incasefinacecomfintotal',
-        'receivedcashfromfinacenet', 'receivedcashfromfinacenetshort', 'receivedcashfromfinacenetover', 'oldcarcomamount', 'adj',
+        'receivedcashfromfinacenet', 'receivedcashfromfinacenetshort', 'receivedcashfromfinacenetover', 'oldcarcomamount', 'oldcarcomdate', 'adj',
         'totalaccount1', 'totalaccount1short', 'totalaccount1over', 'totalaccount2', 'totalaccount2short', 'totalaccount2over',
+        'totalaccounts', 'totalaccountsshort', 'totalaccountsover',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateRedlabelhistoriesTable extends Migration {
 
@@ -21,6 +21,7 @@ class CreateRedlabelhistoriesTable extends Migration {
             $table->integer('carpreemptionid')->unsigned();
             $table->foreign('carpreemptionid')->references('id')->on('car_preemptions');
             $table->dateTime('returndate')->nullable();
+			$table->dateTime('returncashpledgedate')->nullable();
             $table->text('remarks')->nullable();
 
             $table->integer('createdby')->unsigned();

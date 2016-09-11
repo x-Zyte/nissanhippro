@@ -1552,13 +1552,17 @@
 
         var giveawayFreeData = [
             @foreach ($giveawayFreeDatas as $data)
-                {"giveawayid":"{{$data->giveawayid}}","price":"{{$data->price}}"},
+            {
+                "id": "{{$data->id}}", "giveawayid": "{{$data->giveawayid}}", "price": "{{$data->price}}"
+            },
             @endforeach
         ];
 
         var giveawayBuyData = [
             @foreach ($giveawayBuyDatas as $data)
-                {"giveawayid":"{{$data->giveawayid}}"},
+            {
+                "id": "{{$data->id}}", "giveawayid": "{{$data->giveawayid}}"
+            },
             @endforeach
         ];
 

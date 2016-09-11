@@ -5,10 +5,8 @@ use Illuminate\Support\Facades\Auth;
 
 class Redlabelhistory extends Model {
 
-    protected $table = 'redlabelhistories';
-
     public $timestamps = false;
-
+    protected $table = 'redlabelhistories';
     protected $guarded = ['id'];
 
     protected $fillable = ['redlabelid', 'issuedate', 'carpreemptionid', 'returndate', 'remarks',
@@ -32,7 +30,7 @@ class Redlabelhistory extends Model {
         static::created(function($model)
         {
             $carpreemption = CarPreemption::find($model->carpreemptionid);
-            $redlabel = Redlabel::find($model->redlabelid);
+            $redlabel = RedLabel::find($model->redlabelid);
             $redlabel->customerid = $carpreemption->buyercustomerid;
             $redlabel->deposit = $carpreemption->cashpledgeredlabel;
             $redlabel->save();
@@ -57,7 +55,7 @@ class Redlabelhistory extends Model {
             $maxid = Redlabelhistory::where('redlabelid',$model->redlabelid)->max('id');
             if($model->returndate != null && $model->returndate != ''){
                 if($model->id == $maxid){
-                    $redlabel = Redlabel::find($model->redlabelid);
+                    $redlabel = RedLabel::find($model->redlabelid);
                     $redlabel->customerid = null;
                     $redlabel->carid = null;
                     $redlabel->deposit = null;
@@ -67,7 +65,7 @@ class Redlabelhistory extends Model {
             else{
                 if($model->id == $maxid){
                     $carpreemption = CarPreemption::find($model->carpreemptionid);
-                    $redlabel = Redlabel::find($model->redlabelid);
+                    $redlabel = RedLabel::find($model->redlabelid);
                     $redlabel->customerid = $carpreemption->buyercustomerid;
                     $redlabel->deposit = $carpreemption->cashpledgeredlabel;
                     $redlabel->save();
@@ -83,7 +81,7 @@ class Redlabelhistory extends Model {
 
             $maxid = Redlabelhistory::where('redlabelid',$model->redlabelid)->max('id');
             if($maxid == null || $maxid == '' || $model->id > $maxid){
-                $redlabel = Redlabel::find($model->redlabelid);
+                $redlabel = RedLabel::find($model->redlabelid);
                 $redlabel->customerid = null;
                 $redlabel->carid = null;
                 $redlabel->deposit = null;
@@ -95,5 +93,10 @@ class Redlabelhistory extends Model {
     public function carPreemption()
     {
         return $this->belongsTo('App\Models\CarPreemption', 'carpreemptionid', 'id');
+    }
+
+    public function redlabel()
+    {
+        return $this->belongsTo('App\Models\RedLabel', 'redlabelid', 'id');
     }
 }

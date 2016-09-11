@@ -29,20 +29,21 @@ class AccountingDetailController extends Controller
     , "systemcalincasefinacecomfinwhtax", "systemcalincasefinacecomfintotal", "receivedcashfromfinacenet"
     , "receivedcashfromfinacenetshort", "receivedcashfromfinacenetover"
     , "totalaccount1", "totalaccount1short", "totalaccount1over", "totalaccount2", "totalaccount2short", "totalaccount2over"
+    , 'totalaccounts', 'totalaccountsshort', 'totalaccountsover'
     , "invoiceno", "additionalopenbill", "deliverycardate"
-    , "cashpledgeredlabelreceiptbookno", "cashpledgeredlabelreceiptno", "cashpledgeredlabelreceiptdate", "redlabelreturndate"
+    , "cashpledgeredlabelreceiptbookno", "cashpledgeredlabelreceiptno", "cashpledgeredlabelreceiptdate", "redlabelreturncashpledgedate"
     , "cashpledgereceiptbookno", "cashpledgereceiptno", "cashpledgereceiptdate"
     , "incasefinacecomfinamount", "incasefinacecomfinvat", "incasefinacecomfinamountwithvat"
-    , "incasefinacecomfinwhtax", "incasefinacecomfintotal", "oldcarcomamount", "adj"
+    , "incasefinacecomfinwhtax", "incasefinacecomfintotal", "oldcarcomamount", 'oldcarcomdate', "adj"
     , "insurancefeereceiptcondition", "compulsorymotorinsurancefeereceiptcondition"
-    , "payinadvanceamountreimbursementdate", "payinadvanceamountreimbursementdocno"
+    , "payinadvanceamountreimbursementdate", "payinadvanceamountreimbursementdocno", 'insurancebilldifferent'
     , "note1insurancefeereceiptcondition", "note1compulsorymotorinsurancefeereceiptcondition"
     , 'insurancefeepayment', 'insurancefeepaidseparatelydate'
     , 'insurancepremiumnet', 'insurancepremiumcom', 'insurancefeepaidseparatelytotal'
     , 'compulsorymotorinsurancefeepayment', 'compulsorymotorinsurancefeepaidseparatelydate'
     , 'compulsorymotorinsurancepremiumnet', 'compulsorymotorinsurancepremiumcom', 'compulsorymotorinsurancefeepaidseparatelytotal'
     , "carno", "installmentsinadvance", "installments", "comfinyear"
-    , "createdby", "createddate", "modifiedby", "modifieddate", "submodel"
+    , "createdby", "createddate", "modifiedby", "modifieddate", "submodel", 'actualinsurancefee'
     );
 
     public function __construct()
@@ -247,9 +248,9 @@ class AccountingDetailController extends Controller
                 $accountingdetail->totalaccount2over = $totalaccount2;
             }
 
-            $totalaccount2 = SupportRequest::old('totalaccount2');
-            if ($totalaccount2 != null) {
-                $accountingdetail->totalacc2 = $totalaccount2;
+            $totalaccount2old = SupportRequest::old('totalaccount2');
+            if ($totalaccount2old != null) {
+                $accountingdetail->totalacc2 = $totalaccount2old;
             }
             $totalaccount2short = SupportRequest::old('totalaccount2short');
             if ($totalaccount2short != null) {
@@ -259,6 +260,27 @@ class AccountingDetailController extends Controller
             if ($totalaccount2over != null) {
                 $accountingdetail->totalacc2over = $totalaccount2over;
             }
+
+            $totalaccounts = $cash + $totalaccount2;
+            $accountingdetail->totalaccs = $totalaccounts;
+            $accountingdetail->totalaccsshort = $totalaccounts;
+            $accountingdetail->totalaccsover = 0;
+            $accountingdetail->totalaccounts = $totalaccounts;
+            $accountingdetail->totalaccountsshort = $totalaccounts;
+            $accountingdetail->totalaccountsover = 0;
+
+            $totalaccounts = SupportRequest::old('totalaccounts');
+            if ($totalaccounts != null) {
+                $accountingdetail->totalaccs = $totalaccounts;
+            }
+            $totalaccountsshort = SupportRequest::old('totalaccountsshort');
+            if ($totalaccountsshort != null) {
+                $accountingdetail->totalaccsshort = $totalaccountsshort;
+            }
+            $totalaccountsover = SupportRequest::old('totalaccountsover');
+            if ($totalaccountsover != null) {
+                $accountingdetail->totalaccsover = $totalaccountsover;
+            }
         }
 
         $receiveAndPayData0 = SupportRequest::old('receiveAndPayData0');
@@ -266,7 +288,7 @@ class AccountingDetailController extends Controller
         $receiveAndPayDatas0 = array();
         if ($receiveAndPayData0 != null && $receiveAndPayData0 != '') {
             foreach ($receiveAndPayData0 as $data) {
-                $obj = (object)array("date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
+                $obj = (object)array("id" => $data["id"], "date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
                 array_push($receiveAndPayDatas0, $obj);
             }
         }
@@ -276,7 +298,7 @@ class AccountingDetailController extends Controller
         $receiveAndPayDatas1 = array();
         if ($receiveAndPayData1 != null && $receiveAndPayData1 != '') {
             foreach ($receiveAndPayData1 as $data) {
-                $obj = (object)array("date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
+                $obj = (object)array("id" => $data["id"], "date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
                 array_push($receiveAndPayDatas1, $obj);
             }
         }
@@ -312,6 +334,7 @@ class AccountingDetailController extends Controller
             'additionalopenbill' => 'required',
             'insurancefeereceiptcondition' => 'required_if:hasinsurancefee,1',
             'compulsorymotorinsurancefeereceiptcondition' => 'required_if:hascompulsorymotorinsurancefee,1',
+            'insurancebilldifferent' => 'required',
             'note1insurancefeereceiptcondition' => 'required_if:hasinsurancefee,1',
             'note1compulsorymotorinsurancefeereceiptcondition' => 'required_if:hascompulsorymotorinsurancefee,1',
             'insurancefeepayment' => 'required_if:hasinsurancefee,1',
@@ -338,6 +361,7 @@ class AccountingDetailController extends Controller
                 'additionalopenbill.required' => 'ราคาเปิดบิลเพิ่มเติม จำเป็นต้องกรอก',
                 'insurancefeereceiptcondition.required_if' => 'เงื่อนไข AC1* ค่าเบี้ย ป.1 จำเป็นต้องเลือก',
                 'compulsorymotorinsurancefeereceiptcondition.required_if' => 'เงื่อนไข AC1* ค่า พ.ร.บ. จำเป็นต้องเลือก',
+                'insurancebilldifferent.required' => 'ส่วนต่างบิลประกันภัย (รวม Vat) จำเป็นต้องกรอก',
                 'note1insurancefeereceiptcondition.required_if' => 'เงื่อนไข AC2* ค่าเบี้ย ป.1 จำเป็นต้องเลือก',
                 'note1compulsorymotorinsurancefeereceiptcondition.required_if' => 'เงื่อนไข AC2* ค่า พ.ร.บ. จำเป็นต้องเลือก',
                 'insurancefeepayment.required_if' => 'ป.1 จ่ายเงิน จำเป็นต้องเลือก',
@@ -380,6 +404,8 @@ class AccountingDetailController extends Controller
             $model->payinadvanceamountreimbursementdocno = $input['payinadvanceamountreimbursementdocno'];
         else
             $model->payinadvanceamountreimbursementdocno = null;
+
+        $model->insurancebilldifferent = $input['insurancebilldifferent'];
 
         if ($input['hasinsurancefee'] == 1) {
             $model->insurancefeereceiptcondition = $input['insurancefeereceiptcondition'];
@@ -488,8 +514,15 @@ class AccountingDetailController extends Controller
         $model->totalaccount2 = $input['totalaccount2'];
         $model->totalaccount2short = $input['totalaccount2short'];
         $model->totalaccount2over = $input['totalaccount2over'];
+        $model->totalaccounts = $input['totalaccounts'];
+        $model->totalaccountsshort = $input['totalaccountsshort'];
+        $model->totalaccountsover = $input['totalaccountsover'];
 
         $model->oldcarcomamount = $input['oldcarcomamount'];
+        if ($input['oldcarcomdate'] != null && $input['oldcarcomdate'] != '')
+            $model->oldcarcomdate = date('Y-m-d', strtotime($input['oldcarcomdate']));
+        else
+            $model->oldcarcomdate = null;
         $model->adj = $input['adj'];
 
         if ($model->save()) {
@@ -548,9 +581,23 @@ class AccountingDetailController extends Controller
         else
             $accountingdetail->payinadvanceamountreimbursementdate = null;
         $accountingdetail->payinadvanceamountreimbursementdocno = $tempModel->payinadvanceamountreimbursementdocno;
+        $accountingdetail->insurancebilldifferent = $tempModel->insurancebilldifferent;
+        if ($tempModel->insurancebilldifferent > 0) {
+            $accountingdetail->note1insurancefeeincludevat = $accountingdetail->note1insurancefeeincludevat + $tempModel->insurancebilldifferent;
+            $accountingdetail->note1insurancefee = ($accountingdetail->note1insurancefeeincludevat * 100) / 107.00;
+            $accountingdetail->note1insurancefeevat = $accountingdetail->note1insurancefeeincludevat - $accountingdetail->note1insurancefee;
+
+            $accountingdetail->incasefinaceinsurancefee = $accountingdetail->incasefinaceinsurancefee + $tempModel->insurancebilldifferent;
+            $accountingdetail->totalincasefinace = $accountingdetail->totalincasefinace + $tempModel->insurancebilldifferent;
+            $accountingdetail->incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash - $tempModel->insurancebilldifferent;
+            $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacehassubsidisereceivedcash - $tempModel->insurancebilldifferent;
+
+            $accountingdetail->ins = $accountingdetail->ins + $tempModel->insurancebilldifferent;
+        }
         $accountingdetail->note1insurancefeereceiptcondition = $tempModel->note1insurancefeereceiptcondition;
         $accountingdetail->insurancefeepayment = $tempModel->insurancefeepayment;
         if ($tempModel->insurancefeepayment == 1) {
+            $accountingdetail->note2insurancefeewhtax = 0;
             $accountingdetail->totalincasefinace = $accountingdetail->totalincasefinace - $accountingdetail->incasefinaceinsurancefee;
             $accountingdetail->incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash + $accountingdetail->incasefinaceinsurancefee;
             $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacehassubsidisereceivedcash + $accountingdetail->incasefinaceinsurancefee;
@@ -578,6 +625,7 @@ class AccountingDetailController extends Controller
         $accountingdetail->note1compulsorymotorinsurancefeereceiptcondition = $tempModel->note1compulsorymotorinsurancefeereceiptcondition;
         $accountingdetail->compulsorymotorinsurancefeepayment = $tempModel->compulsorymotorinsurancefeepayment;
         if ($tempModel->compulsorymotorinsurancefeepayment == 1) {
+            $accountingdetail->note2compulsorymotorinsurancefeewhtax = 0;
             $accountingdetail->totalincasefinace = $accountingdetail->totalincasefinace - $accountingdetail->incasefinacecompulsorymotorinsurancefee;
             $accountingdetail->incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash + $accountingdetail->incasefinacecompulsorymotorinsurancefee;
             $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacehassubsidisereceivedcash + $accountingdetail->incasefinacecompulsorymotorinsurancefee;
@@ -613,6 +661,9 @@ class AccountingDetailController extends Controller
         $accountingdetail->cashpledgereceiptno = $tempModel->cashpledgereceiptno;
         $accountingdetail->cashpledgereceiptdate = date('d-m-Y', strtotime($tempModel->cashpledgereceiptdate));
         $accountingdetail->oldcarcomamount = $tempModel->oldcarcomamount;
+        if ($tempModel->oldcarcomdate != null)
+            $accountingdetail->oldcarcomdate = date('d-m-Y', strtotime($tempModel->oldcarcomdate));
+        else $accountingdetail->oldcarcomdate = null;
         $accountingdetail->adj = $tempModel->adj;
         $accountingdetail->incasefinacecomfinamount = $tempModel->incasefinacecomfinamount;
         $accountingdetail->incasefinacecomfinvat = $tempModel->incasefinacecomfinvat;
@@ -656,6 +707,13 @@ class AccountingDetailController extends Controller
         $accountingdetail->totalaccount2short = $tempModel->totalaccount2short;
         $accountingdetail->totalacc2over = $tempModel->totalaccount2over;
         $accountingdetail->totalaccount2over = $tempModel->totalaccount2over;
+
+        $accountingdetail->totalaccs = $tempModel->totalaccounts;
+        $accountingdetail->totalaccounts = $tempModel->totalaccounts;
+        $accountingdetail->totalaccsshort = $tempModel->totalaccountsshort;
+        $accountingdetail->totalaccountsshort = $tempModel->totalaccountsshort;
+        $accountingdetail->totalaccsover = $tempModel->totalaccountsover;
+        $accountingdetail->totalaccountsover = $tempModel->totalaccountsover;
 
         $additionalopenbill = SupportRequest::old('additionalopenbill');
         if ($additionalopenbill != null) $accountingdetail->additionalopenbill = $additionalopenbill;
@@ -763,6 +821,19 @@ class AccountingDetailController extends Controller
             $accountingdetail->totalacc2over = $totalaccount2over;
         }
 
+        $totalaccounts = SupportRequest::old('totalaccounts');
+        if ($totalaccounts != null) {
+            $accountingdetail->totalaccs = $totalaccounts;
+        }
+        $totalaccountsshort = SupportRequest::old('totalaccountsshort');
+        if ($totalaccountsshort != null) {
+            $accountingdetail->totalaccsshort = $totalaccountsshort;
+        }
+        $totalaccountsover = SupportRequest::old('totalaccountsover');
+        if ($totalaccountsover != null) {
+            $accountingdetail->totalaccsover = $totalaccountsover;
+        }
+
         $carpayment = CarPayment::where('id', $tempModel->carpaymentid)->with('carpreemption')->first();
         $carpaymentselectlist = array();
         $carpaymentselectlist[$carpayment->id] = $carpayment->carpreemption->bookno . '/' . $carpayment->carpreemption->no;
@@ -785,7 +856,7 @@ class AccountingDetailController extends Controller
         if ($receiveAndPayData0 != null && $receiveAndPayData0 != '') {
             $receiveAndPayData0 = json_decode($receiveAndPayData0, true);
             foreach ($receiveAndPayData0 as $data) {
-                $obj = (object)array("date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
+                $obj = (object)array("id" => $data["id"], "date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
                 array_push($receiveAndPayDatas0, $obj);
             }
         } else {
@@ -793,7 +864,7 @@ class AccountingDetailController extends Controller
                 ->get(['id', 'date', 'type', 'amount', 'accountgroup', 'bankid', 'note']);
 
             foreach ($receiveAndPays0 as $data) {
-                $obj = (object)array("date" => $data->date, "type" => $data->type, "amount" => $data->amount, "accountgroup" => $data->accountgroup, "bankid" => $data->bankid, "note" => $data->note);
+                $obj = (object)array("id" => $data->id, "date" => $data->date, "type" => $data->type, "amount" => $data->amount, "accountgroup" => $data->accountgroup, "bankid" => $data->bankid, "note" => $data->note);
                 array_push($receiveAndPayDatas0, $obj);
             }
         }
@@ -803,7 +874,7 @@ class AccountingDetailController extends Controller
         if ($receiveAndPayData1 != null && $receiveAndPayData1 != '') {
             $receiveAndPayData1 = json_decode($receiveAndPayData1, true);
             foreach ($receiveAndPayData1 as $data) {
-                $obj = (object)array("date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
+                $obj = (object)array("id" => $data["id"], "date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
                 array_push($receiveAndPayDatas1, $obj);
             }
         } else {
@@ -811,7 +882,7 @@ class AccountingDetailController extends Controller
                 ->get(['id', 'date', 'type', 'amount', 'accountgroup', 'bankid', 'note']);
 
             foreach ($receiveAndPays1 as $data) {
-                $obj = (object)array("date" => $data->date, "type" => $data->type, "amount" => $data->amount, "accountgroup" => $data->accountgroup, "bankid" => $data->bankid, "note" => $data->note);
+                $obj = (object)array("id" => $data->id, "date" => $data->date, "type" => $data->type, "amount" => $data->amount, "accountgroup" => $data->accountgroup, "bankid" => $data->bankid, "note" => $data->note);
                 array_push($receiveAndPayDatas1, $obj);
             }
         }
@@ -853,9 +924,23 @@ class AccountingDetailController extends Controller
         else
             $accountingdetail->payinadvanceamountreimbursementdate = null;
         $accountingdetail->payinadvanceamountreimbursementdocno = $tempModel->payinadvanceamountreimbursementdocno;
+        $accountingdetail->insurancebilldifferent = $tempModel->insurancebilldifferent;
+        if ($tempModel->insurancebilldifferent > 0) {
+            $accountingdetail->note1insurancefeeincludevat = $accountingdetail->note1insurancefeeincludevat + $tempModel->insurancebilldifferent;
+            $accountingdetail->note1insurancefee = ($accountingdetail->note1insurancefeeincludevat * 100) / 107.00;
+            $accountingdetail->note1insurancefeevat = $accountingdetail->note1insurancefeeincludevat - $accountingdetail->note1insurancefee;
+
+            $accountingdetail->incasefinaceinsurancefee = $accountingdetail->incasefinaceinsurancefee + $tempModel->insurancebilldifferent;
+            $accountingdetail->totalincasefinace = $accountingdetail->totalincasefinace + $tempModel->insurancebilldifferent;
+            $accountingdetail->incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash - $tempModel->insurancebilldifferent;
+            $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacehassubsidisereceivedcash - $tempModel->insurancebilldifferent;
+
+            $accountingdetail->ins = $accountingdetail->ins + $tempModel->insurancebilldifferent;
+        }
         $accountingdetail->note1insurancefeereceiptcondition = $tempModel->note1insurancefeereceiptcondition;
         $accountingdetail->insurancefeepayment = $tempModel->insurancefeepayment;
         if ($tempModel->insurancefeepayment == 1) {
+            $accountingdetail->note2insurancefeewhtax = 0;
             $accountingdetail->totalincasefinace = $accountingdetail->totalincasefinace - $accountingdetail->incasefinaceinsurancefee;
             $accountingdetail->incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash + $accountingdetail->incasefinaceinsurancefee;
             $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacehassubsidisereceivedcash + $accountingdetail->incasefinaceinsurancefee;
@@ -883,6 +968,7 @@ class AccountingDetailController extends Controller
         $accountingdetail->note1compulsorymotorinsurancefeereceiptcondition = $tempModel->note1compulsorymotorinsurancefeereceiptcondition;
         $accountingdetail->compulsorymotorinsurancefeepayment = $tempModel->compulsorymotorinsurancefeepayment;
         if ($tempModel->compulsorymotorinsurancefeepayment == 1) {
+            $accountingdetail->note2compulsorymotorinsurancefeewhtax = 0;
             $accountingdetail->totalincasefinace = $accountingdetail->totalincasefinace - $accountingdetail->incasefinacecompulsorymotorinsurancefee;
             $accountingdetail->incasefinacereceivedcash = $accountingdetail->incasefinacereceivedcash + $accountingdetail->incasefinacecompulsorymotorinsurancefee;
             $accountingdetail->incasefinacehassubsidisereceivedcash = $accountingdetail->incasefinacehassubsidisereceivedcash + $accountingdetail->incasefinacecompulsorymotorinsurancefee;
@@ -918,6 +1004,9 @@ class AccountingDetailController extends Controller
         $accountingdetail->cashpledgereceiptno = $tempModel->cashpledgereceiptno;
         $accountingdetail->cashpledgereceiptdate = date('d-m-Y', strtotime($tempModel->cashpledgereceiptdate));
         $accountingdetail->oldcarcomamount = $tempModel->oldcarcomamount;
+        if ($tempModel->oldcarcomdate != null)
+            $accountingdetail->oldcarcomdate = date('d-m-Y', strtotime($tempModel->oldcarcomdate));
+        else $accountingdetail->oldcarcomdate = null;
         $accountingdetail->adj = $tempModel->adj;
         $accountingdetail->incasefinacecomfinamount = $tempModel->incasefinacecomfinamount;
         $accountingdetail->incasefinacecomfinvat = $tempModel->incasefinacecomfinvat;
@@ -949,6 +1038,13 @@ class AccountingDetailController extends Controller
         $accountingdetail->totalaccount2short = $tempModel->totalaccount2short;
         $accountingdetail->totalacc2over = $tempModel->totalaccount2over;
         $accountingdetail->totalaccount2over = $tempModel->totalaccount2over;
+
+        $accountingdetail->totalaccs = $tempModel->totalaccounts;
+        $accountingdetail->totalaccounts = $tempModel->totalaccounts;
+        $accountingdetail->totalaccsshort = $tempModel->totalaccountsshort;
+        $accountingdetail->totalaccountsshort = $tempModel->totalaccountsshort;
+        $accountingdetail->totalaccsover = $tempModel->totalaccountsover;
+        $accountingdetail->totalaccountsover = $tempModel->totalaccountsover;
 
         $finalopenbill = $accountingdetail->openbill;
         if ($accountingdetail->additionalopenbill != null && $accountingdetail->additionalopenbill > 0) {
@@ -1003,7 +1099,7 @@ class AccountingDetailController extends Controller
         if ($receiveAndPayData0 != null && $receiveAndPayData0 != '') {
             $receiveAndPayData0 = json_decode($receiveAndPayData0, true);
             foreach ($receiveAndPayData0 as $data) {
-                $obj = (object)array("date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
+                $obj = (object)array("id" => $data["id"], "date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
                 array_push($receiveAndPayDatas0, $obj);
             }
         } else {
@@ -1011,7 +1107,7 @@ class AccountingDetailController extends Controller
                 ->get(['id', 'date', 'type', 'amount', 'accountgroup', 'bankid', 'note']);
 
             foreach ($receiveAndPays0 as $data) {
-                $obj = (object)array("date" => $data->date, "type" => $data->type, "amount" => $data->amount, "accountgroup" => $data->accountgroup, "bankid" => $data->bankid, "note" => $data->note);
+                $obj = (object)array("id" => $data->id, "date" => $data->date, "type" => $data->type, "amount" => $data->amount, "accountgroup" => $data->accountgroup, "bankid" => $data->bankid, "note" => $data->note);
                 array_push($receiveAndPayDatas0, $obj);
             }
         }
@@ -1021,7 +1117,7 @@ class AccountingDetailController extends Controller
         if ($receiveAndPayData1 != null && $receiveAndPayData1 != '') {
             $receiveAndPayData1 = json_decode($receiveAndPayData1, true);
             foreach ($receiveAndPayData1 as $data) {
-                $obj = (object)array("date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
+                $obj = (object)array("id" => $data["id"], "date" => $data["date"], "type" => $data["type"], "amount" => $data["amount"], "accountgroup" => $data["accountgroup"], "bankid" => $data["bankid"], "note" => $data["note"]);
                 array_push($receiveAndPayDatas1, $obj);
             }
         } else {
@@ -1029,7 +1125,7 @@ class AccountingDetailController extends Controller
                 ->get(['id', 'date', 'type', 'amount', 'accountgroup', 'bankid', 'note']);
 
             foreach ($receiveAndPays1 as $data) {
-                $obj = (object)array("date" => $data->date, "type" => $data->type, "amount" => $data->amount, "accountgroup" => $data->accountgroup, "bankid" => $data->bankid, "note" => $data->note);
+                $obj = (object)array("id" => $data->id, "date" => $data->date, "type" => $data->type, "amount" => $data->amount, "accountgroup" => $data->accountgroup, "bankid" => $data->bankid, "note" => $data->note);
                 array_push($receiveAndPayDatas1, $obj);
             }
         }
