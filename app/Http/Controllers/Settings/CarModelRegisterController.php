@@ -25,8 +25,7 @@ class CarModelRegisterController extends Controller {
         if(array_key_exists("filters", $input)){
             if($input['filters'] == null){
                 $input['filters'] = json_encode(array("groupOp"=>"AND",
-                    "rules"=>array(array("field"=>"carmodelid","op"=>"eq","data"=>$input["carmodelid"]),
-                        array("field"=>"active","op"=>"eq","data"=>true))));
+                    "rules" => array(array("field" => "carmodelid", "op" => "eq", "data" => $input["carmodelid"]))));
             }
             else {
                 $filters = json_decode(str_replace('\'', '"', $input['filters']), true);
