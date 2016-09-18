@@ -45,9 +45,9 @@ class AuthController extends Controller {
         else
             $ip=getenv('REMOTE_ADDR');
 
-        $host = gethostbyaddr($ip);
+        //$host = gethostbyaddr($ip);
 
-        $ipAddress = 'Address : '.$ip.' Host : '.$host;
+        $ipAddress = 'Address : ' . $ip; //.' Host : '.$host;
 
         return view('auth.login',['ipAddress' => $ipAddress]);
     }
