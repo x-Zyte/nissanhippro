@@ -47,7 +47,7 @@ class AuthController extends Controller {
 
         //$host = gethostbyaddr($ip);
 
-        $ipAddress = 'Address : ' . $ip; //.' Host : '.$host;
+        $ipAddress = 'Address : ' . $ip;//.' Host : '.$host;
 
         return view('auth.login',['ipAddress' => $ipAddress]);
     }
