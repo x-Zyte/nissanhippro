@@ -5,14 +5,12 @@ use Illuminate\Support\Facades\Auth;
 
 class Pricelist extends Model {
 
-    protected $table = 'pricelists';
-
     public $timestamps = false;
-
+    protected $table = 'pricelists';
     protected $guarded = ['id'];
 
     protected $fillable = ['carmodelid', 'carsubmodelid', 'effectivefrom','effectiveto','sellingprice',
-        'accessoriesprice','sellingpricewithaccessories','margin','execusiveinternal','execusivecampaing', 'execusivetotalcampaing',
+        'accessoriesprice', 'sellingpricewithaccessories', 'margin', 'ws50', 'dms', 'execusiveinternal', 'execusivecampaing', 'execusivetotalcampaing',
         'execusivetotalmargincampaing','internal','campaing','totalmargincampaing','promotion',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 

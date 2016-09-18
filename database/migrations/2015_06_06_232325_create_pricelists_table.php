@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreatePricelistsTable extends Migration {
 
@@ -25,7 +25,7 @@ class CreatePricelistsTable extends Migration {
             $table->decimal('accessoriesprice', 10, 2)->default(0);
             $table->decimal('sellingpricewithaccessories', 10, 2)->comment('sellingprice + accessoriesprice');
             $table->decimal('margin', 10, 2)->default(0);
-            $table->decimal('ws', 10, 2)->default(0);
+            $table->decimal('ws50', 10, 2)->default(0);
             $table->decimal('dms', 10, 2)->default(0);
             $table->decimal('execusiveinternal', 10, 2)->default(0);
             $table->decimal('execusivecampaing', 10, 2)->default(0);

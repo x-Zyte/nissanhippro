@@ -10,16 +10,57 @@
 
     <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-btc"></i> รายการราคา</h3>
 
+    <div class="panel-body" style="padding: 0px;">
+        {!! Form::open(array('url' => 'pricelist/import', 'files' => true, 'id'=>'form-import')) !!}
+        <div id="import" class="form-group col-xs-12">
+            <div class="col-xs-3">
+                <input type="file" name="pricelist" id="input-file-pricelist">
+            </div>
+            {!! Form::submit('Import') !!}
+        </div>
+        {!! Form::close() !!}
+    </div>
+
     <table id="grid-table"></table>
 
     <div id="grid-pager"></div>
 
-    <script type="text/javascript">
-        var $path_base = "..";//this will be used for editurl parameter
-    </script>
-
     <!-- inline scripts related to this page -->
     <script type="text/javascript">
+
+        $('#modal').hide();
+
+        $('#input-file-pricelist').ace_file_input({
+            no_file: 'ยังไม่ได้เลือกไฟล์...',
+            btn_choose: 'เลือกไฟล์',
+            btn_change: 'เปลี่ยนไฟล์',
+            droppable: false,
+            onchange: null,
+            thumbnail: false, //| true | large
+            allowExt: ["xls", "xlsx"],
+            allowMime: ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
+            //whitelist:'gif|png|jpg|jpeg'
+            //blacklist:'exe|php'
+            //onchange:''
+            //
+        });
+        //pre-show a file name, for example a previously selected file
+        //$('#id-input-file-1').ace_file_input('show_file_list', ['myfile.txt'])
+
+        function ResetFileInput(e) {
+            var file_input = $(e.closest(".ace-file-input")).find("input[type=file]");
+            file_input.ace_file_input('reset_input');
+        }
+
+        $('#form-import').submit(function () { //listen for submit event
+            if ($('#input-file-pricelist').get(0).files.length === 0) {
+                alert("กรุณาเลือกไฟล์");
+                return false;
+            }
+            $('#modal').show();
+            return true;
+        });
+
         $(document).ready(function() {
             var grid_selector = "#grid-table";
             var pager_selector = "#grid-pager";
@@ -27,14 +68,14 @@
             //resize to fit page size
             $(window).on('resize.jqGrid', function () {
                 resizeGrid();
-            })
+            });
             //resize on sidebar collapse/expand
             var parent_column = $(grid_selector).closest('[class*="col-"]');
             $(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
                 if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
                     $(grid_selector).jqGrid( 'setGridWidth', parent_column.width() );
                 }
-            })
+            });
 
             var candeletedata = false;
             if('{{Auth::user()->isadmin}}' == '1' || '{{Auth::user()->candeletedata}}' == '1'){
@@ -45,7 +86,7 @@
                 url:"pricelist/read",
                 datatype: "json",
                 colNames:['แบบรถ', 'รุ่นรถ','ตั้งแต่วันที่','ถึงวันที่', 'ราคาขาย MSRP', 'ราคาอุปกรณ์ตกแต่ง', 'ราคาขายพร้อมอุปกรณ์ตกแต่ง', 'MARGIN',
-                    'ส่งเสริมการขาย/Internal', 'คูปองน้ำมัน/Campaign', 'Total Campaign', 'Total Margin Campaign',
+                    'WS 50%', 'DMS', 'ส่งเสริมการขาย/Internal', 'คูปองน้ำมัน/Campaign', 'Total Campaign', 'Total Margin Campaign',
                     'ส่งเสริมการขาย/Internal','คูปอง../Extra Campaign','Total Margin + Campaign','โปรโมชั่น'],
                 colModel:[
                     {name:'carmodelid',index:'carmodelid', width:250, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
@@ -86,6 +127,16 @@
                     {name:'margin',index:'margin', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
+                    {
+                        name: 'ws50', index: 'ws50', width: 100, editable: true,
+                        editrules: {required: true, number: true}, align: 'right', formatter: 'number',
+                        formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
+                    },
+                    {
+                        name: 'dms', index: 'dms', width: 100, editable: true,
+                        editrules: {required: true, number: true}, align: 'right', formatter: 'number',
+                        formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
+                    },
                     {name:'execusiveinternal',index:'execusiveinternal', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',formoptions:{label:'ส่งเสริมการขาย/Internal (Execusive)'},
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
@@ -136,6 +187,7 @@
             $(grid_selector).jqGrid('setGroupHeaders', {
                 useColSpanStyle: true,
                 groupHeaders:[
+                    {startColumnName: 'margin', numberOfColumns: 3, titleText: 'ผลประโยชน์รวม'},
                     {startColumnName: 'execusiveinternal', numberOfColumns: 4, titleText: 'NLTH Execusive'},
                     {startColumnName: 'internal', numberOfColumns: 3, titleText: 'กรณีเงินสด/ดอกเบี้ยปกติ'}
                 ]
@@ -167,7 +219,7 @@
                     viewPagerButtons : false,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                         style_edit_form(form);
 
                         var carmodelid = $('#carmodelid').val();
@@ -227,7 +279,7 @@
                     beforeShowForm : function(e) {
                         jQuery(grid_selector).jqGrid('resetSelection');
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                         style_edit_form(form);
 
                         $('#carsubmodelid').children('option:not(:first)').remove();
@@ -276,7 +328,7 @@
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
                         if(!form.data('styled')) {
-                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                             style_delete_form(form);
 
                             form.data('styled', true);
@@ -309,7 +361,7 @@
                     recreateForm: true,
                     afterShowSearch: function(e){
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
                         style_search_form(form);
 
                         var dlgDiv = $("#searchmodfbox_" + jQuery(grid_selector)[0].id);
@@ -334,7 +386,7 @@
                     recreateForm: true,
                     beforeShowForm: function(e){
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
 
                         var dlgDiv = $("#viewmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);

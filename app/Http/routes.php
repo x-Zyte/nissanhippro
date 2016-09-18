@@ -138,6 +138,7 @@ Route::get('pricelist/read', 'Settings\PricelistController@read');
 Route::post('pricelist/update', 'Settings\PricelistController@update');
 Route::get('pricelist/readSelectlistForDisplayInGrid', 'Settings\PricelistController@readSelectlistForDisplayInGrid');
 Route::get('pricelist/getprice/{carsubmodelid}/{date}', 'Settings\PricelistController@getprice');
+Route::post('pricelist/import', 'Settings\PricelistController@import');
 
 //Giveaway
 Route::get('giveaway', 'Settings\GiveawayController@index');
@@ -269,6 +270,7 @@ Route::post('report/carstock', 'ReportController@carstock');
 Route::get('/', 'HomeController@index');
 
 Route::get('home', 'HomeController@index');
+Route::post('home/import', 'HomeController@import');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',

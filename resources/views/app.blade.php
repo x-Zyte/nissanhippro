@@ -83,6 +83,8 @@
 
     <link rel="stylesheet" href="@yield('pathPrefix')resources/assets/css/lightbox.css">
     <link rel="shortcut icon" href="@yield('pathPrefix')resources/assets/img/favicon.ico">
+
+    <script src="@yield('pathPrefix')resources/assets/js/ace-elements.min.js"></script>
 </head>
 <body id="appbody" class="skin-2">
 
@@ -629,7 +631,6 @@
 <script src="@yield('pathPrefix')resources/assets/js/bootstrap-tag.min.js"></script>
 
 <!-- ace scripts -->
-<script src="@yield('pathPrefix')resources/assets/js/ace-elements.min.js"></script>
 <script src="@yield('pathPrefix')resources/assets/js/ace.min.js"></script>
 
 <script src="@yield('pathPrefix')resources/assets/js/sharefunctions.js"></script>

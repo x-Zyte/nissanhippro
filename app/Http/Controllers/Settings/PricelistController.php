@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Settings;
 
 use App\Facades\GridEncoder;
 use App\Http\Controllers\Controller;
+use App\Models\CarBrand;
 use App\Models\CarModel;
 use App\Models\CarSubModel;
 use App\Models\Pricelist;
 use App\Repositories\PricelistRepository;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PricelistController extends Controller {
 
@@ -86,5 +89,39 @@ class PricelistController extends Controller {
             ->orderBy('sellingpricewithaccessories', 'asc')->get(['id', 'sellingpricewithaccessories', 'promotion']);
 
         return ['count'=> count($pricelists),'pricelists'=>$pricelists];
+    }
+
+    public function import()
+    {
+        try {
+            $file = Input::file('pricelist');
+            //$path = Input::file('pricelist')->getRealPath();
+            $temp = null;
+            Excel::load($file, function ($reader) use ($temp) {
+                //$reader->dump();
+                // Loop through all rows
+                $reader->each(function ($row) {
+
+                    $carBrand = CarBrand::where('name', 'NISSAN')->first();
+                    $carModel = CarModel::firstOrCreate(['name' => $row->d . ' ' . $row->e, 'cartypeid' => $row->c, 'carbrandid' => $carBrand->id]);
+                    $carSubModel = CarSubModel::firstOrCreate(['code' => $row->g, 'name' => $row->f, 'taxinvoicename' => $row->h, 'carmodelid' => $carModel->id]);
+
+                    $pricelist = Pricelist::firstOrNew(['carmodelid' => $carModel->id, 'carsubmodelid' => $carSubModel->id
+                        , 'effectivefrom' => date('Y-m-d', strtotime($row->a)), 'effectiveto' => date('Y-m-d', strtotime($row->b))
+                        , 'sellingprice' => $row->j, 'accessoriesprice' => $row->k, 'sellingpricewithaccessories' => $row->i
+                        , 'margin' => $row->l, 'ws50' => $row->m, 'dms' => $row->n
+                        , 'execusiveinternal' => $row->o, 'execusivecampaing' => $row->p, 'execusivetotalcampaing' => $row->q, 'execusivetotalmargincampaing' => $row->r
+                        , 'internal' => $row->s, 'campaing' => $row->t, 'totalmargincampaing' => $row->u]);
+                    $pricelist->effectivefrom = $row->a;
+                    $pricelist->effectiveto = $row->b;
+                    $pricelist->save();
+                });
+
+            });
+        } catch (Exception $e) {
+            return 'Message: ' . $e->getMessage();
+        }
+
+        return redirect()->action('Settings\PricelistController@index');
     }
 }

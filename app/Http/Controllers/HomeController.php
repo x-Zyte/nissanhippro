@@ -1,7 +1,8 @@
 <?php namespace App\Http\Controllers;
 
-use App\Models\CarModel;
-use Illuminate\Support\Facades\Auth;
+use Exception;
+use Illuminate\Support\Facades\Input;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HomeController extends Controller {
 
@@ -34,6 +35,27 @@ class HomeController extends Controller {
 	public function index()
 	{
 		return view('home');
+	}
+
+	public function import()
+	{
+		try {
+			$file = Input::file('file');
+			//$path = Input::file('pricelist')->getRealPath();
+			$temp = null;
+			Excel::load($file, function ($reader) use ($temp) {
+				//$reader->dump();
+				// Loop through all rows
+				$reader->each(function ($row) {
+
+				});
+
+			});
+		} catch (Exception $e) {
+			return 'Message: ' . $e->getMessage();
+		}
+
+		return redirect()->action('HomeController@index');
 	}
 
 }
