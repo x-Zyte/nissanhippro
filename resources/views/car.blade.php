@@ -6,6 +6,17 @@
 
     <h3 class="header smaller lighter blue"><i class="ace-icon fa fa-car"></i> รับรถเข้าสต๊อก</h3>
 
+    <div class="panel-body" style="padding: 0px;">
+        {!! Form::open(array('url' => 'car/import', 'files' => true, 'id'=>'form-import')) !!}
+        <div id="import" class="form-group col-xs-12">
+            <div class="col-xs-3">
+                <input type="file" name="file" id="input-file">
+            </div>
+            {!! Form::submit('Import') !!}
+        </div>
+        {!! Form::close() !!}
+    </div>
+
     <table id="grid-table"></table>
 
     <div id="grid-pager"></div>
@@ -16,6 +27,40 @@
 
     <!-- inline scripts related to this page -->
     <script type="text/javascript">
+
+        $('#modal').hide();
+
+        $('#input-file').ace_file_input({
+            no_file: 'ยังไม่ได้เลือกไฟล์...',
+            btn_choose: 'เลือกไฟล์',
+            btn_change: 'เปลี่ยนไฟล์',
+            droppable: false,
+            onchange: null,
+            thumbnail: false, //| true | large
+            allowExt: ["xls", "xlsx"],
+            allowMime: ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
+            //whitelist:'gif|png|jpg|jpeg'
+            //blacklist:'exe|php'
+            //onchange:''
+            //
+        });
+        //pre-show a file name, for example a previously selected file
+        //$('#id-input-file-1').ace_file_input('show_file_list', ['myfile.txt'])
+
+        function ResetFileInput(e) {
+            var file_input = $(e.closest(".ace-file-input")).find("input[type=file]");
+            file_input.ace_file_input('reset_input');
+        }
+
+        $('#form-import').submit(function () { //listen for submit event
+            if ($('#input-file').get(0).files.length === 0) {
+                alert("กรุณาเลือกไฟล์");
+                return false;
+            }
+            $('#modal').show();
+            return true;
+        });
+
         $(document).ready(function() {
             var grid_selector = "#grid-table";
             var pager_selector = "#grid-pager";

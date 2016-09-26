@@ -131,6 +131,7 @@ Route::get('car/read', 'CarController@read');
 Route::post('car/update', 'CarController@update');
 Route::post('car/upload', 'CarController@upload');
 Route::get('car/readSelectlistForDisplayInGrid', 'CarController@readSelectlistForDisplayInGrid');
+Route::post('car/import', 'CarController@import');
 
 //Pricelist
 Route::get('pricelist', 'Settings\PricelistController@index');

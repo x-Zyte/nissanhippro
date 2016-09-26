@@ -899,106 +899,136 @@
                                     </div>
                                 </div>
                                 <div class="form-group installment1" style="display: none; padding-left:60px;  padding-top:10px;">
-                                    <div class="col-sm-12">
-                                        {!! Form::label('overdueinstallmentdate1', 'งวดที่ 1 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
-                                        <div class="col-sm-2">
-                                            <div class="input-group">
-                                                {!! Form::text('overdueinstallmentdate1', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate1')) !!}
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar bigger-110"></i>
-                                            </span>
-                                            </div>
-                                        </div>
-                                        {!! Form::label('overdueinstallmentamount1', 'จำนวน', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'float:left;')) !!}
-                                        <div class="col-sm-2">
-                                            {!! Form::number('overdueinstallmentamount1', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount1')) !!}
-                                        </div>
-                                    </div>
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td><label style="width: 80px;">งวดที่ 1 วันที่</label></td>
+                                            <td>
+                                                <div class="input-group">
+                                                    {!! Form::text('overdueinstallmentdate1', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate1')) !!}
+                                                    <span class="input-group-addon">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                                </div>
+                                            </td>
+                                            <td><label style="width: 85px; margin-left: 10px;">จำนวนเงินต้น</label></td>
+                                            <td>{!! Form::number('overdueinstallmentamount1', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount1')) !!}</td>
+                                            <td><label style="width: 95px; margin-left: 10px;">จำนวนดอกเบี้ย</label>
+                                            </td>
+                                            <td>{!! Form::number('overdueinterestinstallmentamount1', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinterestinstallmentamount1')) !!}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div class="form-group installment2" style="display: none; padding-left:60px;">
-                                    <div class="col-sm-12">
-                                        {!! Form::label('overdueinstallmentdate2', 'งวดที่ 2 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
-                                        <div class="col-sm-2">
-                                            <div class="input-group">
-                                                {!! Form::text('overdueinstallmentdate2', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate2')) !!}
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar bigger-110"></i>
-                                            </span>
-                                            </div>
-                                        </div>
-                                        {!! Form::label('overdueinstallmentamount2', 'จำนวน', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'float:left;')) !!}
-                                        <div class="col-sm-2">
-                                            {!! Form::number('overdueinstallmentamount2', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount2')) !!}
-                                        </div>
-                                    </div>
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td><label style="width: 80px;">งวดที่ 2 วันที่</label></td>
+                                            <td>
+                                                <div class="input-group">
+                                                    {!! Form::text('overdueinstallmentdate2', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate2')) !!}
+                                                    <span class="input-group-addon">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                                </div>
+                                            </td>
+                                            <td><label style="width: 85px; margin-left: 10px;">จำนวนเงินต้น</label></td>
+                                            <td>{!! Form::number('overdueinstallmentamount2', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount2')) !!}</td>
+                                            <td><label style="width: 95px; margin-left: 10px;">จำนวนดอกเบี้ย</label>
+                                            </td>
+                                            <td>{!! Form::number('overdueinterestinstallmentamount2', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinterestinstallmentamount2')) !!}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div class="form-group installment3" style="display: none; padding-left:60px;">
-                                    <div class="col-sm-12">
-                                        {!! Form::label('overdueinstallmentdate3', 'งวดที่ 3 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
-                                        <div class="col-sm-2">
-                                            <div class="input-group">
-                                                {!! Form::text('overdueinstallmentdate3', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate3')) !!}
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar bigger-110"></i>
-                                            </span>
-                                            </div>
-                                        </div>
-                                        {!! Form::label('overdueinstallmentamount3', 'จำนวน', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'float:left;')) !!}
-                                        <div class="col-sm-2">
-                                            {!! Form::number('overdueinstallmentamount3', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount3')) !!}
-                                        </div>
-                                    </div>
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td><label style="width: 80px;">งวดที่ 3 วันที่</label></td>
+                                            <td>
+                                                <div class="input-group">
+                                                    {!! Form::text('overdueinstallmentdate3', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate3')) !!}
+                                                    <span class="input-group-addon">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                                </div>
+                                            </td>
+                                            <td><label style="width: 85px; margin-left: 10px;">จำนวนเงินต้น</label></td>
+                                            <td>{!! Form::number('overdueinstallmentamount3', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount3')) !!}</td>
+                                            <td><label style="width: 95px; margin-left: 10px;">จำนวนดอกเบี้ย</label>
+                                            </td>
+                                            <td>{!! Form::number('overdueinterestinstallmentamount3', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinterestinstallmentamount3')) !!}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div class="form-group installment4" style="display: none; padding-left:60px;">
-                                    <div class="col-sm-12">
-                                        {!! Form::label('overdueinstallmentdate4', 'งวดที่ 4 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
-                                        <div class="col-sm-2">
-                                            <div class="input-group">
-                                                {!! Form::text('overdueinstallmentdate4', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate4')) !!}
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar bigger-110"></i>
-                                            </span>
-                                            </div>
-                                        </div>
-                                        {!! Form::label('overdueinstallmentamount4', 'จำนวน', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'float:left;')) !!}
-                                        <div class="col-sm-2">
-                                            {!! Form::number('overdueinstallmentamount4', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount4')) !!}
-                                        </div>
-                                    </div>
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td><label style="width: 80px;">งวดที่ 4 วันที่</label></td>
+                                            <td>
+                                                <div class="input-group">
+                                                    {!! Form::text('overdueinstallmentdate4', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate4')) !!}
+                                                    <span class="input-group-addon">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                                </div>
+                                            </td>
+                                            <td><label style="width: 85px; margin-left: 10px;">จำนวนเงินต้น</label></td>
+                                            <td>{!! Form::number('overdueinstallmentamount4', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount4')) !!}</td>
+                                            <td><label style="width: 95px; margin-left: 10px;">จำนวนดอกเบี้ย</label>
+                                            </td>
+                                            <td>{!! Form::number('overdueinterestinstallmentamount4', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinterestinstallmentamount4')) !!}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div class="form-group installment5" style="display: none; padding-left:60px;">
-                                    <div class="col-sm-12">
-                                        {!! Form::label('overdueinstallmentdate5', 'งวดที่ 5 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
-                                        <div class="col-sm-2">
-                                            <div class="input-group">
-                                                {!! Form::text('overdueinstallmentdate5', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate5')) !!}
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar bigger-110"></i>
-                                            </span>
-                                            </div>
-                                        </div>
-                                        {!! Form::label('overdueinstallmentamount5', 'จำนวน', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'float:left;')) !!}
-                                        <div class="col-sm-2">
-                                            {!! Form::number('overdueinstallmentamount5', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount5')) !!}
-                                        </div>
-                                    </div>
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td><label style="width: 80px;">งวดที่ 5 วันที่</label></td>
+                                            <td>
+                                                <div class="input-group">
+                                                    {!! Form::text('overdueinstallmentdate5', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate5')) !!}
+                                                    <span class="input-group-addon">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                                </div>
+                                            </td>
+                                            <td><label style="width: 85px; margin-left: 10px;">จำนวนเงินต้น</label></td>
+                                            <td>{!! Form::number('overdueinstallmentamount5', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount5')) !!}</td>
+                                            <td><label style="width: 95px; margin-left: 10px;">จำนวนดอกเบี้ย</label>
+                                            </td>
+                                            <td>{!! Form::number('overdueinterestinstallmentamount5', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinterestinstallmentamount5')) !!}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div class="form-group installment6" style="display: none; padding-left:60px;">
-                                    <div class="col-sm-12">
-                                        {!! Form::label('overdueinstallmentdate6', 'งวดที่ 6 วันที่', array('class' => 'control-label no-padding-right','style'=>'float:left;')) !!}
-                                        <div class="col-sm-2">
-                                            <div class="input-group">
-                                                {!! Form::text('overdueinstallmentdate6', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate6')) !!}
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar bigger-110"></i>
-                                            </span>
-                                            </div>
-                                        </div>
-                                        {!! Form::label('overdueinstallmentamount6', 'จำนวน', array('class' => 'col-sm-1 control-label no-padding-right','style'=>'float:left;')) !!}
-                                        <div class="col-sm-2">
-                                            {!! Form::number('overdueinstallmentamount6', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount6')) !!}
-                                        </div>
-                                    </div>
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td><label style="width: 80px;">งวดที่ 6 วันที่</label></td>
+                                            <td>
+                                                <div class="input-group">
+                                                    {!! Form::text('overdueinstallmentdate6', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'overdueinstallmentdate6')) !!}
+                                                    <span class="input-group-addon">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                                </div>
+                                            </td>
+                                            <td><label style="width: 85px; margin-left: 10px;">จำนวนเงินต้น</label></td>
+                                            <td>{!! Form::number('overdueinstallmentamount6', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinstallmentamount6')) !!}</td>
+                                            <td><label style="width: 95px; margin-left: 10px;">จำนวนดอกเบี้ย</label>
+                                            </td>
+                                            <td>{!! Form::number('overdueinterestinstallmentamount6', null, array('step' => '1', 'min' => '0','placeholder' => 'บาท', 'id'=>'overdueinterestinstallmentamount6')) !!}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div class="form-group" style="padding-top:15px;">
                                     <label class="col-sm-1 control-label no-padding-right" for="customerbuy">ผู้ซื้อ</label>
@@ -1102,52 +1132,48 @@
                     <div class="widget-body-inner" style="display: block;">
                         <div class="widget-main">
                             <div class="form-group">
-                                <div class="col-sm-8">
-                                    <div class="col-sm-6">
-                                        <label style="margin-left: 20px;">
-                                            <span> เล่มที่</span>&nbsp;&nbsp;
-                                        </label>
-                                        {!! Form::number('deliverycarbookno',null,array('min' => '0','max' => '999')) !!}
-                                        &nbsp;&nbsp;
-                                        <label>
-                                            <span> เลขที่</span>&nbsp;&nbsp;
-                                        </label>
-                                        {!! Form::number('deliverycarno',null,array('min' => '0','max' => '9999')) !!}
-                                        &nbsp;&nbsp;
-                                        <label>
-                                            <span> วันที่</span>&nbsp;&nbsp;
-                                        </label>
-                                    </div>
-                                    <div class="col-sm-1" style="margin-left: -30px;">
-                                        <div class="input-group">
-                                            {!! Form::text('deliverycardate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'deliverycardate')) !!}
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar bigger-110"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td><label style="width: 40px; margin-left: 30px;">เล่มที่</label></td>
+                                        <td>{!! Form::number('deliverycarbookno',null,array('min' => '0','max' => '999')) !!}</td>
+                                        <td><label style="width: 40px; margin-left: 20px;">เลขที่</label></td>
+                                        <td>{!! Form::number('deliverycarno',null,array('min' => '0','max' => '9999')) !!}</td>
+                                        <td><label style="width: 35px; margin-left: 20px;">วันที่</label></td>
+                                        <td>
+                                            <div class="input-group">
+                                                {!! Form::text('refunddate', null, array('class' => 'form-control date-picker', 'data-date-format'=>'dd-mm-yyyy', 'id'=>'refunddate')) !!}
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar bigger-110"></i>
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                             <div class="form-group">
-                                <div class="col-xs-1">
-                                    <label style="margin-left: 30px;">
-                                        <span> รูป</span>&nbsp;&nbsp;
-                                    </label>
-                                </div>
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td><label style="width: 40px; margin-left: 30px;">รูป</label></td>
+                                        @if($oper != 'new' && $carpayment->deliverycarfilepath != null)
+                                            <td>
+                                                <a href="{{ $carpayment->deliverycarfilepath }}"
+                                                   data-lightbox="' + cellvalue + '">View photo</a>
+                                            </td>
 
-                                @if($oper != 'new' && $carpayment->deliverycarfilepath != null)
-                                    <div class="col-xs-2" style="margin-left: -30px;">
-                                        <a href = "{{ $carpayment->deliverycarfilepath }}" data-lightbox="' + cellvalue + '">View photo</a>
-                                    </div>
-
-                                    <div class="col-xs-1" style="margin-left: -90px;">
-                                        {!! Form::file('deliverycarfile','',array('id'=>'deliverycarfile')) !!}
-                                    </div>
-                                @else
-                                    <div class="col-xs-1" style="margin-left: -30px;">
-                                        {!! Form::file('deliverycarfile','',array('id'=>'deliverycarfile')) !!}
-                                    </div>
-                                @endif
+                                            <td style="width: 270px; padding-left: 20px;">
+                                                <input type="file" name="deliverycarfile" id="deliverycarfile">
+                                            </td>
+                                        @else
+                                            <td style="width: 250px;">
+                                                <input type="file" name="deliverycarfile" id="deliverycarfile">
+                                            </td>
+                                        @endif
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -1176,6 +1202,25 @@
     {!! Form::close() !!}
 
     <script type="text/javascript">
+
+        $('#deliverycarfile').ace_file_input({
+            no_file: 'ยังไม่ได้เลือกไฟล์...',
+            btn_choose: 'เลือกไฟล์',
+            btn_change: 'เปลี่ยนไฟล์',
+            droppable: false,
+            onchange: null,
+            thumbnail: false, //| true | large
+            allowExt: ["png", "jpg", "jpeg"],
+            allowMime: ["image/png", "image/jpeg", "image/pjpeg"]
+        });
+        //pre-show a file name, for example a previously selected file
+        //$('#id-input-file-1').ace_file_input('show_file_list', ['myfile.txt'])
+
+        function ResetFileInput(e) {
+            var file_input = $(e.closest(".ace-file-input")).find("input[type=file]");
+            file_input.ace_file_input('reset_input');
+        }
+
         $(document).ready(function() {
             var carobjectivetype = jQuery( 'input[name=carobjectivetype]:checked' ).val();
             var purchasetype = jQuery( 'input[name=purchasetype]:checked' ).val();
@@ -1252,17 +1297,27 @@
 
             var paybytype = $("input[name=paybytype]:checked").val();
             var overdueinstallments = $("#overdueinstallments").val();
+            var overdue = $("#overdue").val();
+            var overdueinterest = $("#overdueinterest").val();
             var totaloverdue = $("#totaloverdue").val();
             var totalamount = 0;
+            var totalinterestamount = 0;
             if((paybytype == 1 || paybytype == 2) && overdueinstallments != null && overdueinstallments != '' && overdueinstallments != 0){
                 for (i = 1; i <= overdueinstallments; i++) {
                     var amount = $("#overdueinstallmentamount"+i).val();
+                    var interestamount = $("#overdueinterestinstallmentamount" + i).val();
                     if(amount == null || amount == '') amount = 0;
                     totalamount = parseFloat(totalamount) + parseFloat(amount);
+                    if (interestamount == null || interestamount == '') interestamount = 0;
+                    totalinterestamount = parseFloat(totalinterestamount) + parseFloat(interestamount);
                 }
 
-                if(parseFloat(totaloverdue) != parseFloat(totalamount)){
-                    alert("จำนวนเงินรวมของทุกงวด ต้องเท่ากับ จำนวนเงินรวมค้างชำระทั้งสิ้น");
+                if (parseFloat(overdue) != parseFloat(totalamount)) {
+                    alert("จำนวนเงินต้นรวมของทุกงวด ต้องเท่ากับ จำนวนเงินส่วนที่ค้างชำระไม่รวมดอกเบี้ย");
+                    return false;
+                }
+                else if (parseFloat(overdueinterest) != parseFloat(totalinterestamount)) {
+                    alert("จำนวนดอกเบี้ยรวมของทุกงวด ต้องเท่ากับ จำนวนดอกเบี้ยของเงินส่วนที่ค้างชำระ");
                     return false;
                 }
             }

@@ -9,17 +9,18 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Branch;
-use App\Models\Color;
+use App\Facades\GridEncoder;
 use App\Models\Car;
+use App\Models\CarBrand;
 use App\Models\CarModel;
 use App\Models\CarSubModel;
-use App\Facades\GridEncoder;
+use App\Models\Color;
 use App\Models\SystemDatas\Province;
 use App\Repositories\CarRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CarController extends Controller {
 
@@ -144,5 +145,55 @@ class CarController extends Controller {
 
         return ['carsubmodelselectlist'=>implode(";",$carsubmodelselectlist),
             'colorselectlist'=>implode(";",$colorselectlist)];
+    }
+
+    public function import()
+    {
+        try {
+            $file = Input::file('file');
+            //$path = Input::file('pricelist')->getRealPath();
+            $temp = null;
+            Excel::load($file, function ($reader) use ($temp) {
+                //$reader->dump();
+                $reader->skip(1);
+                // Loop through all rows
+                $reader->each(function ($row) {
+
+                    $carBrand = CarBrand::where('name', 'NISSAN')->first();
+                    $color = Color::where('code', trim($row->p))->first();
+                    $carModel = CarModel::firstOrCreate(['name' => trim($row->c) . ' ' . trim($row->d), 'cartypeid' => $row->b, 'carbrandid' => $carBrand->id]);
+                    $carSubModel = CarSubModel::firstOrCreate(['code' => trim($row->f), 'name' => trim($row->e), 'carmodelid' => $carModel->id]);
+
+                    $car = Car::firstOrNew([
+                        'engineno' => trim($row->m), 'chassisno' => trim($row->n)
+                    ]);
+                    $car->datatype = 0;
+                    $car->provinceid = trim($row->a);
+                    $car->carmodelid = $carModel->id;
+                    $car->carsubmodelid = $carSubModel->id;
+                    $car->receivetype = trim($row->g);
+                    $car->dealername = trim($row->h);
+                    $car->no = trim($row->i);
+                    $car->dodate = trim($row->j);
+                    $car->dono = trim($row->k);
+                    if ($row->l != null && $row->l != '')
+                        $car->receiveddate = trim($row->l);
+                    if ($row->o != null && $row->o != '')
+                        $car->keyno = trim($row->o);
+                    $car->colorid = $color->id;
+                    $car->objective = trim($row->q);
+                    if ($row->r != null && $row->r != '')
+                        $car->parklocation = trim($row->r);
+                    if ($row->s != null && $row->s != '')
+                        $car->notifysolddate = trim($row->s);
+                    $car->save();
+                });
+
+            });
+        } catch (Exception $e) {
+            return 'Message: ' . $e->getMessage();
+        }
+
+        return redirect()->action('CarController@index');
     }
 }

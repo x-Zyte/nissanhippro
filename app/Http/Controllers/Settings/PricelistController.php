@@ -99,21 +99,22 @@ class PricelistController extends Controller {
             $temp = null;
             Excel::load($file, function ($reader) use ($temp) {
                 //$reader->dump();
+                $reader->skip(1);
                 // Loop through all rows
                 $reader->each(function ($row) {
 
                     $carBrand = CarBrand::where('name', 'NISSAN')->first();
-                    $carModel = CarModel::firstOrCreate(['name' => $row->d . ' ' . $row->e, 'cartypeid' => $row->c, 'carbrandid' => $carBrand->id]);
-                    $carSubModel = CarSubModel::firstOrCreate(['code' => $row->g, 'name' => $row->f, 'taxinvoicename' => $row->h, 'carmodelid' => $carModel->id]);
+                    $carModel = CarModel::firstOrCreate(['name' => trim($row->d) . ' ' . trim($row->e), 'cartypeid' => $row->c, 'carbrandid' => $carBrand->id]);
+                    $carSubModel = CarSubModel::firstOrCreate(['code' => trim($row->g), 'name' => trim($row->f), 'carmodelid' => $carModel->id]);
 
                     $pricelist = Pricelist::firstOrNew(['carmodelid' => $carModel->id, 'carsubmodelid' => $carSubModel->id
-                        , 'effectivefrom' => date('Y-m-d', strtotime($row->a)), 'effectiveto' => date('Y-m-d', strtotime($row->b))
-                        , 'sellingprice' => $row->j, 'accessoriesprice' => $row->k, 'sellingpricewithaccessories' => $row->i
-                        , 'margin' => $row->l, 'ws50' => $row->m, 'dms' => $row->n
-                        , 'execusiveinternal' => $row->o, 'execusivecampaing' => $row->p, 'execusivetotalcampaing' => $row->q, 'execusivetotalmargincampaing' => $row->r
-                        , 'internal' => $row->s, 'campaing' => $row->t, 'totalmargincampaing' => $row->u]);
-                    $pricelist->effectivefrom = $row->a;
-                    $pricelist->effectiveto = $row->b;
+                        , 'effectivefrom' => date('Y-m-d', strtotime(trim($row->a))), 'effectiveto' => date('Y-m-d', strtotime(trim($row->b)))
+                        , 'sellingprice' => $row->i, 'accessoriesprice' => $row->j, 'sellingpricewithaccessories' => $row->h
+                        , 'margin' => $row->k, 'ws50' => $row->l, 'dms' => $row->m, 'wholesale' => $row->n
+                        , 'execusiveinternal' => $row->o, 'execusivecampaing' => $row->p, 'execusivetotalmargincampaing' => $row->q
+                        , 'internal' => $row->r, 'campaing' => $row->s, 'totalmargincampaing' => $row->t]);
+                    $pricelist->effectivefrom = trim($row->a);
+                    $pricelist->effectiveto = trim($row->b);
                     $pricelist->save();
                 });
 

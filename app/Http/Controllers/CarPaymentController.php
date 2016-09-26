@@ -370,36 +370,42 @@ class CarPaymentController extends Controller {
         else
             $model->overdueinstallmentdate1 = $input['overdueinstallmentdate1'];
         $model->overdueinstallmentamount1 = $input['overdueinstallmentamount1'];
+        $model->overdueinterestinstallmentamount1 = $input['overdueinterestinstallmentamount1'];
 
         if($input['overdueinstallmentdate2'] != null && $input['overdueinstallmentdate2'] != '')
             $model->overdueinstallmentdate2 = date('Y-m-d', strtotime($input['overdueinstallmentdate2']));
         else
             $model->overdueinstallmentdate2 = $input['overdueinstallmentdate2'];
         $model->overdueinstallmentamount2 = $input['overdueinstallmentamount2'];
+        $model->overdueinterestinstallmentamount2 = $input['overdueinterestinstallmentamount2'];
 
         if($input['overdueinstallmentdate3'] != null && $input['overdueinstallmentdate3'] != '')
             $model->overdueinstallmentdate3 = date('Y-m-d', strtotime($input['overdueinstallmentdate3']));
         else
             $model->overdueinstallmentdate3 = $input['overdueinstallmentdate3'];
         $model->overdueinstallmentamount3 = $input['overdueinstallmentamount3'];
+        $model->overdueinterestinstallmentamount3 = $input['overdueinterestinstallmentamount3'];
 
         if($input['overdueinstallmentdate4'] != null && $input['overdueinstallmentdate4'] != '')
             $model->overdueinstallmentdate4 = date('Y-m-d', strtotime($input['overdueinstallmentdate4']));
         else
             $model->overdueinstallmentdate4 = $input['overdueinstallmentdate4'];
         $model->overdueinstallmentamount4 = $input['overdueinstallmentamount4'];
+        $model->overdueinterestinstallmentamount4 = $input['overdueinterestinstallmentamount4'];
 
         if($input['overdueinstallmentdate5'] != null && $input['overdueinstallmentdate5'] != '')
             $model->overdueinstallmentdate5 = date('Y-m-d', strtotime($input['overdueinstallmentdate5']));
         else
             $model->overdueinstallmentdate5 = $input['overdueinstallmentdate5'];
         $model->overdueinstallmentamount5 = $input['overdueinstallmentamount5'];
+        $model->overdueinterestinstallmentamount5 = $input['overdueinterestinstallmentamount5'];
 
         if($input['overdueinstallmentdate6'] != null && $input['overdueinstallmentdate6'] != '')
             $model->overdueinstallmentdate6 = date('Y-m-d', strtotime($input['overdueinstallmentdate6']));
         else
             $model->overdueinstallmentdate6 = $input['overdueinstallmentdate6'];
         $model->overdueinstallmentamount6 = $input['overdueinstallmentamount6'];
+        $model->overdueinterestinstallmentamount6 = $input['overdueinterestinstallmentamount6'];
 
         $model->oldcarbuyername = $input['oldcarbuyername'];
         $model->oldcarpayamount = $input['oldcarpayamount'];

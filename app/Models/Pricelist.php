@@ -10,7 +10,7 @@ class Pricelist extends Model {
     protected $guarded = ['id'];
 
     protected $fillable = ['carmodelid', 'carsubmodelid', 'effectivefrom','effectiveto','sellingprice',
-        'accessoriesprice', 'sellingpricewithaccessories', 'margin', 'ws50', 'dms', 'execusiveinternal', 'execusivecampaing', 'execusivetotalcampaing',
+        'accessoriesprice', 'sellingpricewithaccessories', 'margin', 'ws50', 'dms', 'wholesale', 'execusiveinternal', 'execusivecampaing',
         'execusivetotalmargincampaing','internal','campaing','totalmargincampaing','promotion',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
@@ -23,9 +23,8 @@ class Pricelist extends Model {
             if($model->effectiveto != null && $model->effectiveto != '')
                 $model->effectiveto = date('Y-m-d', strtotime($model->effectiveto));
             $model->effectivefrom = date('Y-m-d', strtotime($model->effectivefrom));
-            $model->sellingpricewithaccessories = $model->sellingprice + $model->accessoriesprice;
-            $model->execusivetotalcampaing = $model->execusiveinternal + $model->execusivecampaing;
-            $model->execusivetotalmargincampaing = $model->margin + $model->execusivetotalcampaing;
+            $model->sellingpricewithaccessories = $model->sellingprice + $model->margin;
+            $model->execusivetotalmargincampaing = $model->margin + $model->execusiveinternal + $model->execusivecampaing;
             $model->totalmargincampaing = $model->margin + $model->internal + $model->campaing;
 
             $model->createdby = Auth::user()->id;
@@ -44,9 +43,8 @@ class Pricelist extends Model {
             if($model->effectiveto != null && $model->effectiveto != '')
                 $model->effectiveto = date('Y-m-d', strtotime($model->effectiveto));
             $model->effectivefrom = date('Y-m-d', strtotime($model->effectivefrom));
-            $model->sellingpricewithaccessories = $model->sellingprice + $model->accessoriesprice;
-            $model->execusivetotalcampaing = $model->execusiveinternal + $model->execusivecampaing;
-            $model->execusivetotalmargincampaing = $model->margin + $model->execusivetotalcampaing;
+            $model->sellingpricewithaccessories = $model->sellingprice + $model->margin;
+            $model->execusivetotalmargincampaing = $model->margin + $model->execusiveinternal + $model->execusivecampaing;
             $model->totalmargincampaing = $model->margin + $model->internal + $model->campaing;
 
             $model->modifiedby = Auth::user()->id;

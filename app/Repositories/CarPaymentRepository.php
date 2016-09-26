@@ -21,10 +21,13 @@ class CarPaymentRepository extends EloquentRepositoryAbstract
             'accessoriesfeeactuallypaid','accessoriesfeeincludeinyodjud',
             'insurancecompanyid', 'capitalinsurance', 'compulsorymotorinsurancecompanyid',
             'buyerpay', 'overdue', 'overdueinterest', 'totaloverdue', 'paybytype', 'paybyotherdetails',
-            'overdueinstallments', 'overdueinstallmentdate1', 'overdueinstallmentamount1',
-            'overdueinstallmentdate2', 'overdueinstallmentamount2','overdueinstallmentdate3', 'overdueinstallmentamount3',
-            'overdueinstallmentdate4', 'overdueinstallmentamount4','overdueinstallmentdate5', 'overdueinstallmentamount5',
-            'overdueinstallmentdate6', 'overdueinstallmentamount6', 'oldcarbuyername', 'oldcarpayamount', 'oldcarpaytype',
+            'overdueinstallments', 'overdueinstallmentdate1', 'overdueinstallmentamount1', 'overdueinterestinstallmentamount1',
+            'overdueinstallmentdate2', 'overdueinstallmentamount2', 'overdueinterestinstallmentamount2',
+            'overdueinstallmentdate3', 'overdueinstallmentamount3', 'overdueinterestinstallmentamount3',
+            'overdueinstallmentdate4', 'overdueinstallmentamount4', 'overdueinterestinstallmentamount4',
+            'overdueinstallmentdate5', 'overdueinstallmentamount5', 'overdueinterestinstallmentamount5',
+            'overdueinstallmentdate6', 'overdueinstallmentamount6', 'overdueinterestinstallmentamount6',
+            'oldcarbuyername', 'oldcarpayamount', 'oldcarpaytype',
             'oldcarpaydate', 'payeeemployeeid','deliverycarbookno','deliverycarno','deliverycardate','deliverycarfilepath','isdraft');
 
         $this->uniqueKeySingles = array(array('field'=>'carpreemptionid','label'=>'รายการชำระเงินของใบจอง'));

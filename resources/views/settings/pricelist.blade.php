@@ -85,8 +85,8 @@
             $(grid_selector).jqGrid({
                 url:"pricelist/read",
                 datatype: "json",
-                colNames:['แบบรถ', 'รุ่นรถ','ตั้งแต่วันที่','ถึงวันที่', 'ราคาขาย MSRP', 'ราคาอุปกรณ์ตกแต่ง', 'ราคาขายพร้อมอุปกรณ์ตกแต่ง', 'MARGIN',
-                    'WS 50%', 'DMS', 'ส่งเสริมการขาย/Internal', 'คูปองน้ำมัน/Campaign', 'Total Campaign', 'Total Margin Campaign',
+                colNames: ['แบบรถ', 'รุ่นรถ', 'ตั้งแต่วันที่', 'ถึงวันที่', 'ราคาขายพร้อมอุปกรณ์ตกแต่ง', 'ราคาขายผู้จำหน่าย', 'ราคาอุปกรณ์ตกแต่ง', 'MARGIN',
+                    'WS 50%', 'DMS', 'wholesale', 'ส่งเสริมการขาย/Internal', 'คูปองน้ำมัน/Campaign', 'Total Margin Campaign',
                     'ส่งเสริมการขาย/Internal','คูปอง../Extra Campaign','Total Margin + Campaign','โปรโมชั่น'],
                 colModel:[
                     {name:'carmodelid',index:'carmodelid', width:250, editable: true,edittype:"select",formatter:'select',editrules:{required:true},align:'left',
@@ -115,14 +115,21 @@
                         ,searchrules:{required:true}
                         ,searchoptions: { size:"10",dataInit:function(elem){$(elem).datepicker({format:'dd-mm-yyyy', autoclose:true,todayHighlight: true});}
                         ,sopt: ['eq', 'ne', 'lt', 'gt', 'ge', 'le']}},
+                    {
+                        name: 'sellingpricewithaccessories',
+                        index: 'sellingpricewithaccessories',
+                        width: 100,
+                        editable: true,
+                        editrules: {number: true},
+                        align: 'right',
+                        formatter: 'number',
+                        formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
+                    },
                     {name:'sellingprice',index:'sellingprice', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'accessoriesprice',index:'accessoriesprice', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
-                        formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'sellingpricewithaccessories',index:'sellingpricewithaccessories', width:100,editable: true,
-                        editrules:{number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'margin',index:'margin', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',
@@ -137,14 +144,22 @@
                         editrules: {required: true, number: true}, align: 'right', formatter: 'number',
                         formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
                     },
+                    {
+                        name: 'wholesale',
+                        index: 'wholesale',
+                        width: 100,
+                        editable: true,
+                        editrules: {required: true, number: true},
+                        align: 'right',
+                        formatter: 'number',
+                        formoptions: {label: 'ส่งเสริมการขาย/Internal (Execusive)'},
+                        formatoptions: {decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2}
+                    },
                     {name:'execusiveinternal',index:'execusiveinternal', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',formoptions:{label:'ส่งเสริมการขาย/Internal (Execusive)'},
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'execusivecampaing',index:'execusivecampaing', width:100,editable: true,
                         editrules:{required:true, number:true},align:'right',formatter:'number',formoptions:{label:'คูปองน้ำมัน/Campaign (Execusive)'},
-                        formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
-                    {name:'execusivetotalcampaing',index:'execusivetotalcampaing', width:100,editable: true,
-                        editrules:{number:true},align:'right',formatter:'number',
                         formatoptions:{decimalSeparator:".", thousandsSeparator: ",", decimalPlaces: 2}},
                     {name:'execusivetotalmargincampaing',index:'execusivetotalmargincampaing', width:100,editable: true,
                         editrules:{number:true},align:'right',formatter:'number',
@@ -188,7 +203,7 @@
                 useColSpanStyle: true,
                 groupHeaders:[
                     {startColumnName: 'margin', numberOfColumns: 3, titleText: 'ผลประโยชน์รวม'},
-                    {startColumnName: 'execusiveinternal', numberOfColumns: 4, titleText: 'NLTH Execusive'},
+                    {startColumnName: 'wholesale', numberOfColumns: 4, titleText: 'NLTH Execusive'},
                     {startColumnName: 'internal', numberOfColumns: 3, titleText: 'กรณีเงินสด/ดอกเบี้ยปกติ'}
                 ]
             });
@@ -234,7 +249,6 @@
                         });
 
                         $('#tr_sellingpricewithaccessories', form).hide();
-                        $('#tr_execusivetotalcampaing', form).hide();
                         $('#tr_execusivetotalmargincampaing', form).hide();
                         $('#tr_totalmargincampaing', form).hide();
 
@@ -285,7 +299,6 @@
                         $('#carsubmodelid').children('option:not(:first)').remove();
 
                         $('#tr_sellingpricewithaccessories', form).hide();
-                        $('#tr_execusivetotalcampaing', form).hide();
                         $('#tr_execusivetotalmargincampaing', form).hide();
                         $('#tr_totalmargincampaing', form).hide();
 
