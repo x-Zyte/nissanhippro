@@ -6,10 +6,8 @@ use Illuminate\Support\Facades\DB;
 
 class Car extends Model {
 
-    protected $table = 'cars';
-
     public $timestamps = false;
-
+    protected $table = 'cars';
     protected $guarded = ['id'];
 
     protected $fillable = ['provinceid','datatype', 'carmodelid', 'carsubmodelid', 'no', 'dodate', 'dono','receiveddate','dealername', 'engineno', 'chassisno', 'keyno',
@@ -91,6 +89,7 @@ class Car extends Model {
             if($model->objective == 0) {
                 KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->where('carid',$model->id)->update(['carid' => null ,'active' => true]);
                 KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->whereNull('carid')->update(['carid' => $model->id ,'active' => false]);
+                KeySlot::where('provinceid', $model->provinceid)->where('no', '!=', $model->keyno)->where('carid', $model->id)->update(['carid' => null, 'active' => true]);
             }
             else{
                 KeySlot::where('provinceid', $model->provinceid)->where('carid',$model->id)->update(['carid' => null ,'active' => true]);
@@ -104,7 +103,7 @@ class Car extends Model {
             if($model->receivecarfilepath != '')
                 File::delete(public_path().$model->receivecarfilepath);
 
-            KeySlot::where('provinceid', $model->provinceid)->where('no',$model->keyno)->update(['carid' => null ,'active' => true]);
+            KeySlot::where('provinceid', $model->provinceid)->where('no', $model->keyno)->where('carid', $model->id)->update(['carid' => null, 'active' => true]);
         });
     }
 

@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateKeySlotsTable extends Migration {
 
@@ -19,7 +19,6 @@ class CreateKeySlotsTable extends Migration {
             $table->foreign('provinceid')->references('id')->on('provinces');
             $table->integer('no');
             $table->integer('carid')->unsigned()->nullable();
-            $table->foreign('carid')->references('id')->on('cars');
             $table->boolean('active')->default(true);
 
             $table->engine = 'InnoDB';
