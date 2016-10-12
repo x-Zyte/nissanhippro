@@ -20,9 +20,9 @@ class Car extends Model {
 
         static::creating(function($model)
         {
-            $model->issold = false;
-            $model->isregistered = false;
-            $model->isdelivered = false;
+            //$model->issold = false;
+            //$model->isregistered = false;
+            //$model->isdelivered = false;
 
             if($model->datatype == 1) $model->no = '';
             if($model->receivetype == 0) $model->dealername = null;

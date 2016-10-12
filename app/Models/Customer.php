@@ -5,10 +5,8 @@ use Illuminate\Support\Facades\Auth;
 
 class Customer extends Model {
 
-    protected $table = 'customers';
-
     public $timestamps = false;
-
+    protected $table = 'customers';
     protected $guarded = ['id'];
 
     protected $fillable = ['isreal','statusexpect','title', 'firstname', 'lastname', 'phone1', 'phone2','occupationid','birthdate', 'address',
@@ -30,7 +28,7 @@ class Customer extends Model {
             else
                 $model->birthdate = null;
 
-            $model->isreal = false;
+            //$model->isreal = false;
             $model->statusexpect = 0;
 
             $model->createdby = Auth::user()->id;
