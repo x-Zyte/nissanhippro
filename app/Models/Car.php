@@ -11,7 +11,7 @@ class Car extends Model {
     protected $guarded = ['id'];
 
     protected $fillable = ['provinceid','datatype', 'carmodelid', 'carsubmodelid', 'no', 'dodate', 'dono','receiveddate','dealername', 'engineno', 'chassisno', 'keyno',
-        'colorid', 'objective', 'receivetype', 'receivecarfilepath', 'issold', 'isregistered', 'isdelivered','parklocation','notifysolddate',
+        'colorid', 'objective', 'receivetype', 'receivecarfilepath', 'issold', 'isregistered', 'isdelivered', 'parklocation', 'notifysolddate', 'buyercustomerid',
         'createdby', 'createddate', 'modifiedby', 'modifieddate'];
 
     public static function boot()

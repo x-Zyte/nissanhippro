@@ -95,6 +95,7 @@ class CarPayment extends Model {
 
             $car = Car::find($model->carid);
             $car->issold = true;
+            $car->buyercustomerid = $carpreemption->buyercustomerid;
             if($model->deliverycarbookno != null && $model->deliverycarbookno != ''){
                 $car->isdelivered = true;
                 KeySlot::where('provinceid', $car->provinceid)->where('no',$car->keyno)->update(['carid' => null ,'active' => true]);

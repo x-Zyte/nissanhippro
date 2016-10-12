@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateCarsTable extends Migration {
 
@@ -43,6 +43,8 @@ class CreateCarsTable extends Migration {
             $table->boolean('isregistered')->default(false);
             $table->boolean('isdelivered')->default(false);
             $table->dateTime('notifysolddate')->nullable();
+            $table->integer('buyercustomerid')->unsigned()->nullable();
+            $table->foreign('buyercustomerid')->references('id')->on('customers');
 
             $table->integer('createdby')->unsigned();
             $table->foreign('createdby')->references('id')->on('employees');

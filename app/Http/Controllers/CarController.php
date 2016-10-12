@@ -15,6 +15,9 @@ use App\Models\CarBrand;
 use App\Models\CarModel;
 use App\Models\CarSubModel;
 use App\Models\Color;
+use App\Models\Customer;
+use App\Models\SystemDatas\Amphur;
+use App\Models\SystemDatas\District;
 use App\Models\SystemDatas\Province;
 use App\Repositories\CarRepository;
 use Illuminate\Http\Request;
@@ -186,6 +189,41 @@ class CarController extends Controller {
                         $car->parklocation = trim($row->r);
                     if ($row->s != null && $row->s != '')
                         $car->notifysolddate = trim($row->s);
+
+                    if ($row->u != null && $row->u != '' && $row->v != null && $row->v != '') {
+                        $customer = Customer::firstOrNew([
+                            'provinceid' => trim($row->a), 'title' => trim($row->u), 'firstname' => trim($row->v), 'lastname' => trim($row->w)
+                        ]);
+                        $customer->isreal = true;
+                        if ($row->x != null && $row->x != '')
+                            $customer->phone1 = trim($row->x);
+                        if ($row->y != null && $row->y != '')
+                            $customer->occupationid = trim($row->y);
+                        if ($row->z != null && $row->z != '')
+                            $customer->birthdate = trim($row->z);
+                        if ($row->aa != null && $row->aa != '')
+                            $customer->address = trim($row->aa);
+
+                        $district = District::where('name', trim($row->ab))->first();
+                        $amphur = Amphur::where('name', trim($row->ac))->first();
+                        $province = Province::where('name', trim($row->ad))->first();
+
+                        if ($district != null)
+                            $customer->districtid = $district->id;
+                        if ($amphur != null)
+                            $customer->amphurid = $amphur->id;
+                        if ($province != null)
+                            $customer->addprovinceid = $province->id;
+                        if ($row->ad != null && $row->ad != '')
+                            $customer->zipcode = trim($row->ae);
+                        $customer->save();
+                        $car->issold = true;
+                        $car->buyercustomerid = $customer->id;
+
+                        if ($row->t != null && $row->t != '')
+                            $car->isdelivered = true;
+                    }
+
                     $car->save();
                 });
 

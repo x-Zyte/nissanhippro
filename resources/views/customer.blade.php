@@ -24,14 +24,14 @@
             //resize to fit page size
             $(window).on('resize.jqGrid', function () {
                 resizeGrid();
-            })
+            });
             //resize on sidebar collapse/expand
             var parent_column = $(grid_selector).closest('[class*="col-"]');
             $(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
                 if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
                     $(grid_selector).jqGrid( 'setGridWidth', parent_column.width() );
                 }
-            })
+            });
 
             var candeletedata = false;
             if('{{Auth::user()->isadmin}}' == '1' || '{{Auth::user()->candeletedata}}' == '1'){
@@ -56,8 +56,23 @@
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "1:Yes;0:No" }},
                     {name:'statusexpect',index:'statusexpect', width:100, editable: true,edittype:"select",formatter:'select',editoptions:{value: "0:ไม่มีการติดตาม;1:กำลังติดตามอยู่;2:ยกเลิก - ไปซื้อดีลเลอร์อื่น;3:ยกเลิก - ไปซื้อยี่ห้ออื่น;4:ยกเลิก - เปลี่ยนใจไม่ซื้อแล้ว;5:ยกเลิก - ติดต่อไม่ได้"},align:'center'
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:ไม่มีการติดตาม;1:กำลังติดตามอยู่;2:ยกเลิก - ไปซื้อดีลเลอร์อื่น;3:ยกเลิก - ไปซื้อยี่ห้ออื่น;4:ยกเลิก - เปลี่ยนใจไม่ซื้อแล้ว;5:ยกเลิก - ติดต่อไม่ได้" }},
-                    {name:'title',index:'title', width:70, editable: true,edittype:"select",formatter:'select',editoptions:{value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว;บริษัท:บริษัท"},align:'left'
-                        ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว;บริษัท:บริษัท" }},
+                    {
+                        name: 'title',
+                        index: 'title',
+                        width: 70,
+                        editable: true,
+                        edittype: "select",
+                        formatter: 'select',
+                        editoptions: {value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว;บริษัท:บริษัท;หน่วยงาน:หน่วยงาน"},
+                        align: 'left'
+                        ,
+                        stype: 'select',
+                        searchrules: {required: true},
+                        searchoptions: {
+                            sopt: ["eq", "ne"],
+                            value: "นาย:นาย;นาง:นาง;นางสาว:นางสาว;บริษัท:บริษัท;หน่วยงาน:หน่วยงาน"
+                        }
+                    },
                     {name:'firstname',index:'firstname', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},editrules:{required:true},align:'left'},
                     {name:'lastname',index:'lastname', width:100,editable: true,editoptions:{size:"20",maxlength:"50"},align:'left'},
                     {name:'phone1',index:'phone1', width:100,editable: true,editrules:{required:true},editoptions:{size:"20",maxlength:"20"},align:'left'},
@@ -156,14 +171,14 @@
                     //resize to fit page size
                     $(window).on('resize.jqGridSubGrid', function () {
                         resizeSubGrid(subgrid_table_id);
-                    })
+                    });
                     //resize on sidebar collapse/expand
                     var parent_column = $("#"+subgrid_table_id).closest('[class*="col-"]');
                     $(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
                         if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
                             $("#"+subgrid_table_id).jqGrid( 'setGridWidth', parent_column.width() );
                         }
-                    })
+                    });
 
                     $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table><div id='"+pager_id+"' class='scroll'></div>");
                     jQuery("#"+subgrid_table_id).jqGrid({
@@ -264,7 +279,7 @@
                                 viewPagerButtons : false,
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                                     style_edit_form(form);
 
                                     var dlgDiv = $("#editmod" + jQuery("#"+subgrid_table_id)[0].id);
@@ -307,7 +322,7 @@
                                     jQuery("#"+subgrid_table_id).jqGrid('resetSelection');
                                     var form = $(e[0]);
                                     form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
-                                            .wrapInner('<div class="widget-header" />')
+                                            .wrapInner('<div class="widget-header" />');
                                     style_edit_form(form);
 
                                     var dlgDiv = $("#editmod" + jQuery("#"+subgrid_table_id)[0].id);
@@ -348,7 +363,7 @@
                                 beforeShowForm : function(e) {
                                     var form = $(e[0]);
                                     if(!form.data('styled')) {
-                                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                                         style_delete_form(form);
 
                                         form.data('styled', true);
@@ -382,7 +397,7 @@
                                 recreateForm: true,
                                 afterShowSearch: function(e){
                                     var form = $(e[0]);
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
                                     style_search_form(form);
 
                                     var dlgDiv = $("#searchmodfbox_" + jQuery("#"+subgrid_table_id)[0].id);
@@ -408,7 +423,7 @@
                                 recreateForm: true,
                                 beforeShowForm: function(e){
                                     var form = $(e[0]);
-                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
 
                                     var dlgDiv = $("#viewmod" + jQuery("#"+subgrid_table_id)[0].id);
                                     centerGridForm(dlgDiv);
@@ -446,7 +461,7 @@
                     recreateForm: true,
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                         style_edit_form(form);
 
                         var provinceid = $('#addprovinceid').val();
@@ -514,7 +529,7 @@
                         jQuery(grid_selector).jqGrid('resetSelection');
                         var form = $(e[0]);
                         form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
-                                .wrapInner('<div class="widget-header" />')
+                                .wrapInner('<div class="widget-header" />');
                         style_edit_form(form);
 
                         $('#amphurid').children('option:not(:first)').remove();
@@ -563,7 +578,7 @@
                     beforeShowForm : function(e) {
                         var form = $(e[0]);
                         if(!form.data('styled')) {
-                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />');
                             style_delete_form(form);
 
                             form.data('styled', true);
@@ -596,7 +611,7 @@
                     recreateForm: true,
                     afterShowSearch: function(e){
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
                         style_search_form(form);
 
                         var dlgDiv = $("#searchmodfbox_" + jQuery(grid_selector)[0].id);
@@ -621,7 +636,7 @@
                     recreateForm: true,
                     beforeShowForm: function(e){
                         var form = $(e[0]);
-                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />');
 
                         var dlgDiv = $("#viewmod" + jQuery(grid_selector)[0].id);
                         centerGridForm(dlgDiv);

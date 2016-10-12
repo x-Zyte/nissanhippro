@@ -96,11 +96,20 @@
                 colModel:[
                     {name:'provinceid',index:'provinceid', width:100, editable: true,edittype:"select",formatter:'select',editrules:{required:true},editoptions:{value: "{{$provinceselectlist}}", defaultValue:defaultProvince},hidden:hiddenProvince
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value:"{{$provinceselectlist}}" }},
-                    {name:'datatype',index:'datatype', width:70, editable: true,edittype:"select",formatter:'select',align:'center',editrules:{required:true}
+                    {
+                        name: 'datatype',
+                        index: 'datatype',
+                        width: 70,
+                        editable: true,
+                        edittype: "select",
+                        formatter: 'select',
+                        align: 'center',
+                        hidden: true,
+                        editrules: {required: true, edithidden: true}
                         ,stype:'select',searchrules:{required:true},searchoptions: { sopt: ["eq", "ne"], value: "0:เก่า;1:ปัจจุบัน" }
                         ,
                         editoptions: {
-                            value: "0:เก่า;1:ปัจจุบัน",
+                            value: "0:เก่า;1:ปัจจุบัน", defaultValue: 1,
                         dataEvents :[{type: 'change', fn: function(e){
                             var thisval = $(e.target).val();
                             var objective = $('#objective').val();
